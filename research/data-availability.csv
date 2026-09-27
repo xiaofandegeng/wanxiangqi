@@ -1,0 +1,34 @@
+entity,field,data_type,source_type,timing,is_required,null_strategy,confidence_level,notes
+event,id,string,SYSTEM,CREATE,true,DISALLOWED,CONFIRMED,UUID或场次格式编码
+event,mode,string,MANUAL_OCR,PRE_MATCH,true,DISALLOWED,CONFIRMED,首期固定为 DIAMOND (钻石狂潮)
+event,scheduled_at,timestamp,MANUAL_OCR,PRE_MATCH,true,DISALLOWED,CONFIRMED,每天12/13/14/15点整
+event,status,string,SYSTEM,REALTIME,true,DISALLOWED,CONFIRMED,PENDING/PREDICTABLE/CLOSED/SETTLED
+event,version,string,MANUAL,PRE_MATCH,true,DISALLOWED,CONFIRMED,游戏当前版本号
+participant,event_id,string,SYSTEM,PRE_MATCH,true,DISALLOWED,CONFIRMED,关联event.id
+participant,slot,integer,MANUAL_OCR,PRE_MATCH,true,DISALLOWED,CONFIRMED,1至6号参赛席位
+participant,player_id,string,MANUAL,PRE_MATCH,false,ALLOW_NULL,HYPOTHESIS,稳定ID若不可得时暂用临时标识键
+participant,nickname,string,MANUAL_OCR,PRE_MATCH,true,DISALLOWED,CONFIRMED,赛前界面显示的选手昵称
+participant,rank_text,string,MANUAL_OCR,PRE_MATCH,true,DISALLOWED,CONFIRMED,如：大宗师 III
+participant,rank_score,integer,MANUAL_OCR,PRE_MATCH,false,ALLOW_NULL,CONFIRMED,具体星级或胜点分
+participant,final_rank,integer,MANUAL_OCR,POST_MATCH,false,ALLOW_NULL,CONFIRMED,赛后简报公布名次(1~6)
+player,id,string,SYSTEM,CREATE,true,DISALLOWED,CONFIRMED,系统内部唯一ID
+player,platform,string,MANUAL,CREATE,true,DISALLOWED,CONFIRMED,平台/大区(如 QQ1区 / 微信2区)
+player,official_uid,string,MANUAL,OPTIONAL,false,ALLOW_NULL,PENDING_VERIFY,官方长ID(未公开时为空)
+player,last_nickname,string,MANUAL_OCR,REALTIME,true,DISALLOWED,CONFIRMED,最近一次观测昵称
+match_history,id,string,SYSTEM,POST_MATCH,true,DISALLOWED,CONFIRMED,历史战绩全局唯一ID
+match_history,player_id,string,SYSTEM,POST_MATCH,true,DISALLOWED,CONFIRMED,关联player.id
+match_history,match_time,timestamp,MANUAL_OCR,POST_MATCH,true,DISALLOWED,CONFIRMED,对局发生时间
+match_history,final_rank,integer,MANUAL_OCR,POST_MATCH,true,DISALLOWED,CONFIRMED,历史名次(1~6)
+match_history,commander_name,string,MANUAL_OCR,POST_MATCH,false,ALLOW_NULL,CONFIRMED,当局选用棋手
+match_history,lineup_summary,string,MANUAL_OCR,POST_MATCH,false,ALLOW_NULL,CONFIRMED,核心英雄或羁绊
+support_snapshot,id,string,SYSTEM,PRE_MATCH,true,DISALLOWED,CONFIRMED,快照ID
+support_snapshot,event_id,string,SYSTEM,PRE_MATCH,true,DISALLOWED,CONFIRMED,关联event.id
+support_snapshot,participant_id,string,SYSTEM,PRE_MATCH,true,DISALLOWED,CONFIRMED,关联participant.id
+support_snapshot,observed_at,timestamp,SYSTEM,PRE_MATCH,true,DISALLOWED,CONFIRMED,快照捕获时间戳
+support_snapshot,ratio_percent,numeric,MANUAL_OCR,PRE_MATCH,false,ALLOW_NULL,CONFIRMED,进度条相对支持比例
+support_snapshot,odds_display,numeric,MANUAL_OCR,PRE_MATCH,false,ALLOW_NULL,PENDING_VERIFY,界面显示倍率(若有)
+evidence,id,string,SYSTEM,UPLOAD,true,DISALLOWED,CONFIRMED,证据记录ID
+evidence,sha256,string,SYSTEM,UPLOAD,true,DISALLOWED,CONFIRMED,原图哈希去重
+evidence,file_path,string,SYSTEM,UPLOAD,true,DISALLOWED,CONFIRMED,原图存储路径
+evidence,captured_at,timestamp,MANUAL,UPLOAD,true,DISALLOWED,CONFIRMED,截图拍摄时间
+evidence,verified_by,string,SYSTEM,VERIFY,false,ALLOW_NULL,CONFIRMED,审核人ID

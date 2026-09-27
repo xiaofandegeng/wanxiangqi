@@ -1,0 +1,56 @@
+@use './variables.scss' as *;
+
+// 常用 Flex 布局混入
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// 玻璃拟态卡片质感
+@mixin glass-panel {
+  background: $bg-card;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $border-color-hover;
+    background: $bg-card-hover;
+  }
+}
+
+// 金色渐变文字
+@mixin text-gold-gradient {
+  background: linear-gradient(135deg, $color-gold-light 0%, $color-gold 50%, $color-gold-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// 能量青蓝渐变文字
+@mixin text-cyan-gradient {
+  background: linear-gradient(135deg, $color-cyan-light 0%, $color-cyan 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// 单行文本省略
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
