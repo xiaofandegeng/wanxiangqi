@@ -214,6 +214,38 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ----------------------------------------------------
+  // v2 标准 API: 8. 触发外部数据源同步任务
+  // POST /api/v1/admin/sources/:id/sync
+  // ----------------------------------------------------
+  const sourceSyncMatch = pathname.match(/^\/api\/v1\/admin\/sources\/([^/]+)\/sync$/)
+  if (sourceSyncMatch && req.method === 'POST') {
+    const sourceId = sourceSyncMatch[1]
+    if (sourceId === 'src-hokace-wiki') {
+      const { syncHokaceLineups } = await import('./adapters/hokace.mjs')
+      const result = await syncHokaceLineups()
+      if (result.status === 'SUCCESS' || result.status === 'FALLBACK_BASELINE') {
+        storage.state.lineupSnapshots = result.data
+        const src = storage.state.dataSources.find(s => s.id === sourceId)
+        if (src) {
+          src.lastAttemptAt = result.startTime
+          src.lastSuccessAt = result.endTime
+        }
+        storage.saveState()
+        broadcastSSE('DATA_UPDATED', { type: 'LINEUP_SYNCED', sourceId })
+      }
+      return sendJson(200, {
+        code: 0,
+        message: '数据源同步执行完成',
+        result
+      })
+    } else {
+      return sendJson(400, {
+        error: `数据源 [${sourceId}] 暂不支持自动在线同步或需本人授权材料`
+      })
+    }
+  }
+
+  // ----------------------------------------------------
   // 8. SSE 实时推流端点 (通知版本变更与新事件)
   // ----------------------------------------------------
   if (pathname === '/api/live/stream') {

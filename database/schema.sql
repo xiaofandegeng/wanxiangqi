@@ -205,3 +205,82 @@ CREATE TABLE IF NOT EXISTS wager_record (
 );
 
 CREATE INDEX IF NOT EXISTS idx_wager_event ON wager_record (event_id);
+
+-- ========================================================
+-- 9. 数据源注册表 (data_source) - 遵循 v2 规范
+-- 声明来源能力 (player_identity, lineup_aggregate 等)
+-- ========================================================
+CREATE TABLE IF NOT EXISTS data_source (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    type VARCHAR(64) NOT NULL,
+    url VARCHAR(512),
+    capabilities JSONB NOT NULL DEFAULT '[]',
+    sync_interval_seconds INTEGER DEFAULT 3600,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
+    last_attempt_at TIMESTAMPTZ,
+    last_success_at TIMESTAMPTZ,
+    data_as_of TIMESTAMPTZ,
+    note TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ========================================================
+-- 10. 采集任务执行运行记录 (ingestion_run)
+-- ========================================================
+CREATE TABLE IF NOT EXISTS ingestion_run (
+    id VARCHAR(64) PRIMARY KEY,
+    source_id VARCHAR(64) NOT NULL REFERENCES data_source(id) ON DELETE CASCADE,
+    batch_id VARCHAR(64) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'RUNNING',
+    records_read INTEGER NOT NULL DEFAULT 0,
+    records_inserted INTEGER NOT NULL DEFAULT 0,
+    records_updated INTEGER NOT NULL DEFAULT 0,
+    records_duplicates INTEGER NOT NULL DEFAULT 0,
+    cursor_state VARCHAR(256),
+    error_message TEXT,
+    started_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_ingestion_source ON ingestion_run (source_id, started_at DESC);
+
+-- ========================================================
+-- 11. 原始材料存证表 (raw_record)
+-- 保存上游原始 JSON/HTML 及内容哈希，确保证据链可溯源
+-- ========================================================
+CREATE TABLE IF NOT EXISTS raw_record (
+    id VARCHAR(64) PRIMARY KEY,
+    source_id VARCHAR(64) NOT NULL REFERENCES data_source(id),
+    content_hash CHAR(64) NOT NULL,
+    raw_payload JSONB NOT NULL,
+    parser_version VARCHAR(32) NOT NULL,
+    ingested_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_raw_record_hash ON raw_record (content_hash);
+
+-- ========================================================
+-- 12. 第三方阵容环境快照大盘表 (lineup_stat_snapshot)
+-- 明确来源快照版本，与选手个人逐局事实严格隔离
+-- ========================================================
+CREATE TABLE IF NOT EXISTS lineup_stat_snapshot (
+    id VARCHAR(64) PRIMARY KEY,
+    source_id VARCHAR(64) NOT NULL REFERENCES data_source(id),
+    lineup_name VARCHAR(128) NOT NULL,
+    tier VARCHAR(16) NOT NULL,
+    commander VARCHAR(64) NOT NULL,
+    core_heroes JSONB NOT NULL,
+    sample_count INTEGER NOT NULL DEFAULT 0 CHECK (sample_count >= 0),
+    win_rate NUMERIC(5, 4) NOT NULL CHECK (win_rate BETWEEN 0 AND 1),
+    top3_rate NUMERIC(5, 4) NOT NULL CHECK (top3_rate BETWEEN 0 AND 1),
+    avg_rank NUMERIC(4, 2) NOT NULL CHECK (avg_rank BETWEEN 1 AND 8),
+    snapshot_version VARCHAR(64) NOT NULL,
+    window_text VARCHAR(64) NOT NULL DEFAULT '近 7 日',
+    scope VARCHAR(64) NOT NULL DEFAULT '全服王者段位',
+    observed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uk_lineup_snapshot UNIQUE (source_id, lineup_name, snapshot_version)
+);
+
+CREATE INDEX IF NOT EXISTS idx_lineup_snapshot_version ON lineup_stat_snapshot (snapshot_version);
