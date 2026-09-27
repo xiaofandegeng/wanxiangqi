@@ -26,9 +26,9 @@
       </nav>
 
       <div class="header-right">
-        <div class="disclaimer-badge">
+        <div class="disclaimer-badge is-verified">
           <span class="status-dot"></span>
-          <span class="badge-text">结算公式验证中 · 暂不推导EV</span>
+          <span class="badge-text">硬门槛 B 已核验 · 开启 EV 情景模拟</span>
         </div>
       </div>
     </div>
@@ -153,6 +153,17 @@
     background-color: $color-gold;
     box-shadow: 0 0 8px $color-gold;
     animation: pulse 2s infinite;
+  }
+
+  &.is-verified {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: $color-success;
+
+    .status-dot {
+      background-color: $color-success;
+      box-shadow: 0 0 8px $color-success;
+    }
   }
 }
 

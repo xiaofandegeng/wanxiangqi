@@ -37,16 +37,12 @@
       </div>
     </div>
 
-    <!-- 严谨安全告示框 -->
-    <div class="disclaimer-alert">
-      <div class="alert-icon">🛡️</div>
-      <div class="alert-content">
-        <h4 class="alert-title">硬门槛 B 保护：钻石投入建议已熔断锁定</h4>
-        <p class="alert-desc">
-          系统当前仅基于公开历史样本输出选手画像与胜率概率分布。因尚未取得 3 笔完整真实小额到账结算凭证，严禁提供任何下注建议或保本承诺。
-        </p>
-      </div>
-    </div>
+    <!-- 钻石支持决策与情景模拟器 (硬门槛 B 结算规则已验证) -->
+    <WagerSimulator
+      v-if="event.forecast"
+      :participants="event.participants"
+      :forecast-prob-map="event.forecast.probabilities"
+    />
 
     <!-- 6名选手网格卡片 -->
     <div class="section-title-wrap">
@@ -139,6 +135,7 @@ import { useRoute } from 'vue-router'
 import { useEventStore } from '../stores/event-store'
 import StatusTag from '../components/StatusTag.vue'
 import PlayerSlot from '../components/PlayerSlot.vue'
+import WagerSimulator from '../components/WagerSimulator.vue'
 
 const route = useRoute()
 const eventStore = useEventStore()
