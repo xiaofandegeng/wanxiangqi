@@ -242,15 +242,23 @@ async function uploadAndAnalyze(file: File) {
   }
 }
 
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && isOpen.value) {
+    closeModal()
+  }
+}
+
 onMounted(() => {
   connectSSE()
   // 全局 Cmd+V / Ctrl+V 快捷唤醒
   window.addEventListener('paste', handlePaste)
+  window.addEventListener('keydown', handleKeyDown)
 })
 
 onUnmounted(() => {
   if (sseSource) sseSource.close()
   window.removeEventListener('paste', handlePaste)
+  window.removeEventListener('keydown', handleKeyDown)
 })
 
 defineExpose({
@@ -266,23 +274,26 @@ defineExpose({
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 999;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  @include flex-center;
-  padding: 20px;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
 }
 
 .modal-dialog {
   width: 100%;
-  max-width: 860px;
-  max-height: 90vh;
+  max-width: 880px;
+  max-height: 85vh;
+  margin: auto;
   overflow-y: auto;
   background: #111827;
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  border: 1px solid rgba(245, 158, 11, 0.45);
   border-radius: $radius-xl;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), $glow-gold;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), $glow-gold;
   display: flex;
   flex-direction: column;
   gap: 16px;
