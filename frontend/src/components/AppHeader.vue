@@ -20,26 +20,29 @@
         <router-link to="/roster" class="nav-item" active-class="is-active">
           选手天梯榜
         </router-link>
+        <router-link to="/lineups" class="nav-item" active-class="is-active">
+          阵容环境大盘
+        </router-link>
         <router-link to="/archive" class="nav-item" active-class="is-active">
           历史对战库
         </router-link>
         <router-link to="/models/backtest" class="nav-item" active-class="is-active">
-          模型与回测
+          模型回测
         </router-link>
         <router-link to="/admin/verify" class="nav-item" active-class="is-active">
-          证据链核验
+          证据核验
         </router-link>
       </nav>
 
       <div class="header-right">
         <button class="live-radar-trigger-btn" @click="openRadar">
           <span class="live-beacon"></span>
-          <span class="btn-text">模拟器实时雷达</span>
+          <span class="btn-text">对局录入与对比</span>
         </button>
 
         <div class="disclaimer-badge is-verified">
           <span class="status-dot"></span>
-          <span class="badge-text">硬门槛 B 已核验 · 开启 EV 情景模拟</span>
+          <span class="badge-text">统一业务 API 服务已连接</span>
         </div>
       </div>
     </div>

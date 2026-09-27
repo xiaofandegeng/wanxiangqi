@@ -28,6 +28,12 @@ const router = createRouter({
       meta: { title: '全服选手天梯榜 - 王牌对决数据站' }
     },
     {
+      path: '/lineups',
+      name: 'lineup-roster',
+      component: () => import('../views/lineup-roster.vue'),
+      meta: { title: '阵容环境大盘 - 王牌对决数据站' }
+    },
+    {
       path: '/archive',
       name: 'match-archive',
       component: () => import('../views/match-archive.vue'),

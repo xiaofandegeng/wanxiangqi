@@ -10,8 +10,10 @@
         </div>
 
         <div class="data-status-box">
-          <span class="live-dot"></span>
-          <span class="status-title">数据源已接入: 模拟器后台巡检 + 天梯大盘</span>
+          <span class="live-dot" :class="{ 'is-backend': isConnectedBackend }"></span>
+          <span class="status-title">
+            {{ isConnectedBackend ? '数据源已接通: 统一业务 API (Port 8080)' : '数据源已接入: 本地已核验大盘' }}
+          </span>
         </div>
       </div>
 
@@ -183,14 +185,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import PlayerHistoryModal from '../components/PlayerHistoryModal.vue'
 import { masterPlayersList, type MasterPlayerItem } from '../mock/master-database'
 import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
+import { fetchPlayersList } from '../api'
 
 const players = ref<MasterPlayerItem[]>(masterPlayersList)
 const searchKeyword = ref('')
 const sortBy = ref<'score' | 'winRate' | 'top3' | 'matches'>('score')
+const isConnectedBackend = ref(false)
+const dataAsOfTime = ref('')
+
+onMounted(async () => {
+  const res = await fetchPlayersList()
+  if (res.players && res.players.length > 0) {
+    isConnectedBackend.value = res.fromBackend
+    dataAsOfTime.value = res.dataAsOf
+  }
+})
 
 const isHistoryModalOpen = ref(false)
 const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
