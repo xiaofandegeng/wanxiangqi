@@ -37,12 +37,66 @@
       </div>
     </div>
 
-    <!-- 钻石支持决策与情景模拟器 (硬门槛 B 结算规则已验证) -->
-    <WagerSimulator
-      v-if="event.forecast"
-      :participants="event.participants"
-      :forecast-prob-map="event.forecast.probabilities"
-    />
+    <!-- 6 席位对比表格 (遵循任务书第 9.2 节设计规范) -->
+    <div class="roster-comparison-table-card">
+      <div class="table-title-row">
+        <h3 class="comp-title">六席位历史数据对比</h3>
+        <span class="comp-tip">仅统计开赛前已核验且可获得的有效历史样本</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="roster-comp-table">
+          <thead>
+            <tr>
+              <th class="th-slot">席位</th>
+              <th class="th-name">参赛选手</th>
+              <th class="th-rank">已核验段位</th>
+              <th class="th-sample">有效样本 (N)</th>
+              <th class="th-win">登顶率</th>
+              <th class="th-top3">前三率</th>
+              <th class="th-avg">平均名次</th>
+              <th class="th-heat">支持热度 (相对最高)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              v-for="p in event.participants" 
+              :key="p.slot"
+              class="comp-tr"
+              @click="openPlayerHistory(p.nickname)"
+            >
+              <td class="font-mono text-gold font-bold">#{{ p.slot }}</td>
+              <td class="player-name-cell">
+                <span class="name-text">{{ p.nickname }}</span>
+                <span class="view-history-tag">复盘 🔍</span>
+              </td>
+              <td class="font-mono">{{ p.rankText }} ({{ p.rankScore }}★)</td>
+              <td class="font-mono">{{ p.historicalStats?.sampleCount || 0 }} 局</td>
+              <td class="font-mono highlight-gold">
+                {{ p.historicalStats?.sampleCount ? Math.round((p.historicalStats.firstPlaceRate || 0) * 100) + '%' : '—' }}
+              </td>
+              <td class="font-mono highlight-cyan">
+                {{ p.historicalStats?.sampleCount ? Math.round((p.historicalStats.top3Rate || 0) * 100) + '%' : '—' }}
+              </td>
+              <td class="font-mono">
+                {{ p.historicalStats?.sampleCount ? (p.historicalStats.avgRank || 0).toFixed(2) : '—' }}
+              </td>
+              <td class="heat-bar-cell">
+                <div class="heat-bar-wrap">
+                  <div 
+                    class="heat-bar-fill" 
+                    :style="{ width: (event.supportSnapshot ? (event.supportSnapshot[p.slot]?.ratioPercent || 50) : 50) + '%' }"
+                  ></div>
+                  <span class="heat-bar-label font-mono">
+                    {{ event.supportSnapshot ? event.supportSnapshot[p.slot]?.ratioPercent + '%' : '50%' }}
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- 自走棋局内卡池内卷与相克沙盘推演 -->
     <MatchupAnalysis
