@@ -71,15 +71,15 @@
                 <span class="view-history-tag">复盘 🔍</span>
               </td>
               <td class="font-mono">{{ p.rankText }} ({{ p.rankScore }}★)</td>
-              <td class="font-mono">{{ getParticipantHistory(p.nickname)?.sampleCount || 0 }} 局</td>
+              <td class="font-mono">{{ getParticipantHistory(p.nickname)?.sampleMatches || 0 }} 局</td>
               <td class="font-mono highlight-gold">
-                {{ getParticipantHistory(p.nickname)?.sampleCount ? Math.round((getParticipantHistory(p.nickname)?.firstPlaceRate || 0) * 100) + '%' : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleMatches ? Math.round((getParticipantHistory(p.nickname)?.firstPlaceRate || 0) * 100) + '%' : '—' }}
               </td>
               <td class="font-mono highlight-cyan">
-                {{ getParticipantHistory(p.nickname)?.sampleCount ? Math.round((getParticipantHistory(p.nickname)?.top3Rate || 0) * 100) + '%' : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleMatches ? Math.round((getParticipantHistory(p.nickname)?.top3Rate || 0) * 100) + '%' : '—' }}
               </td>
               <td class="font-mono">
-                {{ getParticipantHistory(p.nickname)?.sampleCount ? (getParticipantHistory(p.nickname)?.avgRank || 0).toFixed(2) : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleMatches ? (getParticipantHistory(p.nickname)?.avgPlacement || 0).toFixed(2) : '—' }}
               </td>
               <td class="heat-bar-cell">
                 <div class="heat-bar-wrap">
