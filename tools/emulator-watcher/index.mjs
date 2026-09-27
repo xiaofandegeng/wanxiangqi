@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { exec } from 'node:child_process'
 import { extractLobbyParticipants } from './analyzer.mjs'
-import { solveLiveProbabilities, solveLiveRecommendations } from './solver.mjs'
+import { solveDeepMetaProbabilities, solveDeepRecommendations } from './solver.mjs'
 
 const PORT = process.env.PORT || 8080
 let lastCapturedData = null
@@ -34,11 +34,11 @@ async function processImageAndSolve(imageBuffer, sourceDesc = 'MANUAL') {
   // 1. 画面席位识别
   const analysis = await extractLobbyParticipants(imageBuffer)
   
-  // 2. 6人胜率实时归一化求解
-  const probabilities = solveLiveProbabilities(analysis.participants)
+  // 2. 6人真实 MMR 段位分与流派模型归一化求解
+  const probabilities = solveDeepMetaProbabilities(analysis.participants)
 
-  // 3. 支持回报与 EV 推荐推导
-  const recommendations = solveLiveRecommendations(analysis.participants, probabilities)
+  // 3. 真实盘面赔率与 EV 推荐推导
+  const recommendations = solveDeepRecommendations(analysis.participants, probabilities, analysis.oddsMap)
 
   const latencyMs = Date.now() - startTime
 

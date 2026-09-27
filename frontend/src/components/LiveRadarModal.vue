@@ -81,7 +81,7 @@
 
         <!-- 6席全量排行列表 -->
         <div class="ranking-panel">
-          <h4 class="panel-subtitle">本局六人实时概率与收益期望全景 (排序由优至劣)</h4>
+          <h4 class="panel-subtitle">本局六人实时概率与收益期望全景 (结合 MMR 段位分与流派打法)</h4>
           <div class="ranking-list">
             <div 
               v-for="(item, idx) in latestMatch.recommendations" 
@@ -92,19 +92,28 @@
               <div class="row-left">
                 <span class="rank-pos">{{ Number(idx) + 1 }}</span>
                 <span class="row-slot">#{{ item.slot }}</span>
-                <span class="row-name">{{ item.nickname }}</span>
-                <span class="row-rank">{{ item.rankText }}</span>
+                <div class="name-block">
+                  <div class="name-line">
+                    <span class="row-name">{{ item.nickname }}</span>
+                    <span class="mmr-tag">{{ item.rankScore }}分</span>
+                  </div>
+                  <div class="playstyle-line">
+                    <span class="playstyle-badge">{{ item.playstyle }}</span>
+                    <span v-if="item.commander" class="commander-tag">棋手: {{ item.commander }}</span>
+                  </div>
+                </div>
               </div>
 
               <div class="row-mid">
                 <div class="bar-wrap">
                   <div class="bar-meta">
-                    <span>胜率: {{ Math.round(item.probability * 100) }}%</span>
-                    <span>倍率: {{ item.estimatedOdds }}x</span>
+                    <span>预测胜率: {{ Math.round(item.probability * 100) }}%</span>
+                    <span>返奖率: {{ item.odds }}x ({{ item.supportCount }}人次)</span>
                   </div>
                   <div class="mini-bar-track">
                     <div class="mini-bar-fill" :style="{ width: `${item.probability * 100}%` }"></div>
                   </div>
+                  <div class="reason-text">{{ item.decisionReason }}</div>
                 </div>
               </div>
 
@@ -574,11 +583,11 @@ defineExpose({
 .row-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 220px;
+  gap: 10px;
+  min-width: 250px;
 
   .rank-pos {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 800;
     color: $text-muted;
     width: 16px;
@@ -586,31 +595,74 @@ defineExpose({
 
   .row-slot {
     font-size: 11px;
-    color: $text-muted;
-  }
-
-  .row-name {
-    font-size: 13px;
     font-weight: 700;
-    color: $text-primary;
+    color: $text-muted;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
   }
 
-  .row-rank {
-    font-size: 11px;
-    color: $text-secondary;
+  .name-block {
+    @include flex-column;
+    gap: 2px;
+  }
+
+  .name-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .row-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: $text-primary;
+    }
+
+    .mmr-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: $color-gold-light;
+      background: rgba(245, 158, 11, 0.15);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+  }
+
+  .playstyle-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+
+    .playstyle-badge {
+      color: $color-cyan-light;
+      background: rgba(6, 182, 212, 0.12);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .commander-tag {
+      color: $text-muted;
+    }
   }
 }
 
 .row-mid {
   flex: 1;
-  max-width: 240px;
   margin: 0 16px;
 
   .bar-meta {
     @include flex-between;
+    font-size: 11px;
+    color: $text-secondary;
+    margin-bottom: 4px;
+  }
+
+  .reason-text {
     font-size: 10px;
     color: $text-muted;
-    margin-bottom: 2px;
+    margin-top: 4px;
+    line-height: 1.3;
   }
 
   .mini-bar-track {

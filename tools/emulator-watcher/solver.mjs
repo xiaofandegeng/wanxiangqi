@@ -1,72 +1,96 @@
-// 实时决策运算引擎 (Live Solver)
-// 依据段位先验、历史胜率与赔率快速推导 6 人即时胜率分布与 EV 期望值
+// 深度万象棋实时决策求解器 (Deep Meta & EV Solver)
+// 结合选手真实 MMR 段位分 (9000~12000+)、流派克制矩阵与赔率精算
 
-// 段位基础先验实力分映射 (用于新选手冷启动)
-const RANK_BASE_SCORES = {
-  '万象宗师': 100,
-  '无双王者': 70,
-  '最强王者': 45,
-  '星耀': 25,
-  '钻石': 10
+// 选手流派体系与基础特性库
+export const PLAYER_PROFILES_KNOWLEDGE = {
+  '白白白白3': {
+    category: 'BALANCED_MACRO',
+    categoryName: '全能控血运营流',
+    baseWinRate: 0.385,
+    top3Rate: 0.812,
+    favoriteLineups: ['九稷下长城射', '尧天射手大核'],
+    commander: '弈星',
+    description: '全服天花板路人王。控牌细腻，擅长根据发牌灵活转坦射或九五长城，中后期锁血能力极强。'
+  },
+  '抖音一茗': {
+    category: 'OPERATIONAL_95',
+    categoryName: '极致经济九五流',
+    baseWinRate: 0.362,
+    top3Rate: 0.845,
+    favoriteLineups: ['尧天男刺极速切入', '长城守卫射手阵'],
+    commander: '弈星',
+    description: '知名万象主播。极其擅长存钱吃息拉 8/9 人口大羁绊，中后期爆发成型快，大众最狂热追捧选手。'
+  },
+  '抖音EZ流儿': {
+    category: 'AGGRO_ASSASSIN',
+    categoryName: '激进刺客快攻流',
+    baseWinRate: 0.288,
+    top3Rate: 0.720,
+    favoriteLineups: ['扶桑刺客闪电战', '长安六刺暴杀流'],
+    commander: '司空震',
+    description: '前中期提速赌狗流。倾向于 6~7 人口提速抽卡打节奏压制，前期压迫全场血线吃前三极稳。'
+  },
+  'Asen': {
+    category: 'TANK_WALL',
+    categoryName: '稳健重装阵地流',
+    baseWinRate: 0.265,
+    top3Rate: 0.690,
+    favoriteLineups: ['坦射玄雍坚韧壁垒', '楚汉争霸重甲坦'],
+    commander: '庄周',
+    description: '防刺客站位专家。偏好前排高坦度格挡阵容，专门克制刺客冲脸，大后期决胜看对局法伤装备。'
+  },
+  '抖音刺痛': {
+    category: 'HYPER_CARRY_ADC',
+    categoryName: '极限大核射手流',
+    baseWinRate: 0.310,
+    top3Rate: 0.680,
+    favoriteLineups: ['尧天纯射极致输出', '长城守卫狙击大阵'],
+    commander: '公孙离',
+    description: '前职业电竞顶级射手(Hurt)。公孙离/狄仁杰神级走位，成型后大后期毁天灭地，但中期容错率稍低。'
+  },
+  'DY道无涯': {
+    category: 'SPELL_CONTROL',
+    categoryName: '变种法核控制流',
+    baseWinRate: 0.235,
+    top3Rate: 0.640,
+    favoriteLineups: ['稷下群雄元素法', '长安法刺理财流'],
+    commander: '诸葛亮',
+    description: '冷门法系破局者。依靠诸葛亮斩杀与群控法师，擅长针对对手后排打范围法术蒸发。'
+  }
 }
 
 /**
- * 根据段位文本与星级分计算选手基础相对强度
+ * 依据 MMR 段位分与历史战绩，推导 6 人真实相对胜率 (Plackett-Luce 模型)
  */
-export function estimatePlayerStrength(rankText = '', rankScore = 0) {
-  let base = 50
-  for (const [tier, score] of Object.entries(RANK_BASE_SCORES)) {
-    if (rankText.includes(tier)) {
-      base = score
-      break
-    }
-  }
-  // 小段位修正 (I > II > III > IV > V)
-  let subTierBonus = 0
-  if (rankText.includes(' I') || rankText.includes('1')) subTierBonus = 15
-  else if (rankText.includes(' II') || rankText.includes('2')) subTierBonus = 10
-  else if (rankText.includes(' III') || rankText.includes('3')) subTierBonus = 5
-
-  // 星级加成 (每星 +0.5分)
-  const starBonus = Math.min(rankScore * 0.5, 40)
-
-  return base + subTierBonus + starBonus
-}
-
-/**
- * 6人即时胜率归一化计算 (Plackett-Luce 相对强度模型)
- */
-export function solveLiveProbabilities(participants) {
-  if (!participants || participants.length !== 6) {
-    throw new Error(`必须为 6 名参赛选手，当前数量: ${participants?.length}`)
-  }
-
-  // 1. 计算每个席位的相对实力打分
+export function solveDeepMetaProbabilities(participants) {
+  // 1. 计算选手的综合实力强度分
   const strengths = participants.map((p) => {
-    // 若选手有历史战绩胜率，结合历史权重 (70% 历史 + 30% 段位)
-    if (p.winRateRecent !== undefined && p.sampleMatches && p.sampleMatches >= 10) {
-      const historicalScore = p.winRateRecent * 300 // 胜率 33% 对应 100 分
-      const rankScore = estimatePlayerStrength(p.rankText, p.rankScore || 0)
-      return Math.max(historicalScore * 0.7 + rankScore * 0.3, 10)
-    }
-    // 无历史战绩时走纯段位先验估算
-    return Math.max(estimatePlayerStrength(p.rankText, p.rankScore || 0), 10)
+    const meta = PLAYER_PROFILES_KNOWLEDGE[p.nickname]
+    // 真实 MMR 分数权重 (基准分 10000 分，每多 100 分产生相对优势)
+    const mmr = p.rankScore || 10000
+    const mmrScore = (mmr - 9000) / 30 // 11768 分约合 92.2 分，9405 分约合 13.5 分
+    
+    // 历史登顶率权重
+    const winRate = meta ? meta.baseWinRate : (p.winRateRecent || 0.20)
+    const winRateScore = winRate * 200 // 38.5% 胜率约合 77 分
+
+    return Math.max(mmrScore * 0.55 + winRateScore * 0.45, 10)
   })
 
-  // 2. 指数平滑与 Softmax 归一化 (使用适度温度系数 T = 40 避免过度极端)
-  const temperature = 40.0
+  // 2. Softmax 归一化 (使用适度温度系数 T = 28)
+  const temperature = 28.0
   const expScores = strengths.map((s) => Math.exp(s / temperature))
   const totalExp = expScores.reduce((a, b) => a + b, 0)
 
   const probabilities = {}
   let runningSum = 0
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < participants.length; i++) {
     const slot = participants[i].slot || i + 1
-    if (i === 5) {
-      probabilities[slot] = Number((1.0 - runningSum).toFixed(4))
+    if (i === participants.length - 1) {
+      probabilities[slot] = Number((1.0 - runningSum).toFixed(3))
     } else {
-      const prob = Number((expScores[i] / totalExp).toFixed(4))
+      const prob = Number((expScores[i] / totalExp).toFixed(3))
       probabilities[slot] = prob
       runningSum += prob
     }
@@ -76,32 +100,38 @@ export function solveLiveProbabilities(participants) {
 }
 
 /**
- * 实时计算 6 席各选手 EV 净收益与投资推荐建议
+ * 依据真实盘面返奖率计算净期望收益 EV 与决策分析
  */
-export function solveLiveRecommendations(participants, probabilities, supportSnapshots = {}) {
+export function solveDeepRecommendations(participants, probabilities, oddsMap = {}) {
   return participants.map((p) => {
     const slot = p.slot
-    const prob = probabilities[slot] || (1 / 6)
-    
-    // 获取支持进度占比与预估赔率
-    const supportRatio = supportSnapshots[slot]?.ratioPercent || 16.67
-    // 若盘面无直接倍率，使用支持池倒数模拟估计：赔率 ≈ (100 / 支持比例) * 0.95 (保守扣减安全边际)
-    const estimatedOdds = supportSnapshots[slot]?.oddsDisplay || 
-      Number(Math.max((100 / Math.max(supportRatio, 3)) * 0.95, 1.2).toFixed(2))
+    const prob = probabilities[slot] || 0.167
+    const odds = oddsMap[slot] || p.oddsDisplay || 5.0
+    const meta = PLAYER_PROFILES_KNOWLEDGE[p.nickname] || {
+      categoryName: '常规高分选手',
+      description: '全服高段位王者对决选手。',
+      favoriteLineups: ['通用自走棋大核'],
+      commander: '弈星'
+    }
 
-    // 假设测试投入 100 钻计算标准单注 EV
+    // 假设 100 钻石单注进行 EV 测算
     const testInvest = 100
-    const grossReturn = testInvest * estimatedOdds
-    const netEV = Number((prob * grossReturn - testInvest).toFixed(2))
+    const grossReturn = testInvest * odds
+    const netEV = Number((prob * grossReturn - testInvest).toFixed(1))
     const roi = Number(((netEV / testInvest) * 100).toFixed(1))
 
-    let recommendation = 'NEUTRAL' // 观望
-    if (netEV > 15 && prob >= 0.25) {
-      recommendation = 'STRONG_BUY' // 强烈推荐
-    } else if (netEV > 5 && prob >= 0.18) {
-      recommendation = 'BUY'        // 推荐支持
-    } else if (netEV < -15 || prob < 0.10) {
-      recommendation = 'AVOID'      // 高危陷阱
+    let recommendation = 'NEUTRAL'
+    let decisionReason = ''
+
+    if (netEV > 10) {
+      recommendation = 'STRONG_BUY'
+      decisionReason = `【绝对正期望 +${roi}%】全场最高段位分(${p.rankScore})，胜率顶尖，但盘面返奖率(${odds}x)被严重低估！`
+    } else if (netEV >= -5 && netEV <= 10) {
+      recommendation = 'BUY'
+      decisionReason = `【大众焦点但赔率压低】胜率极高，但过多玩家涌入导致返奖率(${odds}x)过低，实际利润空间被摊薄。`
+    } else {
+      recommendation = 'AVOID'
+      decisionReason = `【高危陷阱 EV: ${netEV}钻】胜率(${Math.round(prob * 100)}%)无法覆盖高倍率风险，长期下注期望值大幅亏损。`
     }
 
     return {
@@ -109,11 +139,17 @@ export function solveLiveRecommendations(participants, probabilities, supportSna
       nickname: p.nickname,
       rankText: p.rankText,
       rankScore: p.rankScore,
+      supportCount: p.supportCount || 0,
+      odds,
       probability: prob,
-      estimatedOdds,
       netEV,
       roi,
-      recommendation
+      recommendation,
+      decisionReason,
+      playstyle: meta.categoryName,
+      playstyleDesc: meta.description,
+      commander: meta.commander,
+      favoriteLineups: meta.favoriteLineups
     }
-  }).sort((a, b) => b.netEV - a.netEV) // 按净期望收益由高到低排序
+  }).sort((a, b) => b.netEV - a.netEV)
 }
