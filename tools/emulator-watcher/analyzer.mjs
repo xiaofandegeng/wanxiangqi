@@ -1,11 +1,12 @@
-// 模拟器截图画面真实对局解析器 (Real Game Screenshot Multi-Match Analyzer)
+// 模拟器截图画面对局解析器 (Game Screenshot Multi-Match Analyzer)
+// 遵循 v2 规范：哈希仅用于去重与已知证据核对，禁止按文件大小强行猜测名单，未知截图返回待人工录入
 import crypto from 'node:crypto'
 
 export function getBufferSha256(buffer) {
   return crypto.createHash('sha256').update(buffer).digest('hex')
 }
 
-// 场次 2：最新截图（EZ夜余 18824★ 战力巅峰第一人）
+// 已知基准实战材料 1：18824★ 战力巅峰第一人局
 const LOBBY_18824 = {
   countdown: '02:29',
   userDiamondBalance: 3422,
@@ -22,7 +23,7 @@ const LOBBY_18824 = {
   oddsMap: { 1: 1.8, 2: 7.1, 3: 10.2, 4: 10.1, 5: 10.5, 6: 10.3 }
 }
 
-// 场次 1：上一张截图（白白白白3 11768★ 荣耀先驱者）
+// 已知基准实战材料 2：白白白白3 11768★ 荣耀先驱者局
 const LOBBY_11768 = {
   countdown: '01:59',
   userDiamondBalance: 2532,
@@ -40,25 +41,41 @@ const LOBBY_11768 = {
 }
 
 /**
- * 真实对局截图多场次智能分析提取
+ * 截图对局解析：通过 SHA-256 存证匹配已知基准材料，未知图片返回待录入状态
  */
 export async function extractLobbyParticipants(imageBuffer) {
   const sha256 = getBufferSha256(imageBuffer)
-  const size = imageBuffer.length
 
-  // 根据哈希与字节长度精准路由对应场次
-  // 最新截图 media_1790503431300 sha256: e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82
-  const isMatch11768 = sha256.startsWith('aa02599') || (size >= 285000 && size <= 315000)
-  const lobby = isMatch11768 ? LOBBY_11768 : LOBBY_18824
+  // 严格基于 SHA-256 哈希匹配已知样本
+  if (sha256.startsWith('e4ea43a1')) {
+    return {
+      status: 'MATCHED_FIXTURE',
+      sha256,
+      ...LOBBY_18824,
+      confidence: 1.0
+    }
+  }
 
+  if (sha256.startsWith('aa02599')) {
+    return {
+      status: 'MATCHED_FIXTURE',
+      sha256,
+      ...LOBBY_11768,
+      confidence: 1.0
+    }
+  }
+
+  // 未知图片返回真实待人工校对状态，不伪造名单与置信度
   return {
+    status: 'NEED_MANUAL_REVIEW',
     sha256,
-    countdown: lobby.countdown,
-    userDiamondBalance: lobby.userDiamondBalance,
-    spectatorCount: lobby.spectatorCount,
-    totalSupportPeople: lobby.totalSupportPeople,
-    participants: lobby.participants,
-    oddsMap: lobby.oddsMap,
-    confidence: 0.99
+    countdown: '--:--',
+    userDiamondBalance: 0,
+    spectatorCount: 0,
+    totalSupportPeople: 0,
+    participants: [],
+    oddsMap: {},
+    confidence: null,
+    note: '未匹配到已知样本存证哈希，请通过人工审核界面录入席位'
   }
 }

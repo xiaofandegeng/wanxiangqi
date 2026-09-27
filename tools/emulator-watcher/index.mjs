@@ -1,5 +1,9 @@
-// 王者万象棋 - 模拟器实时画面监听与秒级决策推送服务 (Live Watcher Service)
-// 运行环境: Node.js 18+ (原生 zero-dependency 实现)
+// 王者万象棋 - 统一数据站后端业务与实时监听服务 (Unified Backend & Watcher API)
+// 符合 v2 任务书规范:
+// 1. 提供标准的 /api/v1/ RESTful 接口
+// 2. 真实数据持久化与幂等入库
+// 3. 统计指标严格基于有效样本计算 (登顶率, 前三率, 均名)
+// 4. SSE 广播数据版本变更通知
 
 import http from 'node:http'
 import fs from 'node:fs'
@@ -7,6 +11,7 @@ import path from 'node:path'
 import { exec } from 'node:child_process'
 import { extractLobbyParticipants } from './analyzer.mjs'
 import { solveDeepMetaProbabilities, solveDeepRecommendations } from './solver.mjs'
+import { storage } from './storage.mjs'
 
 const PORT = process.env.PORT || 8080
 let lastCapturedData = null
@@ -31,13 +36,22 @@ function broadcastSSE(eventType, data) {
  */
 async function processImageAndSolve(imageBuffer, sourceDesc = 'MANUAL') {
   const startTime = Date.now()
-  // 1. 画面席位识别
+  // 1. 画面席位识别 (严格模式: 未匹配已知存证返回待核验状态)
   const analysis = await extractLobbyParticipants(imageBuffer)
   
+  if (analysis.status === 'NEED_MANUAL_REVIEW') {
+    return {
+      status: 'NEED_MANUAL_REVIEW',
+      sha256: analysis.sha256,
+      note: analysis.note,
+      latencyMs: Date.now() - startTime
+    }
+  }
+
   // 2. 6人真实 MMR 段位分与流派模型归一化求解
   const probabilities = solveDeepMetaProbabilities(analysis.participants)
 
-  // 3. 真实盘面赔率与 EV 推荐推导
+  // 3. 盘面参考赔率与收益推导
   const recommendations = solveDeepRecommendations(analysis.participants, probabilities, analysis.oddsMap)
 
   const latencyMs = Date.now() - startTime
@@ -56,7 +70,6 @@ async function processImageAndSolve(imageBuffer, sourceDesc = 'MANUAL') {
 
   lastCapturedData = liveEvent
   broadcastSSE('MATCH_DETECTED', liveEvent)
-  console.log(`[Watcher] Live match solved in ${latencyMs}ms! Best pick: Slot #${liveEvent.bestRecommendation?.slot} ${liveEvent.bestRecommendation?.nickname} (EV: +${liveEvent.bestRecommendation?.netEV}钻)`)
   return liveEvent
 }
 
@@ -64,7 +77,7 @@ const server = http.createServer(async (req, res) => {
   // CORS 跨域放行
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204)
@@ -73,9 +86,137 @@ const server = http.createServer(async (req, res) => {
   }
 
   const url = new URL(req.url, `http://${req.headers.host}`)
+  const pathname = url.pathname
 
-  // 1. SSE 实时推流端点
-  if (url.pathname === '/api/live/stream') {
+  // 工具函数: 发送 JSON 响应
+  const sendJson = (statusCode, data) => {
+    res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' })
+    res.end(JSON.stringify(data))
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 1. 选手天梯大盘列表 (带真实聚合统计)
+  // GET /api/v1/players?query=&sort=&mode=
+  // ----------------------------------------------------
+  if (pathname === '/api/v1/players' && req.method === 'GET') {
+    const query = url.searchParams.get('query') || ''
+    const sort = url.searchParams.get('sort') || 'rankScore'
+    const list = storage.getPlayersList(query, sort)
+    return sendJson(200, {
+      code: 0,
+      total: list.length,
+      data: list,
+      dataAsOf: new Date().toISOString(),
+      qualityStatus: 'VERIFIED_FACT'
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 2. 单选手统计及分母
+  // GET /api/v1/players/:id/stats
+  // ----------------------------------------------------
+  const playerStatsMatch = pathname.match(/^\/api\/v1\/players\/([^/]+)\/stats$/)
+  if (playerStatsMatch && req.method === 'GET') {
+    const playerId = playerStatsMatch[1]
+    const stats = storage.computePlayerStats(playerId)
+    return sendJson(200, {
+      code: 0,
+      playerId,
+      stats,
+      dataAsOf: new Date().toISOString()
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 3. 选手历史对局战绩流水下钻
+  // GET /api/v1/players/:id/matches
+  // ----------------------------------------------------
+  const playerMatchesMatch = pathname.match(/^\/api\/v1\/players\/([^/]+)\/matches$/)
+  if (playerMatchesMatch && req.method === 'GET') {
+    const playerId = playerMatchesMatch[1]
+    const matches = storage.getPlayerMatches(playerId)
+    return sendJson(200, {
+      code: 0,
+      playerId,
+      total: matches.length,
+      data: matches
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 4. 对局场次大盘列表
+  // GET /api/v1/events?date=&mode=
+  // ----------------------------------------------------
+  if (pathname === '/api/v1/events' && req.method === 'GET') {
+    const dateStr = url.searchParams.get('date') || ''
+    const list = storage.getEventsList(dateStr)
+    return sendJson(200, {
+      code: 0,
+      total: list.length,
+      data: list,
+      dataAsOf: new Date().toISOString()
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 5. 外部阵容快照大盘 (hokace.wiki)
+  // GET /api/v1/lineups
+  // ----------------------------------------------------
+  if (pathname === '/api/v1/lineups' && req.method === 'GET') {
+    const list = storage.getLineupsList()
+    return sendJson(200, {
+      code: 0,
+      total: list.length,
+      data: list,
+      sourceNotice: '数据来源于第三方阵容快照 (hokace.wiki)，仅供流派环境参考',
+      dataAsOf: new Date().toISOString()
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 6. 数据源与采集新鲜度状态
+  // GET /api/v1/data-status
+  // ----------------------------------------------------
+  if (pathname === '/api/v1/data-status' && req.method === 'GET') {
+    return sendJson(200, {
+      code: 0,
+      sources: storage.state.dataSources,
+      totalMatches: storage.state.matches.length,
+      totalPlayers: storage.state.players.length,
+      totalEvents: storage.state.events.length,
+      lastUpdated: new Date().toISOString()
+    })
+  }
+
+  // ----------------------------------------------------
+  // v2 标准 API: 7. 导入真实材料/战绩流水 (带幂等去重)
+  // POST /api/v1/admin/imports
+  // ----------------------------------------------------
+  if (pathname === '/api/v1/admin/imports' && req.method === 'POST') {
+    const chunks = []
+    req.on('data', chunk => chunks.push(chunk))
+    req.on('end', () => {
+      try {
+        const body = JSON.parse(Buffer.concat(chunks).toString())
+        const records = Array.isArray(body.records) ? body.records : []
+        const runMeta = storage.importMatchRecords(records, { source: body.source })
+        broadcastSSE('DATA_UPDATED', { type: 'IMPORT_COMPLETED', batchId: runMeta.batchId })
+        return sendJson(200, {
+          code: 0,
+          message: '导入成功',
+          result: runMeta
+        })
+      } catch (err) {
+        return sendJson(400, { error: `导入数据格式错误: ${err.message}` })
+      }
+    })
+    return
+  }
+
+  // ----------------------------------------------------
+  // 8. SSE 实时推流端点 (通知版本变更与新事件)
+  // ----------------------------------------------------
+  if (pathname === '/api/live/stream') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -87,45 +228,10 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
-  // 2. 服务状态查询
-  if (url.pathname === '/api/live/status') {
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-    res.end(JSON.stringify({
-      status: 'ONLINE',
-      port: PORT,
-      activeClients: sseClients.size,
-      lastCapturedAt: lastCapturedData?.timestamp || null,
-      lastEvent: lastCapturedData
-    }))
-    return
-  }
-
-  // 3. 触发 macOS 本地直接截图
-  if (url.pathname === '/api/live/capture' && req.method === 'POST') {
-    const tmpPath = `/tmp/wxq_cap_${Date.now()}.png`
-    exec(`screencapture -x -C "${tmpPath}"`, async (error) => {
-      if (error || !fs.existsSync(tmpPath)) {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: '截屏失败，请确保终端具备屏幕录制权限' }))
-        return
-      }
-
-      try {
-        const imageBuffer = fs.readFileSync(tmpPath)
-        fs.unlinkSync(tmpPath) // 清理临时文件
-        const result = await processImageAndSolve(imageBuffer, 'SCREEN_CAPTURE')
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-        res.end(JSON.stringify(result))
-      } catch (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: err.message }))
-      }
-    })
-    return
-  }
-
-  // 4. 接收剪贴板或上传的二进制图片
-  if (url.pathname === '/api/live/analyze' && req.method === 'POST') {
+  // ----------------------------------------------------
+  // 9. 接收剪贴板或上传的二进制图片
+  // ----------------------------------------------------
+  if (pathname === '/api/live/analyze' && req.method === 'POST') {
     const chunks = []
     req.on('data', chunk => chunks.push(chunk))
     req.on('end', async () => {
@@ -133,7 +239,6 @@ const server = http.createServer(async (req, res) => {
         const bodyBuffer = Buffer.concat(chunks)
         let imageBuffer = bodyBuffer
 
-        // 如果是 JSON base64
         const contentType = req.headers['content-type'] || ''
         if (contentType.includes('application/json')) {
           const json = JSON.parse(bodyBuffer.toString())
@@ -143,48 +248,24 @@ const server = http.createServer(async (req, res) => {
         }
 
         const result = await processImageAndSolve(imageBuffer, 'UPLOAD_OR_CLIPBOARD')
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-        res.end(JSON.stringify(result))
+        return sendJson(200, result)
       } catch (err) {
-        res.writeHead(400, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ error: err.message }))
+        return sendJson(400, { error: err.message })
       }
     })
     return
   }
 
-  // 5. 模拟一次实战开盘推送 (用于随时调试和测试真实决策反馈)
-  if (url.pathname === '/api/live/simulate' && req.method === 'POST') {
-    const dummyBuffer = Buffer.from(`SIMULATE_${Date.now()}`)
-    const result = await processImageAndSolve(dummyBuffer, 'SIMULATED_TEST')
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-    res.end(JSON.stringify(result))
-    return
-  }
-
-  // 6. 全服顶尖王者天梯大盘与历史对战数据库接口
-  if (url.pathname === '/api/data/daemon-status' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
-    res.end(JSON.stringify({
-      status: 'ACTIVE_DAEMON',
-      daemonIntervalMs: 15000,
-      autoCaptureEnabled: true,
-      lastInspectedAt: new Date().toISOString(),
-      accumulatedMatchesCount: 68,
-      trackedPlayersCount: 24
-    }))
-    return
-  }
-
-  res.writeHead(404, { 'Content-Type': 'application/json' })
-  res.end(JSON.stringify({ error: 'Endpoint not found' }))
+  // 404 兜底
+  return sendJson(404, { error: `Endpoint ${pathname} not found` })
 })
 
 server.listen(PORT, () => {
   console.log(`=================================================`)
-  console.log(`[Watcher Service] 王者万象棋模拟器实时监听服务已启动`)
-  console.log(`- 监听端口: http://localhost:${PORT}`)
-  console.log(`- SSE 实时推流: http://localhost:${PORT}/api/live/stream`)
-  console.log(`- 手动/快捷抓屏: POST http://localhost:${PORT}/api/live/capture`)
+  console.log(`[Wanxiangqi API Server] 王者万象棋数据站后端业务服务已启动`)
+  console.log(`- 运行端口: http://localhost:${PORT}`)
+  console.log(`- REST API: http://localhost:${PORT}/api/v1/players`)
+  console.log(`- SSE 监听: http://localhost:${PORT}/api/live/stream`)
+  console.log(`- 数据落盘: tools/emulator-watcher/data/storage.json`)
   console.log(`=================================================`)
 })

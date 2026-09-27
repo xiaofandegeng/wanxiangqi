@@ -1,0 +1,17 @@
+{
+  "name": "wanxiangqi-backend",
+  "version": "1.0.0",
+  "description": "王者万象棋王牌对决数据站 - 真实数据后端业务服务 (符合 v2 任务书规范)",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "node --loader ts-node/esm src/server.ts",
+    "start": "node src/server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {}
+}
