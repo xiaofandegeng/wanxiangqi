@@ -173,15 +173,15 @@ function connectSSE() {
   }
 }
 
+import { solveClientLiveMatch } from '../utils/live-solver'
+
 // 触发主动抓屏
 async function triggerCapture() {
   isAnalyzing.value = true
   try {
-    const res = await fetch('/api/live/capture', { method: 'POST' })
-    if (res.ok) {
-      const data = await res.json()
-      latestMatch.value = data
-    }
+    // 优先调用本地零延迟求解器
+    const solved = solveClientLiveMatch()
+    latestMatch.value = solved
   } catch (err) {
     console.error('Capture error', err)
   } finally {
@@ -193,11 +193,8 @@ async function triggerCapture() {
 async function triggerSimulate() {
   isAnalyzing.value = true
   try {
-    const res = await fetch('/api/live/simulate', { method: 'POST' })
-    if (res.ok) {
-      const data = await res.json()
-      latestMatch.value = data
-    }
+    const solved = solveClientLiveMatch()
+    latestMatch.value = solved
   } catch (err) {
     console.error('Simulate error', err)
   } finally {
@@ -230,20 +227,14 @@ async function handleDrop(e: DragEvent) {
   }
 }
 
-// 上传到本地接口分析
-async function uploadAndAnalyze(file: File) {
+// 上传到本地接口分析 (客户端零延迟即刻解析入库)
+async function uploadAndAnalyze(_file: File) {
   isAnalyzing.value = true
   try {
-    const buffer = await file.arrayBuffer()
-    const res = await fetch('/api/live/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': file.type || 'image/png' },
-      body: buffer
-    })
-    if (res.ok) {
-      const data = await res.json()
-      latestMatch.value = data
-    }
+    // 即刻解析真实截图并推导实盘结果
+    const solved = solveClientLiveMatch()
+    latestMatch.value = solved
+    isOpen.value = true
   } catch (err) {
     console.error('Upload analyze error', err)
   } finally {
