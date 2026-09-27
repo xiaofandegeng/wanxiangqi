@@ -71,15 +71,15 @@
                 <span class="view-history-tag">复盘 🔍</span>
               </td>
               <td class="font-mono">{{ p.rankText }} ({{ p.rankScore }}★)</td>
-              <td class="font-mono">{{ p.historicalStats?.sampleCount || 0 }} 局</td>
+              <td class="font-mono">{{ getParticipantHistory(p.nickname)?.sampleCount || 0 }} 局</td>
               <td class="font-mono highlight-gold">
-                {{ p.historicalStats?.sampleCount ? Math.round((p.historicalStats.firstPlaceRate || 0) * 100) + '%' : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleCount ? Math.round((getParticipantHistory(p.nickname)?.firstPlaceRate || 0) * 100) + '%' : '—' }}
               </td>
               <td class="font-mono highlight-cyan">
-                {{ p.historicalStats?.sampleCount ? Math.round((p.historicalStats.top3Rate || 0) * 100) + '%' : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleCount ? Math.round((getParticipantHistory(p.nickname)?.top3Rate || 0) * 100) + '%' : '—' }}
               </td>
               <td class="font-mono">
-                {{ p.historicalStats?.sampleCount ? (p.historicalStats.avgRank || 0).toFixed(2) : '—' }}
+                {{ getParticipantHistory(p.nickname)?.sampleCount ? (getParticipantHistory(p.nickname)?.avgRank || 0).toFixed(2) : '—' }}
               </td>
               <td class="heat-bar-cell">
                 <div class="heat-bar-wrap">
@@ -207,7 +207,6 @@ import { useRoute } from 'vue-router'
 import { useEventStore } from '../stores/event-store'
 import StatusTag from '../components/StatusTag.vue'
 import PlayerSlot from '../components/PlayerSlot.vue'
-import WagerSimulator from '../components/WagerSimulator.vue'
 import MatchupAnalysis from '../components/MatchupAnalysis.vue'
 import PlayerHistoryModal from '../components/PlayerHistoryModal.vue'
 import { simulateMatchupMechanics } from '../utils/matchup-engine'
@@ -219,9 +218,14 @@ const eventStore = useEventStore()
 const isHistoryModalOpen = ref(false)
 const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
 
+function getParticipantHistory(nickname?: string): PlayerHistoricalStats | undefined {
+  if (!nickname) return undefined
+  return realMatchHistoryData[nickname]
+}
+
 function openPlayerHistory(nickname?: string) {
   if (!nickname) return
-  const stats = realMatchHistoryData[nickname]
+  const stats = getParticipantHistory(nickname)
   if (stats) {
     currentHistoryStats.value = stats
     isHistoryModalOpen.value = true
