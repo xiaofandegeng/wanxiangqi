@@ -1,0 +1,10 @@
+{
+  "name": "wanxiangqi-emulator-watcher",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "王者万象棋电脑模拟器实时画面监听与秒级决策推送服务",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  }
+}

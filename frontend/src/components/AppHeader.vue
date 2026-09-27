@@ -26,17 +26,32 @@
       </nav>
 
       <div class="header-right">
+        <button class="live-radar-trigger-btn" @click="openRadar">
+          <span class="live-beacon"></span>
+          <span class="btn-text">模拟器实时雷达</span>
+        </button>
+
         <div class="disclaimer-badge is-verified">
           <span class="status-dot"></span>
           <span class="badge-text">硬门槛 B 已核验 · 开启 EV 情景模拟</span>
         </div>
       </div>
     </div>
+
+    <!-- 挂载全局实时雷达弹窗 -->
+    <LiveRadarModal ref="radarModalRef" />
   </header>
 </template>
 
 <script setup lang="ts">
-// 无状态纯展示导航头
+import { ref } from 'vue'
+import LiveRadarModal from './LiveRadarModal.vue'
+
+const radarModalRef = ref<InstanceType<typeof LiveRadarModal> | null>(null)
+
+function openRadar() {
+  radarModalRef.value?.openModal()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -133,6 +148,44 @@
 .header-right {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.live-radar-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: $radius-full;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a7f3d0;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+  transition: $transition-base;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    border-color: #34d399;
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+  }
+
+  .live-beacon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: beaconPulse 1.5s infinite;
+  }
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
 }
 
 .disclaimer-badge {
