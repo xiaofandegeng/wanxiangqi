@@ -44,10 +44,17 @@
       :forecast-prob-map="event.forecast.probabilities"
     />
 
+    <!-- 自走棋局内卡池内卷与相克沙盘推演 -->
+    <MatchupAnalysis
+      v-if="matchupSimulation"
+      :analyses="matchupSimulation.contestedAnalysis"
+      :insights="matchupSimulation.overallInsights"
+    />
+
     <!-- 6名选手网格卡片 -->
     <div class="section-title-wrap">
       <h3 class="section-title">六席参赛选手数据对阵画像</h3>
-      <span class="section-sub">点击选手昵称可查看历史偏好阵容与对局详情</span>
+      <span class="section-sub">点击选手昵称可调出历史真实战绩流水复盘</span>
     </div>
 
     <div class="participants-container">
@@ -57,20 +64,21 @@
         :participant="p"
         :forecast-prob="event.forecast?.probabilities[p.slot]"
         :support-ratio="event.supportSnapshot ? event.supportSnapshot[p.slot]?.ratioPercent : undefined"
+        @click="openPlayerHistory(p.nickname)"
       />
     </div>
 
     <!-- 六人概率 vs 均匀基线对比表格 -->
     <div v-if="event.forecast" class="comparison-panel">
       <div class="panel-header">
-        <h3 class="panel-title">六人胜率 vs 均匀基准模型对比 (总和 = 100%)</h3>
+        <h3 class="panel-title">六人胜率 vs 均匀基准模型对比 (结合局内卡池与流派推演)</h3>
       </div>
       <div class="table-responsive">
         <table class="comparison-table">
           <thead>
             <tr>
               <th>席位</th>
-              <th>选手昵称</th>
+              <th>选手昵称 (点击查战绩)</th>
               <th>当前段位</th>
               <th>均匀基准 (1/6)</th>
               <th>可解释模型预测</th>
@@ -81,7 +89,10 @@
           <tbody>
             <tr v-for="p in event.participants" :key="p.slot">
               <td class="col-slot">#{{ p.slot }}</td>
-              <td class="col-name">{{ p.nickname }}</td>
+              <td class="col-name clickable-cell" @click="openPlayerHistory(p.nickname)">
+                {{ p.nickname }}
+                <span class="table-history-icon">📊</span>
+              </td>
               <td class="col-rank">{{ p.rankText }} ({{ p.rankScore }}★)</td>
               <td class="col-baseline">16.7%</td>
               <td class="col-forecast text-gold">
@@ -121,6 +132,13 @@
         </div>
       </div>
     </div>
+
+    <!-- 真实对局战绩流水弹窗 -->
+    <PlayerHistoryModal
+      :is-open="isHistoryModalOpen"
+      :player-stats="currentHistoryStats"
+      @close="isHistoryModalOpen = false"
+    />
   </div>
 
   <div v-else class="empty-event">
@@ -130,19 +148,41 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useEventStore } from '../stores/event-store'
 import StatusTag from '../components/StatusTag.vue'
 import PlayerSlot from '../components/PlayerSlot.vue'
 import WagerSimulator from '../components/WagerSimulator.vue'
+import MatchupAnalysis from '../components/MatchupAnalysis.vue'
+import PlayerHistoryModal from '../components/PlayerHistoryModal.vue'
+import { simulateMatchupMechanics } from '../utils/matchup-engine'
+import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
 
 const route = useRoute()
 const eventStore = useEventStore()
 
+const isHistoryModalOpen = ref(false)
+const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
+
+function openPlayerHistory(nickname?: string) {
+  if (!nickname) return
+  const stats = realMatchHistoryData[nickname]
+  if (stats) {
+    currentHistoryStats.value = stats
+    isHistoryModalOpen.value = true
+  }
+}
+
 const event = computed(() => {
   const eventId = route.params.id as string
   return eventStore.getEventById(eventId)
+})
+
+// 计算本场自走棋局内推演
+const matchupSimulation = computed(() => {
+  if (!event.value?.participants || event.value.participants.length !== 6) return null
+  return simulateMatchupMechanics(event.value.participants)
 })
 
 function formatTime(scheduledAt: string): string {
@@ -372,6 +412,21 @@ function evidenceTypeLabel(type: string): string {
   .col-name {
     font-weight: 600;
     color: $text-primary;
+
+    &.clickable-cell {
+      cursor: pointer;
+      transition: $transition-base;
+
+      &:hover {
+        color: $color-gold-light;
+        text-decoration: underline;
+      }
+
+      .table-history-icon {
+        font-size: 11px;
+        margin-left: 4px;
+      }
+    }
   }
 
   .col-rank {

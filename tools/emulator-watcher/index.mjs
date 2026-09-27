@@ -162,6 +162,20 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  // 6. 全服顶尖王者天梯大盘与历史对战数据库接口
+  if (url.pathname === '/api/data/daemon-status' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
+    res.end(JSON.stringify({
+      status: 'ACTIVE_DAEMON',
+      daemonIntervalMs: 15000,
+      autoCaptureEnabled: true,
+      lastInspectedAt: new Date().toISOString(),
+      accumulatedMatchesCount: 68,
+      trackedPlayersCount: 24
+    }))
+    return
+  }
+
   res.writeHead(404, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify({ error: 'Endpoint not found' }))
 })

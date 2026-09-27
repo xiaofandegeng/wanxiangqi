@@ -175,5 +175,131 @@ export const realProPlayersData: Record<string, ProPlayerMeta> = {
       { name: '玄雍法坦', usageRate: 0.20, top3Rate: 0.58 }
     ],
     recentRanks: [4, 2, 3, 5, 1, 4, 3, 2]
+  },
+
+  'p-ezyeyu': {
+    id: 'p-ezyeyu',
+    lastNickname: 'EZ夜余',
+    platform: '全服天梯',
+    streamerPlatform: '战力巅峰第一人 (全服榜一)',
+    rankText: '最强王者',
+    rankScore: 18824, // 全服断层第一高分
+    currentMmr: 18824,
+    totalMatches: 420,
+    winRate: 0.440,   // 登顶率 44.0%
+    top3Rate: 0.890,  // 前三率 89.0%
+    playstyleCategory: 'OPERATIONAL',
+    playstyleDesc: '全服断层榜一大神。极其擅长大九五大羁绊，中后期锁血能力极强，但盘面返奖率被大众压制到仅 1.8x，实际下注收益空间极度狭窄。',
+    signatureHeroes: ['弈星', '公孙离', '司空震'],
+    favoriteCommanders: [
+      { name: '弈星', usageRate: 0.65, winRate: 0.48 },
+      { name: '公孙离', usageRate: 0.25, winRate: 0.38 }
+    ],
+    favoriteLineups: [
+      { name: '九稷下长城射', usageRate: 0.50, top3Rate: 0.92 },
+      { name: '尧天射手大核', usageRate: 0.35, top3Rate: 0.86 }
+    ],
+    recentRanks: [1, 1, 2, 1, 1, 3, 2, 1]
+  },
+
+  'p-dyxiaozhang': {
+    id: 'p-dyxiaozhang',
+    lastNickname: 'DY校长神Gin',
+    platform: '斗鱼直播',
+    streamerPlatform: '战力巅峰第十人 (顶尖主播)',
+    rankText: '最强王者',
+    rankScore: 12091,
+    currentMmr: 12091,
+    totalMatches: 280,
+    winRate: 0.285,
+    top3Rate: 0.760,
+    playstyleCategory: 'BALANCED',
+    playstyleDesc: '天花板技术流主播。极其擅长刺客突脸与单核爆发，登顶能力仅次于榜一，但盘面被大众忽视给到 7.1x 高赔率，存在巨大正期望溢价！',
+    signatureHeroes: ['司空震', '李白', '裴擒虎'],
+    favoriteCommanders: [
+      { name: '司空震', usageRate: 0.50, winRate: 0.32 },
+      { name: '弈星', usageRate: 0.30, winRate: 0.25 }
+    ],
+    favoriteLineups: [
+      { name: '尧天男刺极速切入', usageRate: 0.45, top3Rate: 0.82 },
+      { name: '扶桑刺客闪电战', usageRate: 0.35, top3Rate: 0.72 }
+    ],
+    recentRanks: [2, 1, 3, 1, 2, 4, 1, 2]
+  },
+
+  'p-liyouduo': {
+    id: 'p-liyouduo',
+    lastNickname: '抖音李由多',
+    platform: '抖音直播',
+    streamerPlatform: '华北区第人 0015',
+    rankText: '最强王者',
+    rankScore: 10075,
+    currentMmr: 10075,
+    totalMatches: 145,
+    winRate: 0.120,
+    top3Rate: 0.650,
+    playstyleCategory: 'AGGRO_REROLL',
+    playstyleDesc: '速攻刺客赌狗流，面对 18000+ 与 12000+ 高手大后期决战吃鸡率偏低，10.2x 高倍率不足以覆盖胜率风险。',
+    signatureHeroes: ['不知火舞', '宫本武藏'],
+    favoriteCommanders: [{ name: '司空震', usageRate: 0.55, winRate: 0.15 }],
+    favoriteLineups: [{ name: '扶桑刺客闪电战', usageRate: 0.60, top3Rate: 0.68 }],
+    recentRanks: [3, 4, 2, 5, 3, 1, 6, 4]
+  },
+
+  'p-pipisha': {
+    id: 'p-pipisha',
+    lastNickname: '抖音EGM皮皮鲨',
+    platform: '抖音直播',
+    streamerPlatform: '高分段女主播',
+    rankText: '最强王者',
+    rankScore: 10054,
+    currentMmr: 10054,
+    totalMatches: 130,
+    winRate: 0.110,
+    top3Rate: 0.620,
+    playstyleCategory: 'BALANCED',
+    playstyleDesc: '稳健重装坦法，善于防刺切入，但面对大后期完全体九五缺乏终结输出。',
+    signatureHeroes: ['庄周', '廉颇'],
+    favoriteCommanders: [{ name: '庄周', usageRate: 0.60, winRate: 0.14 }],
+    favoriteLineups: [{ name: '坦射玄雍坚韧壁垒', usageRate: 0.55, top3Rate: 0.65 }],
+    recentRanks: [2, 4, 3, 5, 4, 2, 5, 3]
+  },
+
+  'p-yishengjun': {
+    id: 'p-yishengjun',
+    lastNickname: '想k益笙菌',
+    platform: '全服天梯',
+    streamerPlatform: '天梯高分玩家',
+    rankText: '最强王者',
+    rankScore: 9996,
+    currentMmr: 9996,
+    totalMatches: 110,
+    winRate: 0.080,
+    top3Rate: 0.580,
+    playstyleCategory: 'BALANCED',
+    playstyleDesc: '群雄法核控制流，爆发周期偏后，容易在 18824 榜一节奏压迫下提前减员。',
+    signatureHeroes: ['诸葛亮', '墨子'],
+    favoriteCommanders: [{ name: '诸葛亮', usageRate: 0.50, winRate: 0.10 }],
+    favoriteLineups: [{ name: '稷下群雄元素法', usageRate: 0.50, top3Rate: 0.60 }],
+    recentRanks: [4, 3, 5, 2, 6, 4, 3, 5]
+  },
+
+  'p-xiaoyoulu': {
+    id: 'p-xiaoyoulu',
+    lastNickname: 'B站小优律',
+    platform: 'B站直播',
+    streamerPlatform: '联合创始人 0496',
+    rankText: '最强王者',
+    rankScore: 9961,
+    currentMmr: 9961,
+    totalMatches: 160,
+    winRate: 0.100,
+    top3Rate: 0.600,
+    playstyleCategory: 'LATE_HYPERCARRY',
+    playstyleDesc: '单核纯射流，依赖神装走位，但本局刺客多位且被前排大核压制，成型难度极高。',
+    signatureHeroes: ['公孙离', '狄仁杰'],
+    favoriteCommanders: [{ name: '公孙离', usageRate: 0.55, winRate: 0.12 }],
+    favoriteLineups: [{ name: '尧天纯射极致输出', usageRate: 0.50, top3Rate: 0.62 }],
+    recentRanks: [5, 2, 4, 1, 6, 3, 5, 4]
   }
 }

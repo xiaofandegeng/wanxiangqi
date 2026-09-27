@@ -22,6 +22,18 @@ const router = createRouter({
       meta: { title: '选手数据画像 - 王牌对决数据站' }
     },
     {
+      path: '/roster',
+      name: 'player-roster',
+      component: () => import('../views/player-roster.vue'),
+      meta: { title: '全服选手天梯榜 - 王牌对决数据站' }
+    },
+    {
+      path: '/archive',
+      name: 'match-archive',
+      component: () => import('../views/match-archive.vue'),
+      meta: { title: '历史对战记录大盘 - 王牌对决数据站' }
+    },
+    {
       path: '/admin/verify',
       name: 'evidence-verify',
       component: () => import('../views/evidence-verify.vue'),

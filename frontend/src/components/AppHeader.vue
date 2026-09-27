@@ -17,6 +17,12 @@
         <router-link to="/" class="nav-item" active-class="is-active">
           今日对决
         </router-link>
+        <router-link to="/roster" class="nav-item" active-class="is-active">
+          选手天梯榜
+        </router-link>
+        <router-link to="/archive" class="nav-item" active-class="is-active">
+          历史对战库
+        </router-link>
         <router-link to="/models/backtest" class="nav-item" active-class="is-active">
           模型与回测
         </router-link>

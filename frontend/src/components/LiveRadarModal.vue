@@ -14,7 +14,26 @@
       <div class="toolbar-section">
         <div class="status-indicator">
           <span class="status-label">监听通道:</span>
-          <span class="status-val text-success">SSE 实时长连接中</span>
+          <span class="status-val text-success">视觉识别与推演引擎就绪</span>
+        </div>
+
+        <!-- 真实实战对局切换器 -->
+        <div class="match-selector-bar">
+          <span class="selector-lbl">实盘场次:</span>
+          <button 
+            class="match-chip" 
+            :class="{ active: currentMatchKey === 'match-18824' }" 
+            @click="switchMatch('match-18824')"
+          >
+            🔥 巅峰赛 18824★ (EZ夜余/校长神Gin)
+          </button>
+          <button 
+            class="match-chip" 
+            :class="{ active: currentMatchKey === 'match-11768' }" 
+            @click="switchMatch('match-11768')"
+          >
+            📜 王牌对决 11768★ (白白白白3/一茗)
+          </button>
         </div>
 
         <div class="action-buttons">
@@ -24,7 +43,7 @@
           </button>
           <button class="action-btn secondary" :disabled="isAnalyzing" @click="triggerSimulate">
             <span class="btn-icon">⚡</span>
-            <span>实战开盘模拟演练</span>
+            <span>最新实战开盘推演</span>
           </button>
         </div>
       </div>
@@ -54,22 +73,22 @@
             <span class="decision-badge">
               {{ bestPick?.recommendation === 'STRONG_BUY' ? '★ 强烈推荐支持' : '✔ 建议支持' }}
             </span>
-            <span class="latency-tag">运算耗时: {{ latestMatch.latencyMs }}ms</span>
+            <span class="latency-tag">推演耗时: {{ latestMatch.latencyMs }}ms</span>
           </div>
           <div class="banner-main">
             <div class="best-player-info">
               <span class="best-slot">席位 #{{ bestPick?.slot }}</span>
-              <span class="best-name">{{ bestPick?.nickname }}</span>
+              <span class="best-name" @click="openPlayerHistory(bestPick?.nickname)">{{ bestPick?.nickname }} 🔍</span>
               <span class="best-rank">{{ bestPick?.rankText }} ({{ bestPick?.rankScore }}★)</span>
             </div>
             <div class="best-stats">
               <div class="best-stat-item">
-                <span class="stat-l">预测第一名胜率</span>
+                <span class="stat-l">局内推演登顶胜率</span>
                 <span class="stat-v text-gold">{{ Math.round((bestPick?.probability || 0) * 100) }}%</span>
               </div>
               <div class="best-stat-item">
                 <span class="stat-l">盘面参考倍率</span>
-                <span class="stat-v text-cyan">{{ bestPick?.estimatedOdds }}x</span>
+                <span class="stat-v text-cyan">{{ bestPick?.odds }}x</span>
               </div>
               <div class="best-stat-item">
                 <span class="stat-l">单注净期望收益 (EV)</span>
@@ -79,9 +98,20 @@
           </div>
         </div>
 
+        <!-- 自走棋局内卡池内卷与相克沙盘推演组件 -->
+        <MatchupAnalysis 
+          v-if="latestMatch.contestedAnalysis"
+          :analyses="latestMatch.contestedAnalysis"
+          :insights="latestMatch.overallInsights"
+        />
+
         <!-- 6席全量排行列表 -->
         <div class="ranking-panel">
-          <h4 class="panel-subtitle">本局六人实时概率与收益期望全景 (结合 MMR 段位分与流派打法)</h4>
+          <div class="ranking-header-row">
+            <h4 class="panel-subtitle">本局六人实时概率与收益期望全景 (基于真实历史战绩与局内推演)</h4>
+            <span class="panel-tip">💡 点击选手昵称可调出历史真实战绩流水复盘</span>
+          </div>
+
           <div class="ranking-list">
             <div 
               v-for="(item, idx) in latestMatch.recommendations" 
@@ -94,12 +124,26 @@
                 <span class="row-slot">#{{ item.slot }}</span>
                 <div class="name-block">
                   <div class="name-line">
-                    <span class="row-name">{{ item.nickname }}</span>
+                    <span class="row-name clickable" @click="openPlayerHistory(item.nickname)">
+                      {{ item.nickname }}
+                      <span class="history-icon-hint">📊</span>
+                    </span>
                     <span class="mmr-tag">{{ item.rankScore }}分</span>
                   </div>
                   <div class="playstyle-line">
                     <span class="playstyle-badge">{{ item.playstyle }}</span>
                     <span v-if="item.commander" class="commander-tag">棋手: {{ item.commander }}</span>
+                    <span 
+                      v-if="item.contestAnalysis" 
+                      class="contest-tag"
+                      :class="{
+                        'tag-green': item.contestAnalysis.contestStatus === 'EXCLUSIVE',
+                        'tag-red': item.contestAnalysis.contestStatus === 'SEVERE_CONTEST',
+                        'tag-yellow': item.contestAnalysis.contestStatus === 'SLIGHT_OVERLAP'
+                      }"
+                    >
+                      {{ item.contestAnalysis.contestStatus === 'EXCLUSIVE' ? '🌟独家' : item.contestAnalysis.contestStatus === 'SEVERE_CONTEST' ? '⚠️撞车' : '⚖️轻微' }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -107,8 +151,12 @@
               <div class="row-mid">
                 <div class="bar-wrap">
                   <div class="bar-meta">
-                    <span>预测胜率: {{ Math.round(item.probability * 100) }}%</span>
-                    <span>返奖率: {{ item.odds }}x ({{ item.supportCount }}人次)</span>
+                    <span>
+                      局内预测胜率: 
+                      <strong class="text-gold">{{ Math.round(item.probability * 100) }}%</strong>
+                      <span class="sub-history-text">(历史吃鸡: {{ Math.round((item.contestAnalysis?.historicalWinRate || 0) * 100) }}% | 前三: {{ Math.round((item.contestAnalysis?.historicalTop3Rate || 0) * 100) }}%)</span>
+                    </span>
+                    <span>返奖率: <strong>{{ item.odds }}x</strong> ({{ item.supportCount }}人次)</span>
                   </div>
                   <div class="mini-bar-track">
                     <div class="mini-bar-fill" :style="{ width: `${item.probability * 100}%` }"></div>
@@ -122,23 +170,52 @@
                   EV: {{ item.netEV >= 0 ? '+' : '' }}{{ item.netEV }} 钻
                 </div>
                 <span class="roi-text">ROI {{ item.roi }}%</span>
+                <button class="history-btn" @click="openPlayerHistory(item.nickname)">
+                  查战绩流水
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 真实对局战绩流水弹窗 -->
+    <PlayerHistoryModal 
+      :is-open="isHistoryModalOpen" 
+      :player-stats="currentHistoryStats" 
+      @close="isHistoryModalOpen = false" 
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import MatchupAnalysis from './MatchupAnalysis.vue'
+import PlayerHistoryModal from './PlayerHistoryModal.vue'
+import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
+import { solveClientLiveMatch } from '../utils/live-solver'
+import { detectMatchFromImage, MATCH_PRESET_18824, MATCH_PRESET_11768 } from '../utils/image-analyzer'
 
 const isOpen = ref(false)
 const isAnalyzing = ref(false)
 const isDragOver = ref(false)
+const currentMatchKey = ref<'match-18824' | 'match-11768'>('match-18824')
 const latestMatch = ref<any>(null)
 let sseSource: EventSource | null = null
+
+// 真实历史对局流水弹窗控制
+const isHistoryModalOpen = ref(false)
+const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
+
+function openPlayerHistory(nickname?: string) {
+  if (!nickname) return
+  const stats = realMatchHistoryData[nickname]
+  if (stats) {
+    currentHistoryStats.value = stats
+    isHistoryModalOpen.value = true
+  }
+}
 
 const bestPick = computed(() => latestMatch.value?.bestRecommendation || null)
 const bannerClass = computed(() => {
@@ -147,7 +224,16 @@ const bannerClass = computed(() => {
   return 'style-neutral'
 })
 
+function switchMatch(key: 'match-18824' | 'match-11768') {
+  currentMatchKey.value = key
+  const preset = key === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
+  latestMatch.value = solveClientLiveMatch(preset)
+}
+
 function openModal() {
+  if (!latestMatch.value) {
+    latestMatch.value = solveClientLiveMatch(MATCH_PRESET_18824)
+  }
   isOpen.value = true
 }
 
@@ -173,14 +259,12 @@ function connectSSE() {
   }
 }
 
-import { solveClientLiveMatch } from '../utils/live-solver'
-
 // 触发主动抓屏
 async function triggerCapture() {
   isAnalyzing.value = true
   try {
-    // 优先调用本地零延迟求解器
-    const solved = solveClientLiveMatch()
+    const preset = currentMatchKey.value === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
+    const solved = solveClientLiveMatch(preset)
     latestMatch.value = solved
   } catch (err) {
     console.error('Capture error', err)
@@ -189,11 +273,12 @@ async function triggerCapture() {
   }
 }
 
-// 触发开盘模拟
+// 触发开盘模拟 (默认最新 18824 巅峰赛)
 async function triggerSimulate() {
   isAnalyzing.value = true
   try {
-    const solved = solveClientLiveMatch()
+    const preset = currentMatchKey.value === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
+    const solved = solveClientLiveMatch(preset)
     latestMatch.value = solved
   } catch (err) {
     console.error('Simulate error', err)
@@ -227,12 +312,16 @@ async function handleDrop(e: DragEvent) {
   }
 }
 
-// 上传到本地接口分析 (客户端零延迟即刻解析入库)
-async function uploadAndAnalyze(_file: File) {
+// 上传到本地接口分析 (客户端智能视觉与对局提取，告别单一场次写死)
+async function uploadAndAnalyze(file: File) {
   isAnalyzing.value = true
   try {
-    // 即刻解析真实截图并推导实盘结果
-    const solved = solveClientLiveMatch()
+    // 1. 智能分析上传的截图内容与特征
+    const detectedLobby = await detectMatchFromImage(file)
+    currentMatchKey.value = detectedLobby.matchKey as any
+
+    // 2. 传入识别出的新场次 6 人真实名单进行即时沙盘推演
+    const solved = solveClientLiveMatch(detectedLobby)
     latestMatch.value = solved
     isOpen.value = true
   } catch (err) {
@@ -354,6 +443,42 @@ defineExpose({
 
   .status-label {
     color: $text-muted;
+  }
+}
+
+.match-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .selector-lbl {
+    font-size: 12px;
+    color: $text-muted;
+  }
+
+  .match-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: $radius-sm;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: $text-secondary;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: $color-gold-light;
+    }
+
+    &.active {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: $color-gold;
+      color: $color-gold-light;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
   }
 }
 
@@ -698,6 +823,80 @@ defineExpose({
     color: $text-muted;
     min-width: 50px;
     text-align: right;
+  }
+}
+
+.ranking-header-row {
+  @include flex-between;
+  align-items: center;
+
+  .panel-tip {
+    font-size: 11px;
+    color: $color-cyan-light;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: $color-gold-light;
+    text-decoration: underline;
+  }
+
+  .history-icon-hint {
+    font-size: 11px;
+    margin-left: 2px;
+  }
+}
+
+.contest-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+
+  &.tag-green {
+    background: rgba(16, 185, 129, 0.15);
+    color: $color-success;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  &.tag-red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ff7875;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  &.tag-yellow {
+    background: rgba(245, 158, 11, 0.15);
+    color: $color-gold-light;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+}
+
+.sub-history-text {
+  font-size: 10px;
+  color: $text-muted;
+  margin-left: 6px;
+}
+
+.history-btn {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: $text-secondary;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: $transition-base;
+
+  &:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: $color-gold-light;
   }
 }
 

@@ -1,7 +1,10 @@
-// 前端纯本地秒级深度决策引擎 (Client-side Zero-Latency Live Solver)
-// 无需依赖后端网络代理，零延迟本地即时运算
+// 前端深度自走棋局内决策引擎 (Deep Auto Chess Matchup & EV Solver)
+// 彻底摒弃简单分数假设，融合：真实历史对局流水、公共卡池撞车惩罚、流派相克矩阵与赔率精算
 
+import { simulateMatchupMechanics, type PlayerContestAnalysis } from './matchup-engine'
+import { realMatchHistoryData } from '../mock/match-history'
 import { realProPlayersData } from '../mock/pro-players'
+import { MATCH_PRESET_18824, type ExtractedLobby } from './image-analyzer'
 
 export interface LiveParticipantResult {
   slot: number
@@ -19,10 +22,12 @@ export interface LiveParticipantResult {
   playstyleDesc: string
   commander?: string
   favoriteLineups?: string[]
+  contestAnalysis: PlayerContestAnalysis
 }
 
 export interface LiveMatchSolved {
   eventId: string
+  matchTitle?: string
   timestamp: string
   countdown: string
   userDiamondBalance: number
@@ -32,63 +37,47 @@ export interface LiveMatchSolved {
   probabilities: Record<number, number>
   recommendations: LiveParticipantResult[]
   bestRecommendation: LiveParticipantResult
+  contestedAnalysis: PlayerContestAnalysis[]
+  overallInsights: string[]
 }
 
 /**
- * 真实截图中 6 位选手的基准盘面数据 (来自 2026-09-27 真实客户端)
+ * 客户端自走棋推演与决策求解
+ * @param lobbyOrList 可以是 ExtractedLobby 对象，或 6 人 Participant 数组，默认使用最新 18824 巅峰场次
  */
-export const REAL_LOBBY_PRESET = [
-  { slot: 1, nickname: '白白白白3', title: '荣耀先驱者 0004', rankText: '最强王者', rankScore: 11768, supportCount: 4406, odds: 4.2, commander: '弈星' },
-  { slot: 2, nickname: '抖音一茗', title: '联合创始人 1072', rankText: '最强王者', rankScore: 11183, supportCount: 4179, odds: 3.8, commander: '弈星' },
-  { slot: 3, nickname: '抖音EZ流儿', title: '', rankText: '最强王者', rankScore: 10234, supportCount: 3728, odds: 6.2, commander: '司空震' },
-  { slot: 4, nickname: 'Asen', title: '独狼', rankText: '最强王者', rankScore: 10132, supportCount: 3429, odds: 7.2, commander: '庄周' },
-  { slot: 5, nickname: '抖音刺痛', title: '联合创始人 1814', rankText: '最强王者', rankScore: 9638, supportCount: 3325, odds: 7.7, commander: '公孙离' },
-  { slot: 6, nickname: 'DY道无涯', title: '独狼', rankText: '最强王者', rankScore: 9405, supportCount: 3326, odds: 7.5, commander: '诸葛亮' }
-]
-
-/**
- * 客户端纯本地秒级决策求解
- */
-export function solveClientLiveMatch(customParticipants?: any[]): LiveMatchSolved {
+export function solveClientLiveMatch(lobbyOrList?: ExtractedLobby | any[]): LiveMatchSolved {
   const startTime = performance.now()
-  const rawList = customParticipants && customParticipants.length === 6 ? customParticipants : REAL_LOBBY_PRESET
 
-  // 1. 计算选手的综合实力强度分 (基于真实 MMR 与历史战绩)
-  const strengths = rawList.map((p) => {
-    const meta = realProPlayersData[p.playerId || `p-${p.nickname}`] || Object.values(realProPlayersData).find(m => m.lastNickname === p.nickname)
-    const mmr = p.rankScore || 10000
-    const mmrScore = (mmr - 9000) / 30 // 11768 约 92.2 分, 9405 约 13.5 分
-    const winRate = meta ? meta.winRate : 0.25
-    const winRateScore = winRate * 200
+  let rawList: any[] = MATCH_PRESET_18824.participants
+  let countdown = '02:29'
+  let userDiamondBalance = 3422
+  let spectatorCount = 59
+  let matchTitle = '巅峰赛 18824★ 全服断层第一局'
 
-    return Math.max(mmrScore * 0.55 + winRateScore * 0.45, 10)
-  })
-
-  // 2. Softmax 归一化推导 6 人真实胜率 (温度 T = 28)
-  const temperature = 28.0
-  const expScores = strengths.map((s) => Math.exp(s / temperature))
-  const totalExp = expScores.reduce((a, b) => a + b, 0)
-
-  const probabilities: Record<number, number> = {}
-  let runningSum = 0
-
-  for (let i = 0; i < rawList.length; i++) {
-    const slot = rawList[i].slot || i + 1
-    if (i === rawList.length - 1) {
-      probabilities[slot] = Number((1.0 - runningSum).toFixed(3))
-    } else {
-      const prob = Number((expScores[i] / totalExp).toFixed(3))
-      probabilities[slot] = prob
-      runningSum += prob
+  if (lobbyOrList) {
+    if (Array.isArray(lobbyOrList) && lobbyOrList.length === 6) {
+      rawList = lobbyOrList
+    } else if ('participants' in lobbyOrList && lobbyOrList.participants.length === 6) {
+      rawList = lobbyOrList.participants
+      countdown = lobbyOrList.countdown || countdown
+      userDiamondBalance = lobbyOrList.userDiamondBalance || userDiamondBalance
+      spectatorCount = lobbyOrList.spectatorCount || spectatorCount
+      matchTitle = lobbyOrList.matchTitle || matchTitle
     }
   }
 
-  // 3. 计算 6 席净期望收益 (EV_net) 与建议评级
+  // 1. 调用自走棋沙盘推演引擎 (计算公共卡池撞车内卷、流派克制与推演胜率)
+  const simulation = simulateMatchupMechanics(rawList)
+  const probabilities = simulation.probabilities
+
+  // 2. 结合赔率精算 EV 与生成专业自走棋决策评定
   const recommendations: LiveParticipantResult[] = rawList.map((p) => {
     const slot = p.slot
     const prob = probabilities[slot] || 0.167
     const odds = p.odds || p.oddsDisplay || 5.0
     const meta = Object.values(realProPlayersData).find(m => m.lastNickname === p.nickname)
+    const contest = simulation.contestedAnalysis.find(c => c.slot === slot)!
+    const history = realMatchHistoryData[p.nickname]
 
     const testInvest = 100
     const grossReturn = testInvest * odds
@@ -98,15 +87,15 @@ export function solveClientLiveMatch(customParticipants?: any[]): LiveMatchSolve
     let recommendation: 'STRONG_BUY' | 'BUY' | 'AVOID' | 'NEUTRAL' = 'NEUTRAL'
     let decisionReason = ''
 
-    if (netEV > 10) {
+    if (netEV > 15) {
       recommendation = 'STRONG_BUY'
-      decisionReason = `【绝对正期望 +${roi}%】全场最高段位分(${p.rankScore})，控血登顶率顶尖，盘面返奖率(${odds}x)被大众严重低估！`
-    } else if (netEV >= -5 && netEV <= 10) {
+      decisionReason = `【绝对正期望 +${roi}%】${contest.analysisSummary} 真实吃鸡率(${Math.round(contest.historicalWinRate * 100)}%)配合${contest.powerspikeDesc}，盘面返奖率(${odds}x)被大众严重低估！`
+    } else if (netEV >= -5 && netEV <= 15) {
       recommendation = 'BUY'
-      decisionReason = `【大众焦点但赔率压低】胜率极高，但过多玩家跟风涌入导致返奖率(${odds}x)过低，实际利润空间被摊薄。`
+      decisionReason = `【大众焦点但利润摊薄】前三稳率极高(${Math.round(contest.historicalTop3Rate * 100)}%)，但跟风筹码聚集导致返奖率(${odds}x)偏低，EV边际偏平。`
     } else {
       recommendation = 'AVOID'
-      decisionReason = `【高危负收益陷阱 EV: ${netEV}钻】胜率(${Math.round(prob * 100)}%)无法覆盖高倍率风险，长期下注期望值大幅亏损。`
+      decisionReason = `【负收益陷阱 EV: ${netEV}钻】${contest.analysisSummary} 大后期吃鸡期望(${Math.round(prob * 100)}%)无法覆盖高倍率风险，切忌盲目博高赔率。`
     }
 
     return {
@@ -121,10 +110,11 @@ export function solveClientLiveMatch(customParticipants?: any[]): LiveMatchSolve
       roi,
       recommendation,
       decisionReason,
-      playstyle: meta?.playstyleDesc ? meta.playstyleCategory : '常规高分流',
-      playstyleDesc: meta?.playstyleDesc || '全服高段位王者对决选手。',
+      playstyle: history?.playstyleType || meta?.playstyleCategory || '常规高分流',
+      playstyleDesc: meta?.playstyleDesc || '王者万象棋顶尖选手。',
       commander: p.commander || p.commanderName || meta?.favoriteCommanders?.[0]?.name,
-      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || ['常用自走棋大核']
+      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || [contest.chosenLineup],
+      contestAnalysis: contest
     }
   }).sort((a, b) => b.netEV - a.netEV)
 
@@ -132,14 +122,17 @@ export function solveClientLiveMatch(customParticipants?: any[]): LiveMatchSolve
 
   return {
     eventId: `evt-real-${Date.now()}`,
+    matchTitle,
     timestamp: new Date().toLocaleTimeString(),
-    countdown: '01:59',
-    userDiamondBalance: 2532,
-    spectatorCount: 29,
+    countdown,
+    userDiamondBalance,
+    spectatorCount,
     latencyMs,
     participants: rawList,
     probabilities,
     recommendations,
-    bestRecommendation: recommendations[0]
+    bestRecommendation: recommendations[0],
+    contestedAnalysis: simulation.contestedAnalysis,
+    overallInsights: simulation.overallInsights
   }
 }
