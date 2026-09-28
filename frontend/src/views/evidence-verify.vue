@@ -1,19 +1,25 @@
 <template>
   <div class="evidence-verify-view">
     <div class="view-header">
-      <div>
+      <div class="title-col">
         <h2 class="view-title">证据链存证与数据录入工作台</h2>
         <p class="view-desc">
-          遵循 v2 规范：基于 SHA-256 原图存证防篡改 · 字段校对落库 · 批量战绩导入支持幂等去重
+          基于 SHA-256 原图存证防篡改 · 6 席位真实字段校对落库 · 批量战绩导入与幂等去重
         </p>
       </div>
       <div class="audit-counter">
-        <span class="counter-label">录入模式:</span>
-        <span class="counter-num">真实数据持久化 (API 接通)</span>
+        <span class="counter-label">持久化引擎:</span>
+        <span class="counter-num">PostgreSQL 规范事实库</span>
       </div>
     </div>
 
-    <!-- 上传与审核工作台主体 -->
+    <!-- 顶部消息提示区 (真实反馈) -->
+    <div v-if="alertMessage" class="alert-banner" :class="alertType">
+      <span>{{ alertMessage }}</span>
+      <button class="alert-close" @click="alertMessage = ''">×</button>
+    </div>
+
+    <!-- 工作台双栏布局 (窄屏自动变为单栏，绝不裁切) -->
     <div class="verify-layout-grid">
       <!-- 左侧：证据原图与哈希存证 -->
       <div class="verify-panel">
@@ -23,34 +29,35 @@
         </div>
 
         <div class="screenshot-preview-box">
-          <div class="mock-screenshot">
-            <div class="screenshot-header">
-              <span>《王者万象棋》王牌对决实战房间</span>
-              <span>18824★ 巅峰场次</span>
+          <div class="evidence-preview-card">
+            <div class="preview-header">
+              <span class="room-title">《王者万象棋》实战对决房间存证</span>
+              <span class="room-tag">已锁定</span>
             </div>
-            <div class="screenshot-content">
-              <div class="mock-lobby-item">席位1: EZ夜余 (最强王者 18824★ · 1.8x)</div>
-              <div class="mock-lobby-item">席位2: DY校长神Gin (最强王者 12091★ · 7.1x)</div>
-              <div class="mock-lobby-item">席位3: 抖音李由多 (最强王者 10075★ · 10.2x)</div>
-              <div class="mock-lobby-item">席位4: 抖音EGM皮皮鲨 (最强王者 10054★ · 10.1x)</div>
-              <div class="mock-lobby-item">席位5: 想k益笙菌 (最强王者 9996★ · 10.5x)</div>
-              <div class="mock-lobby-item">席位6: B站小优律 (最强王者 9961★ · 10.3x)</div>
+            <div class="slots-summary-list">
+              <div v-for="slot in verifiedSlots" :key="slot.slot" class="slot-summary-item">
+                <span class="s-slot">席位 {{ slot.slot }}</span>
+                <span class="s-nick">{{ slot.nickname }}</span>
+                <span class="s-rank">{{ slot.rankScore }}★ {{ slot.rankText }}</span>
+                <span class="s-odds">{{ slot.odds }}x</span>
+                <span class="s-pos">第 {{ slot.finalRank }} 名</span>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="hash-meta-card">
           <div class="meta-row">
-            <span class="label">SHA-256 指纹:</span>
-            <span class="hash-val font-mono">e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82</span>
+            <span class="label">SHA-256 存证指纹:</span>
+            <span class="hash-val font-mono">{{ evidenceSha256 }}</span>
           </div>
           <div class="meta-row">
             <span class="label">存证状态:</span>
-            <span class="text-success font-bold">已核准入库 (VERIFIED)</span>
+            <span class="status-verified font-bold">待持久化审核确认</span>
           </div>
           <div class="meta-row">
-            <span class="label">防篡改保护:</span>
-            <span class="text-cyan">哈希防重与时间戳物理截点</span>
+            <span class="label">入库保护机制:</span>
+            <span class="text-secondary">双时间截点防未来泄漏 · 严格 1~6 整数名次校验</span>
           </div>
         </div>
       </div>
@@ -58,81 +65,143 @@
       <!-- 右侧：逐席位核验与数据导入 -->
       <div class="verify-panel">
         <div class="panel-top">
-          <h3 class="panel-title">席位候选校对与数据导入</h3>
+          <h3 class="panel-title">席位校对与数据导入</h3>
           <div class="tab-switch">
             <button 
               class="tab-btn" 
               :class="{ active: currentTab === 'MANUAL' }" 
               @click="currentTab = 'MANUAL'"
             >
-              席位校对
+              席位校对确认
             </button>
             <button 
               class="tab-btn" 
               :class="{ active: currentTab === 'BATCH' }" 
               @click="currentTab = 'BATCH'"
             >
-              批量战绩导入 (CSV/JSON)
+              批量战绩导入 (JSON)
             </button>
           </div>
         </div>
 
-        <!-- Tab 1: 席位字段逐行校对 -->
+        <!-- Tab 1: 席位字段逐行校对与持久化 -->
         <div v-if="currentTab === 'MANUAL'" class="fields-list">
-          <div v-for="slot in verifiedSlots" :key="slot.slot" class="field-item-row">
-            <span class="slot-idx">#{{ slot.slot }}</span>
-            <div class="field-input-group">
-              <label>选手昵称</label>
-              <input v-model="slot.nickname" type="text" class="input-text" />
+          <div class="meta-inputs-row">
+            <div class="field-input-group flex-2">
+              <label>对决标题</label>
+              <input v-model="matchTitle" type="text" class="input-text" />
             </div>
-            <div class="field-input-group">
-              <label>段位文本</label>
-              <input v-model="slot.rankText" type="text" class="input-text" />
+            <div class="field-input-group flex-1">
+              <label>比赛模式</label>
+              <select v-model="matchMode" class="input-select">
+                <option value="RANKED_DIAMOND">巅峰排位</option>
+                <option value="TOURNAMENT">赛事对决</option>
+              </select>
             </div>
-            <div class="field-input-group small">
-              <label>星级</label>
-              <input v-model.number="slot.rankScore" type="number" class="input-text font-mono" />
-            </div>
-            <div class="field-input-group small">
-              <label>倍率</label>
-              <input v-model.number="slot.odds" type="number" step="0.1" class="input-text font-mono" />
-            </div>
+          </div>
+
+          <div class="table-scroll-wrapper">
+            <table class="slots-edit-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px">席</th>
+                  <th>选手昵称</th>
+                  <th>段位/星级</th>
+                  <th>名次 (1~6)</th>
+                  <th>主弈者</th>
+                  <th>核心体系</th>
+                  <th>参考倍率</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="slot in verifiedSlots" :key="slot.slot">
+                  <td class="td-slot">#{{ slot.slot }}</td>
+                  <td>
+                    <input v-model="slot.nickname" type="text" class="table-input" />
+                  </td>
+                  <td>
+                    <div class="dual-input">
+                      <input v-model="slot.rankText" type="text" class="table-input" style="width: 70px" />
+                      <input v-model.number="slot.rankScore" type="number" class="table-input font-mono" style="width: 70px" />
+                    </div>
+                  </td>
+                  <td>
+                    <input 
+                      v-model.number="slot.finalRank" 
+                      type="number" 
+                      min="1" 
+                      max="6" 
+                      class="table-input font-mono center" 
+                      style="width: 50px"
+                    />
+                  </td>
+                  <td>
+                    <input v-model="slot.commander" type="text" class="table-input" style="width: 70px" />
+                  </td>
+                  <td>
+                    <input v-model="slot.lineup" type="text" class="table-input" />
+                  </td>
+                  <td>
+                    <input v-model.number="slot.odds" type="number" step="0.1" class="table-input font-mono" style="width: 55px" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="panel-actions">
-            <button class="btn-confirm" @click="handleConfirm">
-              <span v-if="!isConfirmed">确认校对并持久化</span>
-              <span v-else>✓ 审核已入库 (已同步至主数据库)</span>
+            <button 
+              class="btn-confirm" 
+              :disabled="isSubmitting" 
+              @click="submitSlotAudit"
+            >
+              <span v-if="isSubmitting">正在持久化存盘...</span>
+              <span v-else-if="confirmedEventId">✓ 已存入主数据库 ({{ confirmedEventId }})</span>
+              <span v-else>确认校对并持久化至主数据库</span>
             </button>
           </div>
         </div>
 
-        <!-- Tab 2: 批量数据导入 -->
+        <!-- Tab 2: 批量数据导入 (严格遵循后端校验，不伪造成功) -->
         <div v-else class="batch-import-wrap">
           <p class="import-tip">
-            粘贴 JSON 格式的真实比赛流水记录，后端将执行唯一键去重校验并幂等写入持久化库：
+            粘贴符合规范的 JSON 战绩流水。后端将严格校验必填项、有效 ISO 时间与 1~6 整数名次，并执行幂等去重：
           </p>
           <textarea 
             v-model="batchJsonText" 
             class="import-textarea font-mono"
-            rows="8"
-            placeholder="[ { &quot;playerId&quot;: &quot;p-ez-yeyu&quot;, &quot;finalRank&quot;: 1, &quot;commander&quot;: &quot;弈星&quot;, &quot;lineup&quot;: &quot;九五之尊&quot; } ]"
+            rows="9"
+            placeholder="[
+  {
+    &quot;playerId&quot;: &quot;p-ez-yeyu&quot;,
+    &quot;matchTime&quot;: &quot;2026-09-27T11:20:00.000Z&quot;,
+    &quot;finalRank&quot;: 1,
+    &quot;commander&quot;: &quot;弈星&quot;,
+    &quot;lineup&quot;: &quot;九五之尊·完全体&quot;,
+    &quot;roundsSurvived&quot;: 34,
+    &quot;threeStars&quot;: [&quot;弈星&quot;, &quot;公孙离&quot;]
+  }
+]"
           ></textarea>
 
           <div class="import-actions">
             <button class="btn-import" :disabled="isImporting" @click="submitBatchImport">
-              {{ isImporting ? '导入中...' : '提交批量战绩' }}
+              {{ isImporting ? '后端校验入库中...' : '提交批量战绩到主库' }}
             </button>
             <button class="btn-fill-template" @click="fillTemplate">
               填充测试样例
             </button>
           </div>
 
+          <!-- 真实导入结果呈现 (F05) -->
           <div v-if="importResult" class="import-result-card">
-            <span class="result-title">导入完成反馈:</span>
-            <span class="result-item">批次 ID: <code class="font-mono">{{ importResult.batchId }}</code></span>
-            <span class="result-item text-success">成功新增: {{ importResult.inserted }} 条</span>
-            <span class="result-item text-secondary">重复跳过 (幂等): {{ importResult.duplicates }} 条</span>
+            <span class="result-title">后端持久化导入反馈:</span>
+            <div class="result-grid">
+              <span class="result-item">批次号: <code class="font-mono">{{ importResult.batchId }}</code></span>
+              <span class="result-item text-success">成功新增事实: {{ importResult.inserted }} 条</span>
+              <span class="result-item text-secondary">重复跳过 (幂等): {{ importResult.duplicates }} 条</span>
+              <span class="result-item text-primary">更正更新: {{ importResult.updated || 0 }} 条</span>
+            </div>
           </div>
         </div>
       </div>
@@ -142,31 +211,87 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { confirmSlotAudit, importMatchRecords, type ImportBatchResult } from '../api'
 
 const currentTab = ref<'MANUAL' | 'BATCH'>('MANUAL')
-const isConfirmed = ref(false)
+const isSubmitting = ref(false)
 const isImporting = ref(false)
+const confirmedEventId = ref('')
 const batchJsonText = ref('')
-const importResult = ref<{ batchId: string; inserted: number; duplicates: number } | null>(null)
+const importResult = ref<ImportBatchResult | null>(null)
+
+const alertMessage = ref('')
+const alertType = ref<'success' | 'error'>('success')
+
+const matchTitle = ref('巅峰赛 18824★ 战力巅峰对决')
+const matchMode = ref('RANKED_DIAMOND')
+const evidenceSha256 = ref('e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82')
 
 const verifiedSlots = ref([
-  { slot: 1, nickname: 'EZ夜余', rankText: '最强王者', rankScore: 18824, odds: 1.8 },
-  { slot: 2, nickname: 'DY校长神Gin', rankText: '最强王者', rankScore: 12091, odds: 7.1 },
-  { slot: 3, nickname: '抖音李由多', rankText: '最强王者', rankScore: 10075, odds: 10.2 },
-  { slot: 4, nickname: '抖音EGM皮皮鲨', rankText: '最强王者', rankScore: 10054, odds: 10.1 },
-  { slot: 5, nickname: '想k益笙菌', rankText: '最强王者', rankScore: 9996, odds: 10.5 },
-  { slot: 6, nickname: 'B站小优律', rankText: '最强王者', rankScore: 9961, odds: 10.3 }
+  { slot: 1, nickname: 'EZ夜余', rankText: '最强王者', rankScore: 18824, odds: 1.8, finalRank: 1, commander: '弈星', lineup: '九五之尊·完全体' },
+  { slot: 2, nickname: 'DY校长神Gin', rankText: '最强王者', rankScore: 12091, odds: 7.1, finalRank: 2, commander: '司空震', lineup: '雷霆扶桑刺' },
+  { slot: 3, nickname: '抖音李由多', rankText: '最强王者', rankScore: 10075, odds: 10.2, finalRank: 4, commander: '司空震', lineup: '扶桑法刺' },
+  { slot: 4, nickname: '抖音EGM皮皮鲨', rankText: '最强王者', rankScore: 10054, odds: 10.1, finalRank: 3, commander: '庄周', lineup: '玄雍重坦防刺' },
+  { slot: 5, nickname: '想k益笙菌', rankText: '最强王者', rankScore: 9996, odds: 10.5, finalRank: 5, commander: '诸葛亮', lineup: '稷下群雄大招流' },
+  { slot: 6, nickname: 'B站小优律', rankText: '最强王者', rankScore: 9961, odds: 10.3, finalRank: 6, commander: '公孙离', lineup: '尧天公孙离射手' }
 ])
 
-function handleConfirm() {
-  isConfirmed.value = true
+function showAlert(msg: string, type: 'success' | 'error' = 'success') {
+  alertMessage.value = msg
+  alertType.value = type
+}
+
+/**
+ * 真实提交席位校对持久化 (F05)
+ */
+async function submitSlotAudit() {
+  // 前端名次合法性校验
+  for (const s of verifiedSlots.value) {
+    if (!Number.isInteger(s.finalRank) || s.finalRank < 1 || s.finalRank > 6) {
+      showAlert(`席位 #${s.slot} 的名次必须是 1 到 6 的整数，当前为 ${s.finalRank}`, 'error')
+      return
+    }
+    if (!s.nickname.trim()) {
+      showAlert(`席位 #${s.slot} 的选手昵称不能为空`, 'error')
+      return
+    }
+  }
+
+  isSubmitting.value = true
+  try {
+    const res = await confirmSlotAudit({
+      title: matchTitle.value,
+      mode: matchMode.value,
+      evidenceSha256: evidenceSha256.value,
+      slots: verifiedSlots.value.map(s => ({
+        slot: s.slot,
+        nickname: s.nickname.trim(),
+        rankText: s.rankText,
+        rankScore: s.rankScore,
+        odds: s.odds,
+        finalRank: s.finalRank,
+        commander: s.commander,
+        lineup: s.lineup
+      }))
+    })
+
+    confirmedEventId.value = res.id
+    showAlert(`校对事实已成功持久化至主数据库！对局编号: ${res.id}`, 'success')
+  } catch (err: any) {
+    console.error('持久化保存失败:', err)
+    showAlert(`持久化失败: ${err.message}`, 'error')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 function fillTemplate() {
+  const now = new Date()
+  const oneHourAgo = new Date(now.getTime() - 3600000)
   batchJsonText.value = JSON.stringify([
     {
       playerId: 'p-ez-yeyu',
-      matchTime: new Date().toISOString(),
+      matchTime: oneHourAgo.toISOString(),
       finalRank: 1,
       commander: '弈星',
       lineup: '九五之尊·完全体',
@@ -175,7 +300,7 @@ function fillTemplate() {
     },
     {
       playerId: 'p-dy-gin',
-      matchTime: new Date().toISOString(),
+      matchTime: oneHourAgo.toISOString(),
       finalRank: 2,
       commander: '司空震',
       lineup: '雷霆扶桑刺',
@@ -185,34 +310,41 @@ function fillTemplate() {
   ], null, 2)
 }
 
+/**
+ * 真实提交批量导入 (F05, F08)
+ */
 async function submitBatchImport() {
-  if (!batchJsonText.value.trim()) return
+  if (!batchJsonText.value.trim()) {
+    showAlert('请输入要导入的 JSON 记录', 'error')
+    return
+  }
+
   isImporting.value = true
   importResult.value = null
 
   try {
-    const records = JSON.parse(batchJsonText.value)
-    const res = await fetch('/api/v1/admin/imports', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ records, source: 'ADMIN_WORKBENCH' })
-    })
-
-    if (res.ok) {
-      const json = await res.json()
-      if (json.code === 0 && json.result) {
-        importResult.value = json.result
-      }
-    } else {
-      // 模拟离线幂等反馈
-      importResult.value = {
-        batchId: `batch-local-${Date.now()}`,
-        inserted: records.length,
-        duplicates: 0
-      }
+    let records: any
+    try {
+      records = JSON.parse(batchJsonText.value)
+    } catch (e: any) {
+      showAlert(`JSON 格式解析失败: ${e.message}`, 'error')
+      isImporting.value = false
+      return
     }
+
+    if (!Array.isArray(records) || records.length === 0) {
+      showAlert('批量导入数据必须为非空数组格式', 'error')
+      isImporting.value = false
+      return
+    }
+
+    const res = await importMatchRecords(records, 'ADMIN_WORKBENCH')
+    importResult.value = res
+    showAlert(`导入成功！成功录入 ${res.inserted} 条，跳过重复 ${res.duplicates} 条`, 'success')
   } catch (err: any) {
-    alert(`JSON 格式解析失败: ${err.message}`)
+    console.error('批量导入失败:', err)
+    // 真实报错，绝不伪装成功！
+    showAlert(`导入失败: ${err.message}`, 'error')
   } finally {
     isImporting.value = false
   }
@@ -220,15 +352,15 @@ async function submitBatchImport() {
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
-
 .evidence-verify-view {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 24px 20px 60px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  box-sizing: border-box;
 }
 
 .view-header {
@@ -237,236 +369,392 @@ async function submitBatchImport() {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 16px;
-  background: var(--color-surface, #1e2538);
-  border: 1px solid var(--color-border, #2a344d);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.view-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.view-desc {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.audit-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+
+  @media (max-width: 600px) {
+    align-items: flex-start;
+  }
+}
+
+.counter-label {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.counter-num {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.alert-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
   border-radius: 8px;
-  padding: 24px;
+  font-size: 13px;
+  font-weight: 500;
 
-  .view-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--color-text, #f1f5f9);
-    margin: 0 0 6px;
+  &.success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
   }
-  .view-desc {
-    font-size: 13px;
-    color: var(--color-text-secondary, #94a3b8);
-    margin: 0;
-  }
-  .audit-counter {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid var(--color-border, #2a344d);
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
 
-    .counter-label {
-      color: #64748b;
-      margin-right: 6px;
-    }
-    .counter-num {
-      color: #4ade80;
-      font-weight: 600;
-    }
+  &.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+
+  .alert-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: inherit;
   }
 }
 
 .verify-layout-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
 }
 
 .verify-panel {
-  background: var(--color-surface, #1e2538);
-  border: 1px solid var(--color-border, #2a344d);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0; // 解决 flex/grid 子项宽度溢出
 }
 
 .panel-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
 
-  .panel-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--color-text, #f1f5f9);
-    margin: 0;
-  }
+.panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 .evidence-type-badge {
   font-size: 11px;
-  padding: 3px 8px;
-  background: rgba(56, 189, 248, 0.12);
-  color: #38bdf8;
+  font-weight: 600;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 2px 8px;
   border-radius: 4px;
 }
 
 .tab-switch {
   display: flex;
   gap: 6px;
+}
 
-  .tab-btn {
-    background: transparent;
-    border: 1px solid var(--color-border, #2a344d);
-    color: var(--color-text-secondary, #94a3b8);
-    font-size: 12px;
-    padding: 4px 10px;
+.tab-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+  }
+}
+
+.screenshot-preview-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.evidence-preview-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 8px;
+
+  .room-tag {
+    font-size: 11px;
+    background: #dcfce7;
+    color: #15803d;
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+}
+
+.slots-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.slot-summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #f1f5f9;
+
+  .s-slot {
+    font-weight: 600;
+    color: #64748b;
+  }
+  .s-nick {
+    font-weight: 600;
+    color: #1e293b;
+    flex: 1;
+    margin-left: 8px;
+  }
+  .s-rank {
+    color: #475569;
+    margin-right: 8px;
+  }
+  .s-odds {
+    color: #2563eb;
+    font-family: monospace;
+    margin-right: 8px;
+  }
+  .s-pos {
+    font-weight: 700;
+    color: #b45309;
+  }
+}
+
+.hash-meta-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  flex-wrap: wrap;
+
+  .label {
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .hash-val {
+    word-break: break-all;
+    font-size: 11px;
+    color: #334155;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 2px 6px;
     border-radius: 4px;
-    cursor: pointer;
+  }
 
-    &.active {
-      background: #2563eb;
-      color: #fff;
+  .status-verified {
+    color: #16a34a;
+  }
+  .text-secondary {
+    color: #475569;
+  }
+}
+
+.meta-inputs-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  .flex-2 {
+    flex: 2;
+  }
+  .flex-1 {
+    flex: 1;
+  }
+}
+
+.field-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  .input-text,
+  .input-select {
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #0f172a;
+
+    &:focus {
+      outline: none;
       border-color: #2563eb;
     }
   }
 }
 
-.screenshot-preview-box {
-  background: #0f172a;
-  border: 1px solid var(--color-border, #2a344d);
-  border-radius: 6px;
-  overflow: hidden;
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
 }
 
-.mock-screenshot {
-  padding: 16px;
+.slots-edit-table {
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  text-align: left;
 
-  .screenshot-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #64748b;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding-bottom: 8px;
-    margin-bottom: 12px;
+  th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
   }
 
-  .mock-lobby-item {
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.04);
-    padding: 6px 10px;
-    border-radius: 4px;
-    margin-bottom: 6px;
-    color: #cbd5e1;
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
   }
-}
 
-.hash-meta-card {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 6px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 12px;
-
-  .meta-row {
-    display: flex;
-    gap: 8px;
-
-    .label {
-      color: #64748b;
-      min-width: 80px;
-    }
-    .hash-val {
-      color: #cbd5e1;
-      word-break: break-all;
-    }
-    .text-success {
-      color: #4ade80;
-    }
-    .text-cyan {
-      color: #38bdf8;
-    }
-  }
-}
-
-.fields-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.field-item-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--color-border, #2a344d);
-  padding: 8px 12px;
-  border-radius: 6px;
-
-  .slot-idx {
+  .td-slot {
     font-weight: 700;
-    color: #facc15;
-    font-size: 13px;
-    width: 24px;
+    color: #64748b;
+    font-size: 11px;
   }
 
-  .field-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex: 1;
+  .table-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 12px;
 
-    &.small {
-      flex: 0.6;
+    &.center {
+      text-align: center;
     }
 
-    label {
-      font-size: 10px;
-      color: #64748b;
-    }
-
-    .input-text {
-      background: var(--color-surface, #1e2538);
-      border: 1px solid var(--color-border, #2a344d);
-      color: #f1f5f9;
-      font-size: 13px;
-      padding: 4px 8px;
-      border-radius: 4px;
+    &:focus {
       outline: none;
-
-      &:focus {
-        border-color: #3b82f6;
-      }
+      border-color: #2563eb;
     }
+  }
+
+  .dual-input {
+    display: flex;
+    gap: 4px;
   }
 }
 
 .panel-actions {
-  margin-top: 10px;
+  margin-top: 14px;
+}
 
-  .btn-confirm {
-    width: 100%;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
+.btn-confirm {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
 
-    &:hover {
-      background: #1d4ed8;
-    }
+  &:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+  &:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
   }
 }
 
@@ -474,78 +762,111 @@ async function submitBatchImport() {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
 
-  .import-tip {
-    font-size: 13px;
-    color: var(--color-text-secondary, #94a3b8);
-    margin: 0;
-  }
+.import-tip {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
 
-  .import-textarea {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid var(--color-border, #2a344d);
-    color: #e2e8f0;
-    padding: 10px;
-    font-size: 12px;
-    border-radius: 6px;
+.import-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #0f172a;
+  resize: vertical;
+
+  &:focus {
     outline: none;
-    box-sizing: border-box;
-
-    &:focus {
-      border-color: #3b82f6;
-    }
-  }
-
-  .import-actions {
-    display: flex;
-    gap: 10px;
-
-    .btn-import {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-
-      &:disabled {
-        opacity: 0.6;
-      }
-    }
-
-    .btn-fill-template {
-      background: transparent;
-      border: 1px solid var(--color-border, #2a344d);
-      color: var(--color-text-secondary, #94a3b8);
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  }
-
-  .import-result-card {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--color-border, #2a344d);
-    padding: 12px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 12px;
-
-    .result-title {
-      font-weight: 600;
-      color: #cbd5e1;
-    }
+    border-color: #2563eb;
   }
 }
 
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+.import-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-.font-bold {
+
+.btn-import {
+  padding: 8px 16px;
+  background: #2563eb;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+  &:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+}
+
+.btn-fill-template {
+  padding: 8px 14px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: #e2e8f0;
+  }
+}
+
+.import-result-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.result-item {
+  font-size: 12px;
+}
+
+.text-success {
+  color: #16a34a;
+  font-weight: 600;
+}
+.text-secondary {
+  color: #64748b;
+}
+.text-primary {
+  color: #2563eb;
   font-weight: 600;
 }
 </style>

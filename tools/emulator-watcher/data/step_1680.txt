@@ -1,0 +1,93 @@
+Created At: 2026-09-28T00:21:52+08:00
+Completed At: 2026-09-28T00:21:52+08:00
+
+				The command exited with code 0.
+				Output:
+				--- Testing fetchRealTournaments ---
+Tournament: 万象王牌 S1 娱乐赛 Players count: 71
+Top 3 players: [
+  {
+    id: 'p-从心yyyyy',
+    nickname: '从心yyyyy',
+    gameUid: '',
+    tournamentRank: 1,
+    points: 0,
+    rankScore: 10000,
+    rankText: '巅峰王者',
+    title: 'S1 积分榜首',
+    commander: '通用',
+    style: '实战运营',
+    platform: 'DEFAULT',
+    serverZone: '官方赛事统一服'
+  },
+  {
+    id: 'p-214479459',
+    nickname: '曾与影子提及你',
+    gameUid: '214479459',
+    tournamentRank: 2,
+    points: 0,
+    rankScore: 10000,
+    rankText: '巅峰王者',
+    title: 'S1 决赛圈强手',
+    commander: '通用',
+    style: '实战运营',
+    platform: 'DEFAULT',
+    serverZone: '官方赛事统一服'
+  },
+  {
+    id: 'p-2140737964',
+    nickname: '小筑踏垛苔长青',
+    gameUid: '2140737964',
+    tournamentRank: 3,
+    points: 0,
+    rankScore: 10000,
+    rankText: '巅峰王者',
+    title: 'S1 决赛圈强手',
+    commander: '通用',
+    style: '实战运营',
+    platform: 'DEFAULT',
+    serverZone: '官方赛事统一服'
+  }
+]
+--- Testing fetchRealLineups ---
+Lineups sampleCount: 390306 total: 36 returned: 5
+First lineup: {
+  id: 'lineup-real-7-1101-1121-1131-1201-1211-5231-5241',
+  sourceId: 'src-datatft-platform',
+  lineupKey: '7|1101|1121|1131|1201|1211|5231|5241',
+  lineupName: '明先生 · T0 级体系 (6 核心)',
+  tier: 'T0',
+  commander: '明先生',
+  coreHeroes: [ '1101', '1131', '5241', '1211', '1201', '5231' ],
+  sampleCount: 23815,
+  winRate: 0.1675,
+  top3Rate: 0.5566,
+  avgRank: 3.33,
+  appearanceRate: 0.3661,
+  lineupCode: '10011',
+  snapshotVersion: 'S1-202609',
+  windowText: '全服近 7 日实战大数据 (113万局聚合)',
+  scope: '全服排位与巅峰赛',
+  updatedAt: '2026-09-27T16:21:52.777Z'
+}
+--- Testing fetchRealCommanders ---
+Commanders total: 18
+First 2: [
+  {
+    id: '24',
+    name: '常小娥',
+    sampleCount: 227616,
+    avgRank: 3.56,
+    winRate: 0.1747,
+    top3Rate: 0.4689
+  },
+  {
+    id: '11',
+    name: '瑶妹',
+    sampleCount: 170620,
+    avgRank: 3.26,
+    winRate: 0.1879,
+    top3Rate: 0.5592
+  }
+]
+

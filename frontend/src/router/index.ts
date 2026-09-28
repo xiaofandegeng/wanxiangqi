@@ -5,9 +5,9 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'event-today',
+      name: 'diamond-prediction',
       component: () => import('../views/event-today.vue'),
-      meta: { title: '今日钻石狂潮 - 王牌对决数据站' }
+      meta: { title: '王牌对决钻石预测工作台 - 王者万象棋' }
     },
     {
       path: '/events/:id',
@@ -25,16 +25,23 @@ const router = createRouter({
       path: '/roster',
       name: 'player-roster',
       component: () => import('../views/player-roster.vue'),
-      meta: { title: '全服选手天梯榜 - 王牌对决数据站' }
+      meta: { title: '选手战力天梯榜 - 王牌对决钻石预测' }
     },
     {
       path: '/lineups',
       name: 'lineup-roster',
       component: () => import('../views/lineup-roster.vue'),
-      meta: { title: '阵容环境大盘 - 王牌对决数据站' }
+      meta: { title: '阵容克制与胜率依据 - 王牌对决钻石预测' }
+    },
+    {
+      path: '/lineups/:id',
+      name: 'lineup-detail',
+      component: () => import('../views/lineup-detail.vue'),
+      meta: { title: '阵容流派详情 - 王牌对决数据站' }
     },
     {
       path: '/archive',
+      alias: '/matches',
       name: 'match-archive',
       component: () => import('../views/match-archive.vue'),
       meta: { title: '历史对战记录大盘 - 王牌对决数据站' }
@@ -54,11 +61,10 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to) => {
   if (to.meta.title) {
     document.title = to.meta.title as string
   }
-  next()
 })
 
 export default router

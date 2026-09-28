@@ -37,14 +37,14 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-  background: $bg-primary;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $bg-tertiary;
-  border-radius: $radius-full;
+  background: #cbd5e1;
+  border-radius: 4px;
 
   &:hover {
-    background: $color-gold-dark;
+    background: #94a3b8;
   }
 }

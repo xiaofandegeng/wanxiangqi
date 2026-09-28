@@ -1,0 +1,97 @@
+Created At: 2026-09-28T00:26:10+08:00
+Completed At: 2026-09-28T00:26:10+08:00
+
+				The command exited with code 0.
+				Output:
+				Found line! Length: 2186
+Created At: 2026-09-28T00:23:07+08:00
+Completed At: 2026-09-28T00:23:08+08:00
+
+				The command exited with code 0.
+				Output:
+				Standings count: 71
+Top 10 standings: [
+  {
+    uid: '1892295749',
+    displayName: '重生模拟战',
+    nickname: '重生模拟战',
+    rank: 1,
+    playerId: '5b605d77-11a8-4f15-9f95-05985e90513d',
+    points: 25
+  },
+  {
+    uid: '356866150',
+    displayName: '散修鲤非鱼',
+    nickname: '散修鲤非鱼',
+    rank: 1,
+    playerId: 'dcf9d1ed-376c-4d84-bddd-d58abfe58ee7',
+    points: 25
+  },
+  {
+    uid: '490036347',
+    displayName: '半岛的歌姬',
+    nickname: '半岛的歌姬',
+    rank: 3,
+    playerId: 'b7e2ae04-75b0-4b25-ae4c-c2a65ac65a75',
+    points: 24
+  },
+  {
+    uid: '',
+    displayName: '从心yyyyy',
+    nickname: '从心yyyyy',
+    rank: 4,
+    playerId: '7dac761a-603c-47d3-88b6-55be1a0504b8',
+    points: 23
+  },
+  {
+    uid: '409762869',
+    displayName: '王者帅',
+    nickname: '王者帅',
+    rank: 4,
+    playerId: '2ccce113-8a6f-4768-b317-cd6bcf35259a',
+    points: 23
+  },
+  {
+    uid: '2143051937',
+    displayName: '多吃猫咪有营养',
+    nickname: '多吃猫咪有营养',
+    rank: 6,
+    playerId: '5adc3e11-0680-4e7d-9f75-44a94760def9',
+    points: 22
+  },
+  {
+    uid: '215343781',
+    displayName: '洛雨霖铃',
+    nickname: '洛雨霖铃',
+    rank: 6,
+    playerId: '39eb83a0-aaa3-498d-adf2-c1edcd753ce7',
+    points: 22
+  },
+  {
+    uid: '95909179',
+    displayName: '一棋定万象',
+    nickname: '一棋定万象',
+    rank: 6,
+    playerId: 'ce5bcc23-56aa-46ce-adaa-58398e733e37',
+    points: 22
+  },
+  {
+    uid: '',
+    displayName: '抖音王昭君',
+    nickname: '抖音王昭君',
+    rank: 9,
+    playerId: '07b3195e-1674-4ba3-ad40-0ef78edb2ffb',
+    points: 21
+  },
+  {
+    uid: '2140737964',
+    displayName: '小筑踏垛苔长青',
+    nickname: '小筑踏垛苔长青',
+    rank: 9,
+    playerId: '4f9f260e-d6b0-432f-93f5-dd5c21a20fea',
+    points: 21
+  }
+]
+
+
+

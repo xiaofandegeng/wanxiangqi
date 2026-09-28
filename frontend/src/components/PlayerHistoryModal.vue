@@ -1,126 +1,92 @@
 <template>
-  <div v-if="isOpen && playerStats" class="history-modal-overlay" @click.self="emitClose">
+  <div v-if="isOpen && player" class="history-modal-overlay" @click.self="emitClose">
     <div class="history-modal-dialog">
       <!-- 弹窗头部 -->
       <div class="modal-header">
         <div class="player-title-wrap">
-          <span class="user-avatar-tag">{{ playerStats.nickname.substring(0, 1) }}</span>
+          <span class="user-avatar-tag">{{ player.nickname.substring(0, 1) }}</span>
           <div class="player-meta-texts">
             <div class="name-row">
-              <h3 class="player-name">{{ playerStats.nickname }}</h3>
-              <span class="playstyle-pill">{{ playerStats.playstyleType }}</span>
-              <span class="score-pill">{{ playerStats.rankScore }}分</span>
+              <h3 class="player-name">{{ player.nickname }}</h3>
+              <span class="score-pill">{{ player.rankScore }}★ {{ player.rankText || '最强王者' }}</span>
+              <span v-if="player.title" class="title-pill">{{ player.title }}</span>
             </div>
-            <span class="sub-text">收录最近 {{ playerStats.sampleMatches }} 场高分王牌对决真实历史对局流水</span>
+            <span class="sub-text">{{ player.platform || '官方区服' }} · {{ player.serverZone || '手Q1区' }} · 本命英雄: {{ player.commander || '通用' }}</span>
           </div>
         </div>
         <button class="close-btn" @click="emitClose">×</button>
       </div>
 
-      <!-- 核心指标摘要横幅 -->
+      <!-- 核心指标摘要横幅 (基于真实统计) -->
       <div class="metrics-banner">
-        <div class="metric-col highlight-gold">
-          <span class="metric-num">{{ Math.round(playerStats.firstPlaceRate * 100) }}%</span>
-          <span class="metric-label">真实吃鸡率 (第1名)</span>
-          <span class="metric-sub">{{ playerStats.firstPlaceCount }} 场登顶</span>
-        </div>
-        <div class="metric-col highlight-cyan">
-          <span class="metric-num">{{ Math.round(playerStats.top3Rate * 100) }}%</span>
-          <span class="metric-label">吃烂分率 (前三名)</span>
-          <span class="metric-sub">{{ playerStats.top3Count }} 场进前三</span>
-        </div>
-        <div class="metric-col highlight-danger">
-          <span class="metric-num">{{ Math.round((playerStats.eliminatedEarlyCount / playerStats.sampleMatches) * 100) }}%</span>
-          <span class="metric-label">暴毙早夭率 (5~6名)</span>
-          <span class="metric-sub">{{ playerStats.eliminatedEarlyCount }} 场后半程</span>
+        <div class="metric-col">
+          <span class="metric-num">
+            {{ player.stats?.winRate !== null && player.stats?.winRate !== undefined ? `${(player.stats.winRate * 100).toFixed(1)}%` : '--' }}
+          </span>
+          <span class="metric-label">登顶率 (第 1 名)</span>
+          <span class="metric-sub">{{ player.stats?.firstPlaces || 0 }} 场登顶</span>
         </div>
         <div class="metric-col">
-          <span class="metric-num">{{ playerStats.avgPlacement.toFixed(1) }}</span>
-          <span class="metric-label">真实平均名次</span>
-          <span class="metric-sub">中位数稳定位</span>
+          <span class="metric-num">
+            {{ player.stats?.top3Rate !== null && player.stats?.top3Rate !== undefined ? `${(player.stats.top3Rate * 100).toFixed(1)}%` : '--' }}
+          </span>
+          <span class="metric-label">前三率 (保分)</span>
+          <span class="metric-sub">{{ player.stats?.top3Places || 0 }} 场进前三</span>
+        </div>
+        <div class="metric-col">
+          <span class="metric-num">
+            {{ player.stats?.avgRank !== null && player.stats?.avgRank !== undefined ? player.stats.avgRank.toFixed(2) : '--' }}
+          </span>
+          <span class="metric-label">平均名次</span>
+          <span class="metric-sub">{{ player.stats?.sampleCount || 0 }} 场总核验样本</span>
         </div>
       </div>
 
-      <!-- 常用流派熟练度与吃鸡率 -->
-      <div class="lineup-section">
-        <h4 class="section-subtitle">常用流派熟练度与登顶/前三分布</h4>
-        <div class="lineup-cards-grid">
-          <div v-for="l in playerStats.lineupProficiencies" :key="l.lineupName" class="lineup-stat-card">
-            <div class="card-top-row">
-              <span class="lineup-title">{{ l.lineupName }}</span>
-              <span class="games-tag">{{ l.gamesPlayed }} 场</span>
-            </div>
-            <div class="rates-row">
-              <div class="rate-item">
-                <span class="rate-lbl">吃鸡率:</span>
-                <span class="rate-val text-gold">{{ Math.round(l.winRate * 100) }}%</span>
-              </div>
-              <div class="rate-item">
-                <span class="rate-lbl">前三率:</span>
-                <span class="rate-val text-cyan">{{ Math.round(l.top3Rate * 100) }}%</span>
-              </div>
-              <div class="rate-item">
-                <span class="rate-lbl">平均存活:</span>
-                <span class="rate-val">{{ l.avgRounds }} 回合</span>
-              </div>
-            </div>
-          </div>
+      <!-- 逐局战绩流水列表 (真实 API 结果) -->
+      <div class="match-logs-section">
+        <div class="logs-header-row">
+          <h4 class="section-subtitle">逐局实战流水事实记录 (按时间倒序)</h4>
+          <span class="logs-count">共 {{ matchLogs.length }} 场有效战绩</span>
         </div>
-      </div>
 
-      <!-- 近期真实比赛流水流水卡 -->
-      <div class="matches-section">
-        <h4 class="section-subtitle">近期核验证明对局流水流水 (逐场复盘)</h4>
-        <div class="matches-list">
-          <div 
-            v-for="m in playerStats.recentMatches" 
-            :key="m.matchId" 
-            class="match-log-card"
-            :class="{ 'is-first': m.finalRank === 1, 'is-bottom': m.finalRank >= 5 }"
-          >
+        <div v-if="isLoading" class="loading-state">
+          正在加载选手实战流水...
+        </div>
+
+        <div v-else-if="matchLogs.length === 0" class="empty-logs">
+          <p>暂无该选手的已核验逐局实战流水记录</p>
+          <span class="sub-hint">当证据链核验工作台录入该选手比赛后，流水将在此自动呈现。</span>
+        </div>
+
+        <div v-else class="logs-scroll-area">
+          <div v-for="m in matchLogs" :key="m.id" class="match-log-card">
             <div class="log-left-col">
-              <div class="rank-badge" :class="'rank-' + m.finalRank">
+              <span class="placement-badge" :class="'rank-' + m.finalRank">
                 第 {{ m.finalRank }} 名
-              </div>
-              <span class="match-time">{{ m.timestamp }}</span>
+              </span>
+              <span class="match-time-text">{{ formatTime(m.matchTime) }}</span>
             </div>
 
-            <div class="log-center-col">
-              <div class="comp-title-line">
-                <span class="comp-name">{{ m.mainComp }}</span>
-                <span class="commander-tag">棋手: {{ m.commander }}</span>
-                <span 
-                  class="contest-pill"
-                  :class="{
-                    'pill-low': m.contestedLevel === 'LOW',
-                    'pill-high': m.contestedLevel === 'HIGH',
-                    'pill-med': m.contestedLevel === 'MEDIUM'
-                  }"
-                >
-                  {{ m.contestedLevel === 'LOW' ? '独家无同行' : m.contestedLevel === 'HIGH' ? '撞车卡牌内卷' : '轻度重叠' }}
-                </span>
+            <div class="log-mid-col">
+              <div class="lineup-title-row">
+                <span class="lineup-label">{{ m.lineup || '常规体系' }}</span>
+                <span class="commander-tag">主弈者: {{ m.commander || '通用' }}</span>
+                <span v-if="m.verified" class="verified-tag">✓ 存证已核验</span>
               </div>
-
-              <!-- 羁绊标签 -->
-              <div class="synergies-wrap">
-                <span v-for="syn in m.compSynergies" :key="syn" class="synergy-tag">{{ syn }}</span>
-              </div>
-
-              <!-- 核心英雄 -->
-              <div class="heroes-wrap">
-                <span class="heroes-label">核心卡牌:</span>
-                <span v-for="h in m.coreHeroes" :key="h" class="hero-tag">{{ h }}</span>
+              <div v-if="m.threeStars && m.threeStars.length > 0" class="heroes-wrap">
+                <span class="heroes-label">三星核心:</span>
+                <span v-for="h in m.threeStars" :key="h" class="hero-tag">★ {{ h }}</span>
               </div>
             </div>
 
             <div class="log-right-col">
               <div class="stat-box">
-                <span class="lbl">存活回合</span>
-                <span class="val">{{ m.roundsSurvived }} 轮</span>
+                <span class="lbl">存活轮次</span>
+                <span class="val">{{ m.roundsSurvived || '--' }} 轮</span>
               </div>
               <div class="stat-box">
-                <span class="lbl">评分</span>
-                <span class="val text-gold">{{ m.combatScore }}</span>
+                <span class="lbl">对局模式</span>
+                <span class="val">{{ m.mode || '巅峰排位' }}</span>
               </div>
             </div>
           </div>
@@ -131,434 +97,383 @@
 </template>
 
 <script setup lang="ts">
-import type { PlayerHistoricalStats } from '../mock/match-history'
+import { ref, watch } from 'vue'
+import { fetchPlayerMatches, type PlayerRecord, type MatchRecord } from '../api'
 
-defineProps<{
+const props = defineProps<{
   isOpen: boolean
-  playerStats: PlayerHistoricalStats | null
+  player: PlayerRecord | null
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const matchLogs = ref<MatchRecord[]>([])
+const isLoading = ref(false)
+
+watch(() => [props.isOpen, props.player], async ([open, p]) => {
+  if (open && p) {
+    isLoading.value = true
+    try {
+      const logs = await fetchPlayerMatches((p as PlayerRecord).id)
+      matchLogs.value = logs
+    } catch (err) {
+      console.error('加载流水失败:', err)
+      matchLogs.value = []
+    } finally {
+      isLoading.value = false
+    }
+  } else {
+    matchLogs.value = []
+  }
+})
+
 function emitClose() {
   emit('close')
+}
+
+function formatTime(isoStr: string) {
+  if (!isoStr) return '--'
+  try {
+    return new Date(isoStr).toLocaleString('zh-CN', { hour12: false })
+  } catch {
+    return isoStr
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-@use '../styles/variables.scss' as *;
-
 .history-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  z-index: 1050;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  z-index: 9999;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .history-modal-dialog {
-  background: #141923;
-  border: 1px solid rgba($color-gold, 0.35);
-  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   width: 100%;
-  max-width: 820px;
-  max-height: 88vh;
+  max-width: 800px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
 }
 
 .modal-header {
-  padding: 16px 20px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+}
+
+.player-title-wrap {
+  display: flex;
   align-items: center;
+  gap: 12px;
+}
 
-  .player-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.user-avatar-tag {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .user-avatar-tag {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, $color-gold, #c89b3c);
-      color: #0b0e14;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 800;
-    }
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
-    .player-meta-texts {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+.player-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
 
-      .name-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+.score-pill {
+  font-size: 11px;
+  font-weight: 600;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
 
-        .player-name {
-          font-size: 1.15rem;
-          font-weight: 700;
-          color: $text-primary;
-          margin: 0;
-        }
+.title-pill {
+  font-size: 11px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
 
-        .playstyle-pill {
-          font-size: 0.75rem;
-          background: rgba($color-cyan-light, 0.15);
-          color: $color-cyan-light;
-          border: 1px solid rgba($color-cyan-light, 0.3);
-          padding: 2px 8px;
-          border-radius: 12px;
-          font-weight: 600;
-        }
+.sub-text {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+  display: block;
+}
 
-        .score-pill {
-          font-size: 0.75rem;
-          background: rgba($color-gold, 0.15);
-          color: $color-gold;
-          padding: 2px 8px;
-          border-radius: 12px;
-          font-weight: 600;
-        }
-      }
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
 
-      .sub-text {
-        font-size: 0.78rem;
-        color: $text-muted;
-      }
-    }
-  }
-
-  .close-btn {
-    background: transparent;
-    border: none;
-    color: $text-secondary;
-    font-size: 1.5rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
-    border-radius: 4px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: $text-primary;
-    }
+  &:hover {
+    color: #0f172a;
   }
 }
 
 .metrics-banner {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 18px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 
-  .metric-col {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 3px;
-
-    &.highlight-gold {
-      border-color: rgba($color-gold, 0.4);
-      .metric-num { color: $color-gold; }
-    }
-
-    &.highlight-cyan {
-      border-color: rgba($color-cyan-light, 0.4);
-      .metric-num { color: $color-cyan-light; }
-    }
-
-    &.highlight-danger {
-      border-color: rgba($color-danger, 0.4);
-      .metric-num { color: #ff7875; }
-    }
-
-    .metric-num {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: $text-primary;
-    }
-
-    .metric-label {
-      font-size: 0.78rem;
-      color: $text-secondary;
-      font-weight: 600;
-    }
-
-    .metric-sub {
-      font-size: 0.7rem;
-      color: $text-muted;
-    }
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 }
 
-.lineup-section {
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-
-  .section-subtitle {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: $text-secondary;
-    margin: 0 0 10px 0;
-  }
-
-  .lineup-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-  }
-
-  .lineup-stat-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 8px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    .card-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .lineup-title {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: $text-primary;
-      }
-
-      .games-tag {
-        font-size: 0.72rem;
-        color: $text-muted;
-      }
-    }
-
-    .rates-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-
-      .rate-item {
-        display: flex;
-        gap: 3px;
-
-        .rate-lbl {
-          color: $text-muted;
-        }
-
-        .rate-val {
-          font-weight: 700;
-        }
-      }
-    }
-  }
+.metric-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.matches-section {
-  padding: 14px 20px;
+.metric-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.metric-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.metric-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.match-logs-section {
+  padding: 20px 24px;
   overflow-y: auto;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  .section-subtitle {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: $text-secondary;
-    margin: 0 0 10px 0;
+.logs-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.logs-count {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.loading-state,
+.empty-logs {
+  padding: 36px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+
+  .sub-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+    display: block;
   }
+}
 
-  .matches-list {
-    display: flex;
+.logs-scroll-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.match-log-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  @media (max-width: 640px) {
     flex-direction: column;
-    gap: 10px;
-  }
-
-  .match-log-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-
-    &.is-first {
-      border-color: rgba($color-gold, 0.5);
-      background: rgba($color-gold, 0.04);
-    }
-
-    &.is-bottom {
-      border-color: rgba($color-danger, 0.3);
-      opacity: 0.85;
-    }
-
-    .log-left-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      min-width: 65px;
-
-      .rank-badge {
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 4px;
-        color: #fff;
-
-        &.rank-1 {
-          background: linear-gradient(135deg, $color-gold, #c89b3c);
-          color: #000;
-        }
-        &.rank-2 {
-          background: #718096;
-        }
-        &.rank-3 {
-          background: #a0522d;
-        }
-        &.rank-4, &.rank-5, &.rank-6 {
-          background: rgba(255, 255, 255, 0.1);
-          color: $text-muted;
-        }
-      }
-
-      .match-time {
-        font-size: 0.68rem;
-        color: $text-muted;
-      }
-    }
-
-    .log-center-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-
-      .comp-title-line {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        .comp-name {
-          font-size: 0.9rem;
-          font-weight: 700;
-          color: $text-primary;
-        }
-
-        .commander-tag {
-          font-size: 0.72rem;
-          background: rgba(255, 255, 255, 0.08);
-          padding: 1px 6px;
-          border-radius: 3px;
-          color: $text-secondary;
-        }
-
-        .contest-pill {
-          font-size: 0.68rem;
-          padding: 1px 6px;
-          border-radius: 10px;
-
-          &.pill-low {
-            background: rgba($color-success, 0.2);
-            color: $color-success;
-          }
-          &.pill-high {
-            background: rgba($color-danger, 0.2);
-            color: #ff7875;
-          }
-          &.pill-med {
-            background: rgba($color-gold, 0.2);
-            color: $color-gold;
-          }
-        }
-      }
-
-      .synergies-wrap, .heroes-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        align-items: center;
-
-        .synergy-tag {
-          font-size: 0.7rem;
-          background: rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 1px 6px;
-          border-radius: 3px;
-          color: $text-secondary;
-        }
-
-        .heroes-label {
-          font-size: 0.7rem;
-          color: $text-muted;
-        }
-
-        .hero-tag {
-          font-size: 0.7rem;
-          color: $color-gold;
-          background: rgba($color-gold, 0.08);
-          padding: 1px 6px;
-          border-radius: 3px;
-        }
-      }
-    }
-
-    .log-right-col {
-      display: flex;
-      gap: 12px;
-      text-align: right;
-
-      .stat-box {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-
-        .lbl {
-          font-size: 0.68rem;
-          color: $text-muted;
-        }
-
-        .val {
-          font-size: 0.85rem;
-          font-weight: 700;
-        }
-      }
-    }
+    align-items: flex-start;
   }
 }
 
-.text-gold {
-  color: $color-gold;
+.log-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 90px;
 }
 
-.text-cyan {
-  color: $color-cyan-light;
+.placement-badge {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  background: #f1f5f9;
+  color: #334155;
+
+  &.rank-1 {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  &.rank-2 {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  &.rank-3 {
+    background: #dcfce7;
+    color: #15803d;
+  }
+}
+
+.match-time-text {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.log-mid-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lineup-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lineup-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.commander-tag {
+  font-size: 11px;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.verified-tag {
+  font-size: 10px;
+  color: #16a34a;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.heroes-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.heroes-label {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.hero-tag {
+  font-size: 11px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.log-right-col {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+
+  @media (max-width: 640px) {
+    align-items: flex-start;
+  }
+
+  .lbl {
+    font-size: 10px;
+    color: #94a3b8;
+  }
+
+  .val {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+  }
 }
 </style>

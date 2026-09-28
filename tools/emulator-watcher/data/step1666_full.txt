@@ -1,0 +1,31 @@
+Created At: 2026-09-28T00:21:00+08:00
+Completed At: 2026-09-28T00:21:00+08:00
+
+				The command exited with code 0.
+				Output:
+				Testing /wzwxq/tournaments...
+Status: 200 Code: 1 Data: [
+  {
+    createdAt: '2026-09-27T10:54:25.039Z',
+    name: '万象王牌 S1 娱乐赛',
+    season: 'S1',
+    startsAt: '2026-09-25T16:00:00Z',
+    allowHostForceStart: false,
+    id: 'd5a16d4c-8bd6-4da2-85a2-6d2d51fbaf64',
+    endsAt: '2026-10-07T16:00:00Z',
+    status: 'ongoing',
+    updatedAt: '2026-09-27T13:46:54.165Z'
+  },
+  {
+    createdAt: '2026-09-26T07:57:26.527Z',
+    name: '测试比赛',
+    season: 'S1',
+    startsAt: '2026-09-25T16:00:00Z',
+    allowHostForceStart: false,
+    id: '6aa59911-0075-456e-91c5-d619aa982155',
+    endsAt: '2026-10-06T16:00:00Z',
+    status: 'ongoing',
+    updatedAt: '2026-09-27T13:41:30.019Z'
+  }
+]
+

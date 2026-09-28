@@ -1,10 +1,13 @@
-// 前端深度自走棋局内决策引擎 (Deep Auto Chess Matchup & EV Solver)
-// 彻底摒弃简单分数假设，融合：真实历史对局流水、公共卡池撞车惩罚、流派相克矩阵与赔率精算
+// 王者万象棋数据站 - 客户端战况分析工具 (v2 真实对战分析版)
+// 遵循 v2 规范与验收报告要求 (F06, A18):
+// 1. 严禁在缺少参数或选手不足 6 人时默认回退固定六人预设！
+// 2. 识别失败或不完整时直接抛出异常，引导进入人工核验录入工作台
+// 3. 生产环境彻底关闭 STRONG_BUY 等未经 P4 回测验证的强推荐标签，仅输出客观数据面与阵容克制推演
 
 import { simulateMatchupMechanics, type PlayerContestAnalysis } from './matchup-engine'
-import { realMatchHistoryData } from '../mock/match-history'
 import { realProPlayersData } from '../mock/pro-players'
-import { MATCH_PRESET_18824, type ExtractedLobby } from './image-analyzer'
+import { realMatchHistoryData } from '../mock/match-history'
+import type { ExtractedLobbyResult } from './image-analyzer'
 
 export interface LiveParticipantResult {
   slot: number
@@ -16,18 +19,18 @@ export interface LiveParticipantResult {
   probability: number
   netEV: number
   roi: number
-  recommendation: 'STRONG_BUY' | 'BUY' | 'AVOID' | 'NEUTRAL'
+  recommendation: 'ANALYTICAL_EVAL' | 'NEUTRAL'
   decisionReason: string
   playstyle: string
   playstyleDesc: string
-  commander?: string
-  favoriteLineups?: string[]
+  commander: string
+  favoriteLineups: string[]
   contestAnalysis: PlayerContestAnalysis
 }
 
 export interface LiveMatchSolved {
   eventId: string
-  matchTitle?: string
+  matchTitle: string
   timestamp: string
   countdown: string
   userDiamondBalance: number
@@ -36,28 +39,28 @@ export interface LiveMatchSolved {
   participants: any[]
   probabilities: Record<number, number>
   recommendations: LiveParticipantResult[]
-  bestRecommendation: LiveParticipantResult
+  bestRecommendation: LiveParticipantResult | null
   contestedAnalysis: PlayerContestAnalysis[]
   overallInsights: string[]
 }
 
 /**
- * 客户端自走棋推演与决策求解
- * @param lobbyOrList 可以是 ExtractedLobby 对象，或 6 人 Participant 数组，默认使用最新 18824 巅峰场次
+ * 客户端自走棋推演分析
+ * 严格校验：必须传入完整的 6 位有效选手，绝不允许使用默认预设！(F06)
  */
-export function solveClientLiveMatch(lobbyOrList?: ExtractedLobby | any[]): LiveMatchSolved {
+export function solveClientLiveMatch(lobbyOrList?: ExtractedLobbyResult | any[]): LiveMatchSolved {
   const startTime = performance.now()
 
-  let rawList: any[] = MATCH_PRESET_18824.participants
-  let countdown = '02:29'
-  let userDiamondBalance = 3422
-  let spectatorCount = 59
-  let matchTitle = '巅峰赛 18824★ 全服断层第一局'
+  let rawList: any[] = []
+  let countdown = '--:--'
+  let userDiamondBalance = 0
+  let spectatorCount = 0
+  let matchTitle = '实战对决席位分析'
 
   if (lobbyOrList) {
     if (Array.isArray(lobbyOrList) && lobbyOrList.length === 6) {
       rawList = lobbyOrList
-    } else if ('participants' in lobbyOrList && lobbyOrList.participants.length === 6) {
+    } else if ('participants' in lobbyOrList && Array.isArray(lobbyOrList.participants) && lobbyOrList.participants.length === 6) {
       rawList = lobbyOrList.participants
       countdown = lobbyOrList.countdown || countdown
       userDiamondBalance = lobbyOrList.userDiamondBalance || userDiamondBalance
@@ -66,17 +69,22 @@ export function solveClientLiveMatch(lobbyOrList?: ExtractedLobby | any[]): Live
     }
   }
 
+  // 严格校验：缺人或未知图片必须直接拒绝推演，严禁填充假数据！(F06)
+  if (rawList.length !== 6) {
+    throw new Error(`当前提取席位人数为 ${rawList.length} 人，必须具备完整 6 个席位才能进行实战对局推演`)
+  }
+
   // 1. 调用自走棋沙盘推演引擎 (计算公共卡池撞车内卷、流派克制与推演胜率)
   const simulation = simulateMatchupMechanics(rawList)
   const probabilities = simulation.probabilities
 
-  // 2. 结合赔率精算 EV 与生成专业自走棋决策评定
+  // 2. 客观数据面评定 (关闭所有 STRONG_BUY 强推荐 A18)
   const recommendations: LiveParticipantResult[] = rawList.map((p) => {
     const slot = p.slot
     const prob = probabilities[slot] || 0.167
     const odds = p.odds || p.oddsDisplay || 5.0
     const meta = Object.values(realProPlayersData).find(m => m.lastNickname === p.nickname)
-    const contest = simulation.contestedAnalysis.find(c => c.slot === slot)!
+    const contest = simulation.contestedAnalysis.find((c: PlayerContestAnalysis) => c.slot === slot)!
     const history = realMatchHistoryData[p.nickname]
 
     const testInvest = 100
@@ -84,39 +92,28 @@ export function solveClientLiveMatch(lobbyOrList?: ExtractedLobby | any[]): Live
     const netEV = Number((prob * grossReturn - testInvest).toFixed(1))
     const roi = Number(((netEV / testInvest) * 100).toFixed(1))
 
-    let recommendation: 'STRONG_BUY' | 'BUY' | 'AVOID' | 'NEUTRAL' = 'NEUTRAL'
-    let decisionReason = ''
-
-    if (netEV > 15) {
-      recommendation = 'STRONG_BUY'
-      decisionReason = `【绝对正期望 +${roi}%】${contest.analysisSummary} 真实吃鸡率(${Math.round(contest.historicalWinRate * 100)}%)配合${contest.powerspikeDesc}，盘面返奖率(${odds}x)被大众严重低估！`
-    } else if (netEV >= -5 && netEV <= 15) {
-      recommendation = 'BUY'
-      decisionReason = `【大众焦点但利润摊薄】前三稳率极高(${Math.round(contest.historicalTop3Rate * 100)}%)，但跟风筹码聚集导致返奖率(${odds}x)偏低，EV边际偏平。`
-    } else {
-      recommendation = 'AVOID'
-      decisionReason = `【负收益陷阱 EV: ${netEV}钻】${contest.analysisSummary} 大后期吃鸡期望(${Math.round(prob * 100)}%)无法覆盖高倍率风险，切忌盲目博高赔率。`
-    }
+    // 客观中立评定，不提供诱导性投资评定
+    const decisionReason = `${contest?.analysisSummary || '常规对局'}。历史吃鸡率参考: ${Math.round((contest?.historicalWinRate || 0.16) * 100)}%，前三稳率: ${Math.round((contest?.historicalTop3Rate || 0.5) * 100)}%。盘面参考倍率: ${odds}x。`
 
     return {
       slot,
       nickname: p.nickname,
-      rankText: p.rankText,
-      rankScore: p.rankScore,
+      rankText: p.rankText || '最强王者',
+      rankScore: p.rankScore || 10000,
       supportCount: p.supportCount || 0,
       odds,
       probability: prob,
       netEV,
       roi,
-      recommendation,
+      recommendation: 'ANALYTICAL_EVAL' as const,
       decisionReason,
       playstyle: history?.playstyleType || meta?.playstyleCategory || '常规高分流',
-      playstyleDesc: meta?.playstyleDesc || '王者万象棋顶尖选手。',
-      commander: p.commander || p.commanderName || meta?.favoriteCommanders?.[0]?.name,
-      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || [contest.chosenLineup],
+      playstyleDesc: meta?.playstyleDesc || '王者万象棋高分段选手。',
+      commander: p.commander || p.commanderName || meta?.favoriteCommanders?.[0]?.name || '通用',
+      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || [contest?.chosenLineup || '常规'],
       contestAnalysis: contest
     }
-  }).sort((a, b) => b.netEV - a.netEV)
+  }).sort((a, b) => b.probability - a.probability)
 
   const latencyMs = Math.round(performance.now() - startTime)
 
@@ -131,7 +128,7 @@ export function solveClientLiveMatch(lobbyOrList?: ExtractedLobby | any[]): Live
     participants: rawList,
     probabilities,
     recommendations,
-    bestRecommendation: recommendations[0],
+    bestRecommendation: recommendations[0] || null,
     contestedAnalysis: simulation.contestedAnalysis,
     overallInsights: simulation.overallInsights
   }

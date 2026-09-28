@@ -1,5 +1,11 @@
-// 王者万象棋数据站 - 统一 RESTful API 客户端
-// 遵循 v2 规范：优先读取真实后端，保留完整元信息 (dataAsOf, qualityStatus)，失败时优雅降级并明确提示状态
+// 王者万象棋数据站 - 统一 RESTful API 客户端 (v2 真实数据闭环版)
+// 遵循 v2 规范与验收报告要求 (F04, F05, F08, F09, F13):
+// 1. 严格使用真实 API 状态渲染，删除一切生产 mock 回退 (F04)
+// 2. 携带管理端 Bearer Token，支持安全写操作 (F09)
+// 3. 补齐 events/:id, lineups/:id, slots/confirm, imports/:id 等标准接口 (F13)
+// 4. 接口失败与空库状态真实呈现，绝不伪装数据或批次 (F05)
+
+const ADMIN_TOKEN = 'wanxiangqi-admin-token-v2'
 
 export interface PlayerStats {
   sampleCount: number
@@ -23,6 +29,46 @@ export interface PlayerRecord {
   commander?: string
   style?: string
   stats?: PlayerStats
+}
+
+export interface MatchRecord {
+  id: string
+  playerId: string
+  matchTime: string
+  availableAt: string
+  mode?: string
+  finalRank: number
+  commander?: string
+  lineup?: string
+  roundsSurvived?: number
+  threeStars?: string[]
+  verified: boolean
+  evidenceId?: string
+  batchId?: string
+}
+
+export interface EventParticipant {
+  slot: number
+  playerId: string
+  nickname: string
+  rankScore: number
+  odds: number
+  supportCount: number
+  finalRank?: number
+  commander?: string
+  lineup?: string
+}
+
+export interface EventRecord {
+  id: string
+  mode: string
+  scheduledAt: string
+  title: string
+  status: string
+  evidenceId?: string
+  participants: EventParticipant[]
+  verifiedAt?: string
+  verifiedBy?: string
 }
 
 export interface LineupSnapshot {
@@ -50,207 +96,238 @@ export interface DataSourceStatus {
   status: string
   lastAttemptAt?: string | null
   lastSuccessAt?: string | null
+  lastError?: string | null
   note?: string
 }
 
+export interface ImportBatchResult {
+  batchId: string
+  source: string
+  totalRecords: number
+  inserted: number
+  updated: number
+  duplicates: number
+  createdAt: string
+}
+
 /**
- * 获取选手列表 (带真实统计计算)
+ * 封装通用 fetch 请求，默认携带管理凭证
  */
-export async function fetchPlayersList(query = '', sort = 'rankScore'): Promise<{ players: PlayerRecord[]; dataAsOf: string; fromBackend: boolean }> {
+async function requestApi<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const headers = new Headers(options.headers || {})
+  if (!headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${ADMIN_TOKEN}`)
+  }
+
+  const res = await fetch(path, {
+    ...options,
+    headers
+  })
+
+  const json = await res.json().catch(() => null)
+  if (!res.ok) {
+    const errorMsg = json?.error || `HTTP ${res.status} 请求失败`
+    const err: any = new Error(errorMsg)
+    err.status = res.status
+    err.details = json?.details
+    throw err
+  }
+
+  return json
+}
+
+/**
+ * 1. 获取选手大盘列表 (带真实双截点过滤与统计，严禁 mock 回退)
+ */
+export async function fetchPlayersList(params: {
+  query?: string
+  sort?: string
+  mode?: string
+  from?: string
+  to?: string
+} = {}): Promise<{ players: PlayerRecord[]; total: number; dataAsOf: string; fromBackend: boolean }> {
+  const queryParts: string[] = []
+  if (params.query) queryParts.push(`query=${encodeURIComponent(params.query)}`)
+  if (params.sort) queryParts.push(`sort=${encodeURIComponent(params.sort)}`)
+  if (params.mode) queryParts.push(`mode=${encodeURIComponent(params.mode)}`)
+  if (params.from) queryParts.push(`from=${encodeURIComponent(params.from)}`)
+  if (params.to) queryParts.push(`to=${encodeURIComponent(params.to)}`)
+
+  const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : ''
   try {
-    const res = await fetch(`/api/v1/players?query=${encodeURIComponent(query)}&sort=${encodeURIComponent(sort)}`)
-    if (res.ok) {
-      const json = await res.json()
-      if (json.code === 0 && Array.isArray(json.data)) {
-        return {
-          players: json.data,
-          dataAsOf: json.dataAsOf || new Date().toISOString(),
-          fromBackend: true
-        }
-      }
+    const res = await requestApi<any>(`/api/v1/players${queryString}`)
+    return {
+      players: Array.isArray(res.data) ? res.data : [],
+      total: res.total || (res.data ? res.data.length : 0),
+      dataAsOf: res.dataAsOf || new Date().toISOString(),
+      fromBackend: true
     }
   } catch (err) {
-    console.warn('[API Client] Backend /api/v1/players unreachable, falling back to local master database', err)
-  }
-
-  // 优雅降级：读取前端 master-database
-  const { masterPlayersList } = await import('../mock/master-database')
-  let list: PlayerRecord[] = masterPlayersList.map((p) => ({
-    id: p.id,
-    nickname: p.nickname,
-    platform: p.platform,
-    serverZone: '官方区服',
-    rankScore: p.rankScore,
-    rankText: p.rankText,
-    title: p.titleBadge,
-    commander: p.signatureHero,
-    style: p.primaryLineup,
-    stats: {
-      sampleCount: p.totalRecordedMatches,
-      winRate: p.firstPlaceRate,
-      top3Rate: p.top3Rate,
-      avgRank: p.avgPlacement,
-      isSmallSample: p.totalRecordedMatches < 20,
-      warning: p.totalRecordedMatches < 20 ? '样本量较少' : null
+    console.error('[API Client] fetchPlayersList 失败:', err)
+    return {
+      players: [],
+      total: 0,
+      dataAsOf: new Date().toISOString(),
+      fromBackend: false
     }
-  }))
-
-  if (query) {
-    const q = query.toLowerCase()
-    list = list.filter((p: PlayerRecord) => 
-      p.nickname.toLowerCase().includes(q) || 
-      (p.title && p.title.toLowerCase().includes(q))
-    )
-  }
-
-  if (sort === 'winRate') {
-    list.sort((a: PlayerRecord, b: PlayerRecord) => (b.stats?.winRate ?? -1) - (a.stats?.winRate ?? -1))
-  } else if (sort === 'top3Rate') {
-    list.sort((a: PlayerRecord, b: PlayerRecord) => (b.stats?.top3Rate ?? -1) - (a.stats?.top3Rate ?? -1))
-  } else if (sort === 'avgRank') {
-    list.sort((a: PlayerRecord, b: PlayerRecord) => (a.stats?.avgRank ?? 99) - (b.stats?.avgRank ?? 99))
-  } else {
-    list.sort((a: PlayerRecord, b: PlayerRecord) => b.rankScore - a.rankScore)
-  }
-
-  return {
-    players: list,
-    dataAsOf: new Date().toISOString(),
-    fromBackend: false
   }
 }
 
 /**
- * 获取选手对局流水下钻
+ * 2. 获取单选手统计及分母
  */
-export async function fetchPlayerMatches(playerId: string): Promise<any[]> {
-  try {
-    const res = await fetch(`/api/v1/players/${encodeURIComponent(playerId)}/matches`)
-    if (res.ok) {
-      const json = await res.json()
-      if (json.code === 0 && Array.isArray(json.data)) {
-        return json.data
-      }
-    }
-  } catch (err) {
-    console.warn('[API Client] Backend player matches unreachable, fallback to local', err)
-  }
+export async function fetchPlayerStats(playerId: string, options: { cutoff?: string; mode?: string } = {}): Promise<PlayerStats | null> {
+  const query = new URLSearchParams()
+  if (options.cutoff) query.set('cutoff', options.cutoff)
+  if (options.mode) query.set('mode', options.mode)
+  const qs = query.toString() ? `?${query.toString()}` : ''
 
-  const { masterMatchesList } = await import('../mock/master-database')
-  return masterMatchesList
+  const res = await requestApi<any>(`/api/v1/players/${encodeURIComponent(playerId)}/stats${qs}`)
+  return res.stats || null
 }
 
 /**
- * 获取第三方阵容大盘快照 (hokace.wiki)
+ * 3. 获取单选手历史战绩事实流水
+ */
+export async function fetchPlayerMatches(playerId: string): Promise<MatchRecord[]> {
+  const res = await requestApi<any>(`/api/v1/players/${encodeURIComponent(playerId)}/matches`)
+  return Array.isArray(res.data) ? res.data : []
+}
+
+/**
+ * 4. 获取对局场次大盘列表
+ */
+export async function fetchEventsList(params: { date?: string; mode?: string } = {}): Promise<EventRecord[]> {
+  const query = new URLSearchParams()
+  if (params.date) query.set('date', params.date)
+  if (params.mode) query.set('mode', params.mode)
+  const qs = query.toString() ? `?${query.toString()}` : ''
+
+  const res = await requestApi<any>(`/api/v1/events${qs}`)
+  return Array.isArray(res.data) ? res.data : []
+}
+
+/**
+ * 4.1 获取单场对决详情 (F13)
+ */
+export async function fetchEventDetail(eventId: string): Promise<EventRecord | null> {
+  const res = await requestApi<any>(`/api/v1/events/${encodeURIComponent(eventId)}`)
+  return res.data || null
+}
+
+/**
+ * 5. 获取第三方阵容快照大盘 (hokace.wiki)
  */
 export async function fetchLineupSnapshots(): Promise<{ lineups: LineupSnapshot[]; sourceNotice: string; dataAsOf: string }> {
   try {
-    const res = await fetch('/api/v1/lineups')
-    if (res.ok) {
-      const json = await res.json()
-      if (json.code === 0 && Array.isArray(json.data)) {
-        return {
-          lineups: json.data,
-          sourceNotice: json.sourceNotice || '数据来源于第三方阵容快照 (hokace.wiki)',
-          dataAsOf: json.dataAsOf || new Date().toISOString()
-        }
-      }
+    const res = await requestApi<any>('/api/v1/lineups')
+    return {
+      lineups: Array.isArray(res.data) ? res.data : [],
+      sourceNotice: res.sourceNotice || '第三方阵容环境参考',
+      dataAsOf: res.dataAsOf || new Date().toISOString()
     }
   } catch (err) {
-    console.warn('[API Client] Backend /api/v1/lineups unreachable, fallback to initial snapshots', err)
-  }
-
-  // 本地快照兜底
-  return {
-    lineups: [
-      {
-        id: 'lineup-snap-01',
-        sourceId: 'src-hokace-wiki',
-        lineupName: '雷霆扶桑刺',
-        tier: 'T1',
-        commander: '司空震',
-        coreHeroes: ['司空震', '不知火舞', '娜可露露', '宫本武藏'],
-        sampleCount: 14280,
-        winRate: 0.224,
-        top3Rate: 0.582,
-        avgRank: 3.12,
-        snapshotVersion: 'v260917',
-        windowText: '近 7 日实战聚合',
-        scope: '全服王者段位',
-        updatedAt: '2026-09-27T08:00:00.000Z'
-      },
-      {
-        id: 'lineup-snap-02',
-        sourceId: 'src-hokace-wiki',
-        lineupName: '九五至尊完全体',
-        tier: 'T0.5',
-        commander: '弈星',
-        coreHeroes: ['弈星', '武则天', '吕布', '公孙离'],
-        sampleCount: 8940,
-        winRate: 0.286,
-        top3Rate: 0.512,
-        avgRank: 3.28,
-        snapshotVersion: 'v260917',
-        windowText: '近 7 日实战聚合',
-        scope: '全服王者段位',
-        updatedAt: '2026-09-27T08:00:00.000Z'
-      },
-      {
-        id: 'lineup-snap-03',
-        sourceId: 'src-hokace-wiki',
-        lineupName: '玄雍重坦防刺',
-        tier: 'T1',
-        commander: '庄周',
-        coreHeroes: ['廉颇', '白起', '嬴政', '镜'],
-        sampleCount: 11200,
-        winRate: 0.165,
-        top3Rate: 0.620,
-        avgRank: 3.05,
-        snapshotVersion: 'v260917',
-        windowText: '近 7 日实战聚合',
-        scope: '全服王者段位',
-        updatedAt: '2026-09-27T08:00:00.000Z'
-      },
-      {
-        id: 'lineup-snap-04',
-        sourceId: 'src-hokace-wiki',
-        lineupName: '尧天阿离神射',
-        tier: 'T1.5',
-        commander: '公孙离',
-        coreHeroes: ['公孙离', '明世隐', '裴擒虎', '伽罗'],
-        sampleCount: 9650,
-        winRate: 0.198,
-        top3Rate: 0.540,
-        avgRank: 3.35,
-        snapshotVersion: 'v260917',
-        windowText: '近 7 日实战聚合',
-        scope: '全服王者段位',
-        updatedAt: '2026-09-27T08:00:00.000Z'
-      }
-    ],
-    sourceNotice: '数据来源于第三方阵容快照 (hokace.wiki 快照 v260917)，仅供环境参考',
-    dataAsOf: new Date().toISOString()
+    console.error('[API Client] fetchLineupSnapshots 失败:', err)
+    return {
+      lineups: [],
+      sourceNotice: '无法连接阵容快照服务',
+      dataAsOf: new Date().toISOString()
+    }
   }
 }
 
 /**
- * 查询数据源与服务状态
+ * 5.1 获取单套阵容详情 (F13)
  */
-export async function fetchDataSourceStatus(): Promise<DataSourceStatus[]> {
-  try {
-    const res = await fetch('/api/v1/data-status')
-    if (res.ok) {
-      const json = await res.json()
-      if (json.code === 0 && Array.isArray(json.sources)) {
-        return json.sources
-      }
-    }
-  } catch (err) {
-    console.warn('[API Client] Backend data-status unreachable', err)
+export async function fetchLineupDetail(lineupId: string): Promise<LineupSnapshot | null> {
+  const res = await requestApi<any>(`/api/v1/lineups/${encodeURIComponent(lineupId)}`)
+  return res.data || null
+}
+
+/**
+ * 6. 获取数据源健康度与同步状态
+ */
+export async function fetchDataStatus(): Promise<{
+  sources: DataSourceStatus[]
+  totalMatches: number
+  totalPlayers: number
+  totalEvents: number
+  lastUpdated: string
+}> {
+  const res = await requestApi<any>('/api/v1/data-status')
+  return {
+    sources: res.sources || [],
+    totalMatches: res.totalMatches || 0,
+    totalPlayers: res.totalPlayers || 0,
+    totalEvents: res.totalEvents || 0,
+    lastUpdated: res.lastUpdated || new Date().toISOString()
   }
-  return [
-    { id: 'src-manual-review', name: '截图人工校对录入', type: 'SCREENSHOT_OCR_MANUAL', url: 'internal://evidence', status: 'ACTIVE' },
-    { id: 'src-hokace-wiki', name: 'hokace.wiki 第三方阵容快照', type: 'LINEUP_AGGREGATE', url: 'https://hokace.wiki/zh/lineups/', status: 'READY' },
-    { id: 'src-official-helper', name: '官方战绩小助手', type: 'OFFICIAL_API', url: 'https://wxq.qq.com/', status: 'UNAVAILABLE', note: '未确认第三方公开 API' }
-  ]
+}
+
+/**
+ * 7. 导入战绩流水 (带严格校验，支持真实反馈与错误提示 F08)
+ */
+export async function importMatchRecords(records: any[], source = 'ADMIN_IMPORT'): Promise<ImportBatchResult> {
+  const res = await requestApi<any>('/api/v1/admin/imports', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ records, source })
+  })
+
+  if (res.code !== 0 || !res.result) {
+    throw new Error(res.error || '导入未成功完成')
+  }
+  return res.result
+}
+
+/**
+ * 7.1 查询指定导入批次 (F13)
+ */
+export async function fetchImportBatch(batchId: string): Promise<any> {
+  const res = await requestApi<any>(`/api/v1/admin/imports/${encodeURIComponent(batchId)}`)
+  return res.data
+}
+
+/**
+ * 7.2 人工校对工作台 6 席位持久化入库确认 (F05)
+ */
+export async function confirmSlotAudit(payload: {
+  eventId?: string
+  title?: string
+  scheduledAt?: string
+  mode?: string
+  evidenceSha256?: string
+  slots: Array<{
+    slot: number
+    playerId?: string
+    nickname: string
+    rankScore?: number
+    rankText?: string
+    odds?: number
+    supportCount?: number
+    finalRank: number
+    commander?: string
+    lineup?: string
+  }>
+}): Promise<EventRecord> {
+  const res = await requestApi<any>('/api/v1/admin/slots/confirm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+
+  if (res.code !== 0 || !res.data) {
+    throw new Error(res.error || '持久化保存失败')
+  }
+  return res.data
+}
+
+/**
+ * 8. 触发外部数据源同步 (F03)
+ */
+export async function syncSource(sourceId: string): Promise<any> {
+  const res = await requestApi<any>(`/api/v1/admin/sources/${encodeURIComponent(sourceId)}/sync`, {
+    method: 'POST'
+  })
+  return res
 }

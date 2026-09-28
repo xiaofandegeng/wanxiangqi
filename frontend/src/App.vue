@@ -33,32 +33,37 @@ import AppHeader from './components/AppHeader.vue'
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 16px;
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    padding: 16px 8px;
+  }
 }
 
 .app-footer {
   width: 100%;
   padding: 24px 0;
-  border-top: 1px solid $border-color;
-  background: rgba(11, 15, 25, 0.9);
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
   text-align: center;
 }
 
 .footer-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
 }
 
 .footer-copy {
   font-size: 13px;
   font-weight: 600;
-  color: $text-secondary;
+  color: #334155;
   margin-bottom: 4px;
 }
 
 .footer-note {
   font-size: 11px;
-  color: $text-muted;
+  color: #64748b;
 }
 </style>

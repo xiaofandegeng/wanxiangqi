@@ -1,0 +1,10 @@
+Created At: 2026-09-28T00:17:19+08:00
+Completed At: 2026-09-28T00:17:21+08:00
+
+				The command exited with code 0.
+				Output:
+				Testing /wzwxq/lineups/search...
+Search status: 200 Code: 1 Msg: 
+Data keys: [ 'sampleCount', 'total', 'pageSize', 'page', 'lineups' ]
+Sample: {"sampleCount":390306,"total":36,"pageSize":20,"page":1,"lineups":[{"recommendedUnits":[{"recommendationCount":30,"appearanceRate":0.9825,"threeItemRate":0.1733,"itemIds":["643501","643601","643602"],"count":10176,"heroId":"1131","awakenedRate":0.7451,"recommendationType":"three_item"},{"recommendationCount":1256,"appearanceRate":0.9668,"threeItemRate":0.9432,"itemIds":["643202","643703","643803"],"count":10013,"heroId":"1101","awakenedRate":0.789,"recommendationType":"three_item"},{"recommendat
+

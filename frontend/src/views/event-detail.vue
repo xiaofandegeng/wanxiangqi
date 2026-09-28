@@ -85,10 +85,10 @@
                 <div class="heat-bar-wrap">
                   <div 
                     class="heat-bar-fill" 
-                    :style="{ width: (event.supportSnapshot ? (event.supportSnapshot[p.slot]?.ratioPercent || 50) : 50) + '%' }"
+                    :style="{ width: `${getParticipantRelativePercent(p)}%` }"
                   ></div>
                   <span class="heat-bar-label font-mono">
-                    {{ event.supportSnapshot ? event.supportSnapshot[p.slot]?.ratioPercent + '%' : '50%' }}
+                    {{ formatParticipantSupportText(p) }}
                   </span>
                 </div>
               </td>
@@ -190,7 +190,7 @@
     <!-- 真实对局战绩流水弹窗 -->
     <PlayerHistoryModal
       :is-open="isHistoryModalOpen"
-      :player-stats="currentHistoryStats"
+      :player="selectedPlayerRecord"
       @close="isHistoryModalOpen = false"
     />
   </div>
@@ -211,25 +211,50 @@ import MatchupAnalysis from '../components/MatchupAnalysis.vue'
 import PlayerHistoryModal from '../components/PlayerHistoryModal.vue'
 import { simulateMatchupMechanics } from '../utils/matchup-engine'
 import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
+import type { PlayerRecord } from '../api'
 
 const route = useRoute()
 const eventStore = useEventStore()
 
 const isHistoryModalOpen = ref(false)
-const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
+const selectedPlayerRecord = ref<PlayerRecord | null>(null)
 
 function getParticipantHistory(nickname?: string): PlayerHistoricalStats | undefined {
   if (!nickname) return undefined
   return realMatchHistoryData[nickname]
 }
 
+// 严谨计算相对最高热度百分比 (F12)
+function getParticipantRelativePercent(p: any): number {
+  if (!event.value?.participants) return 0
+  const maxSupport = Math.max(...event.value.participants.map((item: any) => item.supportCount || 0))
+  if (maxSupport <= 0 || !p.supportCount) return 0
+  return Number(((p.supportCount / maxSupport) * 100).toFixed(1))
+}
+
+function formatParticipantSupportText(p: any): string {
+  if (!p.supportCount && p.supportCount !== 0) {
+    if (event.value?.supportSnapshot && event.value.supportSnapshot[p.slot]) {
+      return `${event.value.supportSnapshot[p.slot].ratioPercent}%`
+    }
+    return '暂无数据'
+  }
+  if (p.supportCount === 0) return '0.0%'
+  const rel = getParticipantRelativePercent(p)
+  return `${rel}% (相对最高)`
+}
+
 function openPlayerHistory(nickname?: string) {
   if (!nickname) return
-  const stats = getParticipantHistory(nickname)
-  if (stats) {
-    currentHistoryStats.value = stats
-    isHistoryModalOpen.value = true
+  selectedPlayerRecord.value = {
+    id: `p-${nickname}`,
+    nickname,
+    platform: '官方区服',
+    serverZone: '手Q1区',
+    rankScore: 10000,
+    rankText: '最强王者'
   }
+  isHistoryModalOpen.value = true
 }
 
 const event = computed(() => {

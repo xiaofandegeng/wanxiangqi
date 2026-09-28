@@ -17,23 +17,10 @@
           <span class="status-val text-success">视觉识别与推演引擎就绪</span>
         </div>
 
-        <!-- 真实实战对局切换器 -->
+        <!-- 真实实战对局状态 -->
         <div class="match-selector-bar">
-          <span class="selector-lbl">实盘场次:</span>
-          <button 
-            class="match-chip" 
-            :class="{ active: currentMatchKey === 'match-18824' }" 
-            @click="switchMatch('match-18824')"
-          >
-            🔥 巅峰赛 18824★ (EZ夜余/校长神Gin)
-          </button>
-          <button 
-            class="match-chip" 
-            :class="{ active: currentMatchKey === 'match-11768' }" 
-            @click="switchMatch('match-11768')"
-          >
-            📜 王牌对决 11768★ (白白白白3/一茗)
-          </button>
+          <span class="selector-lbl">识别材料:</span>
+          <span class="status-val text-primary">{{ latestMatch ? latestMatch.matchTitle : '等待上传或粘贴实战房间截图' }}</span>
         </div>
 
         <div class="action-buttons">
@@ -183,7 +170,7 @@
     <!-- 真实对局战绩流水弹窗 -->
     <PlayerHistoryModal 
       :is-open="isHistoryModalOpen" 
-      :player-stats="currentHistoryStats" 
+      :player="selectedPlayerRecord" 
       @close="isHistoryModalOpen = false" 
     />
   </div>
@@ -193,28 +180,32 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import MatchupAnalysis from './MatchupAnalysis.vue'
 import PlayerHistoryModal from './PlayerHistoryModal.vue'
-import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
 import { solveClientLiveMatch } from '../utils/live-solver'
-import { detectMatchFromImage, MATCH_PRESET_18824, MATCH_PRESET_11768 } from '../utils/image-analyzer'
+import { detectMatchFromImage } from '../utils/image-analyzer'
+import type { PlayerRecord } from '../api'
 
 const isOpen = ref(false)
 const isAnalyzing = ref(false)
 const isDragOver = ref(false)
-const currentMatchKey = ref<'match-18824' | 'match-11768'>('match-18824')
+const currentMatchKey = ref<string>('')
 const latestMatch = ref<any>(null)
 let sseSource: EventSource | null = null
 
 // 真实历史对局流水弹窗控制
 const isHistoryModalOpen = ref(false)
-const currentHistoryStats = ref<PlayerHistoricalStats | null>(null)
+const selectedPlayerRecord = ref<PlayerRecord | null>(null)
 
 function openPlayerHistory(nickname?: string) {
   if (!nickname) return
-  const stats = realMatchHistoryData[nickname]
-  if (stats) {
-    currentHistoryStats.value = stats
-    isHistoryModalOpen.value = true
+  selectedPlayerRecord.value = {
+    id: `p-${nickname}`,
+    nickname,
+    platform: '官方区服',
+    serverZone: '手Q1区',
+    rankScore: 10000,
+    rankText: '最强王者'
   }
+  isHistoryModalOpen.value = true
 }
 
 const bestPick = computed(() => latestMatch.value?.bestRecommendation || null)
@@ -224,16 +215,7 @@ const bannerClass = computed(() => {
   return 'style-neutral'
 })
 
-function switchMatch(key: 'match-18824' | 'match-11768') {
-  currentMatchKey.value = key
-  const preset = key === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
-  latestMatch.value = solveClientLiveMatch(preset)
-}
-
 function openModal() {
-  if (!latestMatch.value) {
-    latestMatch.value = solveClientLiveMatch(MATCH_PRESET_18824)
-  }
   isOpen.value = true
 }
 
@@ -261,29 +243,16 @@ function connectSSE() {
 
 // 触发主动抓屏
 async function triggerCapture() {
-  isAnalyzing.value = true
-  try {
-    const preset = currentMatchKey.value === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
-    const solved = solveClientLiveMatch(preset)
-    latestMatch.value = solved
-  } catch (err) {
-    console.error('Capture error', err)
-  } finally {
-    isAnalyzing.value = false
+  if (!latestMatch.value) {
+    alert('暂无对局截图材料，请通过剪贴板 (Cmd+V / Ctrl+V) 或拖拽上传房间截图进行存证识别。')
+    return
   }
 }
 
-// 触发开盘模拟 (默认最新 18824 巅峰赛)
 async function triggerSimulate() {
-  isAnalyzing.value = true
-  try {
-    const preset = currentMatchKey.value === 'match-18824' ? MATCH_PRESET_18824 : MATCH_PRESET_11768
-    const solved = solveClientLiveMatch(preset)
-    latestMatch.value = solved
-  } catch (err) {
-    console.error('Simulate error', err)
-  } finally {
-    isAnalyzing.value = false
+  if (!latestMatch.value) {
+    alert('请先上传或录入已核验的实盘房间截图，再进行席位推演。')
+    return
   }
 }
 
@@ -312,20 +281,28 @@ async function handleDrop(e: DragEvent) {
   }
 }
 
-// 上传到本地接口分析 (客户端智能视觉与对局提取，告别单一场次写死)
+// 上传到本地接口分析 (严格数据真实性防伪版 F06)
 async function uploadAndAnalyze(file: File) {
   isAnalyzing.value = true
   try {
-    // 1. 智能分析上传的截图内容与特征
+    // 1. 计算文件 SHA-256 并进行存证比对
     const detectedLobby = await detectMatchFromImage(file)
+    
+    // 2. 严格安全分支 (F06): 未匹配到已知存证时，禁止推演预测，明确引导人工录入
+    if (detectedLobby.recognitionStatus !== 'MATCHED_FIXTURE') {
+      alert(`【未匹配已核验材料】\n图片 SHA-256: ${detectedLobby.sha256.slice(0, 16)}...\n识别状态: 待人工审核 (0人)\n系统遵循任务书防伪规范，已阻止生成固定预测。请前往「证据链与人工核验」工作台录入真实席位。`)
+      return
+    }
+
     currentMatchKey.value = detectedLobby.matchKey as any
 
-    // 2. 传入识别出的新场次 6 人真实名单进行即时沙盘推演
+    // 3. 只有完整 6 人已核验名单才进入推演
     const solved = solveClientLiveMatch(detectedLobby)
     latestMatch.value = solved
     isOpen.value = true
-  } catch (err) {
+  } catch (err: any) {
     console.error('Upload analyze error', err)
+    alert(`分析中断: ${err.message}`)
   } finally {
     isAnalyzing.value = false
   }

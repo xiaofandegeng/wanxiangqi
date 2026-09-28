@@ -1,0 +1,297 @@
+Created At: 2026-09-28T00:21:05+08:00
+Completed At: 2026-09-28T00:21:05+08:00
+
+				The command exited with code 0.
+				Output:
+				<truncated 1 lines>
+        "nickname": "勤劳的小野猪",
+        "rank": 32,
+        "playerId": "43b37772-ee74-4faa-b39e-9057895e77c2",
+        "points": 14
+      },
+      {
+        "uid": "1569795287",
+        "displayName": "DY超叔叔",
+        "nickname": "DY超叔叔",
+        "rank": 32,
+        "playerId": "625b3a09-b217-4ed8-aff5-3a722372726e",
+        "points": 14
+      },
+      {
+        "uid": "423841322",
+        "displayName": "独见青山",
+        "nickname": "独见青山",
+        "rank": 32,
+        "playerId": "c584013f-ffed-4c0b-a0af-e32b3f95a9ad",
+        "points": 14
+      },
+      {
+        "uid": "447293474",
+        "displayName": "博丽灵梦",
+        "nickname": "博丽灵梦",
+        "rank": 32,
+        "playerId": "e9c8c4e9-96f4-46a7-9003-ca3c0a47a0dd",
+        "points": 14
+      },
+      {
+        "uid": "1502868062",
+        "displayName": "南柯一梦闯王者",
+        "nickname": "南柯一梦闯王者",
+        "rank": 40,
+        "playerId": "7103086c-97bc-4268-9d40-82cbdaf48f6b",
+        "points": 13
+      },
+      {
+        "uid": "79101194",
+        "displayName": "长安不起风",
+        "nickname": "长安不起风",
+        "rank": 41,
+        "playerId": "68da368d-d18b-434c-a638-0b765b4051bd",
+        "points": 12
+      },
+      {
+        "uid": "",
+        "displayName": "云中藏神明",
+        "nickname": "云中藏神明",
+        "rank": 42,
+        "playerId": "56bc5c94-81cd-4ee7-b619-2207472ac877",
+        "points": 11
+      },
+      {
+        "uid": "",
+        "displayName": "大大大大魔王哦",
+        "nickname": "大大大大魔王哦",
+        "rank": 42,
+        "playerId": "fdd2710d-3867-4241-bbd7-1bf4b80d90c7",
+        "points": 11
+      },
+      {
+        "uid": "",
+        "displayName": "一根羽毛",
+        "nickname": "一根羽毛",
+        "rank": 42,
+        "playerId": "ace67fb6-a000-4baf-b606-0e740a1ecda0",
+        "points": 11
+      },
+      {
+        "uid": "1548217626",
+        "displayName": "知衍呀",
+        "nickname": "知衍呀",
+        "rank": 42,
+        "playerId": "4b6e46da-8c15-4bfb-93a5-8cce89cd8a7d",
+        "points": 11
+      },
+      {
+        "uid": "376861506",
+        "displayName": "Sadness小飞飞",
+        "nickname": "Sadness小飞飞",
+        "rank": 42,
+        "playerId": "4c5b1660-e857-4e41-ab44-258658cf92e7",
+        "points": 11
+      },
+      {
+        "uid": "1696352884",
+        "displayName": "北川",
+        "nickname": "北川",
+        "rank": 47,
+        "playerId": "c2e18114-fc6f-4f7e-a7b3-df8308dcf206",
+        "points": 10
+      },
+      {
+        "uid": "8189423",
+        "displayName": "拙心空望月",
+        "nickname": "拙心空望月",
+        "rank": 47,
+        "playerId": "af694bc3-1b1f-441c-a853-d361ff8f9e81",
+        "points": 10
+      },
+      {
+        "uid": "87198729",
+        "displayName": "汤汤 Duo",
+        "nickname": "汤汤 Duo",
+        "rank": 47,
+        "playerId": "3e91e82d-3771-4178-baf2-39ec3f35d679",
+        "points": 10
+      },
+      {
+        "uid": "",
+        "displayName": "Evo1121",
+        "nickname": "Evo1121",
+        "rank": 50,
+        "playerId": "7fb99b14-47ae-4cf1-ae7a-c99af3b25902",
+        "points": 9
+      },
+      {
+        "uid": "",
+        "displayName": "震撼美味",
+        "nickname": "震撼美味",
+        "rank": 50,
+        "playerId": "7feb15c5-4a2d-4bd6-892d-763ec44686cb",
+        "points": 9
+      },
+      {
+        "uid": "1621510248",
+        "displayName": "抖音EG熙梓",
+        "nickname": "抖音EG熙梓",
+        "rank": 50,
+        "playerId": "844d586f-eccc-47ea-86ce-6f756bb9d392",
+        "points": 9
+      },
+      {
+        "uid": "229050730",
+        "displayName": "求你了发牌兄弟",
+        "nickname": "求你了发牌兄弟",
+        "rank": 50,
+        "playerId": "84174c7a-d027-45ef-9376-b7278fd3fa67",
+        "points": 9
+      },
+      {
+        "uid": "233801703",
+        "displayName": "火龙果子儿",
+        "nickname": "火龙果子儿",
+        "rank": 50,
+        "playerId": "af664530-557a-4260-8a9a-004bf44f3c05",
+        "points": 9
+      },
+      {
+        "uid": "",
+        "displayName": "神秘孩哥",
+        "nickname": "神秘孩哥",
+        "rank": 55,
+        "playerId": "dc1026df-7767-4030-9da3-d30b66bfc2e1",
+        "points": 8
+      },
+      {
+        "uid": "",
+        "displayName": "玫瑰刺",
+        "nickname": "玫瑰刺",
+        "rank": 55,
+        "playerId": "e7f15ab5-1634-4b37-a7f7-c8d1298b96e0",
+        "points": 8
+      },
+      {
+        "uid": "94922417",
+        "displayName": "尘世易安",
+        "nickname": "尘世易安",
+        "rank": 55,
+        "playerId": "29d86d2f-c686-4b53-b803-e830b0db79da",
+        "points": 8
+      },
+      {
+        "uid": "1494425044",
+        "displayName": "煌稔",
+        "nickname": "煌稔",
+        "rank": 58,
+        "playerId": "456b191e-3ed8-4029-af44-b647b5a11883",
+        "points": 7
+      },
+      {
+        "uid": "1539435946",
+        "displayName": "鱼不二",
+        "nickname": "鱼不二",
+        "rank": 58,
+        "playerId": "f7284d7e-8250-478f-984a-8bfb26023aca",
+        "points": 7
+      },
+      {
+        "uid": "1710596151",
+        "displayName": "万象凌云",
+        "nickname": "万象凌云",
+        "rank": 58,
+        "playerId": "f10619a4-0e59-471b-b8e1-e8247e2bf0c3",
+        "points": 7
+      },
+      {
+        "uid": "342554672",
+        "displayName": "JayChou",
+        "nickname": "JayChou",
+        "rank": 58,
+        "playerId": "fec1fd46-5402-4ec7-8bd3-fbba4afa2c6c",
+        "points": 7
+      },
+      {
+        "uid": "",
+        "displayName": "无敌小歪o",
+        "nickname": "无敌小歪o",
+        "rank": 62,
+        "playerId": "4cf1247c-cae4-47cd-98c7-69fb7908ffc1",
+        "points": 6
+      },
+      {
+        "uid": "1768253675",
+        "displayName": "大师的召唤",
+        "nickname": "大师的召唤",
+        "rank": 62,
+        "playerId": "59f49326-f5f4-4465-9b30-667ef03fcdf8",
+        "points": 6
+      },
+      {
+        "uid": "367613997",
+        "displayName": "游荡的歌者",
+        "nickname": "游荡的歌者",
+        "rank": 62,
+        "playerId": "98d8f344-fdc8-4ed6-9cb1-03a02457f5e7",
+        "points": 6
+      },
+      {
+        "uid": "563280461",
+        "displayName": "爱吃朱古力",
+        "nickname": "爱吃朱古力",
+        "rank": 62,
+        "playerId": "fc8be7f3-515f-49e0-8768-a451d9b76d94",
+        "points": 6
+      },
+      {
+        "uid": "",
+        "displayName": "落子无悔卍",
+        "nickname": "落子无悔卍",
+        "rank": 66,
+        "playerId": "9912712b-8913-428b-92c0-351d20c767cb",
+        "points": 5
+      },
+      {
+        "uid": "1479837174",
+        "displayName": "辽宁褚赢",
+        "nickname": "辽宁褚赢",
+        "rank": 66,
+        "playerId": "a25a3067-9754-458a-a33a-e0bb2e024045",
+        "points": 5
+      },
+      {
+        "uid": "",
+        "displayName": "发呆的天才",
+        "nickname": "发呆的天才",
+        "rank": 68,
+        "playerId": "7c4d8b38-5d75-49df-8ec3-44cc23957656",
+        "points": 4
+      },
+      {
+        "uid": "235110652",
+        "displayName": "浅夏沫寒霜",
+        "nickname": "浅夏沫寒霜",
+        "rank": 68,
+        "playerId": "f4f45a74-c683-45bf-b7f0-b8c70b387180",
+        "points": 4
+      },
+      {
+        "uid": "1557143865",
+        "displayName": "dyEG苍天弈辰",
+        "nickname": "dyEG苍天弈辰",
+        "rank": 70,
+        "playerId": "0a2d99a8-a98c-4608-9d4c-0266eabc262a",
+        "points": 3
+      },
+      {
+        "uid": "72786476",
+        "displayName": "长忆诗",
+        "nickname": "长忆诗",
+        "rank": 71,
+        "playerId": "9760145e-a111-4fa8-abca-ca85234be7ad",
+        "points": 0
+      }
+    ],
+    "status": "ongoing"
+  },
+  "success": true
+}
+
