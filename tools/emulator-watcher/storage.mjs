@@ -441,6 +441,7 @@ export class StorageEngine {
       roundsSurvived: Number.isInteger(Number(rec.roundsSurvived)) ? Number(rec.roundsSurvived) : null,
       threeStars: Array.isArray(rec.threeStars) ? rec.threeStars : [],
       mode: rec.mode || null,
+      synthetic: rec.synthetic === true, // P0-B：合成/demo 数据必须显式标记，正式统计一律排除
       sourceRecordKey: rec.sourceRecordKey || `${rec.playerId}:${new Date(matchTimeMs).toISOString()}`,
       verified: rec.verified === true, // 绝对不强制转为 true！保持其真实状态
       evidenceId: rec.evidenceId || null,

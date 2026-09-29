@@ -1,0 +1,17 @@
+{
+  "executedAt": "2026-09-29T13:40:10.075Z",
+  "database": "wanxiangqi_test",
+  "backupTable": "quarantine_backup_20260929134009",
+  "backupRowCount": 296,
+  "tableCountsAfter": {
+    "players": 79,
+    "matches": 212,
+    "events": 3,
+    "event_participants": 18,
+    "lineup_snapshots": 36,
+    "evidences": 3,
+    "import_batches": 1
+  },
+  "effectiveStatsAfter": {},
+  "effectiveMatchesAfter": 0
+}

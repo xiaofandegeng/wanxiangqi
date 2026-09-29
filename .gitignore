@@ -29,3 +29,6 @@ dist-ssr
 
 # Temporary files
 *.tmp
+
+# v3 合成 demo 数据（按需生成，不入库）
+tools/emulator-watcher/fixtures/data/
