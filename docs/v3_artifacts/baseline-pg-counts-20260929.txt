@@ -1,0 +1,17 @@
+players|79
+matches|212
+events|3
+event_participants|18
+lineup_snapshots|36
+evidences|3
+import_batches|1
+
+batch-datatft-s1-seed|196|196|t
+audit-evt-20260927-11768|6|0|t
+audit-evt-20260927-18824|6|0|t
+batch-1790521795732|4|4|t
+
+35a0624425fb19c9cb35f301925318f3744589072f6febf2edc7c9518efe16b9  tools/emulator-watcher/data/storage.json
+{"code":0,"status":"UP","engine":"PostgreSQL_Compatible_Local_Engine","storageMode":"EMPTY_COLD_START","totalPlayers":67,"totalMatches":1337,"totalEvents":1,"time":"2026-09-29T13:11:44.908Z"}
+
+snapshot-taken: 2026-09-29T13:11:44Z

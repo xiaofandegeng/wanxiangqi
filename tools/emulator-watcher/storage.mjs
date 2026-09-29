@@ -1,23 +1,22 @@
-// 王者万象棋数据站 - 真实持久化存储与统计引擎 (Storage & Statistical Engine)
-// 遵循 v2 任务书及验收报告规范：
-// 1. 冷启动零 mock：默认空事实库启动，样例严格隔离，绝不自动插入已核验数据 (F02)
-// 2. 双时间截点防未来泄漏：matchTime < cutoff && availableAt <= cutoff (F10)
-// 3. 严格数据校验：拒绝空对象，整数名次 1~6，有效 ISO 时间戳，未核验数据隔离 (F08)
-// 4. 幂等去重与稳定键更正机制 (A03, A13)
-// 5. 阵容统计与选手个人战绩物理隔离 (A06)
+// 王者万象棋数据站 - 文件型持久化存储引擎 (File-backed Storage Engine, v3)
+// 遵循 v3 任务书 P0-A 测试隔离规范：
+// 1. 模块导入零副作用：不自动建目录、不自动读写任何文件、不创建单例 (F08 修复)
+// 2. 存储目录必须显式注入 (constructor { dataDir }) 或经 getBusinessStorage() 惰性创建
+// 3. saveState 原子写 (tmp + rename)，仅在业务动作成功后才落盘
+// 4. 冷启动零 mock：默认空事实库，样例仅限显式 demo 注入，绝不自动插入已核验数据
+// 5. 双时间截点防未来泄漏：matchTime < cutoff && availableAt <= cutoff (F10)
+// 6. 严格数据校验：拒绝空对象，整数名次 1~6，有效 ISO 时间戳，未核验数据隔离 (F08)
+// 7. 幂等去重与稳定键更正机制 (A03, A13)
+//
+// 注意：本引擎在 v3 架构中仅作为 demo 模式仓储；正式模式以 PostgreSQL 为唯一权威。
 
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.join(__dirname, 'data')
-const DB_FILE = path.join(DATA_DIR, 'storage.json')
-
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true })
-}
+const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url))
+export const DEFAULT_DATA_DIR = path.join(MODULE_DIR, 'data')
 
 /**
  * 真实空事实库初始状态 (Zero-Mock Cold Start)
@@ -27,9 +26,9 @@ function createEmptyState() {
   const now = new Date().toISOString()
   return {
     meta: {
-      version: '2.0.0',
+      version: '3.0.0',
       initializedAt: now,
-      engine: 'PostgreSQL_Compatible_Local_Engine',
+      engine: 'FILE_ENGINE_DEMO',
       storageMode: 'EMPTY_COLD_START'
     },
     dataSources: [
@@ -47,11 +46,24 @@ function createEmptyState() {
       {
         id: 'src-hokace-wiki',
         name: 'hokace.wiki 第三方阵容快照',
-        type: 'LINEUP_AGGREGATE',
+        type: 'THIRD_PARTY_AGGREGATE',
         url: 'https://hokace.wiki/zh/lineups/',
         capabilities: ['lineup_aggregate'],
         status: 'READY',
-        version: 'v260917',
+        version: null,
+        licenseNote: '第三方汇总，再利用许可待核实',
+        lastAttemptAt: null,
+        lastSuccessAt: null,
+        lastError: null
+      },
+      {
+        id: 'src-kohcamp-official',
+        name: '腾讯王者营地官方战绩网关',
+        type: 'OFFICIAL_MATCH_FEED',
+        url: 'unknown://no-confirmed-public-api',
+        capabilities: [],
+        status: 'UNCONFIGURED',
+        note: '仅有代码声明，未确认开放 API 与访问资格，不得标 ACTIVE (v3 §3.1)',
         lastAttemptAt: null,
         lastSuccessAt: null,
         lastError: null
@@ -74,8 +86,8 @@ function createEmptyState() {
         type: 'BIG_DATA_AGGREGATE',
         url: 'https://www.datawxq.com/',
         capabilities: ['player_identity', 'tournament_details', 'lineup_aggregate', 'commander_rankings', 'hero_rankings'],
-        status: 'READY',
-        version: 'S1-202609',
+        status: 'UNCONFIGURED',
+        note: 'API 契约与授权范围未核实，未确认前不扩展批量采集 (v3 §3.2)',
         lastAttemptAt: null,
         lastSuccessAt: null,
         lastError: null
@@ -92,55 +104,19 @@ function createEmptyState() {
 }
 
 /**
- * 仅用于明确指定 DEMO_MODE 或 FIXTURES 环境变量时加载的示范数据
- * 生产默认模式绝不加载
+ * 仅用于显式 demo 注入时加载的示范数据 (createStorageEngine({ demo: true }))
+ * 生产与测试默认绝不加载
  */
 function createDemoFixtures() {
   const now = new Date().toISOString()
   return {
     meta: {
-      version: '2.0.0',
+      version: '3.0.0',
       initializedAt: now,
-      engine: 'PostgreSQL_Compatible_Local_Engine',
+      engine: 'FILE_ENGINE_DEMO',
       storageMode: 'DEMO_FIXTURES'
     },
-    dataSources: [
-      {
-        id: 'src-manual-review',
-        name: '截图人工校对录入工作台',
-        type: 'SCREENSHOT_OCR_MANUAL',
-        url: 'internal://evidence-workbench',
-        capabilities: ['player_identity', 'match_details'],
-        status: 'ACTIVE',
-        lastAttemptAt: now,
-        lastSuccessAt: now,
-        lastError: null
-      },
-      {
-        id: 'src-hokace-wiki',
-        name: 'hokace.wiki 第三方阵容快照',
-        type: 'LINEUP_AGGREGATE',
-        url: 'https://hokace.wiki/zh/lineups/',
-        capabilities: ['lineup_aggregate'],
-        status: 'READY',
-        version: 'v260917',
-        lastAttemptAt: now,
-        lastSuccessAt: now,
-        lastError: null
-      },
-      {
-        id: 'src-official-helper',
-        name: '官方战绩小助手',
-        type: 'OFFICIAL_API',
-        url: 'https://wxq.qq.com/',
-        capabilities: ['player_identity', 'match_details'],
-        status: 'UNAVAILABLE',
-        note: '未确认第三方公开开放接口，需本人账号授权材料',
-        lastAttemptAt: null,
-        lastSuccessAt: null,
-        lastError: null
-      }
-    ],
+    dataSources: createEmptyState().dataSources,
     evidences: [
       {
         id: 'ev-18824',
@@ -150,7 +126,7 @@ function createDemoFixtures() {
         verifiedAt: '2026-09-27T12:05:00.000Z',
         verifiedBy: 'AUDIT_STAFF',
         status: 'VERIFIED',
-        note: '巅峰赛 18824★ 战力巅峰第一人实战截图材料'
+        note: 'DEMO 示范材料（非真实核验）'
       }
     ],
     players: [
@@ -166,7 +142,7 @@ function createDemoFixtures() {
         id: 'evt-20260927-18824',
         mode: 'RANKED_DIAMOND',
         scheduledAt: '2026-09-27T12:00:00.000Z',
-        title: '巅峰赛 18824★ 战力巅峰对决',
+        title: 'DEMO 示范场次（非真实核验）',
         status: 'AUDITED',
         evidenceId: 'ev-18824',
         participants: [
@@ -182,32 +158,29 @@ function createDemoFixtures() {
 }
 
 export class StorageEngine {
-  constructor() {
-    this.syncHandler = null
+  /**
+   * @param {object} options
+   * @param {string} options.dataDir 存储目录（必填，显式注入；测试用临时目录，业务用 getBusinessStorage()）
+   * @param {boolean} [options.demo=false] 显式开启才加载示范数据
+   */
+  constructor({ dataDir, demo = false } = {}) {
+    if (!dataDir || typeof dataDir !== 'string') {
+      throw new Error('StorageEngine 必须显式注入 dataDir（测试隔离规范 v3 P0-A，禁止隐式指向业务文件）')
+    }
+    this.dataDir = dataDir
+    this.dbFile = path.join(dataDir, 'storage.json')
+    this.demo = demo === true
     this.state = this.loadState()
   }
 
-  setSyncHandler(handler) {
-    this.syncHandler = handler
-  }
-
-  triggerSync(action, payload) {
-    if (typeof this.syncHandler === 'function') {
-      try {
-        this.syncHandler(action, payload)
-      } catch (err) {
-        console.error(`[StorageEngine] Sync handler error (${action}):`, err.message)
-      }
-    }
-  }
-
   loadState() {
-    const isDemoMode = process.env.DEMO_MODE === 'true' || process.env.FIXTURES === 'true'
+    const isDemoMode = this.demo || process.env.DEMO_MODE === 'true' || process.env.FIXTURES === 'true'
     try {
-      if (fs.existsSync(DB_FILE)) {
-        const raw = fs.readFileSync(DB_FILE, 'utf-8')
+      if (fs.existsSync(this.dbFile)) {
+        const raw = fs.readFileSync(this.dbFile, 'utf-8')
         const parsed = JSON.parse(raw)
         // 保证关键字段数组健全
+        parsed.meta = parsed.meta || {}
         parsed.players = parsed.players || []
         parsed.matches = parsed.matches || []
         parsed.events = parsed.events || []
@@ -220,17 +193,22 @@ export class StorageEngine {
       }
     } catch (err) {
       console.error('[StorageEngine] Error loading storage.json:', err.message)
-      // 文件损坏时抛出告警并保持空状态，绝不暗度陈仓生成假核验数据 (F02)
+      // 文件损坏时保持空状态，绝不暗度陈仓生成假核验数据 (F02)
     }
 
-    const state = isDemoMode ? createDemoFixtures() : createEmptyState()
-    this.saveState(state)
-    return state
+    // 文件不存在时仅构造内存态，不落盘 (import 零副作用；首次写操作时才创建目录)
+    return isDemoMode ? createDemoFixtures() : createEmptyState()
   }
 
+  /**
+   * 原子落盘：tmp 文件写入 + rename，避免半写损坏
+   */
   saveState(stateToSave = this.state) {
+    const tmpFile = `${this.dbFile}.tmp-${process.pid}-${Date.now()}`
     try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(stateToSave, null, 2), 'utf-8')
+      fs.mkdirSync(this.dataDir, { recursive: true })
+      fs.writeFileSync(tmpFile, JSON.stringify(stateToSave, null, 2), 'utf-8')
+      fs.renameSync(tmpFile, this.dbFile)
     } catch (err) {
       console.error('[StorageEngine] Failed to write storage.json:', err)
       throw err
@@ -238,7 +216,7 @@ export class StorageEngine {
   }
 
   /**
-   * 重置为空库 (用于自动化测试与清库核验 A01)
+   * 重置为空库 (仅作用于本实例注入的目录；用于自动化测试与清库核验 A01)
    */
   resetToEmpty() {
     this.state = createEmptyState()
@@ -277,16 +255,19 @@ export class StorageEngine {
         if (isNaN(cutoffMs)) return false
         if (matchDateMs >= cutoffMs) return false
 
-        // 截点过滤 2 (防未来信息泄漏): availableAt <= cutoff
-        const availableMs = m.availableAt ? new Date(m.availableAt).getTime() : matchDateMs
-        if (!isNaN(availableMs) && availableMs > cutoffMs) {
-          return false // 晚到数据：比赛发生早但系统收录晚，在截点时刻尚未知晓，必须剔除
+        // 截点过滤 2 (防未来信息泄漏, V12): availableAt <= cutoff
+        // availableAt 缺失时禁止回退 matchTime —— 无法证明截点时刻已收录，一律剔除
+        if (!m.availableAt) return false
+        const availableMs = new Date(m.availableAt).getTime()
+        if (isNaN(availableMs)) return false
+        if (availableMs > cutoffMs) {
+          return false // 晚到数据：比赛发生早但系统收录晚，在截点时刻尚未知晓，必须剔除；availableAt === cutoff 纳入
         }
       }
 
-      // 模式过滤 (A10)
+      // 模式过滤 (A10): 指定具体模式时，mode 未知或不匹配的记录一律排除（禁止模糊通过）
       if (mode && mode !== 'ALL') {
-        if (m.mode && m.mode !== mode) return false
+        if (m.mode !== mode) return false
       }
 
       // 时间范围过滤 (from / to)
@@ -295,8 +276,9 @@ export class StorageEngine {
         if (!isNaN(fromMs) && matchDateMs < fromMs) return false
       }
       if (to) {
+        // 时间窗口为左闭右开 [from, to) (V12)
         const toMs = new Date(to).getTime()
-        if (!isNaN(toMs) && matchDateMs > toMs) return false
+        if (!isNaN(toMs) && matchDateMs >= toMs) return false
       }
 
       return true
@@ -454,11 +436,11 @@ export class StorageEngine {
       matchTime: new Date(matchTimeMs).toISOString(),
       availableAt: rec.availableAt ? new Date(rec.availableAt).toISOString() : new Date().toISOString(),
       finalRank: rank,
-      commander: rec.commander || '通用',
-      lineup: rec.lineup || '未识别',
-      roundsSurvived: Number.isInteger(Number(rec.roundsSurvived)) ? Number(rec.roundsSurvived) : 20,
+      commander: rec.commander || null,
+      lineup: rec.lineup || null,
+      roundsSurvived: Number.isInteger(Number(rec.roundsSurvived)) ? Number(rec.roundsSurvived) : null,
       threeStars: Array.isArray(rec.threeStars) ? rec.threeStars : [],
-      mode: rec.mode || 'RANKED_DIAMOND',
+      mode: rec.mode || null,
       sourceRecordKey: rec.sourceRecordKey || `${rec.playerId}:${new Date(matchTimeMs).toISOString()}`,
       verified: rec.verified === true, // 绝对不强制转为 true！保持其真实状态
       evidenceId: rec.evidenceId || null,
@@ -500,7 +482,7 @@ export class StorageEngine {
 
     validatedRecords.forEach(rec => {
       // 稳定幂等键: id 或 sourceRecordKey 或 (playerId + matchTime)
-      const existingIndex = this.state.matches.findIndex(m => 
+      const existingIndex = this.state.matches.findIndex(m =>
         (rec.id && m.id === rec.id) ||
         (rec.sourceRecordKey && m.sourceRecordKey === rec.sourceRecordKey) ||
         (m.playerId === rec.playerId && m.matchTime === rec.matchTime)
@@ -531,18 +513,18 @@ export class StorageEngine {
         this.state.matches.push(newRecord)
         inserted++
 
-        // 若选手未存在于主选手列表，自动注册该选手实体
+        // 若选手未存在于主选手列表，自动注册该选手实体（仅登记身份，不造战绩数值）
         if (!this.state.players.some(p => p.id === rec.playerId)) {
           this.state.players.push({
             id: rec.playerId,
             nickname: rec.playerId,
             platform: 'SYSTEM_INGEST',
-            serverZone: '官方区服',
-            rankScore: 10000,
-            rankText: '最强王者',
-            title: '',
-            commander: rec.commander,
-            style: rec.lineup
+            serverZone: null,
+            rankScore: null,
+            rankText: null,
+            title: null,
+            commander: null,
+            style: null
           })
         }
       }
@@ -560,10 +542,6 @@ export class StorageEngine {
 
     this.state.importBatches.push(runMeta)
     this.saveState()
-    this.triggerSync('IMPORT_BATCH', {
-      batchRecord: runMeta,
-      matchRecords: this.state.matches.filter(m => m.batchId === batchId)
-    })
     return runMeta
   }
 
@@ -616,19 +594,19 @@ export class StorageEngine {
       const playerId = s.playerId || `p-${s.nickname}`
       const rank = Number(s.finalRank || slotNum)
 
-      // 确保选手在选手实体表中存在
+      // 确保选手在选手实体表中存在（未知属性一律 NULL，禁止造默认值 F06）
       let player = this.state.players.find(p => p.id === playerId || p.nickname === s.nickname)
       if (!player) {
         player = {
           id: playerId,
           nickname: s.nickname || `选手-${slotNum}`,
           platform: 'DEFAULT',
-          serverZone: s.serverZone || '手Q1区',
-          rankScore: Number(s.rankScore) || 10000,
-          rankText: s.rankText || '最强王者',
-          title: s.title || '',
-          commander: s.commander || '通用',
-          style: s.lineup || '常规'
+          serverZone: s.serverZone || null,
+          rankScore: Number.isFinite(Number(s.rankScore)) ? Number(s.rankScore) : null,
+          rankText: s.rankText || null,
+          title: s.title || null,
+          commander: s.commander || null,
+          style: s.lineup || null
         }
         this.state.players.push(player)
       } else {
@@ -649,7 +627,7 @@ export class StorageEngine {
           finalRank: rank,
           commander: s.commander || player.commander,
           lineup: s.lineup || player.style,
-          roundsSurvived: Number(s.roundsSurvived) || 30,
+          roundsSurvived: Number.isInteger(Number(s.roundsSurvived)) ? Number(s.roundsSurvived) : null,
           threeStars: Array.isArray(s.threeStars) ? s.threeStars : [],
           verified: true,
           evidenceId,
@@ -662,11 +640,11 @@ export class StorageEngine {
         playerId: player.id,
         nickname: player.nickname,
         rankScore: player.rankScore,
-        odds: Number(s.odds) || 5.0,
-        supportCount: Number(s.supportCount) || 0,
+        odds: Number.isFinite(Number(s.odds)) ? Number(s.odds) : null,
+        supportCount: Number.isFinite(Number(s.supportCount)) ? Number(s.supportCount) : null,
         finalRank: rank,
-        commander: s.commander || player.commander,
-        lineup: s.lineup || player.style
+        commander: s.commander || player.commander || null,
+        lineup: s.lineup || player.style || null
       }
     })
 
@@ -691,17 +669,11 @@ export class StorageEngine {
     }
 
     this.saveState()
-    this.triggerSync('CONFIRM_AUDIT', {
-      eventRecord,
-      evidenceRecord: this.state.evidences.find(e => e.id === evidenceId),
-      players: this.state.players.filter(p => participants.some(pt => pt.playerId === p.id)),
-      matches: this.state.matches.filter(m => m.batchId === `audit-${eventId}`)
-    })
     return eventRecord
   }
 
   /**
-   * 导入万象棋大数据平台的真实选手、阵容快照与实战对决
+   * 导入第三方平台的选手与阵容快照（仅显式来源使用；v3 中 datatft 默认 UNCONFIGURED）
    */
   importRealDatatftData({ players = [], lineups = [] }) {
     let playersAdded = 0
@@ -722,22 +694,15 @@ export class StorageEngine {
       this.state.lineupSnapshots = lineups
     }
 
-    // 更新数据源状态
+    // 更新数据源状态（仅记录尝试/成功时间，不得凭导入动作自行宣称 ACTIVE —— v3 §3.2）
     const src = this.state.dataSources.find(s => s.id === 'src-datatft-platform')
     if (src) {
       src.lastAttemptAt = new Date().toISOString()
       src.lastSuccessAt = new Date().toISOString()
       src.lastError = null
-      src.status = 'ACTIVE'
     }
 
     this.saveState()
-
-    // 触发 PostgreSQL 持久化
-    this.triggerSync('SYNC_PLAYERS', this.state.players)
-    if (lineups.length > 0) {
-      this.triggerSync('LINEUP_SYNCED', lineups)
-    }
 
     return {
       playersAdded,
@@ -748,4 +713,23 @@ export class StorageEngine {
   }
 }
 
-export const storage = new StorageEngine()
+/**
+ * 显式工厂：测试与工具一律通过它创建实例，禁止隐式指向业务文件
+ */
+export function createStorageEngine({ dataDir, demo = false } = {}) {
+  return new StorageEngine({ dataDir, demo })
+}
+
+/**
+ * 业务存储实例（惰性、进程内唯一）
+ * 仅应由服务启动入口 (backend/src/server.js) 与显式业务脚本调用；
+ * 测试绝不使用本函数，测试必须 createStorageEngine({ dataDir: <临时目录> })
+ */
+let businessStorageInstance = null
+export function getBusinessStorage() {
+  if (!businessStorageInstance) {
+    const dataDir = process.env.WXQ_DATA_DIR || DEFAULT_DATA_DIR
+    businessStorageInstance = new StorageEngine({ dataDir })
+  }
+  return businessStorageInstance
+}

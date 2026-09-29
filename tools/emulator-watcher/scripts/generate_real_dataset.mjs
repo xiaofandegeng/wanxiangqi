@@ -4,7 +4,9 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { dbManager } from '../../../backend/src/db.js'
-import { storage } from '../storage.mjs'
+import { getBusinessStorage } from '../storage.mjs'
+
+const storage = getBusinessStorage()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -122,6 +124,17 @@ const REAL_LINEUPS_DATA = [
 ]
 
 async function runInjection() {
+  // v3 P0-B 合成数据硬门禁 (F01)：
+  // 本脚本按锦标赛排名剧本生成 finalRank（非真实逐局材料），属合成数据。
+  // 默认拒绝运行；仅 WXQ_ALLOW_SYNTHETIC=true 显式开启时允许，
+  // 且后续封存改造后将只允许写 demo 数据目录（见任务书 P0-B / docs/v3整改实施报告）。
+  if (process.env.WXQ_ALLOW_SYNTHETIC !== 'true') {
+    console.error('⛔ [拒绝执行] 本脚本生成按剧本编排的合成战绩 (batch-datatft-s1-seed, F01)。')
+    console.error('   v3 整改后合成数据禁止进入业务 storage.json 与业务 PostgreSQL。')
+    console.error('   如确需为 demo 环境造数，请先完成任务书 P0-B 封存改造，再设置 WXQ_ALLOW_SYNTHETIC=true。')
+    process.exit(1)
+  }
+
   console.log('🚀 开始导入全量真实万象棋生态数据集...')
   await dbManager.initialize()
 

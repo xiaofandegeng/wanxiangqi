@@ -4,7 +4,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { storage } from '../../tools/emulator-watcher/storage.mjs'
+import { getBusinessStorage } from '../../tools/emulator-watcher/storage.mjs'
+
+// v3 P0-A 测试隔离：单例 import 已移除，改用惰性业务实例
+// （本文件将在 S3 重构中整体退役，由 repositories/pg-repository.mjs 取代）
+const storage = getBusinessStorage()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const SCHEMA_FILE = path.join(__dirname, 'schema.sql')
@@ -60,8 +64,9 @@ export class DatabaseManager {
         // 从 PostgreSQL 恢复/加载数据至内存状态
         await this.hydrateFromPostgres()
 
-        // 绑定 storage 变更事件同步写入 PostgreSQL
-        storage.setSyncHandler(this.handleStorageSync.bind(this))
+        // v3 F07 修复：storage.mjs 已移除 triggerSync/setSyncHandler（fire-and-forget
+        // 且吞掉 async 异步拒绝）。自此 JSON→PG 自动同步停用；
+        // S3 重构后写路径统一走 PgRepository 单事务，不再存在双写漂移。
 
         return { isConnected: true, engine: this.engineType }
       }

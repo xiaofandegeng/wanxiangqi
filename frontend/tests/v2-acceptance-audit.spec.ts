@@ -1,5 +1,10 @@
 // 王者万象棋数据站 - v2 验收缺陷闭环回归测试套件 (Vitest 执行)
 // 覆盖 F01 至 F13 以及 A01 至 A18 全部项的强校验断言
+//
+// v3 P0-A 测试隔离改造：
+//   - 所有 StorageEngine 实例一律绑定 mkdtemp 临时目录（backend/tests/helpers/tmp-store.mjs）
+//   - vitest globalSetup（tests/guards/）提供业务 storage.json 哈希护栏（V01 雏形）
+//   - 测试不再构造任何指向业务路径的实例
 
 import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
@@ -9,7 +14,8 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = path.resolve(__dirname, '../..')
 
-import { StorageEngine } from '../../tools/emulator-watcher/storage.mjs'
+// @ts-expect-error 共享后端测试助手（纯 JS 模块，无类型声明）
+import { makeTmpStore } from '../../backend/tests/helpers/tmp-store.mjs'
 import { parseHokaceBody, syncHokaceLineups } from '../../tools/emulator-watcher/adapters/hokace.mjs'
 import { detectMatchFromImage } from '../src/utils/image-analyzer'
 import { solveClientLiveMatch } from '../src/utils/live-solver'
@@ -32,16 +38,23 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
   })
 
   it('F02 & A01: 首次冷启动零 mock 规范 (Zero-Mock Cold Start)', () => {
-    const tempEngine = new StorageEngine()
-    tempEngine.resetToEmpty()
+    const { engine, dataDir, cleanup } = makeTmpStore()
+    try {
+      // 临时目录全新实例即为冷启动空库
+      expect(dataDir.includes(process.cwd())).toBe(false)
+      expect(engine.state.players.length).toBe(0)
+      expect(engine.state.matches.length).toBe(0)
+      expect(engine.state.events.length).toBe(0)
+      expect(engine.state.lineupSnapshots.length).toBe(0)
 
-    expect(tempEngine.state.players.length).toBe(0)
-    expect(tempEngine.state.matches.length).toBe(0)
-    expect(tempEngine.state.events.length).toBe(0)
-    expect(tempEngine.state.lineupSnapshots.length).toBe(0)
+      const playersList = engine.getPlayersList()
+      expect(playersList.length).toBe(0)
 
-    const playersList = tempEngine.getPlayersList()
-    expect(playersList.length).toBe(0)
+      // 冷启动零副作用：未发生业务动作前不得落盘
+      expect(fs.existsSync(path.join(dataDir, 'storage.json'))).toBe(false)
+    } finally {
+      cleanup()
+    }
   })
 
   it('F03 & A04 & A05: 第三方阵容适配器真实解析与防伪闭环', async () => {
@@ -89,38 +102,40 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
   })
 
   it('F08 & A03 & A13: 导入数据强校验、名次整数约束与未核验隔离', () => {
-    const engine = new StorageEngine()
-    engine.resetToEmpty()
+    const { engine, cleanup } = makeTmpStore()
+    try {
+      // 1. 空对象拒绝
+      expect(() => engine.importMatchRecords([])).toThrow(/不能为空数组/)
+      expect(() => engine.importMatchRecords([{}])).toThrow(/缺少必填项 playerId/)
 
-    // 1. 空对象拒绝
-    expect(() => engine.importMatchRecords([])).toThrow(/不能为空数组/)
-    expect(() => engine.importMatchRecords([{}])).toThrow(/缺少必填项 playerId/)
+      // 2. 缺少有效 matchTime 拒绝
+      expect(() => engine.importMatchRecords([{ playerId: 'p-test', finalRank: 1 }])).toThrow(/缺少有效 matchTime/)
 
-    // 2. 缺少有效 matchTime 拒绝
-    expect(() => engine.importMatchRecords([{ playerId: 'p-test', finalRank: 1 }])).toThrow(/缺少有效 matchTime/)
+      // 3. 浮点数名次 finalRank: 1.5 必须拒绝
+      expect(() => engine.importMatchRecords([{
+        playerId: 'p-test',
+        matchTime: '2026-09-27T10:00:00.000Z',
+        finalRank: 1.5
+      }])).toThrow(/必须是 1 到 6 的整数/)
 
-    // 3. 浮点数名次 finalRank: 1.5 必须拒绝
-    expect(() => engine.importMatchRecords([{
-      playerId: 'p-test',
-      matchTime: '2026-09-27T10:00:00.000Z',
-      finalRank: 1.5
-    }])).toThrow(/必须是 1 到 6 的整数/)
+      // 4. 传入 verified: false 时必须保留为 false，绝不自动转 true
+      const run = engine.importMatchRecords([{
+        playerId: 'p-candidate-1',
+        matchTime: '2026-09-27T08:00:00.000Z',
+        finalRank: 1,
+        verified: false
+      }])
+      expect(run.inserted).toBe(1)
+      const match = engine.state.matches.find((m: any) => m.playerId === 'p-candidate-1')
+      expect(match?.verified).toBe(false)
 
-    // 4. 传入 verified: false 时必须保留为 false，绝不自动转 true
-    const run = engine.importMatchRecords([{
-      playerId: 'p-candidate-1',
-      matchTime: '2026-09-27T08:00:00.000Z',
-      finalRank: 1,
-      verified: false
-    }])
-    expect(run.inserted).toBe(1)
-    const match = engine.state.matches.find(m => m.playerId === 'p-candidate-1')
-    expect(match?.verified).toBe(false)
-
-    // 未核验记录不计入有效统计
-    const stats = engine.computePlayerStats('p-candidate-1')
-    expect(stats.sampleCount).toBe(0)
-    expect(stats.winRate).toBeNull()
+      // 未核验记录不计入有效统计
+      const stats = engine.computePlayerStats('p-candidate-1')
+      expect(stats.sampleCount).toBe(0)
+      expect(stats.winRate).toBeNull()
+    } finally {
+      cleanup()
+    }
   })
 
   it('F09 & A14: 管理写接口安全鉴权与未授权拦截', async () => {
@@ -156,80 +171,84 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
   })
 
   it('F10 & A09 & A10: 双时间防泄漏 (match_time & available_at) 与多维过滤', () => {
-    const engine = new StorageEngine()
-    engine.resetToEmpty()
+    const { engine, cleanup } = makeTmpStore()
+    try {
+      const cutoff = '2026-09-25T12:00:00.000Z'
 
-    const cutoff = '2026-09-25T12:00:00.000Z'
+      // 1. 正常赛前已录入: matchTime < cutoff && availableAt <= cutoff
+      engine.importMatchRecords([{
+        playerId: 'p-valid',
+        matchTime: '2026-09-24T10:00:00.000Z',
+        availableAt: '2026-09-24T11:00:00.000Z',
+        finalRank: 1,
+        verified: true,
+        mode: 'RANKED_DIAMOND'
+      }])
 
-    // 1. 正常赛前已录入: matchTime < cutoff && availableAt <= cutoff
-    engine.importMatchRecords([{
-      playerId: 'p-valid',
-      matchTime: '2026-09-24T10:00:00.000Z',
-      availableAt: '2026-09-24T11:00:00.000Z',
-      finalRank: 1,
-      verified: true,
-      mode: 'RANKED_DIAMOND'
-    }])
+      // 2. 晚到数据 (Late Arrival): 比赛发生在 9-20，但 9-27 才录入 (availableAt > cutoff)
+      engine.importMatchRecords([{
+        playerId: 'p-valid',
+        matchTime: '2026-09-20T10:00:00.000Z',
+        availableAt: '2026-09-27T10:00:00.000Z',
+        finalRank: 1,
+        verified: true,
+        mode: 'RANKED_DIAMOND'
+      }])
 
-    // 2. 晚到数据 (Late Arrival): 比赛发生在 9-20，但 9-27 才录入 (availableAt > cutoff)
-    engine.importMatchRecords([{
-      playerId: 'p-valid',
-      matchTime: '2026-09-20T10:00:00.000Z',
-      availableAt: '2026-09-27T10:00:00.000Z',
-      finalRank: 1,
-      verified: true,
-      mode: 'RANKED_DIAMOND'
-    }])
+      // 3. 赛后记录: matchTime > cutoff
+      engine.importMatchRecords([{
+        playerId: 'p-valid',
+        matchTime: '2026-09-26T10:00:00.000Z',
+        availableAt: '2026-09-26T11:00:00.000Z',
+        finalRank: 1,
+        verified: true,
+        mode: 'RANKED_DIAMOND'
+      }])
 
-    // 3. 赛后记录: matchTime > cutoff
-    engine.importMatchRecords([{
-      playerId: 'p-valid',
-      matchTime: '2026-09-26T10:00:00.000Z',
-      availableAt: '2026-09-26T11:00:00.000Z',
-      finalRank: 1,
-      verified: true,
-      mode: 'RANKED_DIAMOND'
-    }])
+      // 在截点时刻计算统计
+      const statsAtCutoff = engine.computePlayerStats('p-valid', { cutoffTime: cutoff })
+      expect(statsAtCutoff.sampleCount).toBe(1)
+      expect(statsAtCutoff.winRate).toBe(1.0)
 
-    // 在截点时刻计算统计
-    const statsAtCutoff = engine.computePlayerStats('p-valid', { cutoffTime: cutoff })
-    expect(statsAtCutoff.sampleCount).toBe(1)
-    expect(statsAtCutoff.winRate).toBe(1.0)
-
-    // 4. 模式隔离: TOURNAMENT 模式必须返回 N=0
-    const statsTour = engine.computePlayerStats('p-valid', { cutoffTime: cutoff, mode: 'TOURNAMENT' })
-    expect(statsTour.sampleCount).toBe(0)
-    expect(statsTour.winRate).toBeNull()
+      // 4. 模式隔离: TOURNAMENT 模式必须返回 N=0
+      const statsTour = engine.computePlayerStats('p-valid', { cutoffTime: cutoff, mode: 'TOURNAMENT' })
+      expect(statsTour.sampleCount).toBe(0)
+      expect(statsTour.winRate).toBeNull()
+    } finally {
+      cleanup()
+    }
   })
 
   it('F05: 人工核验工作台席位校对持久化确认 (confirmSlotAudit)', () => {
-    const engine = new StorageEngine()
-    engine.resetToEmpty()
+    const { engine, cleanup } = makeTmpStore()
+    try {
+      const auditPayload = {
+        eventId: 'evt-audit-test-01',
+        title: '实战核验场次',
+        scheduledAt: '2026-09-27T10:00:00.000Z',
+        mode: 'RANKED_DIAMOND',
+        evidenceSha256: 'e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82',
+        slots: [
+          { slot: 1, nickname: 'EZ夜余', rankScore: 18824, odds: 1.8, finalRank: 1, commander: '弈星', lineup: '九五之尊' },
+          { slot: 2, nickname: 'DY校长神Gin', rankScore: 12091, odds: 7.1, finalRank: 2, commander: '司空震', lineup: '雷霆扶桑刺' },
+          { slot: 3, nickname: '抖音李由多', rankScore: 10075, odds: 10.2, finalRank: 3, commander: '司空震', lineup: '扶桑法刺' },
+          { slot: 4, nickname: '抖音EGM皮皮鲨', rankScore: 10054, odds: 10.1, finalRank: 4, commander: '庄周', lineup: '玄雍重坦防刺' },
+          { slot: 5, nickname: '想k益笙菌', rankScore: 9996, odds: 10.5, finalRank: 5, commander: '诸葛亮', lineup: '稷下群雄大招流' },
+          { slot: 6, nickname: 'B站小优律', rankScore: 9961, odds: 10.3, finalRank: 6, commander: '公孙离', lineup: '尧天公孙离射手' }
+        ]
+      }
 
-    const auditPayload = {
-      eventId: 'evt-audit-test-01',
-      title: '实战核验场次',
-      scheduledAt: '2026-09-27T10:00:00.000Z',
-      mode: 'RANKED_DIAMOND',
-      evidenceSha256: 'e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82',
-      slots: [
-        { slot: 1, nickname: 'EZ夜余', rankScore: 18824, odds: 1.8, finalRank: 1, commander: '弈星', lineup: '九五之尊' },
-        { slot: 2, nickname: 'DY校长神Gin', rankScore: 12091, odds: 7.1, finalRank: 2, commander: '司空震', lineup: '雷霆扶桑刺' },
-        { slot: 3, nickname: '抖音李由多', rankScore: 10075, odds: 10.2, finalRank: 3, commander: '司空震', lineup: '扶桑法刺' },
-        { slot: 4, nickname: '抖音EGM皮皮鲨', rankScore: 10054, odds: 10.1, finalRank: 4, commander: '庄周', lineup: '玄雍重坦防刺' },
-        { slot: 5, nickname: '想k益笙菌', rankScore: 9996, odds: 10.5, finalRank: 5, commander: '诸葛亮', lineup: '稷下群雄大招流' },
-        { slot: 6, nickname: 'B站小优律', rankScore: 9961, odds: 10.3, finalRank: 6, commander: '公孙离', lineup: '尧天公孙离射手' }
-      ]
+      const result = engine.confirmSlotAudit(auditPayload)
+      expect(result.id).toBe('evt-audit-test-01')
+      expect(engine.state.events.length).toBe(1)
+      expect(engine.state.matches.length).toBe(6)
+      expect(engine.state.players.length).toBe(6)
+
+      const yeyuStats = engine.computePlayerStats('p-EZ夜余')
+      expect(yeyuStats.sampleCount).toBe(1)
+      expect(yeyuStats.winRate).toBe(1.0)
+    } finally {
+      cleanup()
     }
-
-    const result = engine.confirmSlotAudit(auditPayload)
-    expect(result.id).toBe('evt-audit-test-01')
-    expect(engine.state.events.length).toBe(1)
-    expect(engine.state.matches.length).toBe(6)
-    expect(engine.state.players.length).toBe(6)
-
-    const yeyuStats = engine.computePlayerStats('p-EZ夜余')
-    expect(yeyuStats.sampleCount).toBe(1)
-    expect(yeyuStats.winRate).toBe(1.0)
   })
 })

@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Test runner artifacts (v3: 测试产物不入库)
+.vitest/

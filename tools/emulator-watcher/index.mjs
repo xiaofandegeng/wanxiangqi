@@ -12,7 +12,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { extractLobbyParticipants } from './analyzer.mjs'
 import { solveDeepMetaProbabilities, solveDeepRecommendations } from './solver.mjs'
-import { storage } from './storage.mjs'
+import { getBusinessStorage } from './storage.mjs'
+
+// v3 P0-A 测试隔离：storage 单例已移除，改为惰性业务实例（仅读取业务目录；
+// S3 重构后本文件将改为注入 services，不再直连存储引擎）
+const storage = getBusinessStorage()
 
 export const PORT = process.env.PORT || 8080
 export const HOST = process.env.HOST || '127.0.0.1'
