@@ -1,786 +1,711 @@
 <template>
   <div class="lineup-roster-view">
-    <!-- 顶栏标题与胜率依据来源说明 -->
+    <!-- 顶栏：第三方来源语义说明（不宣称任何我方未验证口径） -->
     <div class="page-header-card">
       <div class="header-main-row">
         <div class="title-wrap">
           <div class="badge-row">
-            <span class="category-badge">全服实战环境大盘</span>
-            <span class="basis-badge">基于 390,306 场高分局真实聚合</span>
+            <span class="category-badge">第三方阵容聚合快照</span>
+            <span class="basis-badge">来源公布什么就展示什么</span>
           </div>
-          <h2 class="page-title">自走棋主流流派胜率与食物链相克依据</h2>
+          <h2 class="page-title">阵容聚合快照参考</h2>
           <p class="page-desc">
-            拒绝盲目看表面胜率！本大盘不仅展示登顶吃鸡率，更深入拆解<strong>核心弈子依赖、前期锁血能力、局内食物链克制</strong>及<strong>王牌对决下注期望依据</strong>。
+            本页陈列从第三方来源同步的<strong>全服阵容聚合快照</strong>（登顶率 / 前三率 / 样本量等均为来源公布口径），
+            仅供流派环境参考，<strong>不代表任何个人真实战绩，也不构成任何对局决策依据</strong>。
+            来源未公布的字段（梯级 / 窗口说明等）如实标注“未公布”。
           </p>
         </div>
 
         <div class="snapshot-meta-box">
-          <span class="meta-label">快照版本:</span>
-          <span class="meta-val font-mono">S1-202609</span>
-          <span class="meta-divider">|</span>
-          <span class="meta-label">统计窗口:</span>
-          <span class="meta-val">全服近 7 日王者巅峰赛</span>
+          <span class="meta-label">快照采集时间:</span>
+          <span class="meta-val font-mono">{{ formatTime(dataAsOf) }}</span>
         </div>
       </div>
 
-      <!-- 食物链相克快速参照条 (胜率判断核心依据) -->
-      <div class="counter-chain-card">
-        <h4 class="chain-title">⚔️ 万象棋核心食物链相克定律 (胜率波动的根本依据)</h4>
-        <div class="chain-grid">
-          <div class="chain-item">
-            <span class="c-from adc">🏹 射手神射流</span>
-            <span class="c-arrow">克制 ➔</span>
-            <span class="c-to tank">🛡️ 重装坦甲流</span>
-            <span class="c-desc">高额物理穿甲，坦位无法承伤</span>
-          </div>
-          <div class="chain-item">
-            <span class="c-from assassin">🗡️ 极速刺客流</span>
-            <span class="c-arrow">克制 ➔</span>
-            <span class="c-to adc">🏹 射手神射流</span>
-            <span class="c-desc">开局绕后秒C，射手猝死无输出</span>
-          </div>
-          <div class="chain-item">
-            <span class="c-from tank">🛡️ 重装坦甲流</span>
-            <span class="c-arrow">克制 ➔</span>
-            <span class="c-to assassin">🗡️ 极速刺客流</span>
-            <span class="c-desc">反伤与高坦度，刺客技能打完疲软</span>
-          </div>
-          <div class="chain-item">
-            <span class="c-from mage">✨ 法爆圣盾流</span>
-            <span class="c-arrow">克制 ➔</span>
-            <span class="c-to tank">🛡️ 重装坦甲流</span>
-            <span class="c-desc">真实法术爆发，无视物理护甲</span>
-          </div>
-        </div>
-      </div>
+      <!-- 来源口径提示（来自服务端 sourceNotice） -->
+      <div v-if="sourceNotice" class="source-notice">{{ sourceNotice }}</div>
 
-      <!-- 核心指标摘要 -->
+      <!-- 核心指标摘要（全部由已收录快照真实计算） -->
       <div class="stats-summary-grid">
         <div class="summary-item">
-          <span class="item-num font-mono">{{ lineups.length }} 套</span>
-          <span class="item-label">已收录成型体系</span>
+          <span class="item-num font-mono">{{ lineups.length }}</span>
+          <span class="item-label">已收录快照</span>
         </div>
         <div class="summary-item">
-          <span class="item-num font-mono">390,306 席</span>
-          <span class="item-label">真实样本出场总规模</span>
-          <span class="item-hint">全服高分段聚合 (置信度 99%)</span>
+          <span class="item-num font-mono">{{ distinctSources }}</span>
+          <span class="item-label">来源数量</span>
         </div>
         <div class="summary-item">
-          <span class="item-num font-mono highlight-gold">常小娥 · 极速月影 (17.5%)</span>
-          <span class="item-label">最高吃鸡率刺客体系</span>
+          <span class="item-num font-mono">{{ staleCount }}</span>
+          <span class="item-label">标记为过期的快照</span>
+          <span class="item-hint">以来源数据截止/采集时间为准</span>
         </div>
         <div class="summary-item">
-          <span class="item-num font-mono highlight-cyan">明先生 · 神射金乌 (55.7%)</span>
-          <span class="item-label">最高前三保分体系</span>
+          <span class="item-num font-mono">{{ missingFieldCount }}</span>
+          <span class="item-label">存在未公布字段的快照</span>
+          <span class="item-hint">未知如实展示，不做兜底填充</span>
         </div>
       </div>
     </div>
 
-    <!-- 筛选与搜索工具条 -->
-    <div class="filter-toolbar">
-      <div class="sort-tabs">
-        <span class="sort-lbl">排序方式:</span>
-        <button 
-          class="sort-tab-btn" 
-          :class="{ active: sortField === 'winRate' }" 
-          @click="sortField = 'winRate'"
-        >
-          登顶吃鸡率
-        </button>
-        <button 
-          class="sort-tab-btn" 
-          :class="{ active: sortField === 'top3Rate' }" 
-          @click="sortField = 'top3Rate'"
-        >
-          前三保分率
-        </button>
-        <button 
-          class="sort-tab-btn" 
-          :class="{ active: sortField === 'avgRank' }" 
-          @click="sortField = 'avgRank'"
-        >
-          平均名次
-        </button>
-        <button 
-          class="sort-tab-btn" 
-          :class="{ active: sortField === 'sampleCount' }" 
-          @click="sortField = 'sampleCount'"
-        >
-          样本规模
-        </button>
-      </div>
-
-      <div class="search-box">
-        <input 
-          v-model="searchKey" 
-          type="text" 
-          class="search-input" 
-          placeholder="搜索阵容名称 / 指挥官 / 核心英雄..." 
-        />
-      </div>
+    <!-- 失败 / 空态如实呈现 -->
+    <div v-if="loadError" class="state-panel is-error">
+      <p>阵容快照加载失败：{{ loadError }}</p>
+      <button class="retry-btn" @click="loadLineups">重新加载</button>
     </div>
 
-    <!-- 阵容数据与胜率依据深度表格 -->
-    <div class="table-card">
-      <table class="lineup-table">
-        <thead>
-          <tr>
-            <th class="th-rank">序号</th>
-            <th class="th-name">阵容体系</th>
-            <th class="th-tier">梯级</th>
-            <th class="th-commander">推荐棋手</th>
-            <th class="th-samples">大盘样本</th>
-            <th class="th-winrate">登顶吃鸡率</th>
-            <th class="th-top3">前三率 (保分)</th>
-            <th class="th-avg">平均名次</th>
-            <th class="th-action">胜率依据下钻</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(item, idx) in sortedLineups" :key="item.id">
-            <tr 
-              class="lineup-row"
-              :class="{ 'is-expanded': expandedId === item.id }"
-              @click="toggleExpand(item.id)"
-            >
-              <td class="td-rank">
-                <span class="order-badge" :class="'order-' + (idx + 1)">{{ idx + 1 }}</span>
-              </td>
-              <td class="td-name">
-                <div class="lineup-title-cell">
-                  <span class="lineup-name">{{ item.lineupName }}</span>
-                  <span class="expand-indicator">{{ expandedId === item.id ? '▲ 收起依据' : '▼ 展开胜率依据' }}</span>
-                </div>
-              </td>
-              <td class="td-tier">
-                <span class="tier-badge" :class="'tier-' + item.tier.replace('.', '_')">{{ item.tier }}</span>
-              </td>
-              <td class="td-commander">
-                <span class="commander-tag">{{ item.commander }}</span>
-              </td>
-              <td class="td-samples font-mono">
-                {{ item.sampleCount.toLocaleString() }} 局
-              </td>
-              <td class="td-winrate font-mono highlight-gold">
-                {{ (item.winRate * 100).toFixed(1) }}%
-              </td>
-              <td class="td-top3 font-mono highlight-cyan">
-                {{ (item.top3Rate * 100).toFixed(1) }}%
-              </td>
-              <td class="td-avg font-mono">
-                {{ item.avgRank.toFixed(2) }} 名
-              </td>
-              <td class="td-action">
-                <button class="expand-btn">
-                  {{ expandedId === item.id ? '收起' : '分析依据' }}
-                </button>
-              </td>
-            </tr>
+    <template v-else>
+      <!-- 筛选与搜索工具条 -->
+      <div class="filter-toolbar">
+        <div class="sort-tabs">
+          <span class="sort-lbl">排序方式:</span>
+          <button
+            class="sort-tab-btn"
+            :class="{ active: sortField === 'winRate' }"
+            @click="sortField = 'winRate'"
+          >
+            登顶率
+          </button>
+          <button
+            class="sort-tab-btn"
+            :class="{ active: sortField === 'top3Rate' }"
+            @click="sortField = 'top3Rate'"
+          >
+            前三率
+          </button>
+          <button
+            class="sort-tab-btn"
+            :class="{ active: sortField === 'avgRank' }"
+            @click="sortField = 'avgRank'"
+          >
+            平均名次
+          </button>
+          <button
+            class="sort-tab-btn"
+            :class="{ active: sortField === 'sampleCount' }"
+            @click="sortField = 'sampleCount'"
+          >
+            样本规模
+          </button>
+        </div>
 
-            <!-- 胜率深度依据展开抽屉 (核心亮点：回应用户要有依据) -->
-            <tr v-if="expandedId === item.id" class="expand-row">
-              <td colspan="9" class="expand-cell">
-                <div class="evidence-panel">
-                  <div class="evidence-grid">
-                    <!-- 依据 1：大盘数据与质变关键点 -->
-                    <div class="evidence-card">
-                      <h4 class="ev-title">📊 胜率构成与质变节点</h4>
-                      <ul class="ev-list">
-                        <li>
-                          <strong>统计基底：</strong>该体系在 39 万局中累计出现 <strong>{{ item.sampleCount }}</strong> 次，高分段成型率稳定。
-                        </li>
-                        <li>
-                          <strong>发力曲线：</strong>{{ getPowerSpike(item) }}
-                        </li>
-                        <li>
-                          <strong>核心弈子：</strong>
-                          <div class="hero-tags-row">
-                            <span v-for="h in item.coreHeroes" :key="h" class="hero-chip">弈子 {{ h }}</span>
-                          </div>
-                        </li>
-                      </ul>
+        <div class="search-box">
+          <input
+            v-model="searchKey"
+            type="text"
+            class="search-input"
+            placeholder="搜索阵容名称 / 棋手..."
+          />
+        </div>
+      </div>
+
+      <!-- 阵容快照表格（字段为空 → 如实标注） -->
+      <div class="table-card">
+        <div v-if="loading" class="state-panel">正在加载阵容快照...</div>
+
+        <div v-else-if="sortedLineups.length === 0" class="state-panel empty-state">
+          <p>{{ searchKey ? '没有匹配的阵容快照' : '暂无已收录的阵容快照' }}</p>
+          <span class="sub-hint">第三方来源同步成功后，快照将在此呈现（当前来源状态见数据源面板）。</span>
+        </div>
+
+        <div v-else class="table-responsive">
+          <table class="lineup-table">
+            <thead>
+              <tr>
+                <th class="th-rank">序号</th>
+                <th class="th-name">阵容名称</th>
+                <th class="th-source">来源</th>
+                <th class="th-commander">主棋手</th>
+                <th class="th-samples">样本量</th>
+                <th class="th-winrate">登顶率</th>
+                <th class="th-top3">前三率</th>
+                <th class="th-avg">平均名次</th>
+                <th class="th-window">窗口口径</th>
+                <th class="th-action">快照口径</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="(item, idx) in sortedLineups" :key="item.id">
+                <tr
+                  class="lineup-row"
+                  :class="{ 'is-expanded': expandedId === item.id }"
+                  @click="toggleExpand(item.id)"
+                >
+                  <td class="td-rank">
+                    <span class="order-badge">{{ idx + 1 }}</span>
+                  </td>
+                  <td class="td-name">
+                    <div class="lineup-title-cell">
+                      <router-link :to="`/lineups/${item.id}`" class="lineup-name" @click.stop>
+                        {{ item.lineupName }}
+                      </router-link>
+                      <span v-if="item.stale" class="stale-tag">已过期</span>
                     </div>
+                  </td>
+                  <td class="td-source">
+                    <span class="source-tag font-mono">{{ item.sourceId || '未知来源' }}</span>
+                  </td>
+                  <td class="td-commander">
+                    <span class="commander-tag">{{ item.commander || '未公布' }}</span>
+                  </td>
+                  <td class="td-samples font-mono">
+                    {{ item.sampleCount != null ? `${item.sampleCount.toLocaleString()} ${item.sampleUnit || '局'}` : '未公布' }}
+                  </td>
+                  <td class="td-winrate font-mono highlight-gold">{{ formatRate(item.winRate) }}</td>
+                  <td class="td-top3 font-mono highlight-cyan">{{ formatRate(item.top3Rate) }}</td>
+                  <td class="td-avg font-mono">{{ item.avgRank != null ? item.avgRank.toFixed(2) : '—' }}</td>
+                  <td class="td-window">
+                    <span class="window-text">{{ item.windowText || '未公布' }}</span>
+                  </td>
+                  <td class="td-action">
+                    <button class="expand-btn">
+                      {{ expandedId === item.id ? '收起' : '展开' }}
+                    </button>
+                  </td>
+                </tr>
 
-                    <!-- 依据 2：克制与被克制对抗分析 -->
-                    <div class="evidence-card">
-                      <h4 class="ev-title">⚔️ 食物链对抗胜率拆解</h4>
-                      <div class="matchup-breakdown">
-                        <div class="match-item advantage">
-                          <span class="m-tag">优势对局 (+25% 期望)</span>
-                          <span class="m-text">{{ getAdvantageText(item) }}</span>
+                <!-- 快照口径展开抽屉：只展示来源给出的真实元数据 -->
+                <tr v-if="expandedId === item.id" class="expand-row">
+                  <td colspan="10" class="expand-cell">
+                    <div class="evidence-panel">
+                      <div class="evidence-grid">
+                        <div class="evidence-card">
+                          <h4 class="ev-title">📎 快照元数据（来源公布字段）</h4>
+                          <ul class="meta-list">
+                            <li><strong>快照 ID:</strong> <span class="font-mono">{{ item.id }}</span></li>
+                            <li><strong>梯级:</strong> {{ item.tier || '未公布（来源不做分级）' }}</li>
+                            <li><strong>快照版本:</strong> {{ item.snapshotVersion || '未公布' }}</li>
+                            <li><strong>范围:</strong> {{ item.scope || '未公布' }}</li>
+                            <li><strong>样本单位:</strong> {{ item.sampleUnit || '未公布' }}</li>
+                            <li><strong>比率单位:</strong> {{ item.rateUnit || '未公布（历史快照可能缺失）' }}</li>
+                          </ul>
                         </div>
-                        <div class="match-item disadvantage">
-                          <span class="m-tag">劣势天敌 (-20% 期望)</span>
-                          <span class="m-text">{{ getDisadvantageText(item) }}</span>
+                        <div class="evidence-card">
+                          <h4 class="ev-title">🕒 时间口径（采集时间 ≠ 数据截止时间）</h4>
+                          <ul class="meta-list">
+                            <li><strong>数据截止:</strong> {{ formatTime(item.dataCutoffAt) }}</li>
+                            <li><strong>采集时间:</strong> {{ formatTime(item.updatedAt) }}</li>
+                            <li v-if="item.windowStart || item.windowEnd">
+                              <strong>统计窗口:</strong> {{ formatTime(item.windowStart) }} ~ {{ formatTime(item.windowEnd) }}
+                            </li>
+                            <li><strong>过期状态:</strong> {{ item.stale == null ? '未知' : (item.stale ? '已过期（距数据截止较久）' : '未过期') }}</li>
+                          </ul>
+                        </div>
+                        <div v-if="item.coreHeroes && item.coreHeroes.length" class="evidence-card full-span">
+                          <h4 class="ev-title">🎲 核心弈子（来源标注）</h4>
+                          <div class="hero-tags-row">
+                            <span v-for="h in item.coreHeroes" :key="h" class="hero-chip">{{ h }}</span>
+                          </div>
                         </div>
                       </div>
+                      <div class="drawer-foot-note">
+                        以上字段全部来自来源快照原始数据；本站不做流派克制推断，不生成任何对局建议。
+                      </div>
                     </div>
-
-                    <!-- 依据 3：在王牌对决钻石预测中的实战应用 -->
-                    <div class="evidence-card full-span">
-                      <h4 class="ev-title">💎 王牌对决钻石下注指导依据</h4>
-                      <p class="ev-advice">
-                        {{ getBettingAdvice(item) }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { fetchLineupSnapshots, type LineupSnapshot } from '../api'
 
 const lineups = ref<LineupSnapshot[]>([])
+const sourceNotice = ref('')
+const dataAsOf = ref(new Date().toISOString())
+const loading = ref(true)
+const loadError = ref<string | null>(null)
 const sortField = ref<'winRate' | 'top3Rate' | 'avgRank' | 'sampleCount'>('winRate')
 const searchKey = ref('')
 const expandedId = ref<string | null>(null)
+
+let loadAbort: AbortController | null = null
+
+const distinctSources = computed(() => new Set(lineups.value.map(l => l.sourceId).filter(Boolean)).size)
+const staleCount = computed(() => lineups.value.filter(l => l.stale === true).length)
+const missingFieldCount = computed(() =>
+  lineups.value.filter(l =>
+    l.tier == null || l.windowText == null || l.sampleCount == null ||
+    l.winRate == null || l.avgRank == null
+  ).length
+)
 
 function toggleExpand(id: string) {
   expandedId.value = expandedId.value === id ? null : id
 }
 
-// 模拟深入依据函数 (根据体系类型与指挥官智能匹配)
-function getPowerSpike(item: LineupSnapshot) {
-  if (item.lineupName.includes('神射') || item.commander === '明先生') {
-    return '中期 6~7 人口成型，极度依赖后排 3 星射手与暴击穿甲装备；成型后登顶率飙升至 28%'
-  } else if (item.lineupName.includes('刺') || item.commander === '常小娥') {
-    return '前期连胜压制力极强，7 人口发力切入后排；对局节奏越快吃鸡率越高，拖入 9 人口大后期稍显疲软'
-  } else if (item.lineupName.includes('法') || item.commander === '瑶妹') {
-    return '后期大核体系，8 人口完全体拥有全屏法爆融化能力，圣盾护体保障前三容错率极高'
-  } else if (item.lineupName.includes('重甲') || item.commander === '白歌') {
-    return '阵地战稳血专家，前三保分率高达 55%+，面对物理刺客几乎不掉血，但极度惧怕破甲与真伤法爆'
-  }
-  return '中规中矩高分平衡流派，依靠经济稳升 8 人口凑齐全羁绊，前三保分稳定性高'
-}
-
-function getAdvantageText(item: LineupSnapshot) {
-  if (item.lineupName.includes('神射')) {
-    return '对战【重装坦甲流】胜率 62%：长距离高频穿透，轻松打穿前排铁甲。'
-  } else if (item.lineupName.includes('刺')) {
-    return '对战【神射狙击流】胜率 66%：开局瞬间暗杀后排主力，射手无出手空间。'
-  } else if (item.lineupName.includes('重甲')) {
-    return '对战【极速刺客流】胜率 64%：反伤重铠令刺客自残，高护甲化解爆发。'
-  }
-  return '对战物理普攻体系胜率 58%：高额法盾吸收伤害并反手大招清场。'
-}
-
-function getDisadvantageText(item: LineupSnapshot) {
-  if (item.lineupName.includes('神射')) {
-    return '对战【极速月影刺】胜率仅 36%：后排核心极易被刺客开局切死，断档暴毙。'
-  } else if (item.lineupName.includes('刺')) {
-    return '对战【重甲连斩流】胜率仅 37%：一套爆发秒不掉前排反被围剿打死。'
-  } else if (item.lineupName.includes('重甲')) {
-    return '对战【法爆法系/真实伤害流】胜率仅 35%：护甲无法防御魔法法爆。'
-  }
-  return '对战速攻刺客流胜率 40%：启动慢容易在中期被频繁放血。'
-}
-
-function getBettingAdvice(item: LineupSnapshot) {
-  return `当王牌对决 6 席位中出现该体系时：若场上克星少于 1 家，且赔率在 ${(1 / item.winRate * 0.9).toFixed(1)}x 以上，净期望 EV 呈现显著正值，建议果断重注下注！若场上存在 2 家以上克制天敌，即便赔率偏高也切勿盲目博冷。`
-}
-
+// 排序：缺失值沉底（不参与名次比较，如实保留在列表中）
 const sortedLineups = computed(() => {
   let list = [...lineups.value]
   if (searchKey.value) {
     const k = searchKey.value.toLowerCase()
-    list = list.filter(l => 
-      l.lineupName.toLowerCase().includes(k) || 
-      l.commander.toLowerCase().includes(k)
+    list = list.filter(l =>
+      l.lineupName.toLowerCase().includes(k) ||
+      (l.commander || '').toLowerCase().includes(k)
     )
   }
 
   list.sort((a, b) => {
-    if (sortField.value === 'winRate') return b.winRate - a.winRate
-    if (sortField.value === 'top3Rate') return b.top3Rate - a.top3Rate
-    if (sortField.value === 'avgRank') return a.avgRank - b.avgRank
-    return b.sampleCount - a.sampleCount
+    if (sortField.value === 'avgRank') {
+      const av = a.avgRank ?? Number.POSITIVE_INFINITY
+      const bv = b.avgRank ?? Number.POSITIVE_INFINITY
+      return av - bv
+    }
+    const key = sortField.value
+    const av = (a[key] as number | null) ?? -1
+    const bv = (b[key] as number | null) ?? -1
+    return bv - av
   })
-
   return list
 })
 
-onMounted(async () => {
+function formatRate(v: number | null | undefined): string {
+  if (v === null || v === undefined) return '未公布'
+  return `${(v * 100).toFixed(1)}%`
+}
+
+function formatTime(iso: string | null | undefined): string {
+  if (!iso) return '未公布'
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  return d.toLocaleString('zh-CN', { hour12: false })
+}
+
+async function loadLineups() {
+  loadAbort?.abort()
+  loadAbort = new AbortController()
+  loading.value = true
+  loadError.value = null
   try {
-    const res = await fetchLineupSnapshots()
+    const res = await fetchLineupSnapshots(loadAbort.signal)
     lineups.value = res.lineups
-  } catch (err) {
-    console.error('加载阵容列表失败:', err)
+    sourceNotice.value = res.sourceNotice
+    dataAsOf.value = res.dataAsOf
+  } catch (err: any) {
+    if (err?.name === 'AbortError') return
+    loadError.value = err?.message || '未知错误'
+    lineups.value = []
+  } finally {
+    if (!loadAbort?.signal.aborted) loading.value = false
   }
-})
+}
+
+onMounted(loadLineups)
+onUnmounted(() => loadAbort?.abort())
 </script>
 
 <style lang="scss" scoped>
 @use '../styles/variables.scss' as *;
+@use '../styles/mixins.scss' as *;
 
 .lineup-roster-view {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .page-header-card {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  padding: 24px;
+  @include glass-panel;
+  padding: 20px 24px;
 }
 
 .header-main-row {
-  display: flex;
-  justify-content: space-between;
+  @include flex-between;
   align-items: flex-start;
   gap: 20px;
-  margin-bottom: 20px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  flex-wrap: wrap;
 }
 
 .badge-row {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
-}
 
-.category-badge {
-  background: #0284c7;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
+  .category-badge {
+    background: $color-purple-light;
+    color: $color-purple;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: $radius-sm;
+  }
 
-.basis-badge {
-  background: #f0fdf4;
-  color: #15803d;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid #bbf7d0;
+  .basis-badge {
+    background: $bg-tertiary;
+    color: $text-muted;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: $radius-sm;
+    border: 1px solid $border-color;
+  }
 }
 
 .page-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 8px 0;
+  color: $text-primary;
+  margin: 0 0 6px 0;
 }
 
 .page-desc {
   font-size: 13px;
-  color: #64748b;
+  color: $text-muted;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.7;
+  max-width: 760px;
+
+  strong {
+    color: $text-secondary;
+  }
 }
 
 .snapshot-meta-box {
-  background: #f8fafc;
-  padding: 10px 14px;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-size: 12px;
-  white-space: nowrap;
 
   .meta-label {
-    color: #64748b;
-    margin-right: 4px;
+    color: $text-muted;
   }
 
   .meta-val {
-    color: #0f172a;
-    font-weight: 600;
-  }
-
-  .meta-divider {
-    margin: 0 8px;
-    color: #cbd5e1;
+    color: $text-secondary;
   }
 }
 
-.counter-chain-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 20px;
-
-  .chain-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 12px 0;
-  }
-}
-
-.chain-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 500px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.chain-item {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  .c-from, .c-to {
-    font-size: 12px;
-    font-weight: 700;
-
-    &.adc { color: #d97706; }
-    &.assassin { color: #dc2626; }
-    &.tank { color: #2563eb; }
-    &.mage { color: #7c3aed; }
-  }
-
-  .c-arrow {
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 600;
-  }
-
-  .c-desc {
-    font-size: 11px;
-    color: #64748b;
-  }
+.source-notice {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: $text-secondary;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: $radius-md;
+  padding: 8px 14px;
 }
 
 .stats-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 16px;
+  margin-top: 16px;
 
-  @media (max-width: 900px) {
+  @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .summary-item {
-  display: flex;
-  flex-direction: column;
-  background: #f8fafc;
-  padding: 12px 14px;
-  border-radius: 8px;
+  @include flex-column;
+  gap: 2px;
+  padding: 14px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
 
   .item-num {
-    font-size: 16px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 2px;
+    font-size: 20px;
+    font-weight: 800;
+    color: $text-primary;
   }
 
   .item-label {
-    font-size: 11px;
-    color: #64748b;
+    font-size: 12px;
+    color: $text-muted;
   }
 
   .item-hint {
     font-size: 10px;
-    color: #94a3b8;
+    color: $text-muted;
+    opacity: 0.8;
+  }
+}
+
+.state-panel {
+  @include glass-panel;
+  padding: 40px 24px;
+  text-align: center;
+  color: $text-secondary;
+  font-size: 14px;
+
+  &.is-error {
+    color: $color-danger;
   }
 
-  .highlight-gold { color: #d97706; }
-  .highlight-cyan { color: #0891b2; }
+  .sub-hint {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    color: $text-muted;
+  }
+}
+
+.retry-btn {
+  margin-top: 12px;
+  padding: 6px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.1);
+  color: $color-gold;
+  border-radius: $radius-sm;
+  cursor: pointer;
 }
 
 .filter-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 10px 16px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 10px;
-  }
+  @include glass-panel;
+  @include flex-between;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .sort-tabs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 
   .sort-lbl {
     font-size: 12px;
-    font-weight: 600;
-    color: #64748b;
+    color: $text-muted;
   }
 }
 
 .sort-tab-btn {
-  background: none;
-  border: 1px solid transparent;
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 12px;
-  color: #475569;
-  border-radius: 4px;
+  border: 1px solid $border-color;
+  background: transparent;
+  color: $text-secondary;
+  border-radius: $radius-sm;
   cursor: pointer;
+  transition: $transition-base;
 
   &:hover {
-    background: #f1f5f9;
+    border-color: rgba(245, 158, 11, 0.4);
+    color: $color-gold;
   }
 
   &.active {
-    background: #eff6ff;
-    border-color: #bfdbfe;
-    color: #2563eb;
-    font-weight: 600;
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: $color-gold;
+    font-weight: 700;
   }
 }
 
-.search-box {
-  width: 260px;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 6px 10px;
-    font-size: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    box-sizing: border-box;
-  }
+.search-input {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid $border-color-hover;
+  border-radius: $radius-sm;
+  background: $bg-tertiary;
+  color: $text-primary;
+  min-width: 220px;
 }
 
 .table-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  overflow: hidden;
+  @include glass-panel;
+  padding: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
 }
 
 .lineup-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  text-align: left;
 
   th {
-    background: #f8fafc;
-    color: #475569;
+    padding: 10px 12px;
+    color: $text-muted;
     font-weight: 600;
-    padding: 12px 14px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
   }
 
   td {
-    padding: 14px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 12px;
+    border-bottom: 1px solid #eef2f7;
     vertical-align: middle;
   }
-}
 
-.lineup-row {
-  cursor: pointer;
-  transition: background 0.15s;
+  .lineup-row {
+    cursor: pointer;
+    transition: background 0.15s;
 
-  &:hover {
-    background: #f8fafc;
+    &:hover {
+      background: $bg-card-hover;
+    }
+
+    &.is-expanded {
+      background: rgba(245, 158, 11, 0.04);
+    }
   }
 
-  &.is-expanded {
-    background: #eff6ff;
-  }
-}
-
-.order-badge {
-  font-size: 12px;
-  font-weight: 700;
-  color: #64748b;
-
-  &.order-1 { color: #eab308; }
-  &.order-2 { color: #94a3b8; }
-  &.order-3 { color: #b45309; }
+  .highlight-gold { color: $color-gold; }
+  .highlight-cyan { color: $color-cyan; }
 }
 
 .lineup-title-cell {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 
   .lineup-name {
     font-weight: 700;
-    color: #0f172a;
-  }
+    color: $text-primary;
+    text-decoration: none;
 
-  .expand-indicator {
-    font-size: 11px;
-    color: #3b82f6;
-    margin-top: 2px;
+    &:hover {
+      color: $color-gold;
+      text-decoration: underline;
+    }
   }
 }
 
-.tier-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+.stale-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(107, 114, 128, 0.2);
+  color: $text-muted;
+  border: 1px solid rgba(107, 114, 128, 0.35);
+}
 
-  &.tier-T0 { background: #fef3c7; color: #b45309; }
-  &.tier-T1 { background: #dbeafe; color: #1e40af; }
-  &.tier-T2 { background: #f1f5f9; color: #475569; }
+.source-tag {
+  font-size: 11px;
+  color: $text-secondary;
 }
 
 .commander-tag {
-  background: #f1f5f9;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  color: #334155;
+  font-size: 12px;
+  color: $text-secondary;
 }
 
-.highlight-gold { color: #d97706; font-weight: 700; }
-.highlight-cyan { color: #0891b2; font-weight: 700; }
+.window-text {
+  font-size: 11px;
+  color: $text-muted;
+}
+
+.order-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: $text-secondary;
+  background: $bg-tertiary;
+}
 
 .expand-btn {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 12px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid $border-color-hover;
+  background: transparent;
+  color: $text-secondary;
+  border-radius: $radius-sm;
   cursor: pointer;
-  color: #334155;
 
   &:hover {
-    background: #e2e8f0;
+    border-color: rgba(245, 158, 11, 0.4);
+    color: $color-gold;
   }
 }
 
-.expand-row {
+.expand-row .expand-cell {
   background: #f8fafc;
-}
+  padding: 0;
 
-.expand-cell {
-  padding: 0 !important;
-}
-
-.evidence-panel {
-  padding: 20px;
-  border-bottom: 2px solid #e2e8f0;
+  .evidence-panel {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
 }
 
 .evidence-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 14px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
 
 .evidence-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: 14px;
 
   &.full-span {
-    grid-column: span 2;
-
-    @media (max-width: 768px) {
-      grid-column: span 1;
-    }
+    grid-column: 1 / -1;
   }
 
   .ev-title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    color: #1e293b;
+    color: $text-primary;
     margin: 0 0 10px 0;
   }
+}
 
-  .ev-list {
-    margin: 0;
-    padding-left: 18px;
+.meta-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
     font-size: 12px;
-    color: #475569;
-    line-height: 1.7;
+    color: $text-secondary;
+    line-height: 1.5;
+
+    strong {
+      color: $text-muted;
+    }
   }
 }
 
 .hero-tags-row {
   display: flex;
-  gap: 6px;
   flex-wrap: wrap;
-  margin-top: 4px;
-
-  .hero-chip {
-    background: #f1f5f9;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    color: #1e293b;
-  }
+  gap: 6px;
 }
 
-.matchup-breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.hero-chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  background: rgba(2, 132, 199, 0.08);
+  color: $color-cyan;
+  border: 1px solid rgba(2, 132, 199, 0.35);
 }
 
-.match-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 12px;
-  padding: 8px;
-  border-radius: 6px;
-
-  &.advantage {
-    background: #f0fdf4;
-    border-left: 3px solid #22c55e;
-    .m-tag { color: #15803d; font-weight: 700; font-size: 11px; }
-    .m-text { color: #166534; }
-  }
-
-  &.disadvantage {
-    background: #fef2f2;
-    border-left: 3px solid #ef4444;
-    .m-tag { color: #b91c1c; font-weight: 700; font-size: 11px; }
-    .m-text { color: #991b1b; }
-  }
-}
-
-.ev-advice {
-  font-size: 13px;
-  color: #1e293b;
-  line-height: 1.6;
-  margin: 0;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  padding: 12px;
-  border-radius: 6px;
+.drawer-foot-note {
+  font-size: 11px;
+  color: $text-muted;
+  border-top: 1px dashed $border-color;
+  padding-top: 10px;
 }
 </style>

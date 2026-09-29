@@ -18,7 +18,6 @@ const ROOT_DIR = path.resolve(__dirname, '../..')
 import { makeTmpStore } from '../../backend/tests/helpers/tmp-store.mjs'
 import { parseHokaceBody, syncHokaceLineups } from '../../tools/emulator-watcher/adapters/hokace.mjs'
 import { detectMatchFromImage } from '../src/utils/image-analyzer'
-import { solveClientLiveMatch } from '../src/utils/live-solver'
 import { createApiServer } from '../../tools/emulator-watcher/index.mjs'
 
 describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
@@ -105,7 +104,7 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
     }
   })
 
-  it('F06 & A11 & A18: 未知图片检测与求解器强推荐关闭', async () => {
+  it('F06 & A11 & A18: 未知图片哈希核对不命中时必须待人工录入（v3：求解器已退役）', async () => {
     // 伪造包含 18824 字符的未知文件
     const fakeContent = 'This is an unrelated test file.'
     const fakeFile = new File([fakeContent], 'unrelated-18824.png', { type: 'image/png' })
@@ -114,8 +113,12 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
     expect(detectResult.recognitionStatus).toBe('NEED_MANUAL_REVIEW')
     expect(detectResult.participants.length).toBe(0)
 
-    // 未知文件传求解器直接报错，阻止推演
-    expect(() => solveClientLiveMatch(detectResult)).toThrow(/必须具备完整 6 个席位才能进行实战对局推演/)
+    // v3 P2-C：客户端推演/求解引擎（matchup-engine/live-solver/settlement）已整体退役，
+    // 不存在任何可在前端生成胜率/EV 建议的代码路径
+    expect(fs.existsSync(path.join(ROOT_DIR, 'frontend/src/utils/live-solver.ts'))).toBe(false)
+    expect(fs.existsSync(path.join(ROOT_DIR, 'frontend/src/utils/matchup-engine.ts'))).toBe(false)
+    expect(fs.existsSync(path.join(ROOT_DIR, 'frontend/src/utils/settlement.ts'))).toBe(false)
+    expect(fs.existsSync(path.join(ROOT_DIR, 'frontend/src/mock'))).toBe(false)
   })
 
   it('F08 & A03 & A13: 导入数据强校验、名次整数约束与未核验隔离', () => {

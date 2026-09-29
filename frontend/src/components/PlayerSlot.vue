@@ -24,47 +24,36 @@
       </div>
     </div>
 
-    <!-- 赛前指标与画像简报 -->
+    <!-- 赛前指标与画像简报（未知 → 如实展示，禁默认值填充） -->
     <div class="slot-body">
       <div class="meta-row">
         <div class="meta-item">
-          <span class="meta-label">擅用棋手</span>
-          <span class="meta-value highlight">{{ participant.commanderName || '未指定' }}</span>
+          <span class="meta-label">当局棋手</span>
+          <span class="meta-value highlight">{{ participant.commander || '—' }}</span>
         </div>
         <div class="meta-item">
-          <span class="meta-label">常用体系</span>
-          <span class="meta-value">{{ participant.favoriteLineup || '多元阵容' }}</span>
+          <span class="meta-label">当局阵容</span>
+          <span class="meta-value">{{ participant.lineup || '—' }}</span>
         </div>
       </div>
 
       <div class="stats-row">
         <div class="stat-box">
           <span class="stat-num">{{ formatPercent(participant.winRateRecent) }}</span>
-          <span class="stat-desc">近期登顶率</span>
+          <span class="stat-desc">登顶率</span>
         </div>
         <div class="stat-box">
           <span class="stat-num">{{ formatPercent(participant.top3RateRecent) }}</span>
-          <span class="stat-desc">近期前三率</span>
+          <span class="stat-desc">前三率</span>
         </div>
         <div class="stat-box">
-          <span class="stat-num">{{ participant.sampleMatches || '-' }}</span>
-          <span class="stat-desc">有效样本</span>
+          <span class="stat-num">{{ participant.sampleMatches ?? '-' }}</span>
+          <span class="stat-desc">已核验样本</span>
         </div>
       </div>
 
-      <!-- 预测模型第一名概率 -->
-      <div v-if="forecastProb !== undefined" class="forecast-section">
-        <div class="forecast-header">
-          <span class="forecast-label">赛前登顶概率</span>
-          <span class="forecast-value">{{ formatPercent(forecastProb) }}</span>
-        </div>
-        <div class="prob-track">
-          <div class="prob-fill" :style="{ width: `${forecastProb * 100}%` }"></div>
-        </div>
-      </div>
-
-      <!-- 实时支持进度 -->
-      <div v-if="supportRatio !== undefined" class="support-section">
+      <!-- 支持热度（仅材料可见时录入展示） -->
+      <div v-if="supportRatio !== undefined && supportRatio !== null" class="support-section">
         <SupportBar :ratio-percent="supportRatio" />
       </div>
     </div>
@@ -78,11 +67,10 @@ import SupportBar from './SupportBar.vue'
 
 defineProps<{
   participant: Participant
-  forecastProb?: number
-  supportRatio?: number
+  supportRatio?: number | null
 }>()
 
-function formatPercent(val?: number): string {
+function formatPercent(val?: number | null): string {
   if (val === undefined || val === null) return '-'
   return `${Math.round(val * 100)}%`
 }

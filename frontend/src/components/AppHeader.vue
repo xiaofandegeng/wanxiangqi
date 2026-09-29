@@ -9,8 +9,8 @@
               <span class="icon-text">弈</span>
             </div>
             <div class="brand-text">
-              <h1 class="brand-title">王者万象棋 · 钻石预测平台</h1>
-              <span class="brand-subtitle">王牌对决 6 席位胜率推演与博弈期望决策</span>
+              <h1 class="brand-title">王者万象棋 · 真实数据站</h1>
+              <span class="brand-subtitle">王牌对决已核验战绩与统计台账</span>
             </div>
           </router-link>
         </div>
@@ -19,7 +19,7 @@
         <div class="header-right">
           <button class="live-radar-trigger-btn" @click="openRadar">
             <span class="live-beacon"></span>
-            <span class="btn-text">极速开盘雷达</span>
+            <span class="btn-text">存证材料录入</span>
           </button>
 
           <div class="api-status-badge" :class="{ 'is-connected': isBackendOnline }">
@@ -29,22 +29,22 @@
         </div>
       </div>
 
-      <!-- 导航导航栏 (聚焦王牌对决钻石预测与数据依据) -->
+      <!-- 导航导航栏 -->
       <nav class="nav-links-bar">
         <router-link to="/" class="nav-item" active-class="is-active">
-          💎 王牌钻石预测
+          💎 王牌对决场次
         </router-link>
         <router-link to="/roster" class="nav-item" active-class="is-active">
-          📊 选手战力天梯
+          📊 选手数据
         </router-link>
         <router-link to="/lineups" class="nav-item" active-class="is-active">
-          ⚔️ 阵容克制与依据
+          ⚔️ 阵容快照参考
         </router-link>
         <router-link to="/archive" class="nav-item" active-class="is-active">
-          📋 历史事实流水
+          📋 已核验流水
         </router-link>
         <router-link to="/models/backtest" class="nav-item" active-class="is-active">
-          📈 模型评估与回测
+          📈 模型状态
         </router-link>
         <router-link to="/admin/verify" class="nav-item" active-class="is-active">
           🔍 证据核验工作台

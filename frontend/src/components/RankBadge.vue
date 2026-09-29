@@ -1,7 +1,7 @@
 <template>
   <div class="rank-badge" :class="rankTierClass">
-    <span class="rank-text">{{ rankText }}</span>
-    <span v-if="rankScore !== undefined" class="rank-score">{{ rankScore }}★</span>
+    <span class="rank-text">{{ rankText || '段位未采集' }}</span>
+    <span v-if="rankScore !== undefined && rankScore !== null" class="rank-score">{{ rankScore }}★</span>
   </div>
 </template>
 
@@ -9,11 +9,13 @@
 import { computed } from 'vue'
 
 const props = defineProps<{
-  rankText: string
-  rankScore?: number
+  rankText?: string | null
+  rankScore?: number | null
 }>()
 
+// 段位未采集（null/空）时按中性样式展示，不得伪装成任何段位
 const rankTierClass = computed(() => {
+  if (!props.rankText) return 'tier-default'
   if (props.rankText.includes('宗师')) return 'tier-grandmaster'
   if (props.rankText.includes('无双')) return 'tier-peerless'
   if (props.rankText.includes('王者')) return 'tier-king'

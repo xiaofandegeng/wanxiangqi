@@ -1,66 +1,66 @@
 <template>
   <div class="match-archive-view">
-    <!-- 顶部数据源与巡检控制横幅 -->
+    <!-- 顶部台账概览（数字全部来自 API 真实返回，无兜底常量） -->
     <div class="archive-header-card">
       <div class="header-top-row">
         <div class="title-block">
-          <span class="header-badge">真实对局归档库</span>
-          <h2 class="view-title">历史对战事实大盘档案库</h2>
-          <span class="view-sub">沉淀已核验实盘对战流水事实，记录 6 席位名次排位与使用体系</span>
+          <span class="header-badge">已核验战绩台账</span>
+          <h2 class="view-title">逐局战绩流水与场次档案</h2>
+          <span class="view-sub">仅陈列通过人工核验入库的真实对局记录；每条记录的来源与核验状态如实标注，未知字段不做填充</span>
         </div>
 
         <div class="ingestion-action-box">
           <div class="daemon-status">
             <span class="pulse-beacon" :class="{ active: isConnected }"></span>
-            <span class="daemon-text">{{ isConnected ? 'API 服务连接正常 (127.0.0.1:8080)' : 'API 服务未连接' }}</span>
+            <span class="daemon-text">{{ isConnected ? 'API 服务已连接' : 'API 服务未连接' }}</span>
           </div>
 
-          <button class="sync-now-btn" :disabled="isSyncing" @click="triggerIngestionSync">
-            <span>{{ isSyncing ? '正在刷新对局...' : '刷新对局归档' }}</span>
+          <button class="sync-now-btn" :disabled="isSyncing" @click="reloadAll">
+            <span>{{ isSyncing ? '正在刷新...' : '刷新台账' }}</span>
           </button>
         </div>
       </div>
 
-    <!-- 归档大盘关键指标 (动态计算) -->
-    <div class="archive-metrics-grid">
-      <div class="metric-card">
-        <span class="metric-num text-gold">{{ campTotalCount || 1337 }} 局</span>
-        <span class="metric-label">王者营地官方实战流水</span>
-        <span class="metric-sub">腾讯官方网关已核验</span>
-      </div>
-      <div class="metric-card">
-        <span class="metric-num">{{ uniquePlayersCount || 71 }} 位</span>
-        <span class="metric-label">已认证参赛选手</span>
-        <span class="metric-sub">覆盖全服巅峰天梯榜</span>
-      </div>
-      <div class="metric-card">
-        <span class="metric-num">{{ eventsList.length }} 场</span>
-        <span class="metric-label">王牌对决现场多席大盘</span>
-        <span class="metric-sub">含 6 席位赔率与实战</span>
-      </div>
-      <div class="metric-card">
-        <span class="metric-num text-cyan">100% 官方</span>
-        <span class="metric-label">数据来源通道</span>
-        <span class="metric-sub">kohcamp.qq.com</span>
+      <!-- 台账关键指标（真实计数；无数据即为 0，不显示任何预设数字） -->
+      <div class="archive-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-num">{{ campTotalCount }} 条</span>
+          <span class="metric-label">已核验逐局记录</span>
+          <span class="metric-sub">仅统计已核验且状态 ACTIVE 的非合成记录</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num">{{ playersCount }} 位</span>
+          <span class="metric-label">已收录选手</span>
+          <span class="metric-sub">身份与段位未知字段如实为空</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num">{{ eventsList.length }} 场</span>
+          <span class="metric-label">王牌对决场次</span>
+          <span class="metric-sub">六席位名次以人工核验录入为准</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num">0 条</span>
+          <span class="metric-label">合成记录参与统计</span>
+          <span class="metric-sub">合成 / 隔离 / 待核验记录不进入本台账</span>
+        </div>
       </div>
     </div>
-  </div>
 
     <!-- 视图切换模式 Tab -->
     <div class="archive-view-tabs">
-      <button 
-        class="view-tab-btn" 
-        :class="{ active: activeTab === 'CAMP_FEED' }"
-        @click="activeTab = 'CAMP_FEED'"
+      <button
+        class="view-tab-btn"
+        :class="{ active: activeTab === 'MATCH_FEED' }"
+        @click="activeTab = 'MATCH_FEED'"
       >
-        <span>📱 王者营地官方全量实战排位流水 ({{ campTotalCount || 1337 }} 局)</span>
+        <span>📋 逐局战绩流水 ({{ campTotalCount }} 条)</span>
       </button>
-      <button 
-        class="view-tab-btn" 
+      <button
+        class="view-tab-btn"
         :class="{ active: activeTab === 'TOURNAMENT_EVENTS' }"
         @click="activeTab = 'TOURNAMENT_EVENTS'"
       >
-        <span>⚔️ 王牌对决 · 现场多席位大盘 ({{ eventsList.length }} 场)</span>
+        <span>⚔️ 王牌对决场次 ({{ eventsList.length }} 场)</span>
       </button>
     </div>
 
@@ -69,44 +69,63 @@
       {{ syncNotice }}
     </div>
 
-    <!-- 视图 1：王者营地全量官方实战排位流水 (1,337 局) -->
-    <div v-if="activeTab === 'CAMP_FEED'" class="camp-feed-section">
+    <!-- 视图 1：逐局战绩流水（真实 API 分页数据） -->
+    <div v-if="activeTab === 'MATCH_FEED'" class="camp-feed-section">
       <div class="section-head-bar">
         <div class="head-title-wrap">
-          <h3 class="section-title">官方逐局实战排位流水 (腾讯王者营地直连)</h3>
-          <span class="section-tip">每一局均携带官方 Camp 流水编号、选手真实 UID、存活轮次与真实名次</span>
+          <h3 class="section-title">逐局战绩流水记录</h3>
+          <span class="section-tip">每条记录均为人工核验入库；记录编号、来源、核验状态逐条可溯</span>
         </div>
         <div class="feed-filter-bar">
-          <span class="feed-count-badge">当前已展示 {{ campMatches.length }} 局 / 共 {{ campTotalCount }} 局</span>
+          <span class="feed-count-badge">当前已展示 {{ matchRecords.length }} 条 / 共 {{ campTotalCount }} 条</span>
         </div>
       </div>
 
-      <div class="camp-table-responsive">
+      <div v-if="feedLoadError" class="empty-state-box">
+        <h3 class="empty-title">战绩流水加载失败</h3>
+        <p class="empty-desc">{{ feedLoadError }}</p>
+        <button class="link-btn" @click="loadCampMatches()">重新加载</button>
+      </div>
+
+      <div v-else-if="feedLoading" class="empty-state-box">
+        <p class="empty-desc">正在加载战绩流水...</p>
+      </div>
+
+      <div v-else-if="matchRecords.length === 0" class="empty-state-box">
+        <div class="empty-icon">📁</div>
+        <h3 class="empty-title">暂无已核验逐局记录</h3>
+        <p class="empty-desc">
+          通过「证据核验工作台」录入并核验材料，或由管理端导入战绩后，流水将在此呈现。待核验记录不进入本页。
+        </p>
+      </div>
+
+      <div v-else class="camp-table-responsive">
         <table class="camp-match-table">
           <thead>
             <tr>
-              <th class="th-seq">官方流水号 (CampSeq)</th>
-              <th class="th-player">参赛选手 (UID)</th>
+              <th class="th-seq">记录编号</th>
+              <th class="th-player">选手</th>
               <th class="th-rank">最终名次</th>
-              <th class="th-lineup">使用体系 / 核心主弈</th>
+              <th class="th-lineup">使用体系 / 主弈</th>
               <th class="th-rounds">存活轮次</th>
-              <th class="th-time">比赛实战时间</th>
-              <th class="th-status">官方存证状态</th>
+              <th class="th-time">对局时间 / 模式</th>
+              <th class="th-status">核验状态</th>
             </tr>
           </thead>
           <tbody>
-            <tr 
-              v-for="m in campMatches" 
+            <tr
+              v-for="m in matchRecords"
               :key="m.id"
               class="camp-tr"
               :class="{ 'is-win': m.finalRank === 1 }"
             >
-              <td class="font-mono text-muted">
-                <span class="camp-badge">Camp</span> #{{ m.campSeq || m.id.replace('camp-', '') }}
+              <td class="font-mono text-muted record-id-cell">
+                <span class="record-id">{{ m.id }}</span>
+                <span v-if="m.sourceId" class="source-chip">{{ m.sourceId }}</span>
               </td>
               <td class="player-cell">
                 <span class="player-name font-bold">{{ getPlayerName(m.playerId) }}</span>
-                <span class="player-uid font-mono">UID: {{ m.playerUid || m.playerId.replace('p-', '') }}</span>
+                <span class="player-uid font-mono">{{ m.playerId }}</span>
               </td>
               <td class="rank-cell">
                 <span class="rank-badge-pill" :class="'rank-' + m.finalRank">
@@ -114,17 +133,19 @@
                 </span>
               </td>
               <td class="lineup-cell">
-                <span class="lineup-name font-bold">{{ m.lineup }}</span>
-                <span class="cmd-tag">{{ m.commander }}</span>
+                <span class="lineup-name font-bold">{{ m.lineup || '未记录' }}</span>
+                <span class="cmd-tag">{{ m.commander || '未记录' }}</span>
               </td>
               <td class="font-mono rounds-cell">
-                {{ m.roundsSurvived }} 轮
+                {{ m.roundsSurvived != null ? `${m.roundsSurvived} 轮` : '未记录' }}
               </td>
               <td class="font-mono text-secondary time-cell">
-                {{ formatTime(m.matchTime) }}
+                <span>{{ formatTime(m.matchTime) }}</span>
+                <span class="mode-inline-tag">{{ m.mode || '模式未记录' }}</span>
               </td>
               <td class="status-cell">
-                <span class="verified-tag">✓ 营地存证已核验</span>
+                <span v-if="m.verified" class="verified-tag">✓ 已核验</span>
+                <span v-else class="pending-tag">待核验</span>
               </td>
             </tr>
           </tbody>
@@ -132,29 +153,29 @@
       </div>
 
       <!-- 分页与加载更多 -->
-      <div v-if="campMatches.length < campTotalCount" class="load-more-row">
+      <div v-if="matchRecords.length < campTotalCount" class="load-more-row">
         <button class="load-more-btn" :disabled="isLoadingMore" @click="loadMoreCampMatches">
-          <span>{{ isLoadingMore ? '正在拉取更多营地流水...' : '加载更多官方实战流水 (每次 50 局)' }}</span>
+          <span>{{ isLoadingMore ? '正在拉取更多记录...' : '加载更多记录 (每次 50 条)' }}</span>
         </button>
       </div>
     </div>
 
-    <!-- 视图 2：王牌对决现场多席位大盘 (原有功能) -->
+    <!-- 视图 2：王牌对决场次（六席位事实） -->
     <div v-else-if="activeTab === 'TOURNAMENT_EVENTS'" class="matches-list-section">
-      <!-- 真实空态展示 (A01, F07) -->
+      <!-- 真实空态展示 -->
       <div v-if="eventsList.length === 0" class="empty-state-box">
         <div class="empty-icon">📁</div>
-        <h3 class="empty-title">当前暂无已归档的历史对局</h3>
+        <h3 class="empty-title">当前暂无已归档的对局场次</h3>
         <p class="empty-desc">
-          系统遵循零 mock 冷启动规范。当通过证据链核验工作台或批量导入对局后，历史对局将自动在此呈现。
+          通过「证据核验工作台」录入并核验六席位材料后，场次将自动在此呈现。
         </p>
       </div>
 
       <!-- 历史对局场次流列表 -->
       <div v-else class="match-cards-container">
-        <div 
-          v-for="e in eventsList" 
-          :key="e.id" 
+        <div
+          v-for="e in eventsList"
+          :key="e.id"
           class="match-archive-card"
         >
           <!-- 场次顶栏 -->
@@ -162,7 +183,7 @@
             <div class="match-meta-info">
               <span class="match-time">{{ formatTime(e.scheduledAt) }}</span>
               <h4 class="match-title">{{ e.title }}</h4>
-              <span class="mode-tag">{{ e.mode || '巅峰排位' }}</span>
+              <span class="mode-tag">{{ e.mode || '模式未记录' }}</span>
               <span v-if="e.status === 'AUDITED'" class="audit-tag">✓ 已核验存证</span>
             </div>
 
@@ -170,7 +191,7 @@
               <span class="trophy-icon">🏆</span>
               <div class="winner-info">
                 <span class="winner-label">冠军登顶</span>
-                <span class="winner-name">{{ getWinner(e)?.nickname }} ({{ getWinner(e)?.lineup || getWinner(e)?.commander || '通用' }})</span>
+                <span class="winner-name">{{ getWinner(e)?.nickname }}{{ winnerDetail(e) }}</span>
               </div>
             </div>
           </div>
@@ -190,9 +211,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr 
-                  v-for="p in e.participants" 
-                  :key="p.slot" 
+                <tr
+                  v-for="p in e.participants"
+                  :key="p.slot"
                   class="row-tr"
                   :class="{ 'is-winner': p.finalRank === 1 }"
                 >
@@ -201,16 +222,17 @@
                     <span class="name-text">{{ p.nickname }}</span>
                     <span v-if="p.finalRank === 1" class="winner-pill">★ 登顶</span>
                   </td>
-                  <td class="cell-score">{{ p.rankScore }}★</td>
+                  <td class="cell-score">{{ p.rankScore != null ? `${p.rankScore}★` : '—' }}</td>
                   <td class="cell-lineup">
-                    {{ p.lineup || '常规' }} · {{ p.commander || '通用' }}
+                    {{ p.lineup || '未记录' }} · {{ p.commander || '未记录' }}
                   </td>
-                  <td class="cell-odds">{{ p.odds ? `${p.odds}x` : '--' }}</td>
-                  <td class="cell-support">{{ p.supportCount || '--' }} 票</td>
+                  <td class="cell-odds">{{ p.odds != null ? `${p.odds}x` : '—' }}</td>
+                  <td class="cell-support">{{ p.supportCount != null ? `${p.supportCount} 票` : '—' }}</td>
                   <td class="cell-rank">
-                    <span class="result-badge" :class="'rank-' + p.finalRank">
-                      第 {{ p.finalRank || p.slot }} 名
+                    <span v-if="p.finalRank != null" class="result-badge" :class="'rank-' + p.finalRank">
+                      第 {{ p.finalRank }} 名
                     </span>
+                    <span v-else class="result-badge is-unknown">名次未录入</span>
                   </td>
                 </tr>
               </tbody>
@@ -223,66 +245,83 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { fetchEventsList, fetchMatchesList, fetchPlayersList, type EventRecord, type MatchRecord, type PlayerRecord } from '../api'
 
-const activeTab = ref<'CAMP_FEED' | 'TOURNAMENT_EVENTS'>('CAMP_FEED')
+const activeTab = ref<'MATCH_FEED' | 'TOURNAMENT_EVENTS'>('MATCH_FEED')
 const eventsList = ref<EventRecord[]>([])
-const campMatches = ref<MatchRecord[]>([])
+const matchRecords = ref<MatchRecord[]>([])
 const campTotalCount = ref(0)
 const playersMap = ref<Record<string, string>>({})
+const playersCount = ref(0)
 const isSyncing = ref(false)
 const isLoadingMore = ref(false)
 const isConnected = ref(false)
 const syncNotice = ref('')
+const feedLoading = ref(true)
+const feedLoadError = ref<string | null>(null)
 
-async function loadCampMatches(isLoadMore = false) {
+let loadAbort: AbortController | null = null
+
+async function loadCampMatches(isLoadMore = false, signal?: AbortSignal) {
+  if (!isLoadMore) {
+    feedLoading.value = true
+    feedLoadError.value = null
+  }
   try {
-    const offset = isLoadMore ? campMatches.value.length : 0
-    const res = await fetchMatchesList({ limit: 50, offset })
+    const offset = isLoadMore ? matchRecords.value.length : 0
+    const res = await fetchMatchesList({ limit: 50, offset }, signal)
     if (isLoadMore) {
-      campMatches.value.push(...res.data)
+      matchRecords.value.push(...res.data)
     } else {
-      campMatches.value = res.data
+      matchRecords.value = res.data
     }
     campTotalCount.value = res.total
     isConnected.value = true
-  } catch (err) {
-    console.error('加载营地流水失败:', err)
+  } catch (err: any) {
+    if (err?.name === 'AbortError') return
+    if (!isLoadMore) {
+      feedLoadError.value = err?.message || '未知错误'
+      matchRecords.value = []
+      campTotalCount.value = 0
+    }
+    console.error('加载战绩流水失败:', err)
+  } finally {
+    if (!isLoadMore) feedLoading.value = false
   }
 }
 
-async function loadPlayers() {
+async function loadPlayers(signal?: AbortSignal) {
   try {
-    const res = await fetchPlayersList()
+    const res = await fetchPlayersList({}, signal)
     const map: Record<string, string> = {}
-    const list = res.players || []
-    list.forEach((p: PlayerRecord) => {
+    for (const p of res.players as PlayerRecord[]) {
       map[p.id] = p.nickname
       if (p.id.startsWith('p-')) {
         map[p.id.replace('p-', '')] = p.nickname
       }
-    })
+    }
     playersMap.value = map
+    playersCount.value = res.players.length
   } catch (err) {
     console.warn('选手列表映射加载失败:', err)
   }
 }
 
-async function loadMatches() {
+async function loadMatches(signal?: AbortSignal) {
   try {
-    const list = await fetchEventsList()
+    const list = await fetchEventsList({}, signal)
     eventsList.value = list
     isConnected.value = true
-  } catch (err) {
-    console.error('加载对局列表失败:', err)
+  } catch (err: any) {
+    if (err?.name === 'AbortError') return
     eventsList.value = []
     isConnected.value = false
   }
 }
 
 function getPlayerName(playerId?: string): string {
-  if (!playerId) return '神秘选手'
+  if (!playerId) return '未知选手'
   return playersMap.value[playerId] || playersMap.value[playerId.replace('p-', '')] || playerId
 }
 
@@ -292,35 +331,46 @@ async function loadMoreCampMatches() {
   isLoadingMore.value = false
 }
 
-onMounted(() => {
-  loadPlayers()
-  loadCampMatches()
-  loadMatches()
-})
-
-const uniquePlayersCount = computed(() => {
-  return Object.keys(playersMap.value).length > 0 ? Object.keys(playersMap.value).length : 71
-})
-
-function getWinner(event: EventRecord) {
-  return event.participants?.find(p => p.finalRank === 1) || null
-}
-
-async function triggerIngestionSync() {
+async function reloadAll() {
   isSyncing.value = true
   syncNotice.value = ''
+  loadAbort?.abort()
+  loadAbort = new AbortController()
+  const signal = loadAbort.signal
   try {
-    await loadCampMatches()
-    await loadMatches()
-    syncNotice.value = `同步检查完成：腾讯王者营地官方战绩流水已完全同步 (共 ${campTotalCount.value} 局事实存证)！`
+    await Promise.all([loadCampMatches(false, signal), loadPlayers(signal), loadMatches(signal)])
+    syncNotice.value = `台账已刷新：已核验逐局记录 ${campTotalCount.value} 条，场次 ${eventsList.value.length} 场`
   } catch (err: any) {
-    syncNotice.value = `同步请求失败: ${err.message}`
+    if (err?.name !== 'AbortError') {
+      syncNotice.value = `刷新请求失败: ${err?.message || '未知错误'}`
+    }
   } finally {
     isSyncing.value = false
     setTimeout(() => {
       syncNotice.value = ''
     }, 4000)
   }
+}
+
+onMounted(() => {
+  loadAbort = new AbortController()
+  const signal = loadAbort.signal
+  loadPlayers(signal)
+  loadCampMatches(false, signal)
+  loadMatches(signal)
+})
+
+onUnmounted(() => loadAbort?.abort())
+
+function getWinner(event: EventRecord) {
+  return event.participants?.find(p => p.finalRank === 1) || null
+}
+
+function winnerDetail(event: EventRecord): string {
+  const w = getWinner(event)
+  if (!w) return ''
+  const detail = w.lineup || w.commander
+  return detail ? ` (${detail})` : ''
 }
 
 function formatTime(isoStr: string) {
@@ -582,14 +632,25 @@ function formatTime(isoStr: string) {
         }
       }
 
-      .camp-badge {
-        background: #e0f2fe;
-        color: #0284c7;
-        font-size: 0.72rem;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-weight: 600;
-        margin-right: 4px;
+      .record-id-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .record-id {
+          font-size: 0.78rem;
+          word-break: break-all;
+        }
+
+        .source-chip {
+          font-size: 0.7rem;
+          background: #f1f5f9;
+          border: 1px solid #e2e8f0;
+          color: #64748b;
+          padding: 1px 6px;
+          border-radius: 4px;
+          width: fit-content;
+        }
       }
 
       .player-cell {
@@ -614,6 +675,7 @@ function formatTime(isoStr: string) {
         font-size: 0.78rem;
         background: #f1f5f9;
         border: 1px solid #e2e8f0;
+        white-space: nowrap;
       }
 
       .lineup-cell {
@@ -627,6 +689,18 @@ function formatTime(isoStr: string) {
           padding: 2px 6px;
           border-radius: 4px;
           color: #64748b;
+          white-space: nowrap;
+        }
+      }
+
+      .time-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .mode-inline-tag {
+          font-size: 0.7rem;
+          color: #94a3b8;
         }
       }
 
@@ -635,6 +709,16 @@ function formatTime(isoStr: string) {
         color: #16a34a;
         background: #f0fdf4;
         border: 1px solid #bbf7d0;
+        padding: 2px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+
+      .pending-tag {
+        font-size: 0.75rem;
+        color: #b45309;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
         padding: 2px 8px;
         border-radius: 4px;
         white-space: nowrap;
@@ -747,7 +831,8 @@ function formatTime(isoStr: string) {
     font-weight: 600;
     padding: 8px 16px;
     border-radius: 6px;
-    text-decoration: none;
+    border: none;
+    cursor: pointer;
 
     &:hover {
       background: #1d4ed8;
@@ -942,6 +1027,12 @@ function formatTime(isoStr: string) {
   display: inline-block;
   background: #f1f5f9;
   color: #475569;
+  white-space: nowrap;
+
+  &.is-unknown {
+    font-weight: 500;
+    color: #94a3b8;
+  }
 
   &.rank-1 {
     background: #fef3c7;

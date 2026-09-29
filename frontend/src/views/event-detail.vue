@@ -1,299 +1,305 @@
 <template>
-  <div v-if="event" class="event-detail-view">
-    <!-- 顶部导航与元信息 -->
-    <div class="detail-header-card">
-      <div class="nav-back-row">
-        <router-link to="/" class="back-link">
-          <span class="back-arrow">←</span>
-          <span>返回今日赛程列表</span>
-        </router-link>
-        <StatusTag :status="event.status" />
-      </div>
+  <div class="event-detail-view">
+    <!-- 加载与失败态如实呈现 -->
+    <div v-if="loading" class="state-panel">正在加载场次数据...</div>
+    <div v-else-if="loadError" class="state-panel is-error">
+      <p>场次数据加载失败：{{ loadError }}</p>
+      <button class="retry-btn" @click="loadEvent">重新加载</button>
+    </div>
 
-      <div class="match-meta-banner">
-        <div class="banner-title-area">
-          <h2 class="match-title">{{ formatTime(event.scheduledAt) }} 王牌对决 · 钻石狂潮</h2>
-          <div class="match-tags">
-            <span class="tag-item">场次编号: {{ event.id }}</span>
-            <span class="tag-item">客户端版本: {{ event.gameVersion }}</span>
-            <span v-if="event.forecast" class="tag-item highlight">预测模型: {{ event.forecast.modelVersion }}</span>
-          </div>
+    <template v-else-if="event">
+      <!-- 顶部导航与元信息 -->
+      <div class="detail-header-card">
+        <div class="nav-back-row">
+          <router-link to="/" class="back-link">
+            <span class="back-arrow">←</span>
+            <span>返回今日赛程列表</span>
+          </router-link>
+          <StatusTag :status="event.status" />
         </div>
 
-        <div v-if="event.forecast" class="banner-stat-area">
-          <div class="stat-pill">
-            <span class="stat-title">截点时间 (Cutoff)</span>
-            <span class="stat-data">{{ event.forecast.asOf }}</span>
+        <div class="match-meta-banner">
+          <div class="banner-title-area">
+            <h2 class="match-title">{{ formatDateTime(event.scheduledAt) }} · {{ event.title || '王牌对决' }}</h2>
+            <div class="match-tags">
+              <span class="tag-item">场次编号: {{ event.id }}</span>
+              <span class="tag-item">模式: {{ event.mode || '未知' }}</span>
+              <span v-if="event.verifiedAt" class="tag-item">核验时间: {{ formatDateTime(event.verifiedAt) }}</span>
+              <span v-if="event.evidenceId" class="tag-item highlight">存证: {{ shortHash(event.evidenceId) }}</span>
+            </div>
           </div>
-          <div class="stat-pill">
-            <span class="stat-title">有效对局样本</span>
-            <span class="stat-data text-gold">{{ event.forecast.sampleSize }} 场</span>
-          </div>
-          <div class="stat-pill">
-            <span class="stat-title">数据覆盖率</span>
-            <span class="stat-data text-cyan">{{ Math.round(event.forecast.coverageRate * 100) }}%</span>
+          <div class="banner-note">
+            本页仅展示经人工核验入库的真实数据；未知字段如实标注，不填充默认值，不做任何胜率预测。
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 6 席位对比表格 (遵循任务书第 9.2 节设计规范) -->
-    <div class="roster-comparison-table-card">
-      <div class="table-title-row">
-        <h3 class="comp-title">六席位历史数据对比</h3>
-        <span class="comp-tip">仅统计开赛前已核验且可获得的有效历史样本</span>
-      </div>
+      <!-- 6 席位已核验统计对比表（数据逐席位取自统计服务） -->
+      <div class="roster-comparison-table-card">
+        <div class="table-title-row">
+          <h3 class="comp-title">六席位已核验战绩对比</h3>
+          <span class="comp-tip">仅统计已核验（verified ∧ ACTIVE ∧ 非合成）的有效历史样本</span>
+        </div>
 
-      <div class="table-responsive">
-        <table class="roster-comp-table">
-          <thead>
-            <tr>
-              <th class="th-slot">席位</th>
-              <th class="th-name">参赛选手</th>
-              <th class="th-rank">已核验段位</th>
-              <th class="th-sample">有效样本 (N)</th>
-              <th class="th-win">登顶率</th>
-              <th class="th-top3">前三率</th>
-              <th class="th-avg">平均名次</th>
-              <th class="th-heat">支持热度 (相对最高)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr 
-              v-for="p in event.participants" 
-              :key="p.slot"
-              class="comp-tr"
-              @click="openPlayerHistory(p.nickname)"
-            >
-              <td class="font-mono text-gold font-bold">#{{ p.slot }}</td>
-              <td class="player-name-cell">
-                <span class="name-text">{{ p.nickname }}</span>
-                <span class="view-history-tag">复盘 🔍</span>
-              </td>
-              <td class="font-mono">{{ p.rankText }} ({{ p.rankScore }}★)</td>
-              <td class="font-mono">{{ getParticipantHistory(p.nickname)?.sampleMatches || 0 }} 局</td>
-              <td class="font-mono highlight-gold">
-                {{ getParticipantHistory(p.nickname)?.sampleMatches ? Math.round((getParticipantHistory(p.nickname)?.firstPlaceRate || 0) * 100) + '%' : '—' }}
-              </td>
-              <td class="font-mono highlight-cyan">
-                {{ getParticipantHistory(p.nickname)?.sampleMatches ? Math.round((getParticipantHistory(p.nickname)?.top3Rate || 0) * 100) + '%' : '—' }}
-              </td>
-              <td class="font-mono">
-                {{ getParticipantHistory(p.nickname)?.sampleMatches ? (getParticipantHistory(p.nickname)?.avgPlacement || 0).toFixed(2) : '—' }}
-              </td>
-              <td class="heat-bar-cell">
-                <div class="heat-bar-wrap">
-                  <div 
-                    class="heat-bar-fill" 
-                    :style="{ width: `${getParticipantRelativePercent(p)}%` }"
-                  ></div>
-                  <span class="heat-bar-label font-mono">
-                    {{ formatParticipantSupportText(p) }}
-                  </span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 六席选手历史战力与打法风格生态画像 (严守赛前事实，绝不空模拟未出阵容) -->
-    <MatchupAnalysis
-      v-if="matchupSimulation"
-      :analyses="matchupSimulation.contestedAnalysis"
-      :insights="matchupSimulation.overallInsights"
-    />
-
-    <!-- 6名选手网格卡片 -->
-    <div class="section-title-wrap">
-      <h3 class="section-title">六席参赛选手数据对阵画像</h3>
-      <span class="section-sub">点击选手昵称可调出历史真实战绩流水复盘</span>
-    </div>
-
-    <div class="participants-container">
-      <PlayerSlot
-        v-for="p in event.participants"
-        :key="p.slot"
-        :participant="p"
-        :forecast-prob="event.forecast?.probabilities[p.slot]"
-        :support-ratio="event.supportSnapshot ? event.supportSnapshot[p.slot]?.ratioPercent : undefined"
-        @click="openPlayerHistory(p.nickname)"
-      />
-    </div>
-
-    <!-- 六人概率 vs 均匀基线对比表格 -->
-    <div v-if="event.forecast" class="comparison-panel">
-      <div class="panel-header">
-        <h3 class="panel-title">六人胜率 vs 均匀基准模型对比 (基于真实历史战绩与打法风格加权)</h3>
-      </div>
-      <div class="table-responsive">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>席位</th>
-              <th>选手昵称 (点击查战绩)</th>
-              <th>当前段位</th>
-              <th>均匀基准 (1/6)</th>
-              <th>可解释模型预测</th>
-              <th>相对基线优势</th>
-              <th>实际赛后结果</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="p in event.participants" :key="p.slot">
-              <td class="col-slot">#{{ p.slot }}</td>
-              <td class="col-name clickable-cell" @click="openPlayerHistory(p.nickname)">
-                {{ p.nickname }}
-                <span class="table-history-icon">📊</span>
-              </td>
-              <td class="col-rank">{{ p.rankText }} ({{ p.rankScore }}★)</td>
-              <td class="col-baseline">16.7%</td>
-              <td class="col-forecast text-gold">
-                {{ Math.round((event.forecast?.probabilities[p.slot] || 0) * 100) }}%
-              </td>
-              <td class="col-diff" :class="diffClass(p.slot)">
-                {{ calcDiff(p.slot) }}
-              </td>
-              <td class="col-result">
-                <span v-if="p.finalRank" class="result-badge" :class="'rank-' + p.finalRank">
-                  第 {{ p.finalRank }} 名
-                </span>
-                <span v-else class="text-muted">待公布</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 证据链溯源模块 -->
-    <div v-if="event.evidences && event.evidences.length > 0" class="evidence-panel">
-      <div class="panel-header">
-        <h3 class="panel-title">关联证据链截图（SHA-256 存证）</h3>
-      </div>
-      <div class="evidence-grid">
-        <div v-for="ev in event.evidences" :key="ev.id" class="evidence-card">
-          <div class="ev-header">
-            <span class="ev-type">{{ evidenceTypeLabel(ev.evidenceType) }}</span>
-            <span class="ev-status text-success">{{ ev.status }}</span>
-          </div>
-          <div class="ev-hash-box">
-            <span class="hash-label">SHA-256:</span>
-            <span class="hash-code">{{ ev.sha256 }}</span>
-          </div>
-          <div class="ev-time">采集时间: {{ ev.capturedAt }}</div>
+        <div class="table-responsive">
+          <table class="roster-comp-table">
+            <thead>
+              <tr>
+                <th class="th-slot">席位</th>
+                <th class="th-name">参赛选手</th>
+                <th class="th-rank">段位（材料可见时）</th>
+                <th class="th-sample">已核验样本 (N)</th>
+                <th class="th-win">登顶率</th>
+                <th class="th-top3">前三率</th>
+                <th class="th-avg">平均名次</th>
+                <th class="th-heat">支持热度（相对最高）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="p in event.participants"
+                :key="p.slot"
+                class="comp-tr"
+                @click="openPlayerHistory(p)"
+              >
+                <td class="font-mono text-gold font-bold">#{{ p.slot }}</td>
+                <td class="player-name-cell">
+                  <span class="name-text">{{ p.nickname }}</span>
+                  <span v-if="p.playerId" class="view-history-tag">流水 🔍</span>
+                </td>
+                <td class="font-mono">
+                  <template v-if="p.rankText || p.rankScore !== null && p.rankScore !== undefined">
+                    {{ p.rankText || '—' }}<template v-if="p.rankScore != null"> ({{ p.rankScore }}★)</template>
+                  </template>
+                  <template v-else>未采集</template>
+                </td>
+                <td class="font-mono">{{ statOf(p)?.sampleCount ?? '—' }}</td>
+                <td class="font-mono highlight-gold">{{ formatRate(statOf(p)?.winRate) }}</td>
+                <td class="font-mono highlight-cyan">{{ formatRate(statOf(p)?.top3Rate) }}</td>
+                <td class="font-mono">{{ statOf(p)?.avgRank != null ? statOf(p)!.avgRank!.toFixed(2) : '—' }}</td>
+                <td class="heat-bar-cell">
+                  <div v-if="hasSupportData" class="heat-bar-wrap">
+                    <div
+                      class="heat-bar-fill"
+                      :style="{ width: `${relativeSupportPercent(p)}%` }"
+                    ></div>
+                    <span class="heat-bar-label font-mono">{{ supportText(p) }}</span>
+                  </div>
+                  <span v-else class="text-muted">未采集</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="anySmallSample" class="small-sample-note">
+          * 存在样本量低于阈值的席位：其比率仅作参考，页面不据此生成任何预测结论。
         </div>
       </div>
+
+      <!-- 6 名选手卡片（真实统计或未知态） -->
+      <div class="section-title-wrap">
+        <h3 class="section-title">六席位选手数据卡</h3>
+        <span class="section-sub">点击行可查看该选手已核验逐局流水；未知字段如实展示</span>
+      </div>
+
+      <div class="participants-container">
+        <PlayerSlot
+          v-for="p in event.participants"
+          :key="p.slot"
+          :participant="toSlotParticipant(p)"
+          :support-ratio="p.supportCount != null && maxSupport ? relativeSupportPercent(p) : null"
+        />
+      </div>
+
+      <!-- 赛后结果（仅已录入时展示，不做赛前预测对照） -->
+      <div v-if="allRanksKnown" class="comparison-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">赛后名次（人工核验录入）</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>席位</th>
+                <th>选手</th>
+                <th>当局棋手</th>
+                <th>当局阵容</th>
+                <th>最终名次</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in event.participants" :key="p.slot">
+                <td class="col-slot">#{{ p.slot }}</td>
+                <td class="col-name">{{ p.nickname }}</td>
+                <td>{{ p.commander || '—' }}</td>
+                <td>{{ p.lineup || '—' }}</td>
+                <td>
+                  <span class="result-badge" :class="'rank-' + p.finalRank">第 {{ p.finalRank }} 名</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div v-else class="state-panel">赛后名次尚未录入（待人工核验）</div>
+    </template>
+
+    <div v-else class="empty-event">
+      <p>未找到对应场次数据</p>
+      <router-link to="/" class="back-link">返回今日赛程</router-link>
     </div>
 
-    <!-- 真实对局战绩流水弹窗 -->
+    <!-- 已核验逐局战绩流水弹窗 -->
     <PlayerHistoryModal
       :is-open="isHistoryModalOpen"
       :player="selectedPlayerRecord"
       @close="isHistoryModalOpen = false"
     />
   </div>
-
-  <div v-else class="empty-event">
-    <p>未找到对应场次数据</p>
-    <router-link to="/" class="back-link">返回今日赛程</router-link>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useEventStore } from '../stores/event-store'
 import StatusTag from '../components/StatusTag.vue'
 import PlayerSlot from '../components/PlayerSlot.vue'
-import MatchupAnalysis from '../components/MatchupAnalysis.vue'
 import PlayerHistoryModal from '../components/PlayerHistoryModal.vue'
-import { simulateMatchupMechanics } from '../utils/matchup-engine'
-import { realMatchHistoryData, type PlayerHistoricalStats } from '../mock/match-history'
-import type { PlayerRecord } from '../api'
+import {
+  fetchEventDetail,
+  fetchPlayerStats,
+  type EventRecord,
+  type EventParticipant,
+  type PlayerRecord,
+  type PlayerStats
+} from '../api'
 
 const route = useRoute()
-const eventStore = useEventStore()
+
+const loading = ref(true)
+const loadError = ref<string | null>(null)
+const event = ref<EventRecord | null>(null)
+const statsByPlayer = ref<Record<string, PlayerStats>>({})
+
+let loadAbort: AbortController | null = null
 
 const isHistoryModalOpen = ref(false)
 const selectedPlayerRecord = ref<PlayerRecord | null>(null)
 
-function getParticipantHistory(nickname?: string): PlayerHistoricalStats | undefined {
-  if (!nickname) return undefined
-  return realMatchHistoryData[nickname]
+function statOf(p: EventParticipant): PlayerStats | null {
+  if (!p.playerId) return null
+  return statsByPlayer.value[p.playerId] || null
 }
 
-// 严谨计算相对最高热度百分比 (F12)
-function getParticipantRelativePercent(p: any): number {
-  if (!event.value?.participants) return 0
-  const maxSupport = Math.max(...event.value.participants.map((item: any) => item.supportCount || 0))
-  if (maxSupport <= 0 || !p.supportCount) return 0
-  return Number(((p.supportCount / maxSupport) * 100).toFixed(1))
+const maxSupport = computed(() => {
+  if (!event.value) return 0
+  const counts = event.value.participants
+    .map(p => p.supportCount)
+    .filter((c): c is number => c != null)
+  return counts.length ? Math.max(...counts) : 0
+})
+
+const hasSupportData = computed(() => maxSupport.value > 0)
+
+const anySmallSample = computed(() => {
+  return Object.values(statsByPlayer.value).some(s => s && s.isSmallSample && s.sampleCount > 0)
+})
+
+const allRanksKnown = computed(() => {
+  if (!event.value || event.value.participants.length === 0) return false
+  return event.value.participants.every(p => p.finalRank != null)
+})
+
+function relativeSupportPercent(p: EventParticipant): number {
+  if (!maxSupport.value || p.supportCount == null) return 0
+  return Number(((p.supportCount / maxSupport.value) * 100).toFixed(1))
 }
 
-function formatParticipantSupportText(p: any): string {
-  if (!p.supportCount && p.supportCount !== 0) {
-    if (event.value?.supportSnapshot && event.value.supportSnapshot[p.slot]) {
-      return `${event.value.supportSnapshot[p.slot].ratioPercent}%`
-    }
-    return '暂无数据'
-  }
+function supportText(p: EventParticipant): string {
+  if (p.supportCount == null) return '未采集'
   if (p.supportCount === 0) return '0.0%'
-  const rel = getParticipantRelativePercent(p)
-  return `${rel}% (相对最高)`
+  return `${relativeSupportPercent(p)}% (相对最高)`
 }
 
-function openPlayerHistory(nickname?: string) {
-  if (!nickname) return
+function toSlotParticipant(p: EventParticipant) {
+  const s = statOf(p)
+  return {
+    slot: p.slot,
+    playerId: p.playerId,
+    nickname: p.nickname,
+    rankText: p.rankText,
+    rankScore: p.rankScore,
+    finalRank: p.finalRank,
+    commander: p.commander,
+    lineup: p.lineup,
+    winRateRecent: s ? s.winRate : undefined,
+    top3RateRecent: s ? s.top3Rate : undefined,
+    sampleMatches: s ? s.sampleCount : undefined
+  }
+}
+
+function openPlayerHistory(p: EventParticipant) {
+  if (!p.playerId) return
+  // 只携带真实已知字段；段位/平台等未知即 null，弹窗内如实展示
   selectedPlayerRecord.value = {
-    id: `p-${nickname}`,
-    nickname,
-    platform: '官方区服',
-    serverZone: '手Q1区',
-    rankScore: 10000,
-    rankText: '最强王者'
+    id: p.playerId,
+    nickname: p.nickname,
+    platform: null,
+    serverZone: null,
+    rankScore: p.rankScore ?? null,
+    rankText: p.rankText ?? null
   }
   isHistoryModalOpen.value = true
 }
 
-const event = computed(() => {
+function formatDateTime(iso: string): string {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  return d.toLocaleString('zh-CN', { hour12: false })
+}
+
+function formatRate(v: number | null | undefined): string {
+  if (v === null || v === undefined) return '—'
+  return `${Math.round(v * 100)}%`
+}
+
+function shortHash(id: string): string {
+  return id.length > 16 ? `${id.slice(0, 16)}…` : id
+}
+
+async function loadEvent() {
+  loadAbort?.abort()
+  loadAbort = new AbortController()
+  loading.value = true
+  loadError.value = null
   const eventId = route.params.id as string
-  return eventStore.getEventById(eventId)
-})
-
-// 计算本场自走棋局内推演
-const matchupSimulation = computed(() => {
-  if (!event.value?.participants || event.value.participants.length !== 6) return null
-  return simulateMatchupMechanics(event.value.participants)
-})
-
-function formatTime(scheduledAt: string): string {
-  if (!scheduledAt) return ''
-  const parts = scheduledAt.split(' ')
-  return parts.length > 1 ? parts[1].substring(0, 5) : scheduledAt
+  try {
+    const data = await fetchEventDetail(eventId, loadAbort.signal)
+    event.value = data
+    // 逐席位拉取真实统计（仅已核验有效样本）
+    if (data) {
+      const ids = Array.from(new Set(data.participants.map(p => p.playerId).filter((i): i is string => Boolean(i))))
+      const results = await Promise.allSettled(
+        ids.map(id => fetchPlayerStats(id, {}, loadAbort!.signal))
+      )
+      const map: Record<string, PlayerStats> = {}
+      ids.forEach((id, idx) => {
+        const r = results[idx]
+        if (r.status === 'fulfilled' && r.value) map[id] = r.value
+      })
+      statsByPlayer.value = map
+    }
+  } catch (err: any) {
+    if (err?.name === 'AbortError') return
+    loadError.value = err?.message || '未知错误'
+    event.value = null
+  } finally {
+    if (!loadAbort?.signal.aborted) loading.value = false
+  }
 }
 
-function calcDiff(slot: number): string {
-  if (!event.value?.forecast?.probabilities) return '-'
-  const prob = event.value.forecast.probabilities[slot] || 0
-  const baseline = 0.1667
-  const diff = (prob - baseline) * 100
-  return diff >= 0 ? `+${diff.toFixed(1)}%` : `${diff.toFixed(1)}%`
-}
-
-function diffClass(slot: number): string {
-  if (!event.value?.forecast?.probabilities) return ''
-  const prob = event.value.forecast.probabilities[slot] || 0
-  return prob >= 0.1667 ? 'text-success' : 'text-muted'
-}
-
-function evidenceTypeLabel(type: string): string {
-  if (type === 'PRE_MATCH_LOBBY') return '赛前备战与段位'
-  if (type === 'SUPPORT_STAGE') return '支持热度对比条'
-  if (type === 'POST_MATCH_SUMMARY') return '赛后名次简报'
-  return type
-}
+onMounted(loadEvent)
+onUnmounted(() => loadAbort?.abort())
 </script>
 
 <style lang="scss" scoped>
@@ -337,7 +343,7 @@ function evidenceTypeLabel(type: string): string {
 }
 
 .match-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   color: $text-primary;
   margin-bottom: 8px;
@@ -351,74 +357,151 @@ function evidenceTypeLabel(type: string): string {
   .tag-item {
     font-size: 12px;
     padding: 3px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: $bg-tertiary;
+    border: 1px solid $border-color;
     border-radius: $radius-sm;
     color: $text-secondary;
 
     &.highlight {
-      color: $color-gold-light;
+      color: $color-gold;
       border-color: rgba(245, 158, 11, 0.3);
       background: rgba(245, 158, 11, 0.1);
     }
   }
 }
 
-.banner-stat-area {
-  display: flex;
-  gap: 12px;
+.banner-note {
+  max-width: 340px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: $text-muted;
+  border-left: 2px solid rgba(245, 158, 11, 0.4);
+  padding-left: 10px;
 }
 
-.stat-pill {
-  @include flex-column;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: $radius-md;
-  text-align: center;
-
-  .stat-title {
-    font-size: 11px;
-    color: $text-muted;
-    margin-bottom: 4px;
-  }
-
-  .stat-data {
-    font-size: 14px;
-    font-weight: 700;
-  }
-}
-
-.text-gold { color: $color-gold-light; }
-.text-cyan { color: $color-cyan-light; }
-.text-success { color: $color-success; }
+.text-gold { color: $color-gold; }
 .text-muted { color: $text-muted; }
 
-.disclaimer-alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px 20px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: $radius-lg;
+.state-panel {
+  @include glass-panel;
+  padding: 40px 24px;
+  text-align: center;
+  color: $text-secondary;
+  font-size: 14px;
 
-  .alert-icon {
-    font-size: 24px;
+  &.is-error {
+    color: $color-danger;
+  }
+}
+
+.retry-btn {
+  margin-top: 12px;
+  padding: 6px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.1);
+  color: $color-gold;
+  border-radius: $radius-sm;
+  cursor: pointer;
+}
+
+.roster-comparison-table-card {
+  @include glass-panel;
+  padding: 20px;
+
+  .table-title-row {
+    @include flex-between;
+    margin-bottom: 14px;
+
+    .comp-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: $text-primary;
+    }
+
+    .comp-tip {
+      font-size: 11px;
+      color: $text-muted;
+    }
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.roster-comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+
+  th {
+    padding: 10px 12px;
+    color: $text-muted;
+    font-weight: 600;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
   }
 
-  .alert-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: $color-gold-light;
-    margin-bottom: 4px;
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #eef2f7;
   }
 
-  .alert-desc {
-    font-size: 12px;
+  .comp-tr {
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $bg-card-hover;
+    }
+  }
+
+  .player-name-cell {
+    .name-text {
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .view-history-tag {
+      font-size: 11px;
+      margin-left: 6px;
+      color: $text-muted;
+    }
+  }
+
+  .highlight-gold { color: $color-gold; }
+  .highlight-cyan { color: $color-cyan; }
+
+  .heat-bar-cell {
+    min-width: 140px;
+  }
+
+  .heat-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .heat-bar-fill {
+    height: 6px;
+    border-radius: $radius-full;
+    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+    transition: width 0.4s ease;
+  }
+
+  .heat-bar-label {
+    font-size: 11px;
     color: $text-secondary;
-    line-height: 1.6;
+    white-space: nowrap;
   }
+}
+
+.small-sample-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: $text-muted;
 }
 
 .section-title-wrap {
@@ -447,14 +530,14 @@ function evidenceTypeLabel(type: string): string {
   }
 }
 
-.comparison-panel, .evidence-panel {
+.comparison-panel {
   @include glass-panel;
   padding: 20px;
 
   .panel-header {
     margin-bottom: 16px;
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid $border-color;
 
     .panel-title {
       font-size: 16px;
@@ -462,11 +545,6 @@ function evidenceTypeLabel(type: string): string {
       color: $text-primary;
     }
   }
-}
-
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
 }
 
 .comparison-table {
@@ -479,12 +557,12 @@ function evidenceTypeLabel(type: string): string {
     padding: 10px 12px;
     color: $text-muted;
     font-weight: 600;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid $border-color;
   }
 
   td {
     padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid #eef2f7;
   }
 
   .col-slot {
@@ -495,25 +573,6 @@ function evidenceTypeLabel(type: string): string {
   .col-name {
     font-weight: 600;
     color: $text-primary;
-
-    &.clickable-cell {
-      cursor: pointer;
-      transition: $transition-base;
-
-      &:hover {
-        color: $color-gold-light;
-        text-decoration: underline;
-      }
-
-      .table-history-icon {
-        font-size: 11px;
-        margin-left: 4px;
-      }
-    }
-  }
-
-  .col-rank {
-    color: $text-secondary;
   }
 
   .result-badge {
@@ -524,50 +583,10 @@ function evidenceTypeLabel(type: string): string {
 
     &.rank-1 {
       background: linear-gradient(135deg, $color-gold 0%, $color-gold-dark 100%);
-      color: #111827;
+      color: #ffffff;
     }
     &.rank-2 { background: #94a3b8; color: #0f172a; }
     &.rank-3 { background: #b45309; color: #fef3c7; }
-  }
-}
-
-.evidence-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.evidence-card {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 12px;
-  border-radius: $radius-md;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-
-  .ev-header {
-    @include flex-between;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .ev-hash-box {
-    font-size: 11px;
-    color: $text-muted;
-    word-break: break-all;
-    font-family: monospace;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 6px;
-    border-radius: $radius-sm;
-    margin-bottom: 6px;
-  }
-
-  .ev-time {
-    font-size: 11px;
-    color: $text-muted;
   }
 }
 

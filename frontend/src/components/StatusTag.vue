@@ -10,20 +10,20 @@ import { computed } from 'vue'
 import type { EventStatus } from '../types/event'
 
 const props = defineProps<{
-  status: EventStatus
+  status: EventStatus | string
 }>()
 
-const statusMeta: Record<EventStatus, { label: string; className: string }> = {
+const statusMeta: Partial<Record<EventStatus, { label: string; className: string }>> = {
   PENDING_COLLECTION: { label: '待收集', className: 'status-pending' },
-  PENDING_VERIFY: { label: '校验中', className: 'status-verify' },
-  PREDICTABLE: { label: '可预测', className: 'status-predictable' },
+  PENDING_VERIFY: { label: '待核验', className: 'status-verify' },
+  PREDICTABLE: { label: '名单已核定', className: 'status-predictable' },
   BET_CLOSED: { label: '比赛中', className: 'status-closed' },
-  SETTLED: { label: '已结算', className: 'status-settled' },
+  SETTLED: { label: '已出结果', className: 'status-settled' },
   AUDITED: { label: '已复核', className: 'status-audited' }
 }
 
-const labelText = computed(() => statusMeta[props.status]?.label || props.status)
-const statusClass = computed(() => statusMeta[props.status]?.className || '')
+const labelText = computed(() => statusMeta[props.status as EventStatus]?.label || props.status)
+const statusClass = computed(() => statusMeta[props.status as EventStatus]?.className || '')
 </script>
 
 <style lang="scss" scoped>

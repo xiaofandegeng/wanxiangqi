@@ -1,17 +1,22 @@
 <template>
   <div v-if="isOpen && player" class="history-modal-overlay" @click.self="emitClose">
     <div class="history-modal-dialog">
-      <!-- 弹窗头部 -->
+      <!-- 弹窗头部（未知字段如实展示，禁默认值填充） -->
       <div class="modal-header">
         <div class="player-title-wrap">
           <span class="user-avatar-tag">{{ player.nickname.substring(0, 1) }}</span>
           <div class="player-meta-texts">
             <div class="name-row">
               <h3 class="player-name">{{ player.nickname }}</h3>
-              <span class="score-pill">{{ player.rankScore }}★ {{ player.rankText || '最强王者' }}</span>
+              <span class="score-pill">
+                <template v-if="player.rankScore != null">{{ player.rankScore }}★</template>
+                {{ player.rankText || '段位未采集' }}
+              </span>
               <span v-if="player.title" class="title-pill">{{ player.title }}</span>
             </div>
-            <span class="sub-text">{{ player.platform || '官方区服' }} · {{ player.serverZone || '手Q1区' }} · 本命英雄: {{ player.commander || '通用' }}</span>
+            <span class="sub-text">
+              大区: {{ player.platform || '未知' }} · 区服: {{ player.serverZone || '未知' }} · 常用棋手: {{ player.commander || '未记录' }}
+            </span>
           </div>
         </div>
         <button class="close-btn" @click="emitClose">×</button>
@@ -69,8 +74,8 @@
 
             <div class="log-mid-col">
               <div class="lineup-title-row">
-                <span class="lineup-label">{{ m.lineup || '常规体系' }}</span>
-                <span class="commander-tag">主弈者: {{ m.commander || '通用' }}</span>
+                <span class="lineup-label">{{ m.lineup || '阵容未记录' }}</span>
+                <span class="commander-tag">主弈者: {{ m.commander || '未记录' }}</span>
                 <span v-if="m.verified" class="verified-tag">✓ 存证已核验</span>
               </div>
               <div v-if="m.threeStars && m.threeStars.length > 0" class="heroes-wrap">
@@ -82,11 +87,11 @@
             <div class="log-right-col">
               <div class="stat-box">
                 <span class="lbl">存活轮次</span>
-                <span class="val">{{ m.roundsSurvived || '--' }} 轮</span>
+                <span class="val">{{ m.roundsSurvived != null ? `${m.roundsSurvived} 轮` : '—' }}</span>
               </div>
               <div class="stat-box">
                 <span class="lbl">对局模式</span>
-                <span class="val">{{ m.mode || '巅峰排位' }}</span>
+                <span class="val">{{ m.mode || '未记录' }}</span>
               </div>
             </div>
           </div>
