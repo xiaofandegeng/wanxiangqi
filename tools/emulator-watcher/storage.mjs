@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
+import { validateStatsParams, computeStatsFromMatches } from './stats-core.mjs'
 
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url))
 export const DEFAULT_DATA_DIR = path.join(MODULE_DIR, 'data')
@@ -226,96 +227,22 @@ export class StorageEngine {
 
   /**
    * 严格按有效局数 N 计算选手统计 (登顶率, 前三率, 均名)
-   * 严格实现双时间截点防泄漏 (F10):
-   * 1. matchTime < cutoff (赛前已打完)
-   * 2. availableAt <= cutoff (赛前系统已收录可用，防晚到数据未来泄漏)
-   * 3. mode 模式隔离
-   * 4. from ~ to 时间窗口
-   * 5. N=0 时全部返回 null，严禁借用 0% 或假数据
+   * v3 P2-A：语义统一收敛到 stats-core.mjs（唯一事实源，与 PG SQL 实现等价性锁死 V18）
+   * - 双时间截点 (F10/V12)：matchTime < cutoff ∧ availableAt ≤ cutoff
+   * - 正式口径：verified ∧ recordStatus=ACTIVE ∧ 非 synthetic
+   * - 未指定 cutoff 时以 now 为隐式截点（未来完赛/未来收录不得计入当前统计）
+   * - N=0 → 比率/均名 null，严禁借用 0% 或假数据
    */
   computePlayerStats(playerId, options = {}) {
     const { cutoffTime = null, mode = null, from = null, to = null } = options
-
-    const validMatches = this.state.matches.filter(m => {
-      if (m.playerId !== playerId) return false
-      // 必须为经正式核验通过的战绩
-      if (m.verified !== true) return false
-
-      // 必须是合法整数名次 1~6
-      if (typeof m.finalRank !== 'number' || !Number.isInteger(m.finalRank) || m.finalRank < 1 || m.finalRank > 6) {
-        return false
-      }
-
-      const matchDateMs = new Date(m.matchTime).getTime()
-      if (isNaN(matchDateMs)) return false
-
-      // 截点过滤 1: matchTime < cutoff
-      if (cutoffTime) {
-        const cutoffMs = new Date(cutoffTime).getTime()
-        if (isNaN(cutoffMs)) return false
-        if (matchDateMs >= cutoffMs) return false
-
-        // 截点过滤 2 (防未来信息泄漏, V12): availableAt <= cutoff
-        // availableAt 缺失时禁止回退 matchTime —— 无法证明截点时刻已收录，一律剔除
-        if (!m.availableAt) return false
-        const availableMs = new Date(m.availableAt).getTime()
-        if (isNaN(availableMs)) return false
-        if (availableMs > cutoffMs) {
-          return false // 晚到数据：比赛发生早但系统收录晚，在截点时刻尚未知晓，必须剔除；availableAt === cutoff 纳入
-        }
-      }
-
-      // 模式过滤 (A10): 指定具体模式时，mode 未知或不匹配的记录一律排除（禁止模糊通过）
-      if (mode && mode !== 'ALL') {
-        if (m.mode !== mode) return false
-      }
-
-      // 时间范围过滤 (from / to)
-      if (from) {
-        const fromMs = new Date(from).getTime()
-        if (!isNaN(fromMs) && matchDateMs < fromMs) return false
-      }
-      if (to) {
-        // 时间窗口为左闭右开 [from, to) (V12)
-        const toMs = new Date(to).getTime()
-        if (!isNaN(toMs) && matchDateMs >= toMs) return false
-      }
-
-      return true
+    const params = validateStatsParams({ cutoffTime, mode, from, to })
+    const playerMatches = this.state.matches.filter(m => m.playerId === playerId)
+    return computeStatsFromMatches(playerMatches, {
+      cutoffMs: params.cutoffMs,
+      fromMs: params.fromMs,
+      toMs: params.toMs,
+      modeFilter: params.modeFilter
     })
-
-    const n = validMatches.length
-    if (n === 0) {
-      return {
-        sampleCount: 0,
-        firstPlaces: 0,
-        top3Places: 0,
-        winRate: null,
-        top3Rate: null,
-        avgRank: null,
-        warning: '暂无已核验战绩',
-        isSmallSample: true
-      }
-    }
-
-    const firstPlaces = validMatches.filter(m => m.finalRank === 1).length
-    const top3Places = validMatches.filter(m => m.finalRank <= 3).length
-    const rankSum = validMatches.reduce((acc, cur) => acc + cur.finalRank, 0)
-
-    const winRate = Number((firstPlaces / n).toFixed(4))
-    const top3Rate = Number((top3Places / n).toFixed(4))
-    const avgRank = Number((rankSum / n).toFixed(2))
-
-    return {
-      sampleCount: n,
-      firstPlaces,
-      top3Places,
-      winRate,
-      top3Rate,
-      avgRank,
-      warning: n < 20 ? '样本量较少 (N < 20)' : null,
-      isSmallSample: n < 20
-    }
   }
 
   /**
@@ -444,6 +371,7 @@ export class StorageEngine {
       synthetic: rec.synthetic === true, // P0-B：合成/demo 数据必须显式标记，正式统计一律排除
       sourceRecordKey: rec.sourceRecordKey || `${rec.playerId}:${new Date(matchTimeMs).toISOString()}`,
       verified: rec.verified === true, // 绝对不强制转为 true！保持其真实状态
+      recordStatus: rec.recordStatus || (rec.verified === true ? 'ACTIVE' : 'PENDING'), // 正式口径状态；HTTP 导入由服务层强制 PENDING
       evidenceId: rec.evidenceId || null,
       revision: Number(rec.revision) || 1
     }
@@ -593,10 +521,15 @@ export class StorageEngine {
     const participants = payload.slots.map((s, idx) => {
       const slotNum = s.slot || (idx + 1)
       const playerId = s.playerId || `p-${s.nickname}`
-      const rank = Number(s.finalRank || slotNum)
+      const rank = Number(s.finalRank)
+      // V08/人工核验红线：名次必须显式提供（1~6 整数），禁止按席位号推定名次
+      if (!Number.isInteger(rank) || rank < 1 || rank > 6) {
+        throw new Error(`第 ${slotNum} 席位 finalRank [${s.finalRank}] 无效，必须为 1 到 6 的整数（人工核验不得按席位号推定名次）`)
+      }
 
       // 确保选手在选手实体表中存在（未知属性一律 NULL，禁止造默认值 F06）
-      let player = this.state.players.find(p => p.id === playerId || p.nickname === s.nickname)
+      // V08：仅按 playerId 稳定身份匹配，禁止按昵称归并（昵称可重复/可变更）
+      let player = this.state.players.find(p => p.id === playerId)
       if (!player) {
         player = {
           id: playerId,
@@ -611,8 +544,8 @@ export class StorageEngine {
         }
         this.state.players.push(player)
       } else {
-        // 更新段位分
-        if (s.rankScore) player.rankScore = Number(s.rankScore)
+        // 仅更新有限数值，缺失一律不动（禁造默认值）
+        if (Number.isFinite(Number(s.rankScore))) player.rankScore = Number(s.rankScore)
       }
 
       // 生成对战记录流水事实
@@ -624,13 +557,14 @@ export class StorageEngine {
           playerId: player.id,
           matchTime,
           availableAt: now, // 明确记录可用时间 (防止未来泄漏)
-          mode: payload.mode || 'RANKED_DIAMOND',
+          mode: payload.mode || null, // 模式未知保持 null，禁止默认 RANKED_DIAMOND 造事实
           finalRank: rank,
-          commander: s.commander || player.commander,
-          lineup: s.lineup || player.style,
+          commander: s.commander || player.commander || null,
+          lineup: s.lineup || player.style || null,
           roundsSurvived: Number.isInteger(Number(s.roundsSurvived)) ? Number(s.roundsSurvived) : null,
           threeStars: Array.isArray(s.threeStars) ? s.threeStars : [],
           verified: true,
+          recordStatus: 'ACTIVE', // 人工核验动作即放行动作 (V17)：经证据链核验 → ACTIVE
           evidenceId,
           batchId: `audit-${eventId}`
         })
@@ -653,7 +587,7 @@ export class StorageEngine {
     const existingEvtIndex = this.state.events.findIndex(e => e.id === eventId)
     const eventRecord = {
       id: eventId,
-      mode: payload.mode || 'RANKED_DIAMOND',
+      mode: payload.mode || null, // 模式未知保持 null
       scheduledAt: matchTime,
       title: payload.title || '对战事实人工核验对决',
       status: 'AUDITED',

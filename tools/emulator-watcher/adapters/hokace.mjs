@@ -148,6 +148,7 @@ export async function syncHokaceLineups(timeoutMs = 3000) {
       endTime: new Date().toISOString(),
       recordsCount: validData.length,
       data: validData,
+      rawBody,
       rawLength: rawBody.length,
       error: null
     }

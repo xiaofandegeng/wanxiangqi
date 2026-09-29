@@ -22,19 +22,36 @@ import { solveClientLiveMatch } from '../src/utils/live-solver'
 import { createApiServer } from '../../tools/emulator-watcher/index.mjs'
 
 describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
-  it('F01: 后端启动脚本与数据库模式 schema.sql 健全性', () => {
-    const schemaPath = path.join(ROOT_DIR, 'backend/src/schema.sql')
+  it('F01: 后端启动脚本、迁移体系与仓储/服务层结构健全性', () => {
     const serverPath = path.join(ROOT_DIR, 'backend/src/server.js')
-    const dbPath = path.join(ROOT_DIR, 'backend/src/db.js')
+    const migratePath = path.join(ROOT_DIR, 'backend/src/migrate.mjs')
+    const baselinePath = path.join(ROOT_DIR, 'backend/src/migrations/0001_baseline.sql')
+    const v3Path = path.join(ROOT_DIR, 'backend/src/migrations/0002_v3.sql')
+    const pgRepoPath = path.join(ROOT_DIR, 'backend/src/repositories/pg-repository.mjs')
+    const fileRepoPath = path.join(ROOT_DIR, 'backend/src/repositories/file-repository.mjs')
+    const servicesPath = path.join(ROOT_DIR, 'backend/src/services/index.mjs')
 
-    expect(fs.existsSync(schemaPath)).toBe(true)
     expect(fs.existsSync(serverPath)).toBe(true)
-    expect(fs.existsSync(dbPath)).toBe(true)
+    expect(fs.existsSync(migratePath)).toBe(true)
+    expect(fs.existsSync(baselinePath)).toBe(true)
+    expect(fs.existsSync(v3Path)).toBe(true)
+    expect(fs.existsSync(pgRepoPath)).toBe(true)
+    expect(fs.existsSync(fileRepoPath)).toBe(true)
+    expect(fs.existsSync(servicesPath)).toBe(true)
 
-    const schemaSql = fs.readFileSync(schemaPath, 'utf-8')
-    expect(schemaSql).toContain('CREATE TABLE IF NOT EXISTS matches')
-    expect(schemaSql).toContain('available_at TIMESTAMP WITH TIME ZONE NOT NULL')
-    expect(schemaSql).toContain('CHECK (final_rank BETWEEN 1 AND 6)')
+    // db.js/schema.sql 已退役（F04/F07 双写根因），禁止复活
+    expect(fs.existsSync(path.join(ROOT_DIR, 'backend/src/db.js'))).toBe(false)
+    expect(fs.existsSync(path.join(ROOT_DIR, 'backend/src/schema.sql'))).toBe(false)
+
+    const baselineSql = fs.readFileSync(baselinePath, 'utf-8')
+    expect(baselineSql).toContain('CREATE TABLE IF NOT EXISTS matches')
+    expect(baselineSql).toContain('available_at TIMESTAMP WITH TIME ZONE NOT NULL')
+    expect(baselineSql).toContain('CHECK (final_rank BETWEEN 1 AND 6)')
+
+    const v3Sql = fs.readFileSync(v3Path, 'utf-8')
+    expect(v3Sql).toContain('record_status')
+    expect(v3Sql).toContain('uq_matches_record_key_current')
+    expect(v3Sql).toContain('DROP CONSTRAINT IF EXISTS uq_player_match_time')
   })
 
   it('F02 & A01: 首次冷启动零 mock 规范 (Zero-Mock Cold Start)', () => {

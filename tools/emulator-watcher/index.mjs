@@ -1,26 +1,25 @@
 // 王者万象棋 - 统一数据站后端业务与实时监听服务 (Unified Backend & Watcher API)
-// 遵循 v2 任务书及验收报告规范：
-// 1. 管理接口鉴权 (ADMIN_TOKEN) 与明确 CORS 白名单 (F09)
-// 2. 默认监听 127.0.0.1 回环地址 (F09)
-// 3. 严格数据导入校验，空对象/非法格式拒绝 400，候选隔离 (F08)
-// 4. 双时间防泄漏 (matchTime < cutoff && availableAt <= cutoff) 与多维度过滤 (F10)
-// 5. 第三方同步失败保护：严禁覆盖有效快照，严禁失败记录成功时间 (F03)
-// 6. 补齐 events/:id, lineups/:id, slots/confirm, imports/:id 路由 (F13, F05)
+// v3 架构（任务书 P1-A）：
+// 1. createApiServer({ services, adminToken }) 注入服务层；无参调用自建 demo（FileRepository，
+//    经 getBusinessStorage() 惰性解析 WXQ_DATA_DIR → 测试沙箱/演示目录，保持两套测试 import 兼容）
+// 2. 业务读写全部经 services（正式模式 PgRepository / demo 模式 FileRepository），HTTP 层不直接触达存储引擎
+// 3. 管理写接口 Bearer 鉴权、CORS 白名单、默认 127.0.0.1 (v2 F09 规范保留)
+// 4. 双时间截点与统计口径收敛在 stats-core + 统计服务（非法参数 400，V16）
+// 5. 新增 /api/v1/ready（PG ping 200/503）、/admin/matches/:id/verify（V17）、/admin/sync-jobs
+// 6. /api/v1/matches 不再宣称任何来源标签（v3 删除伪造 src-kohcamp-official 文案）
 
 import http from 'node:http'
-import fs from 'node:fs'
-import path from 'node:path'
 import { extractLobbyParticipants } from './analyzer.mjs'
 import { solveDeepMetaProbabilities, solveDeepRecommendations } from './solver.mjs'
 import { getBusinessStorage } from './storage.mjs'
-
-// v3 P0-A 测试隔离：storage 单例已移除，改为惰性业务实例（仅读取业务目录；
-// S3 重构后本文件将改为注入 services，不再直连存储引擎）
-const storage = getBusinessStorage()
+import { InvalidStatsParamError } from './stats-core.mjs'
+import { FileRepository } from '../../backend/src/repositories/file-repository.mjs'
+import { createServices } from '../../backend/src/services/index.mjs'
+import { getEnv } from '../../backend/src/env.mjs'
 
 export const PORT = process.env.PORT || 8080
 export const HOST = process.env.HOST || '127.0.0.1'
-export const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'wanxiangqi-admin-token-v2'
+const DEFAULT_DEMO_ADMIN_TOKEN = 'wanxiangqi-admin-token-v2' // 仅 demo 默认；formal 必须显式注入（env.mjs 断言）
 
 let lastCapturedData = null
 const sseClients = new Set()
@@ -46,7 +45,7 @@ export async function processImageAndSolve(imageBuffer, sourceDesc = 'MANUAL') {
   const startTime = Date.now()
   // 1. 画面席位识别 (严格模式: 未匹配已知存证返回待核验状态，禁止猜测)
   const analysis = await extractLobbyParticipants(imageBuffer)
-  
+
   if (analysis.status === 'NEED_MANUAL_REVIEW') {
     return {
       status: 'NEED_MANUAL_REVIEW',
@@ -88,7 +87,17 @@ const ALLOWED_ORIGINS = new Set([
   'http://127.0.0.1:4173'
 ])
 
-export function createApiServer() {
+function buildDemoServices() {
+  // demo 自建：FileRepository 包装惰性业务实例（WXQ_DATA_DIR 优先 → 测试沙箱）
+  const engine = getBusinessStorage()
+  const repo = new FileRepository(engine)
+  return createServices(repo, { ...getEnv(), appMode: 'demo' })
+}
+
+export function createApiServer({ services = null, adminToken = null } = {}) {
+  const svc = services || buildDemoServices()
+  const token = adminToken || process.env.ADMIN_TOKEN || DEFAULT_DEMO_ADMIN_TOKEN
+
   return http.createServer(async (req, res) => {
     // 1. CORS 跨域白名单限制 (F09: 拒绝通配符 *)
     const reqOrigin = req.headers['origin']
@@ -115,114 +124,145 @@ export function createApiServer() {
       res.end(JSON.stringify(data))
     }
 
-    // 2. 管理写接口鉴权中间件 (F09, A14)
-    if (pathname.startsWith('/api/v1/admin/') && req.method !== 'GET') {
+    /** 统一服务异常 → HTTP 映射（不泄漏内部错误细节） */
+    const handleServiceError = (err, fallbackStatus = 400) => {
+      if (err instanceof InvalidStatsParamError) {
+        return sendJson(400, { code: 400, error: err.message, field: err.field })
+      }
+      const status = Number(err.status) || fallbackStatus
+      return sendJson(status, { code: status, error: err.message, code_name: err.code || null })
+    }
+
+    const readJsonBody = () => new Promise((resolve, reject) => {
+      const chunks = []
+      req.on('data', chunk => chunks.push(chunk))
+      req.on('end', () => {
+        try {
+          const rawText = Buffer.concat(chunks).toString().trim()
+          resolve({ rawText, body: rawText ? JSON.parse(rawText) : null })
+        } catch (e) {
+          reject(Object.assign(new Error('请求体不是合法 JSON'), { status: 400 }))
+        }
+      })
+      req.on('error', reject)
+    })
+
+    // 2. 管理接口鉴权中间件 (F09, A14)：/admin/ 命名空间整体鉴权
+    //    （含 GET：sync-jobs/imports 查询会暴露内部运营细节，不得公开）
+    if (pathname.startsWith('/api/v1/admin/')) {
       const authHeader = req.headers['authorization'] || ''
-      const token = authHeader.replace(/^Bearer\s+/i, '').trim()
-      if (token !== ADMIN_TOKEN) {
+      const provided = authHeader.replace(/^Bearer\s+/i, '').trim()
+      if (!provided || provided !== token) {
         return sendJson(401, {
           code: 401,
-          error: '未授权：管理写操作必须携带有效的 Authorization Bearer Token'
+          error: '未授权：管理接口必须携带有效的 Authorization Bearer Token'
         })
       }
     }
 
     // ----------------------------------------------------
-    // 系统健康与数据库连接状态 (F01)
+    // 就绪探测 (v3 F04)：正式模式 PG ping，200/503
+    // GET /api/v1/ready
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/ready' && req.method === 'GET') {
+      const ready = await svc.isReady()
+      return ready
+        ? sendJson(200, { code: 0, status: 'READY', mode: svc.mode, time: new Date().toISOString() })
+        : sendJson(503, { code: 503, status: 'UNAVAILABLE', mode: svc.mode, error: '权威存储不可用（PostgreSQL 连接失败）' })
+    }
+
+    // ----------------------------------------------------
+    // 系统健康：真实组件状态与真实计数 (v3 F04)
     // GET /api/v1/health
     // ----------------------------------------------------
     if (pathname === '/api/v1/health' && req.method === 'GET') {
-      return sendJson(200, {
-        code: 0,
-        status: 'UP',
-        engine: storage.state.meta?.engine || 'Local_Persistent_Engine',
-        storageMode: storage.state.meta?.storageMode || 'COLD_START',
-        totalPlayers: storage.state.players.length,
-        totalMatches: storage.state.matches.length,
-        totalEvents: storage.state.events.length,
-        time: new Date().toISOString()
-      })
+      const health = await svc.health()
+      return sendJson(200, { code: 0, ...health })
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 1. 选手大盘列表 (带真实聚合统计，支持双截点与多维过滤 F10)
+    // v2 标准 API: 1. 选手大盘列表 (统一统计服务，非法参数 400)
     // GET /api/v1/players?query=&sort=&mode=&from=&to=
     // ----------------------------------------------------
     if (pathname === '/api/v1/players' && req.method === 'GET') {
-      const query = url.searchParams.get('query') || ''
-      const sort = url.searchParams.get('sort') || 'rankScore'
-      const mode = url.searchParams.get('mode') || null
-      const from = url.searchParams.get('from') || null
-      const to = url.searchParams.get('to') || null
-
-      const list = storage.getPlayersList({ query, sort, mode, from, to })
-      return sendJson(200, {
-        code: 0,
-        total: list.length,
-        data: list,
-        dataAsOf: new Date().toISOString(),
-        qualityStatus: list.length > 0 ? 'VERIFIED_FACT' : 'ZERO_SAMPLE_NULL'
-      })
+      try {
+        const query = url.searchParams.get('query') || ''
+        const sort = url.searchParams.get('sort') || 'rankScore'
+        const mode = url.searchParams.get('mode') || null
+        const from = url.searchParams.get('from') || null
+        const to = url.searchParams.get('to') || null
+        const list = await svc.stats.getPlayersList({ query, sort, mode, from, to })
+        return sendJson(200, {
+          code: 0,
+          total: list.length,
+          data: list,
+          dataAsOf: new Date().toISOString(),
+          qualityStatus: list.some(p => p.stats.sampleCount > 0) ? 'VERIFIED_FACT' : 'ZERO_SAMPLE_NULL'
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 2. 单选手统计及分母 (支持 cutoff 与模式过滤 F10)
+    // v2 标准 API: 2. 单选手统计及分母 (cutoff/mode/from/to，非法参数 400，V16)
     // GET /api/v1/players/:id/stats?cutoff=&mode=&from=&to=
     // ----------------------------------------------------
     const playerStatsMatch = pathname.match(/^\/api\/v1\/players\/([^/]+)\/stats$/)
     if (playerStatsMatch && req.method === 'GET') {
-      const playerId = playerStatsMatch[1]
-      const cutoffTime = url.searchParams.get('cutoff') || null
-      const mode = url.searchParams.get('mode') || null
-      const from = url.searchParams.get('from') || null
-      const to = url.searchParams.get('to') || null
-
-      const stats = storage.computePlayerStats(playerId, { cutoffTime, mode, from, to })
-      return sendJson(200, {
-        code: 0,
-        playerId,
-        stats,
-        dataAsOf: new Date().toISOString()
-      })
+      try {
+        const result = await svc.stats.getPlayerStats(playerStatsMatch[1], {
+          cutoffTime: url.searchParams.get('cutoff') || null,
+          mode: url.searchParams.get('mode') || null,
+          from: url.searchParams.get('from') || null,
+          to: url.searchParams.get('to') || null
+        })
+        return sendJson(200, { code: 0, ...result, dataAsOf: new Date().toISOString() })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 3. 选手历史对局战绩流水下钻
-    // GET /api/v1/players/:id/matches
+    // v2 标准 API: 3. 选手历史对局战绩流水下钻（默认仅有效记录，+recordStatus 覆盖）
+    // GET /api/v1/players/:id/matches?recordStatus=
     // ----------------------------------------------------
     const playerMatchesMatch = pathname.match(/^\/api\/v1\/players\/([^/]+)\/matches$/)
     if (playerMatchesMatch && req.method === 'GET') {
-      const playerId = playerMatchesMatch[1]
-      const matches = storage.getPlayerMatches(playerId)
-      return sendJson(200, {
-        code: 0,
-        playerId,
-        total: matches.length,
-        data: matches
-      })
+      try {
+        const matches = await svc.stats.getPlayerMatches(playerMatchesMatch[1], {
+          recordStatus: url.searchParams.get('recordStatus') || null
+        })
+        return sendJson(200, { code: 0, playerId: playerMatchesMatch[1], total: matches.length, data: matches })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 3.1 官方王者营地全量实战对局大盘流水
-    // GET /api/v1/matches?limit=50&offset=0&playerId=&mode=
+    // v2 标准 API: 3.1 对局流水大盘（默认仅 ACTIVE 非合成；v3 删除伪造来源标签）
+    // GET /api/v1/matches?limit=50&offset=0&playerId=&mode=&recordStatus=
     // ----------------------------------------------------
     if (pathname === '/api/v1/matches' && req.method === 'GET') {
-      const limit = parseInt(url.searchParams.get('limit') || '50', 10)
-      const offset = parseInt(url.searchParams.get('offset') || '0', 10)
-      const playerId = url.searchParams.get('playerId') || null
-      const mode = url.searchParams.get('mode') || null
-
-      const res = storage.getAllMatches({ limit, offset, playerId, mode })
-      return sendJson(200, {
-        code: 0,
-        source: 'src-kohcamp-official',
-        sourceName: '腾讯王者营地官方战绩网关',
-        total: res.total,
-        limit,
-        offset,
-        data: res.data,
-        dataAsOf: new Date().toISOString()
-      })
+      try {
+        const limit = parseInt(url.searchParams.get('limit') || '50', 10)
+        const offset = parseInt(url.searchParams.get('offset') || '0', 10)
+        const playerId = url.searchParams.get('playerId') || null
+        const mode = url.searchParams.get('mode') || null
+        const recordStatus = url.searchParams.get('recordStatus') || 'ACTIVE'
+        const result = await svc.getAllMatches({ limit, offset, playerId, mode, recordStatus })
+        return sendJson(200, {
+          code: 0,
+          // v3：不再宣称任何数据来源；每条记录自带 sourceId/batchId 可追溯
+          total: result.total,
+          limit,
+          offset,
+          data: result.data,
+          dataAsOf: new Date().toISOString()
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
@@ -232,13 +272,8 @@ export function createApiServer() {
     if (pathname === '/api/v1/events' && req.method === 'GET') {
       const dateStr = url.searchParams.get('date') || ''
       const mode = url.searchParams.get('mode') || null
-      const list = storage.getEventsList(dateStr, mode)
-      return sendJson(200, {
-        code: 0,
-        total: list.length,
-        data: list,
-        dataAsOf: new Date().toISOString()
-      })
+      const list = await svc.getEventsList(dateStr, mode)
+      return sendJson(200, { code: 0, total: list.length, data: list, dataAsOf: new Date().toISOString() })
     }
 
     // ----------------------------------------------------
@@ -247,28 +282,24 @@ export function createApiServer() {
     // ----------------------------------------------------
     const eventDetailMatch = pathname.match(/^\/api\/v1\/events\/([^/]+)$/)
     if (eventDetailMatch && req.method === 'GET') {
-      const eventId = eventDetailMatch[1]
-      const eventData = storage.getEventById(eventId)
+      const eventData = await svc.getEventById(eventDetailMatch[1])
       if (!eventData) {
-        return sendJson(404, { code: 404, error: `对决场次 [${eventId}] 不存在` })
+        return sendJson(404, { code: 404, error: `对决场次 [${eventDetailMatch[1]}] 不存在` })
       }
-      return sendJson(200, {
-        code: 0,
-        data: eventData
-      })
+      return sendJson(200, { code: 0, data: eventData })
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 5. 外部阵容快照大盘 (hokace.wiki)
+    // v2 标准 API: 5. 外部阵容快照大盘（缺失字段 null + 窗口/单位/截止/过期标识）
     // GET /api/v1/lineups
     // ----------------------------------------------------
     if (pathname === '/api/v1/lineups' && req.method === 'GET') {
-      const list = storage.getLineupsList()
+      const list = await svc.getLineupsList()
       return sendJson(200, {
         code: 0,
         total: list.length,
         data: list,
-        sourceNotice: '数据来源于第三方阵容快照 (hokace.wiki)，仅供流派参考',
+        sourceNotice: '数据来源于第三方阵容汇总快照（含来源/窗口/样本口径），仅供流派参考，不代表个人真实战绩',
         dataAsOf: new Date().toISOString()
       })
     }
@@ -279,65 +310,41 @@ export function createApiServer() {
     // ----------------------------------------------------
     const lineupDetailMatch = pathname.match(/^\/api\/v1\/lineups\/([^/]+)$/)
     if (lineupDetailMatch && req.method === 'GET') {
-      const lineupId = lineupDetailMatch[1]
-      const lineup = storage.getLineupById(lineupId)
+      const lineup = await svc.getLineupById(lineupDetailMatch[1])
       if (!lineup) {
-        return sendJson(404, { code: 404, error: `阵容 [${lineupId}] 不存在` })
+        return sendJson(404, { code: 404, error: `阵容 [${lineupDetailMatch[1]}] 不存在` })
       }
-      return sendJson(200, {
-        code: 0,
-        data: lineup
-      })
+      return sendJson(200, { code: 0, data: lineup })
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 6. 数据源与采集新鲜度状态
+    // v2 标准 API: 6. 数据源与采集新鲜度状态（data_sources + 最近同步任务）
     // GET /api/v1/data-status
     // ----------------------------------------------------
     if (pathname === '/api/v1/data-status' && req.method === 'GET') {
-      return sendJson(200, {
-        code: 0,
-        sources: storage.state.dataSources,
-        totalMatches: storage.state.matches.length,
-        totalPlayers: storage.state.players.length,
-        totalEvents: storage.state.events.length,
-        lastUpdated: new Date().toISOString()
-      })
+      const status = await svc.getDataStatus()
+      return sendJson(200, { code: 0, ...status, lastUpdated: new Date().toISOString() })
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 7. 导入真实材料/战绩流水 (带严格校验 F08)
+    // v2 标准 API: 7. 导入真实材料/战绩流水（verified 一律忽略 → PENDING，V17）
     // POST /api/v1/admin/imports
     // ----------------------------------------------------
     if (pathname === '/api/v1/admin/imports' && req.method === 'POST') {
-      const chunks = []
-      req.on('data', chunk => chunks.push(chunk))
-      req.on('end', () => {
-        try {
-          const rawText = Buffer.concat(chunks).toString().trim()
-          if (!rawText) {
-            return sendJson(400, { code: 400, error: '请求体不能为空' })
-          }
-          const body = JSON.parse(rawText)
-          if (!body || typeof body !== 'object' || Array.isArray(body) || !Array.isArray(body.records)) {
-            return sendJson(400, { code: 400, error: '请求体必须包含 records 数组' })
-          }
-          if (body.records.length === 0) {
-            return sendJson(400, { code: 400, error: 'records 数组不能为空' })
-          }
-
-          const runMeta = storage.importMatchRecords(body.records, { source: body.source })
-          broadcastSSE('DATA_UPDATED', { type: 'IMPORT_COMPLETED', batchId: runMeta.batchId })
-          return sendJson(200, {
-            code: 0,
-            message: '导入成功',
-            result: runMeta
-          })
-        } catch (err) {
-          return sendJson(400, { code: 400, error: `导入校验失败: ${err.message}`, details: err.details || null })
+      try {
+        const { body } = await readJsonBody()
+        if (!body || typeof body !== 'object' || Array.isArray(body) || !Array.isArray(body.records)) {
+          return sendJson(400, { code: 400, error: '请求体必须包含 records 数组' })
         }
-      })
-      return
+        if (body.records.length === 0) {
+          return sendJson(400, { code: 400, error: 'records 数组不能为空' })
+        }
+        const runMeta = await svc.imports.importMatches(body.records, { source: body.source })
+        broadcastSSE('DATA_UPDATED', { type: 'IMPORT_COMPLETED', batchId: runMeta.batchId })
+        return sendJson(200, { code: 0, message: '导入成功（记录已入库待核验，verified 状态不随导入授予）', result: runMeta })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
@@ -346,133 +353,82 @@ export function createApiServer() {
     // ----------------------------------------------------
     const importBatchMatch = pathname.match(/^\/api\/v1\/admin\/imports\/([^/]+)$/)
     if (importBatchMatch && req.method === 'GET') {
-      const batchId = importBatchMatch[1]
-      const batchData = storage.getImportBatchById(batchId)
+      const batchData = await svc.imports.getImportBatch(importBatchMatch[1])
       if (!batchData) {
-        return sendJson(404, { code: 404, error: `导入批次 [${batchId}] 未找到` })
+        return sendJson(404, { code: 404, error: `导入批次 [${importBatchMatch[1]}] 未找到` })
       }
-      return sendJson(200, {
-        code: 0,
-        data: batchData
-      })
+      return sendJson(200, { code: 0, data: batchData })
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 7.2 人工校对工作台席位持久化 (F05)
+    // v2 标准 API: 7.2 人工校对工作台席位持久化 (F05，单事务)
     // POST /api/v1/admin/slots/confirm
     // ----------------------------------------------------
     if (pathname === '/api/v1/admin/slots/confirm' && req.method === 'POST') {
-      const chunks = []
-      req.on('data', chunk => chunks.push(chunk))
-      req.on('end', () => {
-        try {
-          const rawText = Buffer.concat(chunks).toString().trim()
-          if (!rawText) return sendJson(400, { code: 400, error: '核验内容不能为空' })
-          const payload = JSON.parse(rawText)
-          const result = storage.confirmSlotAudit(payload)
-          broadcastSSE('DATA_UPDATED', { type: 'SLOT_AUDITED', eventId: result.id })
-          return sendJson(200, {
-            code: 0,
-            message: '校对结果已成功持久化至主数据库事实表',
-            data: result
-          })
-        } catch (err) {
-          return sendJson(400, { code: 400, error: `持久化失败: ${err.message}` })
-        }
-      })
-      return
+      try {
+        const { body: payload } = await readJsonBody()
+        if (!payload) return sendJson(400, { code: 400, error: '核验内容不能为空' })
+        const staff = payload.auditStaff || payload.verifiedBy || 'AUDIT_STAFF'
+        const result = await svc.imports.confirmSlotAudit(payload, staff)
+        broadcastSSE('DATA_UPDATED', { type: 'SLOT_AUDITED', eventId: result.id })
+        return sendJson(200, {
+          code: 0,
+          message: '校对结果已成功持久化至权威数据库事实表',
+          data: result
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
     }
 
     // ----------------------------------------------------
-    // v2 标准 API: 8. 触发外部数据源同步任务 (F03 严格防伪)
+    // v3 新增 (V17)：核验放行动作
+    // POST /api/v1/admin/matches/:id/verify  { verifiedBy }
+    // ----------------------------------------------------
+    const verifyMatchRoute = pathname.match(/^\/api\/v1\/admin\/matches\/([^/]+)\/verify$/)
+    if (verifyMatchRoute && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        const result = await svc.imports.verifyMatch(verifyMatchRoute[1], {
+          verifiedBy: body?.verifiedBy || body?.auditStaff
+        })
+        broadcastSSE('DATA_UPDATED', { type: 'MATCH_VERIFIED', matchId: result.id })
+        return sendJson(200, {
+          code: 0,
+          message: '记录已核验放行：verified=true、availableAt=now、recordStatus=ACTIVE',
+          data: result
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    // ----------------------------------------------------
+    // v2 标准 API: 8. 触发外部数据源同步任务 (datatft 默认 409，hokace 台账化，其余 400)
     // POST /api/v1/admin/sources/:id/sync
     // ----------------------------------------------------
     const sourceSyncMatch = pathname.match(/^\/api\/v1\/admin\/sources\/([^/]+)\/sync$/)
     if (sourceSyncMatch && req.method === 'POST') {
-      const sourceId = sourceSyncMatch[1]
-      if (sourceId === 'src-datatft-platform') {
-        const { fetchRealTournaments, fetchRealLineups } = await import('./adapters/datatft.mjs')
-        const src = storage.state.dataSources.find(s => s.id === sourceId)
-        const startTime = new Date().toISOString()
-        if (src) src.lastAttemptAt = startTime
-
-        try {
-          const [tRes, lRes] = await Promise.all([
-            fetchRealTournaments(),
-            fetchRealLineups(50)
-          ])
-
-          const syncRes = storage.importRealDatatftData({
-            players: tRes.players,
-            lineups: lRes.lineups
-          })
-
-          const endTime = new Date().toISOString()
-          if (src) {
-            src.lastSuccessAt = endTime
-            src.lastError = null
-            src.status = 'ACTIVE'
-            storage.saveState()
-          }
-
-          broadcastSSE('DATA_UPDATED', { type: 'DATATFT_SYNCED', sourceId })
-          return sendJson(200, {
-            code: 0,
-            message: `成功接入万象棋大数据真实数据: 同步 ${tRes.players.length} 位真实全服选手与 ${lRes.lineups.length} 套主流阵容`,
-            result: {
-              tournament: tRes.name,
-              playersCount: tRes.players.length,
-              lineupsCount: lRes.lineups.length,
-              sampleCount: lRes.sampleCount,
-              ...syncRes
-            }
-          })
-        } catch (err) {
-          if (src) {
-            src.lastError = err.message
-            storage.saveState()
-          }
-          return sendJson(500, {
-            code: 500,
-            error: `同步万象棋大数据平台失败: ${err.message}`
-          })
+      try {
+        const result = await svc.sync.syncSource(sourceSyncMatch[1])
+        if (result.ok) {
+          broadcastSSE('DATA_UPDATED', { type: 'SOURCE_SYNCED', sourceId: sourceSyncMatch[1] })
+          return sendJson(200, { code: 0, message: result.message, result: result.result })
         }
-      } else if (sourceId === 'src-hokace-wiki') {
-        const { syncHokaceLineups } = await import('./adapters/hokace.mjs')
-        const result = await syncHokaceLineups()
-
-        const src = storage.state.dataSources.find(s => s.id === sourceId)
-        if (src) {
-          src.lastAttemptAt = result.startTime
-          // 仅当真实 SUCCESS 时更新快照与成功时间！绝不覆盖已有快照！(F03)
-          if (result.status === 'SUCCESS' && Array.isArray(result.data) && result.data.length > 0) {
-            storage.state.lineupSnapshots = result.data
-            src.lastSuccessAt = result.endTime
-            src.lastError = null
-            storage.saveState()
-            broadcastSSE('DATA_UPDATED', { type: 'LINEUP_SYNCED', sourceId })
-            return sendJson(200, {
-              code: 0,
-              message: '数据源真实同步完成并已更新快照',
-              result
-            })
-          } else {
-            // 同步失败：记录错误日志，保留原有快照，绝不更新成功时间
-            src.lastError = result.error
-            storage.saveState()
-            return sendJson(200, {
-              code: 1,
-              message: `数据源同步未完成: ${result.error}`,
-              result
-            })
-          }
-        }
-      } else {
-        return sendJson(400, {
-          code: 400,
-          error: `数据源 [${sourceId}] 暂不支持自动在线同步或需本人授权材料`
-        })
+        return sendJson(200, { code: 1, message: result.message, result: result.result })
+      } catch (err) {
+        return handleServiceError(err, 500)
       }
+    }
+
+    // ----------------------------------------------------
+    // v3 新增：同步任务历史
+    // GET /api/v1/admin/sync-jobs?limit=20
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/sync-jobs' && req.method === 'GET') {
+      const limit = parseInt(url.searchParams.get('limit') || '20', 10)
+      const jobs = await svc.sync.getSyncJobs(Number.isFinite(limit) ? limit : 20)
+      return sendJson(200, { code: 0, total: jobs.length, data: jobs })
     }
 
     // ----------------------------------------------------
@@ -525,15 +481,16 @@ export function createApiServer() {
   })
 }
 
-// 若作为主脚本启动
+// 若作为主脚本启动（demo 模式；正式模式请用 backend/src/server.js）
 if (process.argv[1] && process.argv[1].endsWith('index.mjs')) {
-  const server = createApiServer()
+  const services = buildDemoServices()
+  const server = createApiServer({ services })
   server.listen(PORT, HOST, () => {
     console.log(`=================================================`)
-    console.log(`[Wanxiangqi API Server] 王者万象棋数据站后端业务服务已启动`)
+    console.log(`[Wanxiangqi API Server] 王者万象棋数据站后端业务服务已启动 (demo)`)
     console.log(`- 运行地址: http://${HOST}:${PORT}`)
     console.log(`- 安全鉴权: 已启用 Bearer Token 验证`)
-    console.log(`- 数据引擎: ${storage.state.meta?.engine}`)
+    console.log(`- 存储仓储: FileRepository (demo；正式模式请运行 backend/src/server.js)`)
     console.log(`=================================================`)
   })
 }

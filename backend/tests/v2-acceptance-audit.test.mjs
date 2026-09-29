@@ -30,19 +30,40 @@ after(async () => {
   console.log('[business-guard] ✔ 业务 storage.json 与业务库计数在整轮测试中未被触碰')
 })
 
-test('F01: 后端启动脚本与数据库模式 schema.sql 健全性', async () => {
-  const schemaPath = path.join(ROOT_DIR, 'backend/src/schema.sql')
+test('F01: 后端启动脚本、迁移体系与仓储/服务层结构健全性', async () => {
   const serverPath = path.join(ROOT_DIR, 'backend/src/server.js')
-  const dbPath = path.join(ROOT_DIR, 'backend/src/db.js')
+  const migratePath = path.join(ROOT_DIR, 'backend/src/migrate.mjs')
+  const baselinePath = path.join(ROOT_DIR, 'backend/src/migrations/0001_baseline.sql')
+  const v3Path = path.join(ROOT_DIR, 'backend/src/migrations/0002_v3.sql')
+  const pgRepoPath = path.join(ROOT_DIR, 'backend/src/repositories/pg-repository.mjs')
+  const fileRepoPath = path.join(ROOT_DIR, 'backend/src/repositories/file-repository.mjs')
+  const servicesPath = path.join(ROOT_DIR, 'backend/src/services/index.mjs')
 
-  assert.ok(fs.existsSync(schemaPath), 'schema.sql 文件必须存在')
-  assert.ok(fs.existsSync(serverPath), 'server.js 必须存在以支持 npm start')
-  assert.ok(fs.existsSync(dbPath), 'db.js 数据库接入层必须存在')
+  assert.ok(fs.existsSync(serverPath), 'server.js 必须存在以支持 npm start（正式模式 compose 入口）')
+  assert.ok(fs.existsSync(migratePath), 'migrate.mjs 迁移执行器必须存在')
+  assert.ok(fs.existsSync(baselinePath), '0001_baseline.sql 迁移基线必须存在')
+  assert.ok(fs.existsSync(v3Path), '0002_v3.sql v3 结构迁移必须存在')
+  assert.ok(fs.existsSync(pgRepoPath), 'PgRepository（正式模式唯一权威仓储）必须存在')
+  assert.ok(fs.existsSync(fileRepoPath), 'FileRepository（demo 仓储）必须存在')
+  assert.ok(fs.existsSync(servicesPath), '服务编排层必须存在')
 
-  const schemaSql = fs.readFileSync(schemaPath, 'utf-8')
-  assert.match(schemaSql, /CREATE TABLE IF NOT EXISTS matches/, 'schema.sql 必须包含 matches 表')
-  assert.match(schemaSql, /available_at TIMESTAMP WITH TIME ZONE NOT NULL/, 'matches 必须包含 available_at 双截点字段')
-  assert.match(schemaSql, /CHECK \(final_rank BETWEEN 1 AND 6\)/, 'matches 必须包含 final_rank 整数范围约束')
+  // db.js/schema.sql 已退役：DDL 全部走版本化迁移，禁止旧双写路径复活
+  assert.ok(!fs.existsSync(path.join(ROOT_DIR, 'backend/src/db.js')), 'db.js 双写同步层必须已删除（F04/F07 根因）')
+  assert.ok(!fs.existsSync(path.join(ROOT_DIR, 'backend/src/schema.sql')), 'schema.sql 必须已删除（由 migrations/ 取代）')
+
+  const baselineSql = fs.readFileSync(baselinePath, 'utf-8')
+  assert.match(baselineSql, /CREATE TABLE IF NOT EXISTS matches/, '迁移基线必须包含 matches 表')
+  assert.match(baselineSql, /available_at TIMESTAMP WITH TIME ZONE NOT NULL/, 'matches 必须包含 available_at 双截点字段')
+  assert.match(baselineSql, /CHECK \(final_rank BETWEEN 1 AND 6\)/, 'matches 必须包含 final_rank 整数范围约束')
+
+  const v3Sql = fs.readFileSync(v3Path, 'utf-8')
+  assert.match(v3Sql, /record_status/, 'v3 迁移必须包含 record_status 隔离列')
+  assert.match(v3Sql, /uq_matches_record_key_current/, 'v3 迁移必须包含 record_key 当前版本唯一约束 (V13)')
+  assert.match(v3Sql, /DROP CONSTRAINT IF EXISTS uq_player_match_time/, 'v3 迁移必须移除阻断多版本的 uq_player_match_time')
+
+  const serverSrc = fs.readFileSync(serverPath, 'utf-8')
+  assert.match(serverSrc, /assertFormalEnv/, '正式模式启动必须做环境变量断言（无默认值）')
+  assert.match(serverSrc, /process\.exit\(1\)/, 'PG 连接失败必须退出而非降级（F04）')
 })
 
 test('F02 & A01: 首次冷启动零 mock 规范 (Zero-Mock Cold Start)', async (t) => {
