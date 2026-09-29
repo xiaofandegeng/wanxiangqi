@@ -99,11 +99,14 @@ test('V15-1: 首次同步成功 → 快照/台账/存证/成功时间全就位',
   assert.ok(src.last_success_at, '成功时间必须推进')
   const firstSuccessAt = src.last_success_at
 
-  // 原始材料存证（内容哈希 + 解析器版本）
-  const raw = (await stack.pool.query(`SELECT content_sha256, parser_version, content_type FROM raw_materials WHERE source_id = 'src-hokace-wiki'`)).rows
+  // 原始材料存证（内容哈希 + 解析器版本 + 复验4：正文/字节数/存储位置齐全可离线复核）
+  const raw = (await stack.pool.query(`SELECT content_sha256, parser_version, content_type, content, size_bytes, storage_uri FROM raw_materials WHERE source_id = 'src-hokace-wiki'`)).rows
   assert.equal(raw.length, 1)
   assert.equal(raw[0].parser_version, 'hokace-html-v2609-astro')
   assert.equal(raw[0].content_type, 'application/json')
+  assert.ok(raw[0].content && raw[0].content.includes('雷霆扶桑刺'), '原始正文必须随存证入库（可离线复核）')
+  assert.equal(Number(raw[0].size_bytes), Buffer.byteLength(raw[0].content, 'utf8'), 'size_bytes 必须是正文实测字节数')
+  assert.match(raw[0].storage_uri, /^pg:raw_materials:sha-/, 'storage_uri 内容寻址指向库内正文')
 
   // —— 保存相位基线，供后续相位断言“不动” ——
   stack.firstSuccessAt = firstSuccessAt

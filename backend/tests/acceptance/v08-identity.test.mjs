@@ -11,6 +11,12 @@ let stack = null
 before(async () => {
   if (!pgAvailable) return
   stack = await bootAcceptanceStack('wanxiangqi_v08_test')
+  // 复验2：核验强制证据链 —— 导入记录须关联真实存证材料
+  await stack.pool.query(
+    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
+     VALUES ('ev-v08', $1, 'src-manual-review', '2026-09-01T09:00:00Z', 'VERIFIED')`,
+    ['e'.repeat(64)]
+  )
 })
 
 after(async () => {
@@ -44,7 +50,7 @@ test('V08-2: 昵称变更 → 同一稳定身份，战绩随人走，不产生�
     method: 'POST', token: stack.adminToken,
     body: {
       records: [{ playerId: 'p-rename', nickname: '旧昵称', matchTime: '2026-09-01T10:00:00Z',
-        finalRank: 1, mode: 'RANKED_DIAMOND' }],
+        finalRank: 1, mode: 'RANKED_DIAMOND', evidenceId: 'ev-v08' }],
       source: 'V08_RENAME_1'
     }
   })

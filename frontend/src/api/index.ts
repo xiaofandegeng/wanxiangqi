@@ -122,6 +122,9 @@ export interface EventRecord {
 export interface LineupSnapshot {
   id: string
   sourceId: string
+  sourceName?: string | null
+  sourceStatus?: string | null
+  sourceType?: string | null
   lineupName: string
   tier: string | null
   commander: string | null

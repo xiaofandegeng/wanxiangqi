@@ -43,15 +43,22 @@ test('V01: 后端写入负载全程业务 storage.json 哈希不变（每次写�
   const svc = createServices(repo, { appMode: 'demo' })
 
   // 写入负载：导入两批（第二批为更正版本）+ 核验放行
+  // 复验2 语义：核验强制证据链 —— 先在沙箱内登记存证材料，导入时逐条关联
+  tmp.engine.state.evidences.push({
+    id: 'ev-v01-sandbox', sha256: 'a'.repeat(64), sourceId: 'src-manual-review',
+    capturedAt: '2026-09-01T09:00:00Z', verifiedAt: '2026-09-01T09:00:00Z',
+    verifiedBy: 'v01', status: 'VERIFIED', note: 'V01 沙箱存证'
+  })
+  tmp.engine.saveState()
   const records = [
-    { playerId: 'p-v01', matchTime: '2026-09-01T10:00:00Z', finalRank: 1, mode: 'RANKED_DIAMOND', nickname: '隔离样本A' },
-    { playerId: 'p-v01', matchTime: '2026-09-01T11:00:00Z', finalRank: 3, mode: 'RANKED_DIAMOND', nickname: '隔离样本A' }
+    { playerId: 'p-v01', matchTime: '2026-09-01T10:00:00Z', finalRank: 1, mode: 'RANKED_DIAMOND', nickname: '隔离样本A', evidenceId: 'ev-v01-sandbox' },
+    { playerId: 'p-v01', matchTime: '2026-09-01T11:00:00Z', finalRank: 3, mode: 'RANKED_DIAMOND', nickname: '隔离样本A', evidenceId: 'ev-v01-sandbox' }
   ]
   const run1 = await svc.imports.importMatches(records, { source: 'V01_TEST' })
   assert.equal(run1.inserted, 2)
   assert.equal(businessStorageSha256(), bizShaBefore, 'FileRepository 必须只写注入的临时目录')
 
-  // 核验放行两局（导入均为 PENDING，统计只认核验后记录）
+  // 核验放行两局（导入均为 PENDING，统计只认核验后记录；证据已随导入关联）
   for (const m of await repo.getPlayerMatches('p-v01')) {
     await svc.imports.verifyMatch(m.id, { verifiedBy: 'v01' })
   }

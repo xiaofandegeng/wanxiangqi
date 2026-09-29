@@ -108,65 +108,74 @@
           <span class="sub-hint">第三方来源同步成功后，快照将在此呈现（当前来源状态见数据源面板）。</span>
         </div>
 
-        <div v-else class="table-responsive">
-          <table class="lineup-table">
-            <thead>
-              <tr>
-                <th class="th-rank">序号</th>
-                <th class="th-name">阵容名称</th>
-                <th class="th-source">来源</th>
-                <th class="th-commander">主棋手</th>
-                <th class="th-samples">样本量</th>
-                <th class="th-winrate">登顶率</th>
-                <th class="th-top3">前三率</th>
-                <th class="th-avg">平均名次</th>
-                <th class="th-window">窗口口径</th>
-                <th class="th-action">快照口径</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(item, idx) in sortedLineups" :key="item.id">
-                <tr
-                  class="lineup-row"
-                  :class="{ 'is-expanded': expandedId === item.id }"
-                  @click="toggleExpand(item.id)"
-                >
-                  <td class="td-rank">
-                    <span class="order-badge">{{ idx + 1 }}</span>
-                  </td>
-                  <td class="td-name">
-                    <div class="lineup-title-cell">
-                      <router-link :to="`/lineups/${item.id}`" class="lineup-name" @click.stop>
-                        {{ item.lineupName }}
-                      </router-link>
-                      <span v-if="item.stale" class="stale-tag">已过期</span>
-                    </div>
-                  </td>
-                  <td class="td-source">
-                    <span class="source-tag font-mono">{{ item.sourceId || '未知来源' }}</span>
-                  </td>
-                  <td class="td-commander">
-                    <span class="commander-tag">{{ item.commander || '未公布' }}</span>
-                  </td>
-                  <td class="td-samples font-mono">
-                    {{ item.sampleCount != null ? `${item.sampleCount.toLocaleString()} ${item.sampleUnit || '局'}` : '未公布' }}
-                  </td>
-                  <td class="td-winrate font-mono highlight-gold">{{ formatRate(item.winRate) }}</td>
-                  <td class="td-top3 font-mono highlight-cyan">{{ formatRate(item.top3Rate) }}</td>
-                  <td class="td-avg font-mono">{{ item.avgRank != null ? item.avgRank.toFixed(2) : '—' }}</td>
-                  <td class="td-window">
-                    <span class="window-text">{{ item.windowText || '未公布' }}</span>
-                  </td>
-                  <td class="td-action">
-                    <button class="expand-btn">
-                      {{ expandedId === item.id ? '收起' : '展开' }}
-                    </button>
-                  </td>
-                </tr>
+        <!-- 复验3：按来源分组陈列 —— 不同来源样本口径互不可比，不跨来源混排总榜 -->
+        <section v-for="grp in sourceGroups" :key="grp.sourceId" class="source-group">
+          <header class="source-group-header">
+            <div class="source-group-title">
+              <span class="source-tag font-mono">{{ grp.sourceId }}</span>
+              <strong class="source-group-name">{{ grp.sourceName }}</strong>
+              <span class="source-status-badge" :class="{ 'is-ready': grp.sourceStatus === 'READY' }">
+                {{ grp.sourceStatus || '未知状态' }}
+              </span>
+            </div>
+            <span class="source-group-count">本来源快照 {{ grp.items.length }} 条 · 组内独立排序</span>
+          </header>
 
-                <!-- 快照口径展开抽屉：只展示来源给出的真实元数据 -->
-                <tr v-if="expandedId === item.id" class="expand-row">
-                  <td colspan="10" class="expand-cell">
+          <div class="table-responsive">
+            <table class="lineup-table">
+              <thead>
+                <tr>
+                  <th class="th-rank">序号</th>
+                  <th class="th-name">阵容名称</th>
+                  <th class="th-commander">主棋手</th>
+                  <th class="th-samples">样本量</th>
+                  <th class="th-winrate">登顶率</th>
+                  <th class="th-top3">前三率</th>
+                  <th class="th-avg">平均名次</th>
+                  <th class="th-window">窗口口径</th>
+                  <th class="th-action">快照口径</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="(item, idx) in grp.items" :key="item.id">
+                  <tr
+                    class="lineup-row"
+                    :class="{ 'is-expanded': expandedId === item.id }"
+                    @click="toggleExpand(item.id)"
+                  >
+                    <td class="td-rank">
+                      <span class="order-badge">{{ idx + 1 }}</span>
+                    </td>
+                    <td class="td-name">
+                      <div class="lineup-title-cell">
+                        <router-link :to="`/lineups/${item.id}`" class="lineup-name" @click.stop>
+                          {{ item.lineupName }}
+                        </router-link>
+                        <span v-if="item.stale" class="stale-tag">已过期</span>
+                      </div>
+                    </td>
+                    <td class="td-commander">
+                      <span class="commander-tag">{{ item.commander || '未公布' }}</span>
+                    </td>
+                    <td class="td-samples font-mono">
+                      {{ item.sampleCount != null ? `${item.sampleCount.toLocaleString()} ${item.sampleUnit || '局'}` : '未公布' }}
+                    </td>
+                    <td class="td-winrate font-mono highlight-gold">{{ formatRate(item.winRate) }}</td>
+                    <td class="td-top3 font-mono highlight-cyan">{{ formatRate(item.top3Rate) }}</td>
+                    <td class="td-avg font-mono">{{ item.avgRank != null ? item.avgRank.toFixed(2) : '—' }}</td>
+                    <td class="td-window">
+                      <span class="window-text">{{ item.windowText || '未公布' }}</span>
+                    </td>
+                    <td class="td-action">
+                      <button class="expand-btn">
+                        {{ expandedId === item.id ? '收起' : '展开' }}
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 快照口径展开抽屉：只展示来源给出的真实元数据 -->
+                  <tr v-if="expandedId === item.id" class="expand-row">
+                    <td colspan="9" class="expand-cell">
                     <div class="evidence-panel">
                       <div class="evidence-grid">
                         <div class="evidence-card">
@@ -202,12 +211,13 @@
                         以上字段全部来自来源快照原始数据；本站不做流派克制推断，不生成任何对局建议。
                       </div>
                     </div>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </template>
   </div>
@@ -264,6 +274,25 @@ const sortedLineups = computed(() => {
     return bv - av
   })
   return list
+})
+
+// 按来源分组（复验3）：不同来源的快照口径互不可比（样本窗口/统计范围各异），
+// 不得跨来源混排成一张总榜；各组内独立排序与编号
+const sourceGroups = computed(() => {
+  const groups = new Map<string, { sourceId: string; sourceName: string; sourceStatus: string | null; sourceType: string | null; items: LineupSnapshot[] }>()
+  for (const l of sortedLineups.value) {
+    if (!groups.has(l.sourceId)) {
+      groups.set(l.sourceId, {
+        sourceId: l.sourceId,
+        sourceName: l.sourceName || l.sourceId,
+        sourceStatus: l.sourceStatus ?? null,
+        sourceType: l.sourceType ?? null,
+        items: []
+      })
+    }
+    groups.get(l.sourceId)!.items.push(l)
+  }
+  return [...groups.values()]
 })
 
 function formatRate(v: number | null | undefined): string {
@@ -588,6 +617,57 @@ onUnmounted(() => loadAbort?.abort())
 .source-tag {
   font-size: 11px;
   color: $text-secondary;
+}
+
+/* 复验3：来源分组容器 —— 组间隔 + 组头（来源身份 + 状态徽标 + 组内计数） */
+.source-group {
+  & + .source-group {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px dashed $border-color;
+  }
+}
+
+.source-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.source-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.source-group-name {
+  font-size: 15px;
+  color: $text-primary;
+}
+
+.source-status-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  color: $text-muted;
+  background: rgba(107, 114, 128, 0.12);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+
+  &.is-ready {
+    color: #059669;
+    background: rgba(5, 150, 105, 0.08);
+    border-color: rgba(5, 150, 105, 0.35);
+  }
+}
+
+.source-group-count {
+  font-size: 11px;
+  color: $text-muted;
 }
 
 .commander-tag {

@@ -30,24 +30,11 @@ test('V13: 环境前置（本地 PG 不可用则整体 skip）', { skip: !pgAvai
 })
 
 test('V13-1: v1 导入核验（名次 1）→ 更正 v2（名次 5）→ 当前统计更新、历史截点不变', { skip: !pgAvailable }, async () => {
-  // v1：2026-06-01 完赛、当日核验
-  const v1 = await stack.api('/api/v1/admin/imports', {
-    method: 'POST', token: stack.adminToken,
-    body: {
-      records: [{
-        playerId: 'p-v13', nickname: '版本链选手', matchTime: '2026-06-01T10:00:00Z',
-        availableAt: '2026-06-01T10:05:00Z', finalRank: 1, mode: 'RANKED_DIAMOND',
-        sourceId: 'src-v13', externalMatchId: 'match-77', externalPlayerId: 'ext-x'
-      }],
-      source: 'V13_V1'
-    }
-  })
-  assert.equal(v1.status, 200, JSON.stringify(v1.json))
-  const v1id = (await stack.pool.query(
-    `SELECT id FROM matches WHERE record_key = $1 AND superseded_at IS NULL`, [KEY]
-  )).rows[0].id
-  await stack.api(`/api/v1/admin/matches/${v1id}/verify`, {
-    method: 'POST', token: stack.adminToken, body: { verifiedBy: 'v13' }
+  // v1：2026-06-01 完赛、当日核验放行 —— 历史已核验状态直插。
+  // 复验1 语义下 verify 端点以“实际核验时刻”建新可见版本，9 月无法回溯构造 6 月的当日核验；
+  // 本套验证的是版本链截点统计语义（核验端点行为已由 v31 复验1/复验2 全覆盖）
+  await insertVerifiedMatch(stack.pool, {
+    id: 'm-v13-v1', revision: 1, finalRank: 1, availableAt: '2026-06-01T10:05:00Z'
   })
 
   // 截点 06-10：名次 1
@@ -71,13 +58,13 @@ test('V13-1: v1 导入核验（名次 1）→ 更正 v2（名次 5）→ 当前�
   assert.equal(v2.status, 200)
   assert.equal(v2.json.result.superseded, 1)
 
-  // 核验 v2 → 当前统计更新为名次 5
-  const v2id = (await stack.pool.query(
-    `SELECT id FROM matches WHERE record_key = $1 AND superseded_at IS NULL`, [KEY]
-  )).rows[0].id
-  await stack.api(`/api/v1/admin/matches/${v2id}/verify`, {
-    method: 'POST', token: stack.adminToken, body: { verifiedBy: 'v13' }
-  })
+  // v2 当日核验（06-20）：同为历史已核验状态直插（理由同上）
+  await stack.pool.query(
+    `UPDATE matches SET verified = TRUE, record_status = 'ACTIVE',
+            verified_at = '2026-06-20T10:00:00Z', verified_by = 'v13'
+     WHERE record_key = $1 AND superseded_at IS NULL`,
+    [KEY]
+  )
 
   const now = (await stack.api('/api/v1/players/p-v13/stats')).json.stats
   assert.equal(now.sampleCount, 1, '同键同局仍只计一局')
@@ -147,6 +134,18 @@ test('V13-4: 被取代版本不可再核验（409），必须核验现行版本'
   })
   assert.equal(res.status, 409, '过期版本核验必须被拒绝（防止复活已更正事实）')
 })
+
+// ---- 工具：历史已核验版本行（模拟当时当日核验放行的存量记录） ----
+async function insertVerifiedMatch(pool, { id, revision, finalRank, availableAt }) {
+  await pool.query(
+    `INSERT INTO matches (id, player_id, match_time, available_at, final_rank, mode, verified,
+                          record_status, synthetic, record_key, revision, superseded_at,
+                          verified_at, verified_by)
+     VALUES ($1, 'p-v13', '2026-06-01T10:00:00Z', $2, $3, 'RANKED_DIAMOND', TRUE,
+             'ACTIVE', FALSE, $4, $5, NULL, $2, 'v13')`,
+    [id, availableAt, finalRank, KEY, revision]
+  )
+}
 
 // ---- 工具：撤销版本行（模拟运营台撤销动作落库） ----
 async function insertRevokedRow(pool, key) {

@@ -383,21 +383,50 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
 
     // ----------------------------------------------------
     // v3 新增 (V17)：核验放行动作
-    // POST /api/v1/admin/matches/:id/verify  { verifiedBy }
+    // POST /api/v1/admin/matches/:id/verify  { verifiedBy, evidenceId? }
+    // 复验1/2：无证据链 → 422 拒绝；放行 = SCD-2 新版本（availableAt=实际核验时刻）
     // ----------------------------------------------------
     const verifyMatchRoute = pathname.match(/^\/api\/v1\/admin\/matches\/([^/]+)\/verify$/)
     if (verifyMatchRoute && req.method === 'POST') {
       try {
         const { body } = await readJsonBody()
         const result = await svc.imports.verifyMatch(verifyMatchRoute[1], {
-          verifiedBy: body?.verifiedBy || body?.auditStaff
+          verifiedBy: body?.verifiedBy || body?.auditStaff,
+          evidenceId: body?.evidenceId || null
         })
         broadcastSSE('DATA_UPDATED', { type: 'MATCH_VERIFIED', matchId: result.id })
         return sendJson(200, {
           code: 0,
-          message: '记录已核验放行：verified=true、availableAt=now、recordStatus=ACTIVE',
+          message: '记录已核验放行：以核验时刻建立新可见版本（availableAt=now），旧版本封存，过去截点统计不受回写',
           data: result
         })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    // ----------------------------------------------------
+    // v3.1 新增 (复验4)：原始材料存证查阅（离线复核用）
+    // GET /api/v1/admin/raw-materials?sourceId=&limit=
+    // GET /api/v1/admin/raw-materials/:id   （含完整正文 content）
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/raw-materials' && req.method === 'GET') {
+      try {
+        const list = await svc.repo.getRawMaterials({
+          sourceId: url.searchParams.get('sourceId') || null,
+          limit: url.searchParams.get('limit') || 20
+        })
+        return sendJson(200, { code: 0, total: list.length, data: list })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+    const rawMaterialMatch = pathname.match(/^\/api\/v1\/admin\/raw-materials\/([^/]+)$/)
+    if (rawMaterialMatch && req.method === 'GET') {
+      try {
+        const material = await svc.repo.getRawMaterialById(rawMaterialMatch[1])
+        if (!material) return sendJson(404, { code: 404, error: `存证 [${rawMaterialMatch[1]}] 不存在` })
+        return sendJson(200, { code: 0, data: material })
       } catch (err) {
         return handleServiceError(err)
       }

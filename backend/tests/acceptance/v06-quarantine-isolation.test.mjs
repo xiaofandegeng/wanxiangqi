@@ -149,6 +149,8 @@ test('V06: dry-run 只读出影响清单且库零变更（证据文件落盘）'
   assert.equal(manifest.categories.nullFabricatedPlayerRank.rowCount, 1)
   assert.equal(manifest.categories.nullFabricatedLineupMeta.rowCount, 1)
   assert.equal(manifest.categories.nullLineupAvgRankFallback.rowCount, 1)
+  assert.equal(manifest.categories.quarantineUnconfiguredLineups.rowCount, 1,
+    '复验3: 未治理来源（datatft）存量快照须出现在隔离清单')
   assert.equal(manifest.expectedEffectiveMatchesBefore, 9)
   assert.equal(manifest.expectedEffectiveMatchesAfter, 2, '模拟隔离后仅剩 2 条真实核验记录')
   // dry-run 只读：matches 行数与状态零变化
@@ -162,7 +164,7 @@ test('V06: --execute 单事务隔离 → 正式查询 N 不再包含合成/测�
 
   const report = JSON.parse(fs.readFileSync(latestArtifact(`quarantine-execute-${DB}-`), 'utf-8'))
   assert.ok(report.backupTable.startsWith('quarantine_backup_'), '执行报告必须记录备份表名')
-  assert.ok(report.backupRowCount >= 10, `备份必须覆盖全部受影响行（实际 ${report.backupRowCount}）`)
+  assert.ok(report.backupRowCount >= 11, `备份必须覆盖全部受影响行（实际 ${report.backupRowCount}）`)
   assert.equal(report.effectiveMatchesAfter, 2)
 
   // 正式统计口径：只剩真实核验记录
@@ -185,9 +187,14 @@ test('V06: --execute 单事务隔离 → 正式查询 N 不再包含合成/测�
   const dt = (await stack.pool.query(`SELECT tier, window_text, scope, snapshot_version, avg_rank FROM lineup_snapshots WHERE id='lu-dt-1'`)).rows[0]
   assert.equal(dt.tier, null); assert.equal(dt.window_text, null)
   assert.equal(dt.scope, null); assert.equal(dt.snapshot_version, null); assert.equal(dt.avg_rank, null)
-  const real = (await stack.pool.query(`SELECT tier, avg_rank FROM lineup_snapshots WHERE id='lu-real-1'`)).rows[0]
+  const real = (await stack.pool.query(`SELECT tier, avg_rank, record_status FROM lineup_snapshots WHERE id='lu-real-1'`)).rows[0]
   assert.equal(real.tier, null, '真实快照 tier 本来就未公布（null 保持 null）')
   assert.equal(Number(real.avg_rank), 3.9)
+  // 复验3：datatft 旧快照打标隔离；hokace 真实快照保持 ACTIVE
+  const dtStatus = (await stack.pool.query(`SELECT record_status, quarantine_reason FROM lineup_snapshots WHERE id='lu-dt-1'`)).rows[0]
+  assert.equal(dtStatus.record_status, 'QUARANTINED')
+  assert.ok(dtStatus.quarantine_reason)
+  assert.equal(real.record_status, 'ACTIVE')
 
   // 连带隔离：测试场次与存证
   const evt = (await stack.pool.query(`SELECT status FROM events WHERE id='evt-test'`)).rows[0]

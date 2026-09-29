@@ -50,7 +50,7 @@ test('V17-1: 匿名 / 错误 token 调用全部写接口 → 401', { skip: !pgAv
   assert.equal(health.json.counts.players, 0)
 })
 
-test('V17-2: 有效 token 导入提交 verified:true → 被强制忽略，统计不生效', { skip: !pgAvailable }, async () => {
+test('V17-2: 有效 token 导入提交 verified:true → 被强制忽略；无证据不得核验放行', { skip: !pgAvailable }, async () => {
   const res = await stack.api('/api/v1/admin/imports', {
     method: 'POST', token: stack.adminToken,
     body: {
@@ -78,16 +78,46 @@ test('V17-2: 有效 token 导入提交 verified:true → 被强制忽略，统�
   const feed = await stack.api('/api/v1/matches')
   assert.equal(feed.json.total, 0, 'ACTIVE 口径流水为空（PENDING 不混入）')
 
-  // 唯一放行通道：核验动作
-  const verify = await stack.api(`/api/v1/admin/matches/${(await stack.pool.query(
+  // 复验2：无证据记录仅凭 verifiedBy 核验 → 422 拒绝（核验按钮 ≠ 证据链完整）
+  const verifyNoEvidence = await stack.api(`/api/v1/admin/matches/${(await stack.pool.query(
     `SELECT id FROM matches WHERE player_id = 'p-v17'`
   )).rows[0].id}/verify`, {
     method: 'POST', token: stack.adminToken, body: { verifiedBy: 'v17-auditor' }
   })
-  assert.equal(verify.status, 200)
+  assert.equal(verifyNoEvidence.status, 422, JSON.stringify(verifyNoEvidence.json))
+  assert.match(verifyNoEvidence.json.error, /证据/)
+  assert.equal((await stack.api('/api/v1/players/p-v17/stats')).json.stats.sampleCount, 0, '拒绝后仍不计入统计')
+
+  // 唯一放行通道：证据链完整（记录自带 evidenceId）+ 核验动作
+  await stack.pool.query(
+    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
+     VALUES ('ev-v17', $1, 'src-manual-review', '2026-09-01T09:00:00Z', 'VERIFIED')`,
+    ['1'.repeat(64)]
+  )
+  const import2 = await stack.api('/api/v1/admin/imports', {
+    method: 'POST', token: stack.adminToken,
+    body: {
+      records: [{
+        playerId: 'p-v17', matchTime: '2026-09-01T11:00:00Z', finalRank: 1,
+        mode: 'RANKED_DIAMOND', evidenceId: 'ev-v17'
+      }]
+    }
+  })
+  assert.equal(import2.status, 200, JSON.stringify(import2.json))
+  const withEvidence = (await stack.pool.query(
+    `SELECT id, available_at FROM matches WHERE player_id = 'p-v17' AND evidence_id = 'ev-v17'`
+  )).rows[0]
+  const importAvailableAt = withEvidence.available_at
+
+  const verify = await stack.api(`/api/v1/admin/matches/${withEvidence.id}/verify`, {
+    method: 'POST', token: stack.adminToken, body: { verifiedBy: 'v17-auditor' }
+  })
+  assert.equal(verify.status, 200, JSON.stringify(verify.json))
   assert.equal(verify.json.data.verified, true)
   assert.equal(verify.json.data.verifiedBy, 'v17-auditor')
-  assert.ok(verify.json.data.availableAt)
+  // 复验1：放行版本的 availableAt = 实际核验时刻（晚于导入时刻），不沿用导入时间
+  assert.ok(new Date(verify.json.data.availableAt).getTime() > new Date(importAvailableAt).getTime(),
+    'availableAt 必须是核验时刻而非导入时刻（过去截点不被回写）')
   assert.equal((await stack.api('/api/v1/players/p-v17/stats')).json.stats.sampleCount, 1)
 })
 

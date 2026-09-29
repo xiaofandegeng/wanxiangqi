@@ -74,13 +74,22 @@ export class ImportsService {
     return this.repo.confirmSlotAudit(payload, staff)
   }
 
-  async verifyMatch(matchId, { verifiedBy } = {}) {
+  /**
+   * 核验放行（复验1/2）：verifiedBy 必填；evidenceId 可选（记录自带证据时）。
+   * 无任何证据关联 → 仓储层 422 NO_EVIDENCE；核验以 SCD-2 建新版本，availableAt=实际核验时刻。
+   */
+  async verifyMatch(matchId, { verifiedBy, evidenceId = null } = {}) {
     if (!verifiedBy || typeof verifiedBy !== 'string') {
       const err = new Error('核验动作必须提供 verifiedBy 操作人')
       err.status = 400
       throw err
     }
-    const result = await this.repo.verifyMatch(matchId, { verifiedBy })
+    if (evidenceId != null && typeof evidenceId !== 'string') {
+      const err = new Error('evidenceId 必须是字符串（证据存证 ID）')
+      err.status = 400
+      throw err
+    }
+    const result = await this.repo.verifyMatch(matchId, { verifiedBy, evidenceId })
     if (!result) {
       const err = new Error(`记录 [${matchId}] 不存在`)
       err.status = 404

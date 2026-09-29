@@ -48,6 +48,7 @@ export class PgRepository {
           WHERE verified = TRUE AND record_status = 'ACTIVE' AND synthetic = FALSE)::int AS effective_matches,
         (SELECT count(*) FROM events)::int AS events,
         (SELECT count(*) FROM lineup_snapshots)::int AS lineups,
+        (SELECT count(*) FROM lineup_snapshots WHERE record_status = 'ACTIVE')::int AS lineups_active,
         (SELECT count(*) FROM evidences)::int AS evidences
     `)
     const r = res.rows[0]
@@ -57,6 +58,7 @@ export class PgRepository {
       effectiveMatches: r.effective_matches,
       events: r.events,
       lineups: r.lineups,
+      lineupsActive: r.lineups_active,
       evidences: r.evidences
     }
   }
@@ -324,6 +326,9 @@ export class PgRepository {
     return {
       id: s.id,
       sourceId: s.source_id,
+      sourceName: s.source_name ?? null,
+      sourceStatus: s.source_status ?? null,
+      sourceType: s.source_type ?? null,
       lineupName: s.lineup_name,
       tier: s.tier ?? null,
       commander: s.commander ?? null,
@@ -346,13 +351,25 @@ export class PgRepository {
     }
   }
 
+  // 公开口径（复验3）：只展示 来源状态 READY/ACTIVE 且快照未被隔离 的行；
+  // 未治理来源（UNCONFIGURED/UNAVAILABLE）的存量快照保留在库中可审计，但不公开混排
+  static LINEUP_PUBLIC_JOIN = `
+    FROM lineup_snapshots ls
+    JOIN data_sources ds ON ds.source_id = ls.source_id
+    WHERE ds.status IN ('ACTIVE', 'READY') AND ls.record_status = 'ACTIVE'`
+
   async getLineupsList() {
-    const res = await this.pool.query(`SELECT * FROM lineup_snapshots ORDER BY updated_at DESC`)
+    const res = await this.pool.query(`
+      SELECT ls.*, ds.name AS source_name, ds.status AS source_status, ds.type AS source_type
+      ${PgRepository.LINEUP_PUBLIC_JOIN}
+      ORDER BY ls.source_id, ls.updated_at DESC`)
     return res.rows.map(PgRepository.LINEUP_WIRE)
   }
 
   async getLineupById(lineupId) {
-    const res = await this.pool.query(`SELECT * FROM lineup_snapshots WHERE id = $1`, [lineupId])
+    const res = await this.pool.query(`
+      SELECT ls.*, ds.name AS source_name, ds.status AS source_status, ds.type AS source_type
+      ${PgRepository.LINEUP_PUBLIC_JOIN} AND ls.id = $1`, [lineupId])
     return res.rows.length ? PgRepository.LINEUP_WIRE(res.rows[0]) : null
   }
 
@@ -444,13 +461,144 @@ export class PgRepository {
     await this.pool.query(`UPDATE data_sources SET ${sets.join(', ')} WHERE source_id = $1`, params)
   }
 
-  async insertRawMaterial({ sourceId, recordKey, fetchedAt, contentSha256, storageUri = null, parserVersion = null, contentType = null, sizeBytes = null, note = null }) {
-    const res = await this.pool.query(
-      `INSERT INTO raw_materials (source_id, record_key, fetched_at, content_sha256, storage_uri, parser_version, content_type, size_bytes, note)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
-      [sourceId, recordKey, fetchedAt, contentSha256, storageUri, parserVersion, contentType, sizeBytes, note]
+  /**
+   * 原始材料存证（复验4）：正文随台账入库（content 列），size_bytes 实测字节数，
+   * storage_uri 内容寻址（pg:raw_materials:sha-<hash16>，指向库内可复原正文）。
+   * 可传 client 以纳入外层事务。
+   */
+  async insertRawMaterial({ sourceId, recordKey, fetchedAt, contentSha256, content = null, storageUri = null, parserVersion = null, contentType = null, sizeBytes = null, note = null }, client = null) {
+    const conn = client || this.pool
+    const resolvedSize = sizeBytes ?? (content != null ? Buffer.byteLength(content, 'utf8') : null)
+    const resolvedUri = storageUri ?? (content != null ? `pg:raw_materials:sha-${contentSha256.slice(0, 16)}` : null)
+    const res = await conn.query(
+      `INSERT INTO raw_materials (source_id, record_key, fetched_at, content_sha256, content, storage_uri, parser_version, content_type, size_bytes, note)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
+      [sourceId, recordKey, fetchedAt, contentSha256, content, resolvedUri, parserVersion, contentType, resolvedSize, note]
     )
     return { id: res.rows[0].id }
+  }
+
+  async getRawMaterials({ sourceId = null, limit = 20 } = {}) {
+    const res = await this.pool.query(
+      `SELECT id, source_id, record_key, fetched_at, content_sha256, storage_uri, parser_version,
+              content_type, size_bytes, note
+       FROM raw_materials
+       ${sourceId ? 'WHERE source_id = $1' : ''}
+       ORDER BY fetched_at DESC LIMIT ${Number(limit) || 20}`,
+      sourceId ? [sourceId] : []
+    )
+    return res.rows.map(r => ({
+      id: r.id, sourceId: r.source_id, recordKey: r.record_key, fetchedAt: iso(r.fetched_at),
+      contentSha256: r.content_sha256, storageUri: r.storage_uri, parserVersion: r.parser_version,
+      contentType: r.content_type, sizeBytes: r.size_bytes, note: r.note
+    }))
+  }
+
+  async getRawMaterialById(id) {
+    const res = await this.pool.query(`SELECT * FROM raw_materials WHERE id = $1`, [id])
+    if (!res.rows.length) return null
+    const r = res.rows[0]
+    return {
+      id: r.id, sourceId: r.source_id, recordKey: r.record_key, fetchedAt: iso(r.fetched_at),
+      contentSha256: r.content_sha256, storageUri: r.storage_uri, parserVersion: r.parser_version,
+      contentType: r.content_type, sizeBytes: r.size_bytes, note: r.note, content: r.content
+    }
+  }
+
+  /**
+   * 同步成功单事务提交（复验4）：快照替换 / 选手字段 / 原始材料存证 / 台账 SUCCESS /
+   * 来源状态推进 在同一事务内落库 —— 任一步失败整体回滚，绝不出现
+   * “快照已更换但报告同步失败”或“台账成功但无存证”的中间态。
+   */
+  async commitSyncSuccess({ sourceId, players = [], snapshots = null, rawMaterial, jobPatch = {}, sourcePatch = {} }) {
+    const client = await this.client()
+    try {
+      await client.query('BEGIN')
+
+      if (Array.isArray(players) && players.length > 0) {
+        await this.#upsertPlayersTx(client, players)
+      }
+      let snapshotsCount = 0
+      if (Array.isArray(snapshots)) {
+        await client.query(`DELETE FROM lineup_snapshots WHERE source_id = $1`, [sourceId])
+        for (const s of snapshots) {
+          await client.query(
+            `INSERT INTO lineup_snapshots (id, source_id, lineup_name, tier, commander, core_heroes,
+                  sample_count, win_rate, top3_rate, avg_rank, snapshot_version, window_text, scope,
+                  structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at, updated_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CURRENT_TIMESTAMP)`,
+            [s.id, s.sourceId || sourceId, s.lineupName, s.tier ?? null, s.commander ?? null,
+             JSON.stringify(s.coreHeroes || []), s.sampleCount ?? null,
+             s.winRate ?? null, s.top3Rate ?? null, s.avgRank ?? null,
+             s.snapshotVersion ?? null, s.windowText ?? null, s.scope ?? null,
+             s.structureKey ?? null, s.windowStart ?? null, s.windowEnd ?? null,
+             s.sampleUnit ?? null, s.rateUnit ?? null, s.dataCutoffAt ?? null]
+          )
+          snapshotsCount++
+        }
+      }
+
+      if (rawMaterial) {
+        await this.insertRawMaterial(rawMaterial, client)
+      }
+
+      if (jobPatch.id) {
+        await this.#markSyncJobTx(client, jobPatch.id, jobPatch)
+      }
+      if (Object.keys(sourcePatch).length > 0) {
+        await this.#updateDataSourceTx(client, sourceId, sourcePatch)
+      }
+
+      await client.query('COMMIT')
+      return { players: players.length, snapshots: snapshotsCount }
+    } catch (err) {
+      await client.query('ROLLBACK')
+      throw err
+    } finally {
+      client.release()
+    }
+  }
+
+  /** 同步失败单事务提交：台账 FAILED 与来源 lastError 同生同灭 */
+  async commitSyncFailure({ jobId, sourceId, finishedAt, error }) {
+    const client = await this.client()
+    try {
+      await client.query('BEGIN')
+      await this.#markSyncJobTx(client, jobId, { status: 'FAILED', finishedAt, failedCount: 1, errorSummary: error })
+      await this.#updateDataSourceTx(client, sourceId, { lastError: error })
+      await client.query('COMMIT')
+    } catch (err) {
+      await client.query('ROLLBACK')
+      throw err
+    } finally {
+      client.release()
+    }
+  }
+
+  async #markSyncJobTx(client, id, { status, finishedAt, fetchedCount = 0, insertedCount = 0, duplicateCount = 0, failedCount = 0, errorSummary = null }) {
+    await client.query(
+      `UPDATE sync_jobs SET status = $2, finished_at = $3, fetched_count = $4,
+              inserted_count = $5, duplicate_count = $6, failed_count = $7, error_summary = $8
+       WHERE id = $1`,
+      [id, status, finishedAt, fetchedCount, insertedCount, duplicateCount, failedCount, errorSummary]
+    )
+  }
+
+  async #updateDataSourceTx(client, sourceId, patch) {
+    const sets = []
+    const params = [sourceId]
+    for (const [col, key] of [
+      ['last_attempt_at', 'lastAttemptAt'], ['last_success_at', 'lastSuccessAt'],
+      ['last_error', 'lastError'], ['status', 'status'], ['note', 'note']
+    ]) {
+      if (key in (patch || {})) {
+        params.push(patch[key])
+        sets.push(`${col} = $${params.length}`)
+      }
+    }
+    if (sets.length === 0) return
+    sets.push('updated_at = CURRENT_TIMESTAMP')
+    await client.query(`UPDATE data_sources SET ${sets.join(', ')} WHERE source_id = $1`, params)
   }
 
   // ---------------- 写路径：导入（V13 版本化单事务） ----------------
@@ -733,40 +881,103 @@ export class PgRepository {
     return this.getEventById(eventId)
   }
 
-  // ---------------- 写路径：核验放行动作 (V17) ----------------
+  // ---------------- 写路径：核验放行动作 (V17 + 复验1/2) ----------------
+  //
+  // 复验整改（2026-09-30）：
+  //   1. 证据链强制：记录本身或请求必须携带有效证据（evidences 存在且状态可用），
+  //      仅凭 verifiedBy 不得放行 —— “核验按钮”不等于证据链完整
+  //   2. SCD-2 放行：核验 = 建立可见新版本（available_at=实际核验时刻），旧版本原样封存。
+  //      过去截点的统计永远取当时版本（旧版仍 PENDING → 不计入），核验动作不回写历史
 
-  async verifyMatch(matchId, { verifiedBy = 'AUDIT_STAFF' } = {}) {
+  async verifyMatch(matchId, { verifiedBy = 'AUDIT_STAFF', evidenceId = null } = {}) {
     const client = await this.client()
     try {
       await client.query('BEGIN')
       const cur = await client.query(
-        `SELECT id, record_status, superseded_at FROM matches WHERE id = $1 FOR UPDATE`, [matchId]
+        `SELECT id, record_key, revision, record_status, superseded_at, verified, evidence_id
+         FROM matches WHERE id = $1 FOR UPDATE`, [matchId]
       )
       if (cur.rows.length === 0) {
         await client.query('ROLLBACK')
         return null
       }
-      if (cur.rows[0].superseded_at !== null) {
+      const row = cur.rows[0]
+      if (row.superseded_at !== null) {
         await client.query('ROLLBACK')
         const err = new Error('该记录已被更高版本取代，请核验最新版本')
         err.status = 409
         throw err
       }
-      if (cur.rows[0].record_status === 'QUARANTINED') {
+      if (row.record_status === 'QUARANTINED') {
         await client.query('ROLLBACK')
         const err = new Error('该记录已被隔离，核验前需先解除隔离')
         err.status = 409
         throw err
       }
-      const res = await client.query(
-        `UPDATE matches SET verified = TRUE, verified_by = $2, verified_at = CURRENT_TIMESTAMP,
-                available_at = COALESCE(available_at, CURRENT_TIMESTAMP),
-                record_status = 'ACTIVE', updated_at = CURRENT_TIMESTAMP
-         WHERE id = $1 RETURNING *`,
-        [matchId, verifiedBy]
+      if (row.record_status === 'REVOKED') {
+        await client.query('ROLLBACK')
+        const err = new Error('该记录已撤销，如需恢复请走更正流程提交新版本')
+        err.status = 409
+        throw err
+      }
+      if (row.verified === true && row.record_status === 'ACTIVE') {
+        await client.query('ROLLBACK')
+        const err = new Error('该记录已核验放行，无需重复核验')
+        err.status = 409
+        throw err
+      }
+
+      // —— 证据链校验（复验2）：无证据 → 拒绝；证据不存在/被隔离 → 拒绝 ——
+      const effectiveEvidenceId = evidenceId || row.evidence_id
+      if (!effectiveEvidenceId) {
+        await client.query('ROLLBACK')
+        const err = new Error('记录未关联任何证据材料，核验前必须提供 evidenceId（真实材料存证）——单独的核验动作不构成证据链')
+        err.status = 422
+        err.code = 'NO_EVIDENCE'
+        throw err
+      }
+      const evd = await client.query(
+        `SELECT id, status FROM evidences WHERE id = $1 FOR UPDATE`, [effectiveEvidenceId]
+      )
+      if (evd.rows.length === 0) {
+        await client.query('ROLLBACK')
+        const err = new Error(`证据 [${effectiveEvidenceId}] 不存在，无法以此放行`)
+        err.status = 422
+        err.code = 'EVIDENCE_NOT_FOUND'
+        throw err
+      }
+      if (evd.rows[0].status === 'QUARANTINED') {
+        await client.query('ROLLBACK')
+        const err = new Error(`证据 [${effectiveEvidenceId}] 已被隔离，不得作为放行依据`)
+        err.status = 422
+        err.code = 'EVIDENCE_QUARANTINED'
+        throw err
+      }
+
+      // —— SCD-2 放行（复验1）：旧版本先封存（腾出 record_key 当前唯一槽），再建新版本 ——
+      // 顺序不可颠倒：uq_matches_record_key_current 部分唯一索引要求同键同时只有一行 superseded_at IS NULL
+      const now = new Date().toISOString()
+      await client.query(
+        `UPDATE matches SET superseded_at = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+        [matchId, now]
+      )
+      const inserted = await client.query(
+        `INSERT INTO matches (id, player_id, match_time, available_at, mode, final_rank, commander, lineup,
+                              rounds_survived, three_stars, verified, evidence_id, batch_id, source_id,
+                              external_match_id, external_player_id, record_key, player_count, game_version,
+                              revision, record_status, superseded_at, synthetic, quarantine_reason,
+                              verified_by, verified_at, operator)
+         SELECT id || '-r' || (revision + 1), player_id, match_time, $2, mode, final_rank, commander, lineup,
+                rounds_survived, three_stars, TRUE, $3, batch_id, source_id,
+                external_match_id, external_player_id, record_key, player_count, game_version,
+                revision + 1, 'ACTIVE', NULL, synthetic, NULL,
+                $4, $2, $5
+         FROM matches WHERE id = $1
+         RETURNING *`,
+        [matchId, now, effectiveEvidenceId, verifiedBy, 'api:admin/verify']
       )
       await client.query('COMMIT')
-      return PgRepository.MATCH_WIRE(res.rows[0])
+      return PgRepository.MATCH_WIRE(inserted.rows[0])
     } catch (err) {
       try { await client.query('ROLLBACK') } catch { /* 已回滚 */ }
       throw err
@@ -810,32 +1021,37 @@ export class PgRepository {
 
   async upsertDatatftPlayers(players) {
     const client = await this.client()
-    let added = 0
-    let updated = 0
     try {
       await client.query('BEGIN')
-      for (const p of players) {
-        const res = await client.query(
-          `INSERT INTO players (id, nickname, tournament_points, tournament_rank, tournament_name, tournament_at)
-           VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
-           ON CONFLICT (id) DO UPDATE SET
-             nickname = EXCLUDED.nickname,
-             tournament_points = COALESCE(EXCLUDED.tournament_points, players.tournament_points),
-             tournament_rank = COALESCE(EXCLUDED.tournament_rank, players.tournament_rank),
-             tournament_name = COALESCE(EXCLUDED.tournament_name, players.tournament_name),
-             tournament_at = CURRENT_TIMESTAMP
-           RETURNING (xmax = 0) AS inserted`,
-          [p.id, p.nickname || p.id, p.tournamentPoints ?? null, p.tournamentRank ?? null, p.tournamentName ?? null]
-        )
-        if (res.rows[0].inserted) added++
-        else updated++
-      }
+      const { added, updated } = await this.#upsertPlayersTx(client, players)
       await client.query('COMMIT')
+      return { added, updated }
     } catch (err) {
       await client.query('ROLLBACK')
       throw err
     } finally {
       client.release()
+    }
+  }
+
+  async #upsertPlayersTx(client, players) {
+    let added = 0
+    let updated = 0
+    for (const p of players) {
+      const res = await client.query(
+        `INSERT INTO players (id, nickname, tournament_points, tournament_rank, tournament_name, tournament_at)
+         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+         ON CONFLICT (id) DO UPDATE SET
+           nickname = EXCLUDED.nickname,
+           tournament_points = COALESCE(EXCLUDED.tournament_points, players.tournament_points),
+           tournament_rank = COALESCE(EXCLUDED.tournament_rank, players.tournament_rank),
+           tournament_name = COALESCE(EXCLUDED.tournament_name, players.tournament_name),
+           tournament_at = CURRENT_TIMESTAMP
+         RETURNING (xmax = 0) AS inserted`,
+        [p.id, p.nickname || p.id, p.tournamentPoints ?? null, p.tournamentRank ?? null, p.tournamentName ?? null]
+      )
+      if (res.rows[0].inserted) added++
+      else updated++
     }
     return { added, updated }
   }

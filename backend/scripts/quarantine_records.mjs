@@ -84,6 +84,12 @@ const CRITERIA = {
     where: `avg_rank = 3.5`,
     action: 'avg_rank=NULL',
     reason: 'F09: 适配器 avgRank 缺失时 3.5 兜底填充值（无法区分真实 3.5，按兜底值处理）'
+  },
+  quarantineUnconfiguredLineups: {
+    table: 'lineup_snapshots',
+    where: `source_id = 'src-datatft-platform'`,
+    action: "record_status='QUARANTINED'",
+    reason: '复验3: datatft 来源 UNCONFIGURED（契约/授权未核实）且存量 36 条快照出自封存生成脚本/未治理适配器，与 hokace 真实快照公开混排违背来源隔离；打标隔离（行保留、可回滚），公开口径仅展示 READY/ACTIVE 来源的 ACTIVE 快照'
   }
 }
 
@@ -118,11 +124,16 @@ async function connect(dbName) {
 
 async function assertMigrated(client) {
   const res = await client.query(`
-    SELECT column_name FROM information_schema.columns
-    WHERE table_name = 'matches' AND column_name IN ('record_status', 'synthetic', 'quarantine_reason')
+    SELECT table_name, column_name FROM information_schema.columns
+    WHERE (table_name = 'matches' AND column_name IN ('record_status', 'synthetic', 'quarantine_reason'))
+       OR (table_name = 'lineup_snapshots' AND column_name = 'record_status')
   `)
-  if (res.rows.length < 3) {
+  const have = new Set(res.rows.map(r => `${r.table_name}.${r.column_name}`))
+  if (!['matches.record_status', 'matches.synthetic', 'matches.quarantine_reason'].every(c => have.has(c))) {
     throw new Error('目标库缺少 0002_v3 迁移列 (matches.record_status/synthetic)。请先运行: npm run migrate -- --db <库名>')
+  }
+  if (!have.has('lineup_snapshots.record_status')) {
+    throw new Error('目标库缺少 0004 迁移列 (lineup_snapshots.record_status)。请先运行: npm run migrate -- --db <库名>')
   }
 }
 
@@ -353,6 +364,17 @@ async function execute(args) {
         )
         assertCount('nullFabricatedLineupMeta', res.rowCount)
         console.log(`  [→NULL]      nullFabricatedLineupMeta: ${res.rowCount} 行`)
+      }
+
+      // 5b. 复验3：未治理来源（UNCONFIGURED）的存量快照整体打标隔离（保留可回滚）
+      {
+        const res = await client.query(
+          `UPDATE lineup_snapshots SET record_status = 'QUARANTINED', quarantine_reason = $1
+           WHERE ${CRITERIA.quarantineUnconfiguredLineups.where}`,
+          [CRITERIA.quarantineUnconfiguredLineups.reason]
+        )
+        assertCount('quarantineUnconfiguredLineups', res.rowCount)
+        console.log(`  [QUARANTINED] quarantineUnconfiguredLineups: ${res.rowCount} 行`)
       }
 
       // 6. 事务内复核：有效统计必须与 dry-run 模拟一致

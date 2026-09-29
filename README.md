@@ -14,7 +14,7 @@
 - **不做预测、不做下注建议**：v2 的 EV/凯利/胜率推演话术与 mock 历史已全部移除；未知玩家如实显示"未找到该选手"，零样本玩家如实显示 N=0；
 - **无真实来源就如实说没有**：官方个人战绩 API 未确认前相关来源标 `UNAVAILABLE`；同步失败保留旧快照并如实报告 FAILED。
 
-当前数据状态（业务库实查）：79 位玩家 / 212 条对局（208 条合成/测试批次已隔离、4 条待核验、**0 条有效**）/ 71 条第三方阵容快照（hokace.wiki 实测 35 条 + datatft 遗留 36 条）。有效对局为 0 是**如实空态**，不是故障。
+当前数据状态（业务库实查）：79 位玩家 / 212 条对局（208 条合成/测试批次已隔离、4 条待核验、**0 条有效**）/ 71 条第三方阵容快照（hokace.wiki 实测 35 条公开 + datatft 遗留 36 条已隔离；页面按来源分组陈列，不跨来源混排）。有效对局为 0 是**如实空态**，不是故障。
 
 ---
 
@@ -113,9 +113,9 @@ npm run build     # vue-tsc 类型检查 + 生产构建
    `verified ∧ record_status='ACTIVE' ∧ 非synthetic ∧ final_rank∈[1,6] ∧ match_time < cutoff ∧ available_at ≤ cutoff`。
    N=0 时比率/均名一律 `null`（禁 `||` 兜底）；`coverageNote` 如实写"已收录 N 局"。
 2. **双时间截点防未来泄漏**：比赛早但录入晚（`available_at > cutoff`）的记录在截点时刻统计中剔除；更正/撤销走 SCD-2 版本区间，过去截点永远取当时版本（V13）。
-3. **核验是唯一提真路径**：导入接口忽略入参 `verified`（一律 PENDING）；只有 `POST /api/v1/admin/matches/:id/verify` 显式核验动作才置 ACTIVE 并盖 `available_at`。
+3. **核验是唯一提真路径**：导入接口忽略入参 `verified`（一律 PENDING）；`POST /api/v1/admin/matches/:id/verify` 强制证据链（无证据/证据不存在/证据已隔离 → 422 拒绝），并以**实际核验时刻**建立新可见版本（SCD-2）——旧版本原样封存，过去截点统计不被回写。
 4. **管理写接口 Bearer 鉴权**：`/api/v1/admin/*` 未授权 401；token 只走环境变量，不落仓库。
-5. **同步失败不撒谎**：上游结构变化/断网 → sync_jobs 记 FAILED、旧快照逐字节保留、lastSuccessAt 不动（V15）；原始响应落 `raw_materials` 存证（sha256 + 解析器版本）。
+5. **同步失败不撒谎**：上游结构变化/断网 → sync_jobs 记 FAILED、旧快照逐字节保留、lastSuccessAt 不动（V15）；同步成功走**单事务**（快照替换 + 存证 + 成功台账 + 来源推进一致提交，中途失败整体回滚）；原始响应全文落 `raw_materials`（正文 + 实测字节数 + 内容寻址 storage_uri，`GET /api/v1/admin/raw-materials(/:id)` 可离线复核）。
 6. **来源登记制**：记录引用未登记来源 → 400 拒绝，零写入（杜绝再造 `batch-datatft-s1-seed` 式无主数据）。
 
 ---
@@ -138,7 +138,7 @@ npm run build     # vue-tsc 类型检查 + 生产构建
 * `/events/:id`：赛事详情（席位与已核验流水）
 * `/players/:id`：选手档案（已核验统计、天梯/赛事积分分列、未知字段如实 '—'/未采集）
 * `/roster`：选手榜（基于已核验战绩复算登顶率/前三率，支持下钻流水）
-* `/lineups` `/lineups/:id`：阵容环境大盘（第三方来源与快照口径标注，缺失字段 null）
+* `/lineups` `/lineups/:id`：阵容环境大盘（仅公开 READY/ACTIVE 来源的 ACTIVE 快照，**按来源分组陈列、组内独立排序**——不同来源样本口径互不可比；缺失字段 null）
 * `/archive`：历史对战记录档案（增量巡检，无新增如实提示）
 * `/admin/verify`：证据存证与人工核验工作台（SHA-256 存证、6 席位持久化、批量导入）
 * `/models/backtest`：回测基线（暂无正式验证结果，展示真实空态）

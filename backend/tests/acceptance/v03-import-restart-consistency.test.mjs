@@ -15,14 +15,20 @@ let stack = null
 
 const RECORDS = [
   { playerId: 'p-v03-a', nickname: '验收甲', matchTime: '2026-09-10T10:00:00Z', finalRank: 1,
-    mode: 'RANKED_DIAMOND', verified: true, commander: '李白', lineup: '长城守卫军' },
+    mode: 'RANKED_DIAMOND', verified: true, commander: '李白', lineup: '长城守卫军', evidenceId: 'ev-v03' },
   { playerId: 'p-v03-b', nickname: '验收乙', matchTime: '2026-09-10T10:00:00Z', finalRank: 3,
-    mode: 'RANKED_DIAMOND', verified: true, commander: null, lineup: null }
+    mode: 'RANKED_DIAMOND', verified: true, commander: null, lineup: null, evidenceId: 'ev-v03' }
 ]
 
 before(async () => {
   if (!pgAvailable) return
   stack = await bootAcceptanceStack(DB, { adminToken: TOKEN })
+  // 复验2：核验强制证据链 —— 导入的记录须先关联真实存证材料才能放行
+  await stack.pool.query(
+    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
+     VALUES ('ev-v03', $1, 'src-manual-review', '2026-09-10T09:00:00Z', 'VERIFIED')`,
+    ['b'.repeat(64)]
+  )
 })
 
 after(async () => {
@@ -118,11 +124,11 @@ test('V03: 重启（拆栈重建全新连接）后 SQL、API、页面字段逐�
   assert.equal(statsA.json.stats.winRate, 1)
   assert.equal(statsA.json.stats.avgRank, 1)
 
-  // 5. 大盘列表/健康计数与 SQL 计数一致
+  // 5. 大盘列表/健康计数与 SQL 计数一致（版本模型：matches=版本行总数，含已封存旧版）
   const players = await stack.api('/api/v1/players')
   assert.equal(players.json.total, 2)
   const health = await stack.api('/api/v1/health')
-  assert.equal(health.json.counts.matches, 2)
-  assert.equal(health.json.counts.effectiveMatches, 2)
+  assert.equal(health.json.counts.matches, 4, '2 条导入 + 2 条核验新版本 = 4 个版本行')
+  assert.equal(health.json.counts.effectiveMatches, 2, '有效战绩仍为 2（仅当前 ACTIVE 版本计入）')
   assert.equal(health.json.counts.players, 2)
 })

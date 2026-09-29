@@ -48,36 +48,33 @@ export class SyncService {
       const finishedAt = result.endTime || new Date().toISOString()
 
       if (result.status !== 'SUCCESS' || !Array.isArray(result.data) || result.data.length === 0) {
-        // V15：失败保留旧快照，仅记错误与尝试时间，绝不更新 lastSuccessAt
+        // V15：失败保留旧快照，仅记错误与尝试时间，绝不更新 lastSuccessAt（台账与来源状态同事务）
         const error = result.error || '同步未返回有效快照'
-        await this.repo.markSyncJob(job.id, {
-          status: 'FAILED', finishedAt, fetchedCount: 0, failedCount: 1, errorSummary: error
-        })
-        await this.repo.updateDataSource('src-hokace-wiki', { lastError: error })
+        await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-hokace-wiki', finishedAt, error })
         return { ok: false, status: 'FAILED', message: `数据源同步未完成: ${error}`, result }
       }
 
-      // 单事务替换该来源全部快照（失败即整体回滚，旧快照保留）
-      await this.repo.upsertLineupSnapshots(result.data, { sourceId: 'src-hokace-wiki' })
-
-      // 原始材料存证：响应快照 + 内容哈希 + 解析器版本
-      await this.repo.insertRawMaterial({
+      // 复验4：快照替换 / 原始正文存证 / 台账 SUCCESS / 来源推进 单事务落库 ——
+      // 任一步失败整体回滚，不会出现“快照已更换却报告同步失败”的中间态
+      await this.repo.commitSyncSuccess({
         sourceId: 'src-hokace-wiki',
-        recordKey: 'lineups:all',
-        fetchedAt: startedAt,
-        contentSha256: crypto.createHash('sha256').update(result.rawBody || JSON.stringify(result.data)).digest('hex'),
-        parserVersion: HOKACE_PARSER_VERSION,
-        // 按解析器实际识别的通道存证（JSON 正文 / HTML 页面），不凭 rawBody 是否存在猜测
-        contentType: /^[\s[{]/.test(result.rawBody || '') ? 'application/json' : 'text/html',
-        note: `hokace 阵容快照同步 ${result.data.length} 条`
-      })
-
-      await this.repo.markSyncJob(job.id, {
-        status: 'SUCCESS', finishedAt,
-        fetchedCount: result.data.length, insertedCount: result.data.length
-      })
-      await this.repo.updateDataSource('src-hokace-wiki', {
-        lastSuccessAt: finishedAt, lastError: null, status: 'READY'
+        snapshots: result.data,
+        rawMaterial: {
+          sourceId: 'src-hokace-wiki',
+          recordKey: 'lineups:all',
+          fetchedAt: startedAt,
+          contentSha256: crypto.createHash('sha256').update(result.rawBody || JSON.stringify(result.data)).digest('hex'),
+          content: result.rawBody || JSON.stringify(result.data), // 原始正文入库，离线可复核
+          parserVersion: HOKACE_PARSER_VERSION,
+          // 按解析器实际识别的通道存证（JSON 正文 / HTML 页面），不凭 rawBody 是否存在猜测
+          contentType: /^[\s[{]/.test(result.rawBody || '') ? 'application/json' : 'text/html',
+          note: `hokace 阵容快照同步 ${result.data.length} 条`
+        },
+        jobPatch: {
+          id: job.id, status: 'SUCCESS', finishedAt,
+          fetchedCount: result.data.length, insertedCount: result.data.length
+        },
+        sourcePatch: { lastSuccessAt: finishedAt, lastError: null, status: 'READY' }
       })
 
       return {
@@ -87,10 +84,7 @@ export class SyncService {
       }
     } catch (err) {
       const finishedAt = new Date().toISOString()
-      await this.repo.markSyncJob(job.id, {
-        status: 'FAILED', finishedAt, failedCount: 1, errorSummary: err.message
-      })
-      await this.repo.updateDataSource('src-hokace-wiki', { lastError: err.message })
+      await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-hokace-wiki', finishedAt, error: err.message })
       return { ok: false, status: 'FAILED', message: `数据源同步未完成: ${err.message}`, result: null }
     }
   }
@@ -127,43 +121,40 @@ export class SyncService {
         tournamentRank: Number.isFinite(Number(p.tournamentRank)) ? Number(p.tournamentRank) : null,
         tournamentName: p.tournamentName || null
       }))
-      const playersRes = await this.repo.upsertDatatftPlayers(playersSafe)
 
-      let lineupsCount = 0
-      if (Array.isArray(lRes.lineups) && lRes.lineups.length > 0) {
-        lineupsCount = await this.repo.upsertLineupSnapshots(lRes.lineups, { sourceId: 'src-datatft-platform' })
-        await this.repo.insertRawMaterial({
+      const hasLineups = Array.isArray(lRes.lineups) && lRes.lineups.length > 0
+      // 复验4：选手字段 / 快照 / 存证 / 台账 / 来源状态 单事务提交
+      const playersRes = await this.repo.commitSyncSuccess({
+        sourceId: 'src-datatft-platform',
+        players: playersSafe,
+        snapshots: hasLineups ? lRes.lineups : null,
+        rawMaterial: hasLineups ? {
           sourceId: 'src-datatft-platform', recordKey: 'lineups:recent',
           fetchedAt: startedAt,
           contentSha256: crypto.createHash('sha256').update(JSON.stringify(lRes.lineups)).digest('hex'),
+          content: JSON.stringify(lRes.lineups),
           parserVersion: DATATFT_PARSER_VERSION,
           contentType: 'application/json',
           note: `datatft 阵容快照 ${lRes.lineups.length} 条`
-        })
-      }
-
-      await this.repo.markSyncJob(job.id, {
-        status: 'SUCCESS', finishedAt,
-        fetchedCount: playersSafe.length + lineupsCount,
-        insertedCount: playersRes.added + lineupsCount,
-        duplicateCount: playersRes.updated
+        } : null,
+        jobPatch: {
+          id: job.id, status: 'SUCCESS', finishedAt,
+          fetchedCount: playersSafe.length + (hasLineups ? lRes.lineups.length : 0),
+          duplicateCount: 0
+        },
+        // 状态仅推进到 READY（第三方聚合，非个人战绩来源；ACTIVE 保留给人工核验路径）
+        sourcePatch: { lastSuccessAt: finishedAt, lastError: null, status: 'READY' }
       })
-      // 状态仅推进到 READY（第三方聚合，非个人战绩来源；ACTIVE 保留给人工核验路径）
-      await this.repo.updateDataSource('src-datatft-platform', {
-        lastSuccessAt: finishedAt, lastError: null, status: 'READY'
-      })
+      const lineupsCount = playersRes.snapshots
 
       return {
         ok: true, status: 'SUCCESS',
-        message: `datatft 同步完成: 选手 ${playersSafe.length}（新增 ${playersRes.added}/更新 ${playersRes.updated}），阵容 ${lineupsCount} 条`,
+        message: `datatft 同步完成: 选手 ${playersSafe.length}，阵容 ${lineupsCount} 条`,
         result: { tournament: tRes.name, playersCount: playersSafe.length, lineupsCount, jobId: job.id }
       }
     } catch (err) {
       const finishedAt = new Date().toISOString()
-      await this.repo.markSyncJob(job.id, {
-        status: 'FAILED', finishedAt, failedCount: 1, errorSummary: err.message
-      })
-      await this.repo.updateDataSource('src-datatft-platform', { lastError: err.message })
+      await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-datatft-platform', finishedAt, error: err.message })
       return { ok: false, status: 'FAILED', message: `同步万象棋大数据平台失败: ${err.message}`, result: null }
     }
   }

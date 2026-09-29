@@ -86,7 +86,7 @@ test('V02: health/ready 如实报告空库状态（不虚报组件与计数）',
   const health = await stack.api('/api/v1/health')
   assert.equal(health.json.db.connected, true)
   assert.deepEqual(health.json.counts, {
-    players: 0, matches: 0, effectiveMatches: 0, events: 0, lineups: 0, evidences: 0
+    players: 0, matches: 0, effectiveMatches: 0, events: 0, lineups: 0, lineupsActive: 0, evidences: 0
   }, '空库计数必须全 0（正式栈绝不读取旁边的旧 JSON）')
 })
 
