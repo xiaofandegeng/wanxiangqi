@@ -1,12 +1,13 @@
-// 模拟器截图画面对局解析器 (Game Screenshot Multi-Match Analyzer)
-// 遵循 v2 规范：哈希仅用于去重与已知证据核对，禁止按文件大小强行猜测名单，未知截图返回待人工录入
+// 存证材料哈希核对器 (Evidence Material Hash Matcher)
+// v3 S6 话术治理：本模块不是"识别引擎"—— 仅按 SHA-256 核对已存证基准材料；
+// 未命中 → 待人工录入，绝不猜测名单 (A11)
 import crypto from 'node:crypto'
 
 export function getBufferSha256(buffer) {
   return crypto.createHash('sha256').update(buffer).digest('hex')
 }
 
-// 已知基准实战材料 1：18824★ 战力巅峰第一人局
+// 已存证基准材料 1：18824★ 战力巅峰第一人局
 const LOBBY_18824 = {
   countdown: '02:29',
   userDiamondBalance: 3422,
@@ -23,7 +24,7 @@ const LOBBY_18824 = {
   oddsMap: { 1: 1.8, 2: 7.1, 3: 10.2, 4: 10.1, 5: 10.5, 6: 10.3 }
 }
 
-// 已知基准实战材料 2：白白白白3 11768★ 荣耀先驱者局
+// 已存证基准材料 2：白白白白3 11768★ 荣耀先驱者局
 const LOBBY_11768 = {
   countdown: '01:59',
   userDiamondBalance: 2532,
@@ -41,15 +42,16 @@ const LOBBY_11768 = {
 }
 
 /**
- * 截图对局解析：通过 SHA-256 存证匹配已知基准材料，未知图片返回待录入状态
+ * 材料哈希核对：命中已存证基准材料 → 返回该材料席位（MATCHED_KNOWN_EVIDENCE）；
+ * 未命中 → 待人工录入（NEED_MANUAL_REVIEW）。本模块不做任何"视觉识别"。
  */
 export async function extractLobbyParticipants(imageBuffer) {
   const sha256 = getBufferSha256(imageBuffer)
 
-  // 严格基于 SHA-256 哈希匹配已知样本
+  // 严格基于 SHA-256 哈希匹配已存证材料
   if (sha256.startsWith('e4ea43a1')) {
     return {
-      status: 'MATCHED_FIXTURE',
+      status: 'MATCHED_KNOWN_EVIDENCE',
       sha256,
       ...LOBBY_18824,
       confidence: 1.0
@@ -58,14 +60,14 @@ export async function extractLobbyParticipants(imageBuffer) {
 
   if (sha256.startsWith('aa02599')) {
     return {
-      status: 'MATCHED_FIXTURE',
+      status: 'MATCHED_KNOWN_EVIDENCE',
       sha256,
       ...LOBBY_11768,
       confidence: 1.0
     }
   }
 
-  // 未知图片返回真实待人工校对状态，不伪造名单与置信度
+  // 未命中：返回真实待人工校对状态，不伪造名单与置信度
   return {
     status: 'NEED_MANUAL_REVIEW',
     sha256,
@@ -76,6 +78,6 @@ export async function extractLobbyParticipants(imageBuffer) {
     participants: [],
     oddsMap: {},
     confidence: null,
-    note: '未匹配到已知样本存证哈希，请通过人工审核界面录入席位'
+    note: '未匹配到已存证材料哈希，请通过人工核验界面录入席位'
   }
 }

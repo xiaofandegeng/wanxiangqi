@@ -1,11 +1,11 @@
 // 王者万象棋数据站 - 腾讯王者营地官方战绩数据适配器 (Camp Official Match Adapter)
 // 依据 2026 年公测正式版王者营地 App (com.tencent.gamehelper.smoba) 战绩中心协议规范
-// 遵循 v2 验收防伪与完整性规范：
-// 1. 严格使用真实选手游戏 UID (如 1892295749, 356866150)
-// 2. 真实解析营地对局字段 (camp_seq, game_time, rank, commander, lineup, rounds)
-// 3. 严格执行 1~6 整数名次约束与双时间截点 (match_time < cutoff && available_at <= cutoff)
-
-import crypto from 'node:crypto'
+// v3 S6/P2-B 治理版：
+// 1. 解析/校验逻辑保留（契约测试用）；来源恒 UNCONFIGURED —— 未获官方开放 API 确认与
+//    用户本人授权材料前，服务层一律 400 拒绝同步（任务书 §3.3）
+// 2. 适配器不得授予 verified：核验状态只能由人工核验动作 (V17) 授予，此处恒 false + PENDING
+// 3. 缺失字段 → null（'通用'/'自适应常规流'/'RANKED_DIAMOND' 等默认值全部移除）
+// 4. available_at 仅来源明确给出时采用；缺失传 null，由导入层以“导入时刻”兜底（≥ matchTime）
 
 export const CAMP_ADAPTER_METADATA = {
   sourceId: 'src-kohcamp-official',
@@ -13,8 +13,9 @@ export const CAMP_ADAPTER_METADATA = {
   type: 'OFFICIAL_MATCH_FEED',
   targetUrl: 'https://kohcamp.qq.com/cgi-bin/match/list?game_type=wanxiangqi',
   authMode: 'OPENID_UID_TOKEN',
-  license: '腾讯游戏服务协议 / 个人战绩授权',
-  pollIntervalSec: 1800
+  license: '腾讯游戏服务协议 / 个人战绩授权（未确认开放 API）',
+  pollIntervalSec: 1800,
+  status: 'UNCONFIGURED'
 }
 
 /**
@@ -49,12 +50,22 @@ export function validateCampRawRecord(raw, idx = 0) {
     throw new Error(`第 ${idx + 1} 条营地对局时间 [${matchTime}] 非法`)
   }
   const isoMatchTime = matchDate.toISOString()
-  
-  // available_at 必须在 match_time 之后至少 10 秒 (防时间穿越泄漏)
-  const availableDate = raw.available_at ? new Date(raw.available_at) : new Date(matchDate.getTime() + 15000)
-  const isoAvailableAt = availableDate.toISOString()
 
-  const rounds = parseInt(raw.round_num || raw.rounds_survived || 25, 10)
+  // available_at：仅来源明确给出时采用（且必须 ≥ match_time）；缺失 → null
+  let isoAvailableAt = null
+  if (raw.available_at) {
+    const availableDate = new Date(raw.available_at)
+    if (isNaN(availableDate.getTime())) {
+      throw new Error(`第 ${idx + 1} 条营地对局收录时间 available_at [${raw.available_at}] 非法`)
+    }
+    if (availableDate.getTime() < matchDate.getTime()) {
+      throw new Error(`第 ${idx + 1} 条营地对局收录时间早于比赛时间（时间穿越，拒绝）`)
+    }
+    isoAvailableAt = availableDate.toISOString()
+  }
+
+  const rawRounds = raw.round_num ?? raw.rounds_survived
+  const roundsSurvived = Number.isInteger(Number(rawRounds)) ? Number(rawRounds) : null
 
   return {
     id: `camp-${campSeq}`,
@@ -63,15 +74,17 @@ export function validateCampRawRecord(raw, idx = 0) {
     playerUid: String(playerUid),
     matchTime: isoMatchTime,
     availableAt: isoAvailableAt,
-    mode: raw.mode || 'RANKED_DIAMOND',
+    mode: raw.mode || null,
     finalRank: rank,
-    commander: raw.commander_name || raw.commander || '通用',
-    lineup: raw.lineup_name || raw.lineup || '自适应常规流',
-    roundsSurvived: Math.max(15, Math.min(45, rounds)),
+    commander: raw.commander_name || raw.commander || null,
+    lineup: raw.lineup_name || raw.lineup || null,
+    roundsSurvived,
     threeStars: Array.isArray(raw.three_stars) ? raw.three_stars : [],
-    verified: true,
+    // 适配器永不授予核验状态（V17：verified 只能由人工核验动作授予）
+    verified: false,
+    recordStatus: 'PENDING',
     evidenceId: `ev-camp-${campSeq}`,
-    batchId: raw.batchId || 'batch-camp-official-sync',
+    batchId: raw.batchId || null,
     sourceRecordKey: `kohcamp:${playerUid}:${campSeq}`
   }
 }

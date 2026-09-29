@@ -73,6 +73,12 @@ const CRITERIA = {
     action: 'rank_score=NULL, rank_text=NULL',
     reason: 'F06: 现存天梯分/段位全部来自 datatft 赛事积分推导或默认值填充（10000/最强王者），非真实天梯数据'
   },
+  nullFabricatedLineupMeta: {
+    table: 'lineup_snapshots',
+    where: `source_id = 'src-datatft-platform' AND (tier IS NOT NULL OR window_text IS NOT NULL OR scope IS NOT NULL OR snapshot_version IS NOT NULL)`,
+    action: 'tier=NULL, window_text=NULL, scope=NULL, snapshot_version=NULL',
+    reason: 'F09/P2-B: 现存 datatft 快照的 tier(按列表序号赋 T0/T1/T2)与“全服近 7 日实战大数据”等窗口文案为适配器编造，来源未公布 → 清 NULL（winRate/sampleCount 等真实公布字段保留）'
+  },
   nullLineupAvgRankFallback: {
     table: 'lineup_snapshots',
     where: `avg_rank = 3.5`,
@@ -337,6 +343,14 @@ async function execute(args) {
         )
         assertCount('nullLineupAvgRankFallback', res.rowCount)
         console.log(`  [→NULL]      nullLineupAvgRankFallback: ${res.rowCount} 行`)
+      }
+      {
+        const res = await client.query(
+          `UPDATE lineup_snapshots SET tier = NULL, window_text = NULL, scope = NULL, snapshot_version = NULL
+           WHERE ${CRITERIA.nullFabricatedLineupMeta.where}`
+        )
+        assertCount('nullFabricatedLineupMeta', res.rowCount)
+        console.log(`  [→NULL]      nullFabricatedLineupMeta: ${res.rowCount} 行`)
       }
 
       // 6. 事务内复核：有效统计必须与 dry-run 模拟一致

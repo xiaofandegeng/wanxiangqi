@@ -289,7 +289,7 @@ async function uploadAndAnalyze(file: File) {
     const detectedLobby = await detectMatchFromImage(file)
     
     // 2. 严格安全分支 (F06): 未匹配到已知存证时，禁止推演预测，明确引导人工录入
-    if (detectedLobby.recognitionStatus !== 'MATCHED_FIXTURE') {
+    if (detectedLobby.recognitionStatus !== 'MATCHED_KNOWN_EVIDENCE') {
       alert(`【未匹配已核验材料】\n图片 SHA-256: ${detectedLobby.sha256.slice(0, 16)}...\n识别状态: 待人工审核 (0人)\n系统遵循任务书防伪规范，已阻止生成固定预测。请前往「证据链与人工核验」工作台录入真实席位。`)
       return
     }

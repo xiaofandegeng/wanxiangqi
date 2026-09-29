@@ -772,7 +772,7 @@ export class PgRepository {
                 structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at, updated_at)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CURRENT_TIMESTAMP)`,
           [s.id, s.sourceId || sourceId, s.lineupName, s.tier ?? null, s.commander ?? null,
-           JSON.stringify(s.coreHeroes || []), s.sampleCount ?? 0,
+           JSON.stringify(s.coreHeroes || []), s.sampleCount ?? null,
            s.winRate ?? null, s.top3Rate ?? null, s.avgRank ?? null,
            s.snapshotVersion ?? null, s.windowText ?? null, s.scope ?? null,
            s.structureKey ?? null, s.windowStart ?? null, s.windowEnd ?? null,

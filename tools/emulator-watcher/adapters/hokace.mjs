@@ -1,12 +1,15 @@
-// 王者万象棋数据站 - hokace.wiki 第三方阵容快照适配器 (v2 真实解析与严格防伪版)
-// 遵循 v2 任务书及验收报告规范 (F03, A04, A05, A17)：
+// 王者万象棋数据站 - hokace.wiki 第三方阵容快照适配器
+// v3 S6/P2-B 来源语义治理版（任务书 §3.1、§P2-B、F09）：
 // 1. 真实字段解析与结构验证，禁止无条件返回内置 baseline 冒充 SUCCESS
-// 2. 失败严格报告 FAILED 状态，禁止将失败结果当作成功写盘
-// 3. 网络或解析失败时，严禁覆盖旧的最后有效快照，严禁更新 lastSuccessAt
-// 4. 沙箱或离线环境网络受限时，如实抛出 CONNECTION_FAILED
+// 2. 失败严格报告 FAILED 状态；失败不覆盖旧快照、不更新 lastSuccessAt (V15)
+// 3. 缺失字段一律 null（tier/梯度文案/窗口文案/样本量/均名），禁止 'T1'/'通用'/'近 7 日' 等默认值冒充来源数据
+// 4. 比率契约显式归一：JSON 通道按 [0,1] 小数严格校验；HTML data-* 属性按百分比契约
+//    （"44.1%" 或 44.1）显式除以 100 后校验 —— 归一后统一 rateUnit='RATIO_0_1'
+// 5. 采集时间 (updatedAt) 与数据截止时间 (dataCutoffAt) 分开：来源未给截止时间 → null
 
 import http from 'node:http'
 import https from 'node:https'
+import crypto from 'node:crypto'
 import { URL } from 'node:url'
 
 export const HOKACE_ADAPTER_METADATA = {
@@ -19,7 +22,36 @@ export const HOKACE_ADAPTER_METADATA = {
 }
 
 /**
- * 校验解析出的单条阵容快照结构
+ * JSON 通道比率：来源契约为 [0,1] 小数，越界（如 44.1）视为契约违背直接报错，
+ * 不做静默换算 —— 换算必须发生在契约明确的通道（见 parsePercentAttr）。
+ */
+function parseJsonRatio(value, field, idx) {
+  const n = Number(value)
+  if (value === null || value === undefined || value === '' || isNaN(n) || n < 0 || n > 1) {
+    throw new Error(`第 ${idx + 1} 条阵容 ${field} [${value}] 不在 [0, 1] 小数契约区间`)
+  }
+  return n
+}
+
+/**
+ * HTML data-* 属性通道比率：页面展示契约为百分比（"44.1%" / "44.1"），
+ * 显式剥离 % 并除以 100 后校验；归一结果恒为 [0,1] 小数。
+ */
+function parsePercentAttr(raw, field, idx) {
+  const s = String(raw ?? '').trim().replace(/%$/, '')
+  const n = Number(s)
+  if (s === '' || isNaN(n) || n < 0) {
+    throw new Error(`第 ${idx + 1} 条阵容 ${field} [${raw}] 不是有效百分比`)
+  }
+  const ratio = n > 1 ? n / 100 : n
+  if (ratio > 1) {
+    throw new Error(`第 ${idx + 1} 条阵容 ${field} [${raw}] 换算后超出 [0, 1]`)
+  }
+  return Number(ratio.toFixed(4))
+}
+
+/**
+ * 校验解析出的单条阵容快照结构（P2-B：缺失 → null，禁止默认值）
  */
 export function validateLineupSnapshotItem(item, idx = 0) {
   if (!item || typeof item !== 'object') {
@@ -28,38 +60,62 @@ export function validateLineupSnapshotItem(item, idx = 0) {
   if (!item.lineupName || typeof item.lineupName !== 'string') {
     throw new Error(`第 ${idx + 1} 条阵容缺少阵容名 lineupName`)
   }
-  const sampleCount = Number(item.sampleCount)
-  if (isNaN(sampleCount) || sampleCount < 0) {
-    throw new Error(`第 ${idx + 1} 条阵容缺少有效样本量 sampleCount`)
-  }
-  const winRate = Number(item.winRate)
-  if (isNaN(winRate) || winRate < 0 || winRate > 1) {
-    throw new Error(`第 ${idx + 1} 条阵容登顶率 winRate [${item.winRate}] 不在 [0, 1] 区间`)
-  }
-  const top3Rate = Number(item.top3Rate)
-  if (isNaN(top3Rate) || top3Rate < 0 || top3Rate > 1) {
-    throw new Error(`第 ${idx + 1} 条阵容前三率 top3Rate [${item.top3Rate}] 不在 [0, 1] 区间`)
-  }
-  const avgRank = Number(item.avgRank)
-  if (isNaN(avgRank) || avgRank < 1 || avgRank > 6) {
-    throw new Error(`第 ${idx + 1} 条阵容平均名次 avgRank [${item.avgRank}] 不在 [1, 6] 区间`)
+  const lineupName = item.lineupName.trim()
+
+  // 样本量：缺失 → null（禁止补 0 冒充已知）；有值必须 ≥ 0
+  let sampleCount = null
+  if (item.sampleCount !== null && item.sampleCount !== undefined && item.sampleCount !== '') {
+    const n = Number(item.sampleCount)
+    if (isNaN(n) || n < 0) {
+      throw new Error(`第 ${idx + 1} 条阵容样本量 sampleCount [${item.sampleCount}] 无效`)
+    }
+    sampleCount = n
   }
 
+  // 比率（JSON 契约 [0,1] 小数）
+  const winRate = parseJsonRatio(item.winRate, '登顶率 winRate', idx)
+  const top3Rate = parseJsonRatio(item.top3Rate, '前三率 top3Rate', idx)
+
+  // 均名：缺失 → null（禁止 3.5 兜底）；有值必须 1~6
+  let avgRank = null
+  if (item.avgRank !== null && item.avgRank !== undefined && item.avgRank !== '') {
+    const n = Number(item.avgRank)
+    if (isNaN(n) || n < 1 || n > 6) {
+      throw new Error(`第 ${idx + 1} 条阵容平均名次 avgRank [${item.avgRank}] 不在 [1, 6] 区间`)
+    }
+    avgRank = n
+  }
+
+  // 窗口起止：缺失 → null（禁止编造“近 7 日”）
+  const windowStart = item.windowStart && !isNaN(new Date(item.windowStart).getTime())
+    ? new Date(item.windowStart).toISOString() : null
+  const windowEnd = item.windowEnd && !isNaN(new Date(item.windowEnd).getTime())
+    ? new Date(item.windowEnd).toISOString() : null
+  const dataCutoffAt = item.dataCutoffAt && !isNaN(new Date(item.dataCutoffAt).getTime())
+    ? new Date(item.dataCutoffAt).toISOString() : null
+
   return {
-    id: item.id || `lineup-snap-${Date.now()}-${idx}`,
+    // 稳定 id：同名阵容跨次同步保持同一主键（详情页/引用不漂移）
+    id: item.id || `hokace-${crypto.createHash('sha256').update(lineupName).digest('hex').slice(0, 16)}`,
     sourceId: HOKACE_ADAPTER_METADATA.sourceId,
-    lineupName: item.lineupName.trim(),
-    tier: item.tier || 'T1',
-    commander: item.commander || '通用',
+    lineupName,
+    tier: item.tier || null,
+    commander: item.commander || null,
     coreHeroes: Array.isArray(item.coreHeroes) ? item.coreHeroes : [],
     sampleCount,
     winRate,
     top3Rate,
     avgRank,
-    snapshotVersion: item.snapshotVersion || 'v2609',
-    windowText: item.windowText || '近 7 日实战聚合',
-    scope: item.scope || '全服王者段位',
-    updatedAt: new Date().toISOString()
+    snapshotVersion: item.snapshotVersion || null,
+    windowText: item.windowText || null,
+    scope: item.scope || null,
+    structureKey: item.structureKey || null,
+    windowStart,
+    windowEnd,
+    sampleUnit: item.sampleUnit || null,
+    rateUnit: 'RATIO_0_1', // 归一化后统一契约（百分比通道已显式换算）
+    dataCutoffAt, // 数据截止时间（来源给出才有；≠ 采集时间）
+    updatedAt: new Date().toISOString() // 采集时间
   }
 }
 
@@ -90,19 +146,28 @@ export function parseHokaceBody(rawBody) {
   // 匹配形如 <div class="lineup-card" data-name="雷霆扶桑刺" data-tier="T1" ...> 或表格 <tr>
   const lineups = []
   
-  // 模式 A: 提取带有阵容属性的元素
-  const cardRegex = /<[^>]+class="[^"]*(?:lineup-card|tier-row)[^"]*"[^>]*data-name="([^"]+)"[^>]*data-tier="([^"]+)"[^>]*data-winrate="([^"]+)"[^>]*data-top3="([^"]+)"[^>]*data-avgrank="([^"]+)"[^>]*data-samples="([^"]+)"/gi
+  // 模式 A: 提取带有阵容属性的元素（百分比契约：data-winrate="44.1%" 或 "44.1"）
+  const cardRegex = /<[^>]+class="[^"]*(?:lineup-card|tier-row)[^"]*"[^>]*data-name="([^"]+)"[^>]*(?:data-tier="([^"]*)")?[^>]*data-winrate="([^"]+)"[^>]*data-top3="([^"]+)"[^>]*(?:data-avgrank="([^"]*)")?[^>]*(?:data-samples="([^"]*)")?/gi
   let match
   while ((match = cardRegex.exec(rawBody)) !== null) {
     lineups.push({
       lineupName: match[1],
-      tier: match[2],
-      winRate: parseFloat(match[3]),
-      top3Rate: parseFloat(match[4]),
-      avgRank: parseFloat(match[5]),
-      sampleCount: parseInt(match[6], 10)
+      tier: match[2] || null,
+      __winRatePercent: match[3], // HTML 通道百分比，稍后显式换算
+      __top3Percent: match[4],
+      avgRank: match[5] === '' || match[5] === undefined ? null : Number(match[5]),
+      sampleCount: match[6] === '' || match[6] === undefined ? null : parseInt(match[6], 10)
     })
   }
+  // HTML 通道比率换算：validate 之前就地归一（百分比 → [0,1] 小数）
+  lineups.forEach((item, i) => {
+    if ('__winRatePercent' in item) {
+      item.winRate = parsePercentAttr(item.__winRatePercent, '登顶率 data-winrate', i)
+      item.top3Rate = parsePercentAttr(item.__top3Percent, '前三率 data-top3', i)
+      delete item.__winRatePercent
+      delete item.__top3Percent
+    }
+  })
 
   // 模式 B: 提取内联 JSON-LD 或 window.__DATA__ 结构
   if (lineups.length === 0) {

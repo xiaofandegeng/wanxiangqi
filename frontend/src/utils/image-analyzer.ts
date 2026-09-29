@@ -13,7 +13,7 @@ export interface ExtractedParticipant {
 }
 
 export interface ExtractedLobbyResult {
-  recognitionStatus: 'MATCHED_FIXTURE' | 'NEED_MANUAL_REVIEW' | 'FAILED'
+  recognitionStatus: 'MATCHED_KNOWN_EVIDENCE' | 'NEED_MANUAL_REVIEW' | 'FAILED'
   matchKey: string
   matchTitle: string
   countdown: string
@@ -31,7 +31,7 @@ const KNOWN_EVIDENCE_18824_SHA256 = 'e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265
 const KNOWN_EVIDENCE_11768_SHA256 = 'aa02599c279e88d1d86e927c3f8e6c7104b901a1827b9c66e92823a31e847c2d'
 
 const FIXTURE_MATCH_18824: Omit<ExtractedLobbyResult, 'sha256'> = {
-  recognitionStatus: 'MATCHED_FIXTURE',
+  recognitionStatus: 'MATCHED_KNOWN_EVIDENCE',
   matchKey: 'match-18824-peak',
   matchTitle: '巅峰赛 18824★ 战力巅峰对决 (已核验材料)',
   countdown: '02:29',
@@ -49,7 +49,7 @@ const FIXTURE_MATCH_18824: Omit<ExtractedLobbyResult, 'sha256'> = {
 }
 
 const FIXTURE_MATCH_11768: Omit<ExtractedLobbyResult, 'sha256'> = {
-  recognitionStatus: 'MATCHED_FIXTURE',
+  recognitionStatus: 'MATCHED_KNOWN_EVIDENCE',
   matchKey: 'match-11768-glory',
   matchTitle: '王牌对决 11768★ 荣耀先驱者对决 (已核验材料)',
   countdown: '01:52',
