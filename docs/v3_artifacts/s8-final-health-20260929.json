@@ -1,0 +1,1 @@
+{"code":0,"status":"UP","mode":"formal","storage":"pg","db":{"connected":true,"kind":"pg"},"counts":{"players":79,"matches":212,"effectiveMatches":0,"events":3,"lineups":71,"evidences":3},"time":"2026-09-29T15:19:44.185Z"}

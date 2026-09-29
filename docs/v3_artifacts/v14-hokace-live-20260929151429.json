@@ -1,0 +1,8 @@
+{
+  "testedAt": "2026-09-29T15:14:29.034Z",
+  "target": "https://hokace.wiki/zh/lineups/",
+  "status": "FAILED",
+  "fetchedCount": 0,
+  "error": "HTML 页面解析完毕，但未发现符合规范的阵容数据结构 (非阵容页面或结构已变更)",
+  "sample": []
+}

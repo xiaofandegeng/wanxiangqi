@@ -169,6 +169,41 @@ export function parseHokaceBody(rawBody) {
     }
   })
 
+  // 模式 A2: Astro 改版后的阵容卡（2026-09 实测结构）—— <article class="lineup-list-card"
+  // data-first/data-top3/data-placement/data-count>。比率属性本身即 [0,1] 小数（实测
+  // data-first="0.3801"），走 JSON 比率契约，不做百分比换算；名称取卡内 <strong>，
+  // 棋手取 data-players；tier/窗口/数据截止时间页面未公布 → null（不造默认值）
+  if (lineups.length === 0) {
+    const astroCardRegex = /<article[^>]*class="[^"]*lineup-list-card[^"]*"[^>]*>/gi
+    let astro
+    while ((astro = astroCardRegex.exec(rawBody)) !== null) {
+      const tag = astro[0]
+      const attr = (name) => {
+        const a = tag.match(new RegExp(`${name}="([^"]*)"`))
+        return a ? a[1] : null
+      }
+      const strong = rawBody.slice(astro.index, astro.index + 2000).match(/<strong[^>]*>([^<]+)<\/strong>/)
+      const lineupName = ((strong ? strong[1] : attr('data-players')) || '').trim()
+      const players = attr('data-players')
+      // 稳定 id：优先来源自身 data-id（同卡跨日快照更新不换 id）；
+      // 名称是前三棋手的有损摘要（实测两卡同名不同阵容），禁用名称做唯一键
+      const srcCardId = attr('data-id')
+      lineups.push({
+        id: srcCardId !== null
+          ? `hokace-card-${srcCardId}`
+          : `hokace-${crypto.createHash('sha256').update(`${lineupName}|${players || ''}`).digest('hex').slice(0, 16)}`,
+        lineupName,
+        tier: null,
+        commander: null,
+        coreHeroes: (players || '').split(',').map(s => s.trim()).filter(Boolean),
+        winRate: attr('data-first') !== null ? parseJsonRatio(attr('data-first'), '登顶率 data-first', lineups.length) : null,
+        top3Rate: attr('data-top3') !== null ? parseJsonRatio(attr('data-top3'), '前三率 data-top3', lineups.length) : null,
+        avgRank: attr('data-placement') !== null ? Number(attr('data-placement')) : null,
+        sampleCount: attr('data-count') !== null ? parseInt(attr('data-count'), 10) : null
+      })
+    }
+  }
+
   // 模式 B: 提取内联 JSON-LD 或 window.__DATA__ 结构
   if (lineups.length === 0) {
     const jsonMatch = rawBody.match(/<script[^>]*id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/i) ||

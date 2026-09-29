@@ -469,6 +469,23 @@ export class PgRepository {
     try {
       await client.query('BEGIN')
 
+      // 来源治理（P2-B）：记录级 sourceId 必须已在来源注册表登记；
+      // 未登记 → 明确 400，不把外键内部细节泄漏给调用方
+      const sourceIds = [...new Set(records.map(r => r.sourceId).filter(Boolean))]
+      if (sourceIds.length > 0) {
+        const known = await client.query(
+          `SELECT source_id FROM data_sources WHERE source_id = ANY($1::varchar[])`, [sourceIds]
+        )
+        const knownSet = new Set(known.rows.map(r => r.source_id))
+        const unknown = sourceIds.filter(s => !knownSet.has(s))
+        if (unknown.length > 0) {
+          const err = new Error(`记录引用了未登记的数据来源: ${unknown.join(', ')}（请先在 data_sources 注册该来源）`)
+          err.status = 400
+          err.code = 'UNKNOWN_SOURCE'
+          throw err
+        }
+      }
+
       await client.query(
         `INSERT INTO import_batches (batch_id, source, total_records, inserted, updated, duplicates, created_at)
          VALUES ($1, $2, $3, 0, 0, 0, CURRENT_TIMESTAMP)`,

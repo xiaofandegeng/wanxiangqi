@@ -63,7 +63,7 @@ const CRITERIA = {
     where: `verified = TRUE AND evidence_id IS NULL AND record_status = 'ACTIVE' AND synthetic = FALSE
             AND batch_id IS DISTINCT FROM 'batch-datatft-s1-seed'
             AND batch_id IS DISTINCT FROM 'batch-camp-official-full'
-            AND batch_id NOT LIKE 'audit-evt-%'`,
+            AND (batch_id IS NULL OR batch_id NOT LIKE 'audit-evt-%')`,
     action: 'verified=FALSE, record_status=PENDING',
     reason: 'P0-B: 无证据核验记录转待核验（不认定为虚假，待补证据链后由核验动作放行）'
   },
@@ -203,10 +203,12 @@ async function buildManifest(client, dbName) {
   manifest.playerStatsBefore = statsMap(before)
 
   // 模拟执行后：排除将被隔离/转待核验的记录
+  // COALESCE(..., FALSE)：三值逻辑防护 —— batch_id 为 NULL 的行上等值/IN 谓词求值为 NULL，
+  // 直接 NOT(NULL OR ...) 会把无关行一并吞掉（真实事故：预测有效对局 0 ≠ 实际）
   const exclusions = [
     ...QUARANTINE_MATCH_CATEGORIES.map(k => CRITERIA[k].where),
     CRITERIA.pendingNoEvidence.where
-  ].map(w => `(${w})`).join(' OR ')
+  ].map(w => `COALESCE((${w}), FALSE)`).join(' OR ')
   const after = await effectiveStats(client, exclusions)
   manifest.playerStatsAfterSimulated = statsMap(after)
   manifest.expectedEffectiveMatchesAfter = after.reduce((acc, r) => acc + r.n, 0)

@@ -1,0 +1,26 @@
+{
+  "executedAt": "2026-09-29T15:20:06.912Z",
+  "database": "wanxiangqi_v06_test",
+  "backupTable": "quarantine_backup_20260929152006",
+  "backupRowCount": 12,
+  "tableCountsAfter": {
+    "players": 4,
+    "matches": 9,
+    "events": 1,
+    "event_participants": 0,
+    "lineup_snapshots": 2,
+    "evidences": 2,
+    "import_batches": 0
+  },
+  "effectiveStatsAfter": {
+    "p-legit": {
+      "n": 2,
+      "firstPlaces": 1,
+      "top3Places": 2,
+      "avgRank": 1.5,
+      "winRate": 0.5,
+      "top3Rate": 1
+    }
+  },
+  "effectiveMatchesAfter": 2
+}

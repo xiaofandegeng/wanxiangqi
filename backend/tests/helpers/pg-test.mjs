@@ -59,6 +59,24 @@ export async function isLocalPgAvailable() {
  * 重建测试库（drop + create），仅在本地 PG 可用时使用
  */
 export async function recreateTestDb() {
+  await recreateNamedTestDb(TEST_DB_NAME)
+}
+
+function assertTestSuffix(name) {
+  if (!/_test$/.test(name)) {
+    throw new Error(
+      `[pg-test] 拒绝连接：测试库名 "${name}" 必须以 _test 结尾。` +
+      '业务库 (wanxiangqi) 禁止用于测试 —— v3 任务书 P0-A。'
+    )
+  }
+}
+
+/**
+ * 命名测试库（S8 验收套件用）：node --test 并行执行时各验收文件使用独立库名，
+ * 互不 DROP 对方数据；同样强制 /_test$/ 后缀校验。
+ */
+export async function recreateNamedTestDb(name) {
+  assertTestSuffix(name)
   const PoolClass = await loadPg()
   const admin = new PoolClass({
     host: process.env.PGHOST || '127.0.0.1',
@@ -68,9 +86,21 @@ export async function recreateTestDb() {
     connectionTimeoutMillis: 2000
   })
   try {
-    await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB_NAME} WITH (FORCE)`)
-    await admin.query(`CREATE DATABASE ${TEST_DB_NAME}`)
+    await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`)
+    await admin.query(`CREATE DATABASE ${name}`)
   } finally {
     await admin.end().catch(() => {})
   }
+}
+
+export async function connectNamedTestDb(name) {
+  assertTestSuffix(name)
+  const PoolClass = await loadPg()
+  return new PoolClass({
+    host: process.env.PGHOST || '127.0.0.1',
+    port: Number(process.env.PGPORT) || 5432,
+    database: name,
+    user: process.env.PGUSER || process.env.USER || 'lhw',
+    connectionTimeoutMillis: 2000
+  })
 }

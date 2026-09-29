@@ -8,7 +8,7 @@
 
 import crypto from 'node:crypto'
 
-const HOKACE_PARSER_VERSION = 'hokace-html-v2609'
+const HOKACE_PARSER_VERSION = 'hokace-html-v2609-astro' // 2026-09 页面改版 Astro 结构（data-first/top3/placement/count，比率即 [0,1]）
 const DATATFT_PARSER_VERSION = 'datatft-json-v1'
 
 export class SyncService {
@@ -67,7 +67,8 @@ export class SyncService {
         fetchedAt: startedAt,
         contentSha256: crypto.createHash('sha256').update(result.rawBody || JSON.stringify(result.data)).digest('hex'),
         parserVersion: HOKACE_PARSER_VERSION,
-        contentType: result.rawBody ? 'text/html' : 'application/json',
+        // 按解析器实际识别的通道存证（JSON 正文 / HTML 页面），不凭 rawBody 是否存在猜测
+        contentType: /^[\s[{]/.test(result.rawBody || '') ? 'application/json' : 'text/html',
         note: `hokace 阵容快照同步 ${result.data.length} 条`
       })
 

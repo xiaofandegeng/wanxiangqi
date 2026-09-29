@@ -227,3 +227,21 @@ test('V18: 非法参数两侧同拒（400 InvalidStatsParamError）', { skip: !p
     }, `JS 侧应拒绝 ${JSON.stringify(params)}`)
   }
 })
+
+test('V18: availableAt 缺失的 legacy 记录 → 有截点必排除（JS 侧语义；PG 侧由列 NOT NULL 结构性保证）', { skip: !pgAvailable }, async () => {
+  const { isEffectiveMatchRecord } = await import('../../../tools/emulator-watcher/stats-core.mjs')
+  const legacy = {
+    id: 'legacy-no-available', playerId: 'p-eq', matchTime: '2026-09-20T10:00:00Z',
+    availableAt: null, finalRank: 1, mode: 'RANKED_DIAMOND', verified: true,
+    recordStatus: 'ACTIVE', synthetic: false, recordKey: null, revision: 1, supersededAt: null
+  }
+  const cutMs = Date.parse('2026-09-25T12:00:00Z')
+  assert.equal(
+    isEffectiveMatchRecord(legacy, { cutoffMs: cutMs }), false,
+    'availableAt 缺失且有截点 → 排除（禁回退 matchTime，防未来信息泄漏）'
+  )
+  assert.equal(
+    isEffectiveMatchRecord({ ...legacy, availableAt: '2026-09-20T10:05:00Z' }, { cutoffMs: cutMs }), true,
+    '同一记录补上收录时刻后正常纳入 —— 排除确由 availableAt 缺失引起'
+  )
+})

@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-09-29T15:20:06.689Z",
+  "database": "wanxiangqi_v06_test",
+  "tool": "backend/scripts/quarantine_records.mjs",
+  "taskBookRef": "docs/真实数据与统计链路整改任务书_v3_2026-09-29.md §P0-B",
+  "baselineTableCounts": {
+    "players": 4,
+    "matches": 9,
+    "events": 1,
+    "event_participants": 0,
+    "lineup_snapshots": 2,
+    "evidences": 2,
+    "import_batches": 0
+  },
+  "categories": {
+    "quarantineSeed": {
+      "table": "matches",
+      "criterion": "batch_id = 'batch-datatft-s1-seed'",
+      "action": "record_status=QUARANTINED, synthetic=TRUE",
+      "reason": "F01/F02: generate_real_dataset.mjs 按赛事排名剧本生成的合成战绩，无真实材料支撑",
+      "rowCount": 3,
+      "primaryKeys": [
+        "m-seed-0",
+        "m-seed-1",
+        "m-seed-2"
+      ]
+    },
+    "quarantineCamp": {
+      "table": "matches",
+      "criterion": "batch_id = 'batch-camp-official-full'",
+      "action": "record_status=QUARANTINED, synthetic=TRUE",
+      "reason": "F03: sync_camp_official_matches.mjs 零网络请求生成却声称官方同步的伪官方战绩",
+      "rowCount": 2,
+      "primaryKeys": [
+        "m-camp-0",
+        "m-camp-1"
+      ]
+    },
+    "quarantineTestAudits": {
+      "table": "matches",
+      "criterion": "batch_id LIKE 'audit-evt-%'",
+      "action": "record_status=QUARANTINED, synthetic=TRUE",
+      "reason": "P0-B: 演示/测试存证经人工核验台写入的测试审核记录，非真实核验材料",
+      "rowCount": 1,
+      "primaryKeys": [
+        "m-audit-1"
+      ]
+    },
+    "quarantineTestEvents": {
+      "table": "events",
+      "criterion": "EXISTS (SELECT 1 FROM matches m WHERE m.batch_id = 'audit-' || events.id)",
+      "action": "status=QUARANTINED",
+      "reason": "P0-B: 测试审核记录关联的对决场次（连带隔离，随 matches 一并可回滚）",
+      "rowCount": 1,
+      "primaryKeys": [
+        "evt-test"
+      ]
+    },
+    "quarantineTestEvidences": {
+      "table": "evidences",
+      "criterion": "id IN (SELECT evidence_id FROM matches WHERE batch_id LIKE 'audit-evt-%' AND evidence_id IS NOT NULL)\n            OR id IN (SELECT e.evidence_id FROM events e\n                      WHERE e.evidence_id IS NOT NULL\n                        AND EXISTS (SELECT 1 FROM matches m WHERE m.batch_id = 'audit-' || e.id))",
+      "action": "status=QUARANTINED",
+      "reason": "P0-B: 测试审核存证材料（连带隔离，含被隔离对决场次自身的证据）",
+      "rowCount": 1,
+      "primaryKeys": [
+        "ev-v06-test"
+      ]
+    },
+    "pendingNoEvidence": {
+      "table": "matches",
+      "criterion": "verified = TRUE AND evidence_id IS NULL AND record_status = 'ACTIVE' AND synthetic = FALSE\n            AND batch_id IS DISTINCT FROM 'batch-datatft-s1-seed'\n            AND batch_id IS DISTINCT FROM 'batch-camp-official-full'\n            AND (batch_id IS NULL OR batch_id NOT LIKE 'audit-evt-%')",
+      "action": "verified=FALSE, record_status=PENDING",
+      "reason": "P0-B: 无证据核验记录转待核验（不认定为虚假，待补证据链后由核验动作放行）",
+      "rowCount": 1,
+      "primaryKeys": [
+        "m-legit-3"
+      ]
+    },
+    "nullFabricatedPlayerRank": {
+      "table": "players",
+      "criterion": "rank_score IS NOT NULL OR rank_text IS NOT NULL",
+      "action": "rank_score=NULL, rank_text=NULL",
+      "reason": "F06: 现存天梯分/段位全部来自 datatft 赛事积分推导或默认值填充（10000/最强王者），非真实天梯数据",
+      "rowCount": 1,
+      "primaryKeys": [
+        "p-seed"
+      ]
+    },
+    "nullFabricatedLineupMeta": {
+      "table": "lineup_snapshots",
+      "criterion": "source_id = 'src-datatft-platform' AND (tier IS NOT NULL OR window_text IS NOT NULL OR scope IS NOT NULL OR snapshot_version IS NOT NULL)",
+      "action": "tier=NULL, window_text=NULL, scope=NULL, snapshot_version=NULL",
+      "reason": "F09/P2-B: 现存 datatft 快照的 tier(按列表序号赋 T0/T1/T2)与“全服近 7 日实战大数据”等窗口文案为适配器编造，来源未公布 → 清 NULL（winRate/sampleCount 等真实公布字段保留）",
+      "rowCount": 1,
+      "primaryKeys": [
+        "lu-dt-1"
+      ]
+    },
+    "nullLineupAvgRankFallback": {
+      "table": "lineup_snapshots",
+      "criterion": "avg_rank = 3.5",
+      "action": "avg_rank=NULL",
+      "reason": "F09: 适配器 avgRank 缺失时 3.5 兜底填充值（无法区分真实 3.5，按兜底值处理）",
+      "rowCount": 1,
+      "primaryKeys": [
+        "lu-dt-1"
+      ]
+    }
+  },
+  "playerStatsBefore": {
+    "p-legit": {
+      "n": 3,
+      "firstPlaces": 1,
+      "top3Places": 3,
+      "avgRank": 2,
+      "winRate": 0.3333,
+      "top3Rate": 1
+    },
+    "p-seed": {
+      "n": 3,
+      "firstPlaces": 1,
+      "top3Places": 3,
+      "avgRank": 2,
+      "winRate": 0.3333,
+      "top3Rate": 1
+    },
+    "p-camp": {
+      "n": 2,
+      "firstPlaces": 1,
+      "top3Places": 2,
+      "avgRank": 1.5,
+      "winRate": 0.5,
+      "top3Rate": 1
+    },
+    "p-audit": {
+      "n": 1,
+      "firstPlaces": 1,
+      "top3Places": 1,
+      "avgRank": 1,
+      "winRate": 1,
+      "top3Rate": 1
+    }
+  },
+  "playerStatsAfterSimulated": {
+    "p-legit": {
+      "n": 2,
+      "firstPlaces": 1,
+      "top3Places": 2,
+      "avgRank": 1.5,
+      "winRate": 0.5,
+      "top3Rate": 1
+    }
+  },
+  "expectedEffectiveMatchesAfter": 2,
+  "expectedEffectiveMatchesBefore": 9
+}
