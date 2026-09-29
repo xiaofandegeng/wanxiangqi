@@ -378,6 +378,20 @@ export class StorageEngine {
   }
 
   /**
+   * 获取全量对局战绩流水列表 (支持分页与多维筛选)
+   */
+  getAllMatches({ limit = 50, offset = 0, playerId = null, mode = null } = {}) {
+    let list = this.state.matches || []
+    if (playerId) list = list.filter(m => m.playerId === playerId)
+    if (mode) list = list.filter(m => m.mode === mode)
+    list = list.slice().sort((a, b) => new Date(b.matchTime).getTime() - new Date(a.matchTime).getTime())
+    return {
+      total: list.length,
+      data: list.slice(offset, offset + limit)
+    }
+  }
+
+  /**
    * 获取对决场次列表
    */
   getEventsList(dateStr = '', mode = null) {

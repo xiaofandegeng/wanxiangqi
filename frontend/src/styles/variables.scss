@@ -59,6 +59,11 @@ $radius-lg: 12px;
 $radius-xl: 16px;
 $radius-full: 9999px;
 
+// 字体规范
+$font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
 // 平滑过渡
 $transition-base: all 0.15s ease;
 $transition-smooth: all 0.25s ease;
+

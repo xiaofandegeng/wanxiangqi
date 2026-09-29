@@ -92,8 +92,8 @@ export function solveClientLiveMatch(lobbyOrList?: ExtractedLobbyResult | any[])
     const netEV = Number((prob * grossReturn - testInvest).toFixed(1))
     const roi = Number(((netEV / testInvest) * 100).toFixed(1))
 
-    // 客观中立评定，不提供诱导性投资评定
-    const decisionReason = `${contest?.analysisSummary || '常规对局'}。历史吃鸡率参考: ${Math.round((contest?.historicalWinRate || 0.16) * 100)}%，前三稳率: ${Math.round((contest?.historicalTop3Rate || 0.5) * 100)}%。盘面参考倍率: ${odds}x。`
+    // 客观中立评定：基于真实历史战绩与打法风格
+    const decisionReason = `${contest?.historicalDataAssessment || '历史数据完备'}。打法风格偏好: ${contest?.preferredStyle || '自适应'}。${contest?.playstyleEvaluation || ''} 盘面倍率: ${odds}x。`
 
     return {
       slot,
@@ -107,10 +107,10 @@ export function solveClientLiveMatch(lobbyOrList?: ExtractedLobbyResult | any[])
       roi,
       recommendation: 'ANALYTICAL_EVAL' as const,
       decisionReason,
-      playstyle: history?.playstyleType || meta?.playstyleCategory || '常规高分流',
-      playstyleDesc: meta?.playstyleDesc || '王者万象棋高分段选手。',
+      playstyle: contest?.preferredStyle || history?.playstyleType || meta?.playstyleCategory || '常规高分流',
+      playstyleDesc: contest?.playstyleEvaluation || meta?.playstyleDesc || '王者万象棋高分段选手。',
       commander: p.commander || p.commanderName || meta?.favoriteCommanders?.[0]?.name || '通用',
-      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || [contest?.chosenLineup || '常规'],
+      favoriteLineups: meta?.favoriteLineups?.map(l => l.name) || [contest?.preferredStyle || '全能流派'],
       contestAnalysis: contest
     }
   }).sort((a, b) => b.probability - a.probability)

@@ -2,10 +2,19 @@
   <div class="matchup-analysis-container">
     <div class="analysis-header">
       <div class="title-wrap">
-        <span class="header-icon">⚔️</span>
-        <h4 class="analysis-title">自走棋沙盘推演与卡池内卷分析 (Matchup & Pool Matrix)</h4>
+        <span class="header-icon">📊</span>
+        <h4 class="analysis-title">六席选手历史战力与打法风格生态画像 (Performance & Archetype Matrix)</h4>
       </div>
-      <span class="header-tag">基于万象棋公共卡池与流派克制深度推演</span>
+      <span class="header-tag">严守赛前事实 · 基于真实战绩与打法偏好</span>
+    </div>
+
+    <!-- 赛前公理原则提示横幅 -->
+    <div class="premise-notice-banner">
+      <span class="notice-icon">📌</span>
+      <div class="notice-content">
+        <strong class="notice-highlight">赛前事实原则：</strong>
+        自走棋开局前无法预知最终随机发牌与成型阵容，强行假定阵容属于无效空模拟！本推演严格依据认证选手的真实历史登顶率、前三率、平均名次与长期沉淀的擅长打法风格偏好进行科学加权。
+      </div>
     </div>
 
     <!-- 全局宏观局势洞察 -->
@@ -16,16 +25,16 @@
       </div>
     </div>
 
-    <!-- 6 席卡池竞争与流派画像卡片网格 -->
+    <!-- 6 席位历史战绩与擅长打法画像卡片网格 -->
     <div class="contest-grid">
       <div 
         v-for="item in analyses" 
         :key="item.slot" 
         class="contest-card"
         :class="{
-          'is-exclusive': item.contestStatus === 'EXCLUSIVE',
-          'is-contested': item.contestStatus === 'SEVERE_CONTEST',
-          'is-slight': item.contestStatus === 'SLIGHT_OVERLAP'
+          'is-favored': item.archetypeAdvantageScore >= 1.05,
+          'is-disfavored': item.archetypeAdvantageScore < 0.95,
+          'is-balanced': item.archetypeAdvantageScore >= 0.95 && item.archetypeAdvantageScore < 1.05
         }"
       >
         <div class="card-head">
@@ -36,40 +45,47 @@
           <span 
             class="status-pill"
             :class="{
-              'pill-green': item.contestStatus === 'EXCLUSIVE',
-              'pill-red': item.contestStatus === 'SEVERE_CONTEST',
-              'pill-yellow': item.contestStatus === 'SLIGHT_OVERLAP'
+              'pill-green': item.archetypeAdvantageScore >= 1.05,
+              'pill-red': item.archetypeAdvantageScore < 0.95,
+              'pill-yellow': item.archetypeAdvantageScore >= 0.95 && item.archetypeAdvantageScore < 1.05
             }"
           >
-            {{ statusText(item.contestStatus) }}
+            {{ getStyleEnvironmentTag(item.archetypeAdvantageScore) }}
           </span>
         </div>
 
+        <!-- 选手长期擅长打法偏好 (非局内假定阵容) -->
         <div class="lineup-info-row">
-          <span class="info-label">拟选体系:</span>
-          <span class="info-val text-gold">{{ item.chosenLineup }}</span>
+          <span class="info-label">擅长打法偏好:</span>
+          <span class="info-val text-gold">{{ item.preferredStyle }}</span>
         </div>
 
+        <!-- 真实历史战绩三项硬核指标 -->
         <div class="stat-pills-row">
           <div class="mini-pill">
             <span class="pill-label">历史登顶率:</span>
             <span class="pill-val text-gold">{{ Math.round(item.historicalWinRate * 100) }}%</span>
           </div>
           <div class="mini-pill">
-            <span class="pill-label">前三保率:</span>
+            <span class="pill-label">前三保分率:</span>
             <span class="pill-val text-cyan">{{ Math.round(item.historicalTop3Rate * 100) }}%</span>
           </div>
           <div class="mini-pill">
-            <span class="pill-label">克制系数:</span>
-            <span class="pill-val" :class="item.counterAdvantageScore >= 1.0 ? 'text-success' : 'text-danger'">
-              {{ item.counterAdvantageScore.toFixed(2) }}x
+            <span class="pill-label">历史均名:</span>
+            <span class="pill-val font-mono">{{ item.historicalAvgPlacement.toFixed(2) }} 名</span>
+          </div>
+          <div class="mini-pill">
+            <span class="pill-label">生态契合度:</span>
+            <span class="pill-val" :class="item.archetypeAdvantageScore >= 1.0 ? 'text-success' : 'text-danger'">
+              {{ item.archetypeAdvantageScore.toFixed(2) }}x
             </span>
           </div>
         </div>
 
+        <!-- 战绩硬核评估与风格生态诊断 -->
         <div class="analysis-desc-box">
-          <p class="desc-text">{{ item.analysisSummary }}</p>
-          <p class="powerspike-text">{{ item.powerspikeDesc }}</p>
+          <p class="desc-text font-mono text-cyan">{{ item.historicalDataAssessment }}</p>
+          <p class="powerspike-text">{{ item.playstyleEvaluation }}</p>
         </div>
       </div>
     </div>
@@ -84,10 +100,11 @@ defineProps<{
   insights?: string[]
 }>()
 
-function statusText(status: string) {
-  if (status === 'EXCLUSIVE') return '🌟 独家卡池红利'
-  if (status === 'SEVERE_CONTEST') return '⚠️ 核心撞车内卷'
-  return '⚖️ 轻微重叠'
+function getStyleEnvironmentTag(score: number): string {
+  if (score >= 1.08) return '🌟 风格生态优势'
+  if (score >= 1.02) return '✨ 风格契合良好'
+  if (score < 0.95) return '⚠️ 风格受制环境'
+  return '⚖️ 生态势均力敌'
 }
 </script>
 
@@ -106,7 +123,7 @@ function statusText(status: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
@@ -134,6 +151,32 @@ function statusText(status: string) {
     padding: 3px 8px;
     border-radius: 4px;
     border: 1px solid rgba($color-gold, 0.25);
+  }
+}
+
+.premise-notice-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba($color-gold, 0.08);
+  border: 1px solid rgba($color-gold, 0.25);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+
+  .notice-icon {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .notice-content {
+    font-size: 0.82rem;
+    color: $text-secondary;
+    line-height: 1.5;
+
+    .notice-highlight {
+      color: $color-gold;
+    }
   }
 }
 
@@ -182,17 +225,17 @@ function statusText(status: string) {
   gap: 8px;
   transition: all 0.2s ease;
 
-  &.is-exclusive {
+  &.is-favored {
     border-color: rgba($color-success, 0.4);
     background: rgba($color-success, 0.03);
   }
 
-  &.is-contested {
+  &.is-disfavored {
     border-color: rgba($color-danger, 0.4);
     background: rgba($color-danger, 0.03);
   }
 
-  &.is-slight {
+  &.is-balanced {
     border-color: rgba($color-gold, 0.3);
   }
 
@@ -263,14 +306,14 @@ function statusText(status: string) {
   }
 
   .stat-pills-row {
-    display: flex;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
     background: rgba(0, 0, 0, 0.25);
-    padding: 6px 8px;
+    padding: 8px;
     border-radius: 4px;
 
     .mini-pill {
-      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -295,14 +338,14 @@ function statusText(status: string) {
     .desc-text {
       font-size: 0.78rem;
       line-height: 1.4;
-      color: $text-secondary;
       margin: 0;
     }
 
     .powerspike-text {
-      font-size: 0.72rem;
-      color: $text-muted;
+      font-size: 0.74rem;
+      color: $text-secondary;
       margin: 0;
+      line-height: 1.4;
     }
   }
 }
@@ -322,4 +365,9 @@ function statusText(status: string) {
 .text-danger {
   color: #ff7875;
 }
+
+.font-mono {
+  font-family: $font-mono;
+}
 </style>
+

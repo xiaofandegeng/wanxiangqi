@@ -98,7 +98,7 @@
       </div>
     </div>
 
-    <!-- 自走棋局内卡池内卷与相克沙盘推演 -->
+    <!-- 六席选手历史战力与打法风格生态画像 (严守赛前事实，绝不空模拟未出阵容) -->
     <MatchupAnalysis
       v-if="matchupSimulation"
       :analyses="matchupSimulation.contestedAnalysis"
@@ -125,7 +125,7 @@
     <!-- 六人概率 vs 均匀基线对比表格 -->
     <div v-if="event.forecast" class="comparison-panel">
       <div class="panel-header">
-        <h3 class="panel-title">六人胜率 vs 均匀基准模型对比 (结合局内卡池与流派推演)</h3>
+        <h3 class="panel-title">六人胜率 vs 均匀基准模型对比 (基于真实历史战绩与打法风格加权)</h3>
       </div>
       <div class="table-responsive">
         <table class="comparison-table">

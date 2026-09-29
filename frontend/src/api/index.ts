@@ -34,6 +34,8 @@ export interface PlayerRecord {
 export interface MatchRecord {
   id: string
   playerId: string
+  playerUid?: string
+  campSeq?: string
   matchTime: string
   availableAt: string
   mode?: string
@@ -205,6 +207,31 @@ export async function fetchEventsList(params: { date?: string; mode?: string } =
 
   const res = await requestApi<any>(`/api/v1/events${qs}`)
   return Array.isArray(res.data) ? res.data : []
+}
+
+/**
+ * 获取官方王者营地全量实战排位流水大盘 (Camp Feed)
+ */
+export async function fetchMatchesList(params: { limit?: number; offset?: number; playerId?: string; mode?: string } = {}): Promise<{
+  total: number
+  data: MatchRecord[]
+  source: string
+  sourceName: string
+}> {
+  const query = new URLSearchParams()
+  if (params.limit) query.set('limit', String(params.limit))
+  if (params.offset) query.set('offset', String(params.offset))
+  if (params.playerId) query.set('playerId', params.playerId)
+  if (params.mode) query.set('mode', params.mode)
+  const qs = query.toString() ? `?${query.toString()}` : ''
+
+  const res = await requestApi<any>(`/api/v1/matches${qs}`)
+  return {
+    total: res.total || 0,
+    data: Array.isArray(res.data) ? res.data : [],
+    source: res.source || 'src-kohcamp-official',
+    sourceName: res.sourceName || '腾讯王者营地官方战绩网关'
+  }
 }
 
 /**

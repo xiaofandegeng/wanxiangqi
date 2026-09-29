@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "2.0.0",
-    "initializedAt": "2026-09-28T00:09:51.900Z",
+    "initializedAt": "2026-09-29T09:30:08.134Z",
     "engine": "PostgreSQL_Compatible_Local_Engine",
     "storageMode": "EMPTY_COLD_START"
   },
@@ -70,11 +70,11 @@
   ],
   "evidences": [
     {
-      "id": "ev-1790554191900",
+      "id": "ev-1790674208134",
       "sha256": "e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82",
       "sourceId": "src-manual-review",
       "capturedAt": "2026-09-27T10:00:00.000Z",
-      "verifiedAt": "2026-09-28T00:09:51.900Z",
+      "verifiedAt": "2026-09-29T09:30:08.134Z",
       "verifiedBy": "AUDIT_STAFF",
       "status": "VERIFIED",
       "note": "实战核验场次"
@@ -153,7 +153,7 @@
       "id": "mh-evt-audit-test-01-s1",
       "playerId": "p-EZ夜余",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 1,
       "commander": "弈星",
@@ -161,14 +161,14 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     },
     {
       "id": "mh-evt-audit-test-01-s2",
       "playerId": "p-DY校长神Gin",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 2,
       "commander": "司空震",
@@ -176,14 +176,14 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     },
     {
       "id": "mh-evt-audit-test-01-s3",
       "playerId": "p-抖音李由多",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 3,
       "commander": "司空震",
@@ -191,14 +191,14 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     },
     {
       "id": "mh-evt-audit-test-01-s4",
       "playerId": "p-抖音EGM皮皮鲨",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 4,
       "commander": "庄周",
@@ -206,14 +206,14 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     },
     {
       "id": "mh-evt-audit-test-01-s5",
       "playerId": "p-想k益笙菌",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 5,
       "commander": "诸葛亮",
@@ -221,14 +221,14 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     },
     {
       "id": "mh-evt-audit-test-01-s6",
       "playerId": "p-B站小优律",
       "matchTime": "2026-09-27T10:00:00.000Z",
-      "availableAt": "2026-09-28T00:09:51.900Z",
+      "availableAt": "2026-09-29T09:30:08.134Z",
       "mode": "RANKED_DIAMOND",
       "finalRank": 6,
       "commander": "公孙离",
@@ -236,7 +236,7 @@
       "roundsSurvived": 30,
       "threeStars": [],
       "verified": true,
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "batchId": "audit-evt-audit-test-01"
     }
   ],
@@ -247,7 +247,7 @@
       "scheduledAt": "2026-09-27T10:00:00.000Z",
       "title": "实战核验场次",
       "status": "AUDITED",
-      "evidenceId": "ev-1790554191900",
+      "evidenceId": "ev-1790674208134",
       "participants": [
         {
           "slot": 1,
@@ -316,7 +316,7 @@
           "lineup": "尧天公孙离射手"
         }
       ],
-      "verifiedAt": "2026-09-28T00:09:51.900Z",
+      "verifiedAt": "2026-09-29T09:30:08.134Z",
       "verifiedBy": "AUDIT_STAFF"
     }
   ],

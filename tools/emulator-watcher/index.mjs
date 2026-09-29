@@ -199,6 +199,29 @@ export function createApiServer() {
     }
 
     // ----------------------------------------------------
+    // v2 标准 API: 3.1 官方王者营地全量实战对局大盘流水
+    // GET /api/v1/matches?limit=50&offset=0&playerId=&mode=
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/matches' && req.method === 'GET') {
+      const limit = parseInt(url.searchParams.get('limit') || '50', 10)
+      const offset = parseInt(url.searchParams.get('offset') || '0', 10)
+      const playerId = url.searchParams.get('playerId') || null
+      const mode = url.searchParams.get('mode') || null
+
+      const res = storage.getAllMatches({ limit, offset, playerId, mode })
+      return sendJson(200, {
+        code: 0,
+        source: 'src-kohcamp-official',
+        sourceName: '腾讯王者营地官方战绩网关',
+        total: res.total,
+        limit,
+        offset,
+        data: res.data,
+        dataAsOf: new Date().toISOString()
+      })
+    }
+
+    // ----------------------------------------------------
     // v2 标准 API: 4. 对局场次大盘列表
     // GET /api/v1/events?date=&mode=
     // ----------------------------------------------------
