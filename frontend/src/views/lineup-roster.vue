@@ -117,9 +117,28 @@
               <span class="source-status-badge" :class="{ 'is-ready': grp.sourceStatus === 'READY' }">
                 {{ grp.sourceStatus || '未知状态' }}
               </span>
+              <!-- v4 W4：来源公布的页面级快照版本徽标（未公布如实标注，不造默认版本） -->
+              <span class="snapshot-version-chip font-mono" :class="{ 'is-missing': !grp.snapshotVersion }">
+                {{ grp.snapshotVersion ? `快照版本 ${grp.snapshotVersion}` : '快照版本未公布' }}
+              </span>
             </div>
             <span class="source-group-count">本来源快照 {{ grp.items.length }} 条 · 组内独立排序</span>
           </header>
+          <!-- v4 W4：抓取行为与数据内容分列 —— 最后抓取成功（同步动作时刻）≠ 来源数据更新（页面公布的版本/窗口） -->
+          <div class="source-sync-row">
+            <span class="sync-item">
+              <span class="sync-label">最后抓取成功:</span>
+              <span class="font-mono">{{ grp.lastSuccessAt ? formatTime(grp.lastSuccessAt) : '从未成功' }}</span>
+            </span>
+            <span class="sync-item">
+              <span class="sync-label">来源数据更新（页面公布）:</span>
+              <span>版本 <span class="font-mono">{{ grp.snapshotVersion || '未公布' }}</span> · 窗口 {{ grp.windowText || '未公布' }}</span>
+            </span>
+            <span v-if="grp.lastError" class="sync-item is-error">
+              <span class="sync-label">最近一次抓取错误:</span>
+              <span>{{ grp.lastError }}</span>
+            </span>
+          </div>
 
           <div class="table-responsive">
             <table class="lineup-table">
@@ -225,7 +244,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { fetchLineupSnapshots, type LineupSnapshot } from '../api'
+import { fetchLineupSnapshots, fetchDataStatus, type LineupSnapshot } from '../api'
 
 const lineups = ref<LineupSnapshot[]>([])
 const sourceNotice = ref('')
@@ -277,7 +296,11 @@ const sortedLineups = computed(() => {
 })
 
 // 按来源分组（复验3）：不同来源的快照口径互不可比（样本窗口/统计范围各异），
-// 不得跨来源混排成一张总榜；各组内独立排序与编号
+// 不得跨来源混排成一张总榜；各组内独立排序与编号。
+// v4 W4：组级页面元信息（快照版本/窗口说明组内一致才展示，多版本并存如实标注）＋
+// 同步状态（最后抓取成功时刻来自 data-status，与页面公布的版本/窗口分列）
+const sourceSyncMap = ref(new Map<string, { lastSuccessAt: string | null; lastError: string | null }>())
+
 const sourceGroups = computed(() => {
   const groups = new Map<string, { sourceId: string; sourceName: string; sourceStatus: string | null; sourceType: string | null; items: LineupSnapshot[] }>()
   for (const l of sortedLineups.value) {
@@ -292,7 +315,18 @@ const sourceGroups = computed(() => {
     }
     groups.get(l.sourceId)!.items.push(l)
   }
-  return [...groups.values()]
+  return [...groups.values()].map(g => {
+    const versions = [...new Set(g.items.map(i => i.snapshotVersion ?? null))]
+    const windows = [...new Set(g.items.map(i => i.windowText ?? null))]
+    const sync = sourceSyncMap.value.get(g.sourceId)
+    return {
+      ...g,
+      snapshotVersion: versions.length === 1 ? versions[0] : (versions.length > 1 ? '多版本并存' : null),
+      windowText: windows.length === 1 ? windows[0] : (windows.length > 1 ? '多窗口并存' : null),
+      lastSuccessAt: sync?.lastSuccessAt ?? null,
+      lastError: sync?.lastError ?? null
+    }
+  })
 })
 
 function formatRate(v: number | null | undefined): string {
@@ -323,6 +357,17 @@ async function loadLineups() {
     lineups.value = []
   } finally {
     if (!loadAbort?.signal.aborted) loading.value = false
+  }
+  // v4 W4：同步状态（最后抓取成功/最近错误）随快照一并拉取 —— 失败不阻断快照陈列，分列如实展示
+  try {
+    const status = await fetchDataStatus(loadAbort.signal)
+    const map = new Map<string, { lastSuccessAt: string | null; lastError: string | null }>()
+    for (const s of status.sources) {
+      map.set(s.sourceId || s.id, { lastSuccessAt: s.lastSuccessAt ?? null, lastError: s.lastError ?? null })
+    }
+    sourceSyncMap.value = map
+  } catch {
+    sourceSyncMap.value = new Map()
   }
 }
 
@@ -668,6 +713,46 @@ onUnmounted(() => loadAbort?.abort())
 .source-group-count {
   font-size: 11px;
   color: $text-muted;
+}
+
+// v4 W4：来源公布的页面级快照版本徽标
+.snapshot-version-chip {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+
+  &.is-missing {
+    color: $text-muted;
+    background: rgba(107, 114, 128, 0.12);
+    border-color: rgba(107, 114, 128, 0.3);
+  }
+}
+
+// v4 W4：抓取行为（最后抓取成功）与数据内容（页面公布版本/窗口）分列
+.source-sync-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 6px 2px 10px;
+  font-size: 11px;
+  color: $text-secondary;
+
+  .sync-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    .sync-label {
+      color: $text-muted;
+    }
+
+    &.is-error {
+      color: #b91c1c;
+    }
+  }
 }
 
 .commander-tag {

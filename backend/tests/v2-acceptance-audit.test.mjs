@@ -107,6 +107,31 @@ test('F03 & A04 & A05: 第三方阵容适配器真实解析与防伪闭环', asy
   assert.equal(parsed[0].lineupName, '雷霆扶桑刺')
   assert.equal(parsed[0].winRate, 0.22)
 
+  // v4 W4：Astro 改版页面（2026-09 实测结构复刻）—— 页面级版本标签/窗口说明注入全部条目
+  const astroHtml = `<html><body>
+    <div class="eyebrow">v260924 · 7 日对局快照</div>
+    <article class="lineup-list-card" data-first="0.3801" data-top3="0.6" data-placement="3.1" data-count="1200" data-players="司空震,不知火舞"><strong>雷霆扶桑刺</strong></article>
+    <article class="lineup-list-card" data-first="0.21" data-top3="0.5" data-placement="4.0" data-count="800" data-players="李白,庄周"><strong>长安守卫枪</strong></article>
+    <span>数据快照 v260924</span>
+  </body></html>`
+  const astroParsed = parseHokaceBody(astroHtml)
+  assert.equal(astroParsed.length, 2)
+  assert.equal(astroParsed[0].winRate, 0.3801)
+  assert.equal(astroParsed[0].snapshotVersion, 'v260924', '页面级快照版本应注入条目（eyebrow 公布）')
+  assert.equal(astroParsed[0].windowText, '7 日对局快照', '页面级窗口说明取来源明示原文')
+  assert.equal(astroParsed[1].snapshotVersion, 'v260924', '页面级元信息注入全部条目')
+  assert.equal(astroParsed[1].windowText, '7 日对局快照')
+  assert.equal(astroParsed[0].dataCutoffAt, null, '来源未公布数据截止时间 → null（不编造）')
+
+  // 页面未公布版本/窗口标签 → null（禁止默认版本号/编造窗口文案）
+  const noLabel = astroHtml
+    .replace('v260924 · 7 日对局快照', '阵容推荐工作台')
+    .replace('<span>数据快照 v260924</span>', '')
+  const noLabelParsed = parseHokaceBody(noLabel)
+  assert.equal(noLabelParsed.length, 2)
+  assert.equal(noLabelParsed[0].snapshotVersion, null)
+  assert.equal(noLabelParsed[0].windowText, null)
+
   const syncResult = await syncHokaceLineups(50)
   if (syncResult.status === 'FAILED') {
     assert.equal(syncResult.data, null)

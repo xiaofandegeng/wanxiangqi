@@ -8,7 +8,10 @@
 
 import crypto from 'node:crypto'
 
-const HOKACE_PARSER_VERSION = 'hokace-html-v2609-astro' // 2026-09 页面改版 Astro 结构（data-first/top3/placement/count，比率即 [0,1]）
+// v4 W4：页面级快照版本/窗口说明提取（eyebrow「v260924 · 7 日对局快照」注入全部条目）。
+// 导出供测试 import 断言（版本号是存证契约的一部分，测试不得再硬编码字面量）。
+// 注意：raw_materials.parser_version 列宽 VARCHAR(32)，版本串不得超长（超长会让同步整单失败）。
+export const HOKACE_PARSER_VERSION = 'hokace-astro-v2609-pagelevel'
 const DATATFT_PARSER_VERSION = 'datatft-json-v1'
 
 export class SyncService {

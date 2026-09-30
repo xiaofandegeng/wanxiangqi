@@ -14,6 +14,7 @@ import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import http from 'node:http'
 import { bootAcceptanceStack, pgAvailable } from './_helpers.mjs'
+import { HOKACE_PARSER_VERSION } from '../../src/services/sync.mjs'
 import { HOKACE_ADAPTER_METADATA } from '../../../tools/emulator-watcher/adapters/hokace.mjs'
 
 let stack = null
@@ -102,7 +103,7 @@ test('V15-1: 首次同步成功 → 快照/台账/存证/成功时间全就位',
   // 原始材料存证（内容哈希 + 解析器版本 + 复验4：正文/字节数/存储位置齐全可离线复核）
   const raw = (await stack.pool.query(`SELECT content_sha256, parser_version, content_type, content, size_bytes, storage_uri FROM raw_materials WHERE source_id = 'src-hokace-wiki'`)).rows
   assert.equal(raw.length, 1)
-  assert.equal(raw[0].parser_version, 'hokace-html-v2609-astro')
+  assert.equal(raw[0].parser_version, HOKACE_PARSER_VERSION, '解析器版本以 sync 服务常量为准（v4 W4 改为 import，不硬编码）')
   assert.equal(raw[0].content_type, 'application/json')
   assert.ok(raw[0].content && raw[0].content.includes('雷霆扶桑刺'), '原始正文必须随存证入库（可离线复核）')
   assert.equal(Number(raw[0].size_bytes), Buffer.byteLength(raw[0].content, 'utf8'), 'size_bytes 必须是正文实测字节数')

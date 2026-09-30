@@ -96,6 +96,28 @@ describe('王者万象棋 v2 验收缺陷全面闭环验证', () => {
     expect(parsed[0].lineupName).toBe('雷霆扶桑刺')
     expect(parsed[0].winRate).toBe(0.22)
 
+    // 2.5 v4 W4：Astro 改版页面（2026-09 实测结构复刻）—— 页面级版本/窗口说明注入全部条目
+    const astroHtml = `<html><body>
+      <div class="eyebrow">v260924 · 7 日对局快照</div>
+      <article class="lineup-list-card" data-first="0.3801" data-top3="0.6" data-placement="3.1" data-count="1200" data-players="司空震,不知火舞"><strong>雷霆扶桑刺</strong></article>
+      <article class="lineup-list-card" data-first="0.21" data-top3="0.5" data-placement="4.0" data-count="800" data-players="李白,庄周"><strong>长安守卫枪</strong></article>
+      <span>数据快照 v260924</span>
+    </body></html>`
+    const astroParsed = parseHokaceBody(astroHtml)
+    expect(astroParsed.length).toBe(2)
+    expect(astroParsed[0].snapshotVersion).toBe('v260924')
+    expect(astroParsed[0].windowText).toBe('7 日对局快照')
+    expect(astroParsed[1].snapshotVersion).toBe('v260924')
+    expect(astroParsed[1].windowText).toBe('7 日对局快照')
+    expect(astroParsed[0].dataCutoffAt).toBeNull()
+
+    // 页面未公布版本/窗口标签 → null（禁止默认版本号/编造窗口文案）
+    const noLabelParsed = parseHokaceBody(
+      astroHtml.replace('v260924 · 7 日对局快照', '阵容推荐工作台').replace('<span>数据快照 v260924</span>', '')
+    )
+    expect(noLabelParsed[0].snapshotVersion).toBeNull()
+    expect(noLabelParsed[0].windowText).toBeNull()
+
     // 3. 网络超时失败返回 FAILED，且 data 为 null
     const syncResult = await syncHokaceLineups(50)
     if (syncResult.status === 'FAILED') {

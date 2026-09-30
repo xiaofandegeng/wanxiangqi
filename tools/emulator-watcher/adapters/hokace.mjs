@@ -120,6 +120,28 @@ export function validateLineupSnapshotItem(item, idx = 0) {
 }
 
 /**
+ * 页面级快照版本（v4 W4）：只接受"版本标签上下文"里的 v\d{6} ——
+ * 实测页面以 eyebrow「v260924 · 7 日对局快照」与页脚「数据快照 v260924」两处公布；
+ * 资源 URL / 脚本里的裸 v 数字不构成来源声明，不得误采。未公布 → null。
+ */
+export function extractPageSnapshotVersion(rawBody) {
+  const eyebrow = rawBody.match(/>\s*v(\d{6})\s*(?:·|—|-|，|,)?\s*[^<>]{0,12}对局快照[^<>]{0,10}</)
+  if (eyebrow) return `v${eyebrow[1]}`
+  const labeled = rawBody.match(/>([^<>]{0,30}(?:数据快照|快照版本|数据版本)[^<>]{0,8}?)v(\d{6})\b[^<>]{0,10}</)
+  if (labeled) return `v${labeled[2]}`
+  return null
+}
+
+/**
+ * 页面级窗口说明（v4 W4）：来源明示原文（实测「7 日对局快照」），取可见文本节点字面量；
+ * 未公布 → null —— 禁止编造"近 7 日"等默认窗口（windowStart/End/dataCutoffAt 同理恒 null）。
+ */
+export function extractPageWindowText(rawBody) {
+  const m = rawBody.match(/>([^<>]{0,24}?(\d+\s*[日天周小时]\s*[^<>]{0,8}?快照)[^<>]{0,12})</)
+  return m ? m[2].replace(/\s+/g, ' ').trim() : null
+}
+
+/**
  * 解析 HTML 页面或 JSON 响应中的阵容数据
  * 真实从文本提取，如果网页不包含合法阵容，抛出解析失败，绝不偷梁换柱！
  */
@@ -143,6 +165,10 @@ export function parseHokaceBody(rawBody) {
   }
 
   // 2. 若为 HTML 页面，使用结构化正则/语义选择器真实提取
+  // 页面级元信息（v4 W4）先于卡片循环对整页提取一次，随后注入全部条目
+  const pageSnapshotVersion = extractPageSnapshotVersion(rawBody)
+  const pageWindowText = extractPageWindowText(rawBody)
+
   // 匹配形如 <div class="lineup-card" data-name="雷霆扶桑刺" data-tier="T1" ...> 或表格 <tr>
   const lineups = []
   
@@ -224,6 +250,14 @@ export function parseHokaceBody(rawBody) {
   // 如果 HTML 页面完全不包含有效阵容卡片，严格报错！(F03, A04)
   if (lineups.length === 0) {
     throw new Error('HTML 页面解析完毕，但未发现符合规范的阵容数据结构 (非阵容页面或结构已变更)')
+  }
+
+  // v4 W4：页面级版本/窗口说明注入全部条目（条目自身未携带时；来源页面只公布一次）
+  if (pageSnapshotVersion || pageWindowText) {
+    lineups.forEach(item => {
+      if (pageSnapshotVersion && !item.snapshotVersion) item.snapshotVersion = pageSnapshotVersion
+      if (pageWindowText && !item.windowText) item.windowText = pageWindowText
+    })
   }
 
   return lineups.map((item, i) => validateLineupSnapshotItem(item, i))
