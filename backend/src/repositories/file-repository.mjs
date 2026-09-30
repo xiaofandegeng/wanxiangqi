@@ -8,6 +8,12 @@
 
 import { StorageEngine, getBusinessStorage } from '../../../tools/emulator-watcher/storage.mjs'
 import { deriveRecordKey } from '../../../tools/emulator-watcher/stats-core.mjs'
+import {
+  resolveMaxUploadBytes,
+  validateEvidenceUpload,
+  generateEvidenceId,
+  evidenceWire
+} from '../../../tools/emulator-watcher/evidence-core.mjs'
 
 export class FileRepository {
   /** @param {StorageEngine|{dataDir: string}} engineOrOpts 注入引擎实例，或 { dataDir } 自建 */
@@ -269,6 +275,103 @@ export class FileRepository {
 
   async getRawMaterialById(id) {
     return (this.engine.state.rawMaterials || []).find(r => r.id === id) ?? null
+  }
+
+  // ---------------- v4 W1：材料原件入库与证据生命周期（与 PgRepository 同语义） ----------------
+  // demo 引擎上限 1MB（saveState 全量 JSON 重写，防 storage.json 膨胀）；
+  // 原件以 contentBase64 存 state.evidenceBlobs（Buffer 直接 JSON.stringify 会退化为对象）。
+
+  #blobMeta(sha256) {
+    return (this.engine.state.evidenceBlobs || []).find(b => b.sha256 === sha256) || null
+  }
+
+  async uploadEvidence({ content, declaredMime = null, capturedAt = null, providedBy = null, usageScope = null, kind = null, note = null, clientSha256 = null } = {}) {
+    if (!capturedAt) {
+      throw Object.assign(new Error('必须提供材料采集时间 capturedAt（最小元信息之一，不得省略）'), { status: 400 })
+    }
+    const v = validateEvidenceUpload({
+      content, declaredMime, capturedAt, kind, usageScope, clientSha256,
+      maxBytes: resolveMaxUploadBytes('file')
+    })
+
+    const s = this.engine.state
+    const existing = s.evidences.find(e => e.sha256 === v.sha256)
+    if (existing) {
+      if (existing.usageScope && existing.usageScope !== v.usageScope) {
+        throw Object.assign(
+          new Error(`该原件已入库为证据 [${existing.id}]，usage_scope 为 [${existing.usageScope}]，与本次 [${v.usageScope}] 冲突；授权范围变更须走人工治理，不得静默改写`),
+          { status: 409, code: 'METADATA_CONFLICT' }
+        )
+      }
+      const blob = this.#blobMeta(v.sha256)
+      return { evidenceId: existing.id, deduplicated: true, evidence: evidenceWire(existing, blob) }
+    }
+
+    const id = generateEvidenceId()
+    s.evidenceBlobs.push({
+      sha256: v.sha256,
+      contentBase64: content.toString('base64'),
+      mimeType: v.mimeType,
+      sizeBytes: content.length,
+      storageUri: `file:evidence-blobs:sha-${v.sha256.slice(0, 16)}`,
+      createdAt: new Date().toISOString()
+    })
+    const row = {
+      id,
+      sha256: v.sha256,
+      sourceId: 'src-manual-review',
+      kind: v.kind,
+      status: 'PENDING',
+      capturedAt: v.capturedAt,
+      providedBy: providedBy ? String(providedBy).slice(0, 128) : null,
+      usageScope: v.usageScope,
+      note: note ? String(note).slice(0, 500) : null,
+      createdAt: new Date().toISOString()
+    }
+    s.evidences.push(row)
+    // 一次 saveState = 原件与元信息同点落盘（任一步异常即不持久化）
+    this.engine.saveState()
+    return { evidenceId: id, deduplicated: false, evidence: evidenceWire(row, this.#blobMeta(v.sha256)) }
+  }
+
+  async listEvidences({ status = null, limit = 50 } = {}) {
+    const lim = Math.min(Math.max(Number(limit) || 50, 1), 200)
+    let rows = this.engine.state.evidences.slice().reverse()
+    if (status) rows = rows.filter(e => e.status === status)
+    return rows.slice(0, lim).map(e => evidenceWire(e, this.#blobMeta(e.sha256)))
+  }
+
+  async getEvidenceById(id) {
+    const e = this.engine.state.evidences.find(x => x.id === id)
+    return e ? evidenceWire(e, this.#blobMeta(e.sha256)) : null
+  }
+
+  async getEvidenceContentBytes(id) {
+    const e = this.engine.state.evidences.find(x => x.id === id)
+    if (!e) return null
+    const blob = this.#blobMeta(e.sha256)
+    if (!blob) return { missingOriginal: true }
+    return {
+      content: Buffer.from(blob.contentBase64, 'base64'),
+      mimeType: blob.mimeType,
+      sizeBytes: blob.sizeBytes
+    }
+  }
+
+  async verifyEvidence(id, { verifiedBy = 'AUDIT_STAFF' } = {}) {
+    const e = this.engine.state.evidences.find(x => x.id === id)
+    if (!e) return null
+    if (e.status === 'QUARANTINED') {
+      throw Object.assign(new Error(`证据 [${id}] 已被隔离，不得确认为有效材料`), { status: 409 })
+    }
+    if (e.status !== 'VERIFIED') {
+      const now = new Date().toISOString()
+      e.status = 'VERIFIED'
+      e.verifiedAt = now
+      e.verifiedBy = verifiedBy
+      this.engine.saveState()
+    }
+    return evidenceWire(e, this.#blobMeta(e.sha256))
   }
 
   /**

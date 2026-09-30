@@ -14,6 +14,12 @@ import {
   formatStatsFromCounts,
   deriveRecordKey
 } from '../../../tools/emulator-watcher/stats-core.mjs'
+import {
+  resolveMaxUploadBytes,
+  validateEvidenceUpload,
+  generateEvidenceId,
+  evidenceWire
+} from '../../../tools/emulator-watcher/evidence-core.mjs'
 
 const LINEUP_STALE_MS = 7 * 24 * 3600 * 1000 // 第三方 7 日窗口快照过期阈值
 
@@ -502,6 +508,147 @@ export class PgRepository {
       id: r.id, sourceId: r.source_id, recordKey: r.record_key, fetchedAt: iso(r.fetched_at),
       contentSha256: r.content_sha256, storageUri: r.storage_uri, parserVersion: r.parser_version,
       contentType: r.content_type, sizeBytes: r.size_bytes, note: r.note, content: r.content
+    }
+  }
+
+  // ---------------- v4 W1：材料原件入库与证据生命周期 ----------------
+  //
+  // 上传 ≠ 核验：uploadEvidence 只产生 PENDING 证据；有效与否由 verifyEvidence
+  // 人工确认动作流转。原件内容寻址入库（sha256 主键去重，同一原图可关联多条逐局记录）。
+
+  /** 证据行 + 原件元信息 JOIN（blob 缺失 → hasOriginal:false，即 pre-0005 哈希-only 存量） */
+  static #EVIDENCE_WITH_BLOB = `
+    SELECT e.*, b.mime_type, b.size_bytes, b.storage_uri, b.sha256 AS blob_sha
+      FROM evidences e
+      LEFT JOIN evidence_blobs b ON b.sha256 = e.sha256`
+
+  async uploadEvidence({ content, declaredMime = null, capturedAt = null, providedBy = null, usageScope = null, kind = null, note = null, clientSha256 = null } = {}) {
+    if (!capturedAt) {
+      throw Object.assign(new Error('必须提供材料采集时间 capturedAt（最小元信息之一，不得省略）'), { status: 400 })
+    }
+    if (providedBy && String(providedBy).length > 128) {
+      throw Object.assign(new Error('providedBy 长度不得超过 128 字符'), { status: 400 })
+    }
+    if (note && String(note).length > 500) {
+      throw Object.assign(new Error('note 长度不得超过 500 字符'), { status: 400 })
+    }
+    const v = validateEvidenceUpload({
+      content, declaredMime, capturedAt, kind, usageScope, clientSha256,
+      maxBytes: resolveMaxUploadBytes('pg')
+    })
+
+    const client = await this.client()
+    try {
+      await client.query('BEGIN')
+
+      // ① 原件内容寻址入库（同内容只存一份字节）
+      await client.query(
+        `INSERT INTO evidence_blobs (sha256, content, mime_type, size_bytes, storage_uri)
+         VALUES ($1,$2,$3,$4,$5) ON CONFLICT (sha256) DO NOTHING`,
+        [v.sha256, content, v.mimeType, content.length, `pg:evidence_blobs:sha-${v.sha256.slice(0, 16)}`]
+      )
+
+      // ② 按内容去重：同 sha 已有证据 → 幂等返回（真实状态如实回显，含 QUARANTINED）；
+      //    usage_scope 授权范围不一致 → 显式 409，禁止静默覆盖
+      const existing = await client.query(
+        `SELECT * FROM evidences WHERE sha256 = $1 FOR UPDATE`, [v.sha256]
+      )
+      if (existing.rows.length > 0) {
+        const row = existing.rows[0]
+        if (row.usage_scope && row.usage_scope !== v.usageScope) {
+          await client.query('ROLLBACK')
+          throw Object.assign(
+            new Error(`该原件已入库为证据 [${row.id}]，usage_scope 为 [${row.usage_scope}]，与本次 [${v.usageScope}] 冲突；授权范围变更须走人工治理，不得静默改写`),
+            { status: 409, code: 'METADATA_CONFLICT' }
+          )
+        }
+        await client.query('COMMIT')
+        const wire = await this.getEvidenceById(row.id)
+        return { evidenceId: row.id, deduplicated: true, evidence: wire }
+      }
+
+      // ③ 新证据：PENDING（上传不等于核验）
+      const id = generateEvidenceId()
+      await client.query(
+        `INSERT INTO evidences (id, sha256, source_id, captured_at, status, note, kind, provided_by, usage_scope)
+         VALUES ($1,$2,'src-manual-review',$3,'PENDING',$4,$5,$6,$7)`,
+        [id, v.sha256, v.capturedAt, note ? String(note).slice(0, 500) : null, v.kind,
+         providedBy ? String(providedBy).slice(0, 128) : null, v.usageScope]
+      )
+      await client.query('COMMIT')
+      const wire = await this.getEvidenceById(id)
+      return { evidenceId: id, deduplicated: false, evidence: wire }
+    } catch (err) {
+      try { await client.query('ROLLBACK') } catch { /* 已回滚 */ }
+      throw err
+    } finally {
+      client.release()
+    }
+  }
+
+  async listEvidences({ status = null, limit = 50 } = {}) {
+    const lim = Math.min(Math.max(Number(limit) || 50, 1), 200)
+    const res = await this.pool.query(
+      `${PgRepository.#EVIDENCE_WITH_BLOB}
+       ${status ? 'WHERE e.status = $1' : ''}
+       ORDER BY e.created_at DESC LIMIT ${lim}`,
+      status ? [status] : []
+    )
+    return res.rows.map(r => evidenceWire(r, r.blob_sha ? r : null))
+  }
+
+  async getEvidenceById(id) {
+    const res = await this.pool.query(`${PgRepository.#EVIDENCE_WITH_BLOB} WHERE e.id = $1`, [id])
+    if (!res.rows.length) return null
+    const r = res.rows[0]
+    return evidenceWire(r, r.blob_sha ? r : null)
+  }
+
+  /** 原件字节取回（N01：服务端字节与上传一致）；证据存在但无原件 → 返回 'NO_ORIGINAL' */
+  async getEvidenceContentBytes(id) {
+    const evd = await this.pool.query(`SELECT id FROM evidences WHERE id = $1`, [id])
+    if (!evd.rows.length) return null
+    const res = await this.pool.query(
+      `SELECT b.content, b.mime_type, b.size_bytes
+         FROM evidence_blobs b WHERE b.sha256 = (SELECT sha256 FROM evidences WHERE id = $1)`,
+      [id]
+    )
+    if (!res.rows.length) return { missingOriginal: true }
+    const r = res.rows[0]
+    return {
+      content: Buffer.from(r.content),
+      mimeType: r.mime_type,
+      sizeBytes: Number(r.size_bytes)
+    }
+  }
+
+  /** 人工确认材料有效：PENDING → VERIFIED（幂等；QUARANTINED 拒绝）。不存在返回 null。 */
+  async verifyEvidence(id, { verifiedBy = 'AUDIT_STAFF' } = {}) {
+    const client = await this.client()
+    try {
+      await client.query('BEGIN')
+      const cur = await client.query(`SELECT id, status FROM evidences WHERE id = $1 FOR UPDATE`, [id])
+      if (!cur.rows.length) {
+        await client.query('ROLLBACK')
+        return null
+      }
+      if (cur.rows[0].status === 'QUARANTINED') {
+        await client.query('ROLLBACK')
+        throw Object.assign(new Error(`证据 [${id}] 已被隔离，不得确认为有效材料`), { status: 409 })
+      }
+      if (cur.rows[0].status !== 'VERIFIED') {
+        await client.query(
+          `UPDATE evidences SET status = 'VERIFIED', verified_at = CURRENT_TIMESTAMP, verified_by = $2 WHERE id = $1`,
+          [id, verifiedBy]
+        )
+      }
+      await client.query('COMMIT')
+      return await this.getEvidenceById(id)
+    } catch (err) {
+      try { await client.query('ROLLBACK') } catch { /* 已回滚 */ }
+      throw err
+    } finally {
+      client.release()
     }
   }
 

@@ -5,6 +5,7 @@
 //   + createApiServer 注入临时端口的 HTTP 实例。返回 { pool, repo, services, server,
 //   baseUrl, api(token), cleanup }。node --test 并行执行时各文件用不同 dbName 互不干扰。
 
+import { createHash } from 'node:crypto'
 import { runMigrations } from '../../src/migrate.mjs'
 import { PgRepository } from '../../src/repositories/pg-repository.mjs'
 import { createServices } from '../../src/services/index.mjs'
@@ -121,6 +122,30 @@ export async function insertMatchRow(pool, {
 export async function countRows(pool, table, where = 'TRUE', params = []) {
   const res = await pool.query(`SELECT count(*)::int AS n FROM ${table} WHERE ${where}`, params)
   return res.rows[0].n
+}
+
+/**
+ * SQL 直插：带原件的证据（v4 W1）。evidences 行 + evidence_blobs 原件一次就位，
+ * 供需要"已核验 + 原件可恢复"前置条件的套件复用（verifyMatch 收紧后的事实底座）。
+ */
+export async function insertEvidenceWithBlob(pool, {
+  id, sha256, status = 'VERIFIED', capturedAt = '2026-09-01T00:00:00Z',
+  kind = null, providedBy = null, usageScope = null, note = null,
+  bytes = null, mimeType = 'image/png'
+}) {
+  const content = bytes ?? Buffer.from(`evidence-original:${id}`)
+  const finalSha = sha256 ?? createHash('sha256').update(content).digest('hex')
+  await pool.query(
+    `INSERT INTO evidence_blobs (sha256, content, mime_type, size_bytes, storage_uri)
+     VALUES ($1,$2,$3,$4,$5) ON CONFLICT (sha256) DO NOTHING`,
+    [finalSha, content, mimeType, content.length, `pg:evidence_blobs:sha-${finalSha.slice(0, 16)}`]
+  )
+  await pool.query(
+    `INSERT INTO evidences (id, sha256, source_id, captured_at, status, note, kind, provided_by, usage_scope)
+     VALUES ($1,$2,'src-manual-review',$3,$4,$5,$6,$7,$8)`,
+    [id, finalSha, capturedAt, status, note, kind, providedBy, usageScope]
+  )
+  return finalSha
 }
 
 /**

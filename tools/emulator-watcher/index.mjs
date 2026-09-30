@@ -13,6 +13,7 @@ import { extractLobbyParticipants } from './analyzer.mjs'
 import { solveDeepMetaProbabilities, solveDeepRecommendations } from './solver.mjs'
 import { getBusinessStorage } from './storage.mjs'
 import { InvalidStatsParamError } from './stats-core.mjs'
+import { resolveMaxUploadBytes, evidenceFileExtension } from './evidence-core.mjs'
 import { FileRepository } from '../../backend/src/repositories/file-repository.mjs'
 import { createServices } from '../../backend/src/services/index.mjs'
 import { getEnv } from '../../backend/src/env.mjs'
@@ -143,6 +144,36 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
         } catch (e) {
           reject(Object.assign(new Error('请求体不是合法 JSON'), { status: 400 }))
         }
+      })
+      req.on('error', reject)
+    })
+
+    /**
+     * 二进制请求体读取（v4 W1 上传专用，readJsonBody 无上限不可复用）：
+     * 双重限额 —— Content-Length 预检 + 流式字节计数（客户端可谎报/缺报长度）。
+     * 超限时持续排空剩余字节再拒绝，避免残留数据污染 keep-alive 连接。
+     */
+    const readRawBody = maxBytes => new Promise((resolve, reject) => {
+      const chunks = []
+      let total = 0
+      let overflow = false
+      req.on('data', chunk => {
+        total += chunk.length
+        if (total > maxBytes) {
+          overflow = true
+          chunks.length = 0
+          return
+        }
+        if (!overflow) chunks.push(chunk)
+      })
+      req.on('end', () => {
+        if (overflow) {
+          return reject(Object.assign(
+            new Error(`上传内容超过大小上限（${maxBytes} 字节）`),
+            { status: 413, code: 'UPLOAD_TOO_LARGE' }
+          ))
+        }
+        resolve(Buffer.concat(chunks))
       })
       req.on('error', reject)
     })
@@ -427,6 +458,112 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
         const material = await svc.repo.getRawMaterialById(rawMaterialMatch[1])
         if (!material) return sendJson(404, { code: 404, error: `存证 [${rawMaterialMatch[1]}] 不存在` })
         return sendJson(200, { code: 0, data: material })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    // ----------------------------------------------------
+    // v4 W1 新增：个人材料原件入库与证据生命周期（上传 ≠ 核验）
+    // POST /api/v1/admin/evidences/upload?kind=&capturedAt=&providedBy=&usageScope=&note=&clientSha256=
+    //   body = 原始字节（Content-Type 为真实 MIME；服务端魔数嗅探 + SHA256 为准）
+    // GET  /api/v1/admin/evidences?status=&limit=      元信息列表（不含字节）
+    // GET  /api/v1/admin/evidences/:id                 单条元信息
+    // GET  /api/v1/admin/evidences/:id/content         原件字节（nosniff + attachment）
+    // POST /api/v1/admin/evidences/:id/verify          人工确认材料有效 PENDING→VERIFIED
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/evidences/upload' && req.method === 'POST') {
+      try {
+        const maxBytes = resolveMaxUploadBytes(svc.repo.kind)
+        const declaredLength = Number(req.headers['content-length'] || 0)
+        if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+          return sendJson(413, { code: 413, error: `上传内容超过大小上限（${maxBytes} 字节）`, code_name: 'UPLOAD_TOO_LARGE' })
+        }
+        const buf = await readRawBody(maxBytes)
+        const q = url.searchParams
+        const result = await svc.repo.uploadEvidence({
+          content: buf,
+          declaredMime: (req.headers['content-type'] || '').split(';')[0].trim() || null,
+          capturedAt: q.get('capturedAt'),
+          providedBy: q.get('providedBy'),
+          usageScope: q.get('usageScope'),
+          kind: q.get('kind'),
+          note: q.get('note'),
+          clientSha256: q.get('clientSha256')
+        })
+        return sendJson(result.deduplicated ? 200 : 201, {
+          code: 0,
+          message: result.deduplicated
+            ? '该原件已按内容去重复用既有证据（状态如实回显）'
+            : '材料原件已入库，证据状态 PENDING —— 上传不等于核验，请人工确认材料有效后再用于放行',
+          ...result
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    if (pathname === '/api/v1/admin/evidences' && req.method === 'GET') {
+      try {
+        const list = await svc.repo.listEvidences({
+          status: url.searchParams.get('status') || null,
+          limit: url.searchParams.get('limit') || 50
+        })
+        return sendJson(200, { code: 0, total: list.length, data: list })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    const evidenceContentMatch = pathname.match(/^\/api\/v1\/admin\/evidences\/([^/]+)\/content$/)
+    if (evidenceContentMatch && req.method === 'GET') {
+      try {
+        const blob = await svc.repo.getEvidenceContentBytes(evidenceContentMatch[1])
+        if (blob === null) {
+          return sendJson(404, { code: 404, error: `证据 [${evidenceContentMatch[1]}] 不存在` })
+        }
+        if (blob.missingOriginal) {
+          return sendJson(422, {
+            code: 422,
+            error: `证据 [${evidenceContentMatch[1]}] 只有哈希元信息、无可恢复原件（pre-0005 存量材料）`,
+            code_name: 'ORIGINAL_MISSING'
+          })
+        }
+        // 管理端受控预览/下载：nosniff + attachment，防存储型内容回放
+        res.writeHead(200, {
+          'Content-Type': blob.mimeType,
+          'Content-Length': blob.sizeBytes,
+          'X-Content-Type-Options': 'nosniff',
+          'Content-Disposition': `attachment; filename="${evidenceContentMatch[1]}.${evidenceFileExtension(blob.mimeType)}"`
+        })
+        return res.end(blob.content)
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    const evidenceVerifyMatch = pathname.match(/^\/api\/v1\/admin\/evidences\/([^/]+)\/verify$/)
+    if (evidenceVerifyMatch && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        const evidence = await svc.repo.verifyEvidence(evidenceVerifyMatch[1], {
+          verifiedBy: body?.verifiedBy || 'AUDIT_STAFF'
+        })
+        if (!evidence) {
+          return sendJson(404, { code: 404, error: `证据 [${evidenceVerifyMatch[1]}] 不存在` })
+        }
+        return sendJson(200, { code: 0, message: '材料已确认为有效（VERIFIED）', data: evidence })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    const evidenceMatch = pathname.match(/^\/api\/v1\/admin\/evidences\/([^/]+)$/)
+    if (evidenceMatch && req.method === 'GET') {
+      try {
+        const evidence = await svc.repo.getEvidenceById(evidenceMatch[1])
+        if (!evidence) return sendJson(404, { code: 404, error: `证据 [${evidenceMatch[1]}] 不存在` })
+        return sendJson(200, { code: 0, data: evidence })
       } catch (err) {
         return handleServiceError(err)
       }

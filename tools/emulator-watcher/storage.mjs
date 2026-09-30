@@ -95,6 +95,7 @@ function createEmptyState() {
       }
     ],
     evidences: [],
+    evidenceBlobs: [], // v4 W1：原件内容寻址（contentBase64，同一原图跨记录共享）
     players: [],
     matches: [],
     events: [],
@@ -130,6 +131,7 @@ function createDemoFixtures() {
         note: 'DEMO 示范材料（非真实核验）'
       }
     ],
+    evidenceBlobs: [], // demo 示范证据不附带原件（hasOriginal=false 如实呈现）
     players: [
       { id: 'p-ez-yeyu', nickname: 'EZ夜余', platform: 'HUYA', serverZone: '手Q1区', rankScore: 18824, rankText: '最强王者', title: '战力巅峰第一人', commander: '弈星', style: '极限大后期九五' },
       { id: 'p-dy-gin', nickname: 'DY校长神Gin', platform: 'DOUYU', serverZone: '微信1区', rankScore: 12091, rankText: '最强王者', title: '战力巅峰第十人', commander: '司空震', style: '雷霆扶桑刺快攻' }
@@ -189,6 +191,7 @@ export class StorageEngine {
         parsed.pendingCandidates = parsed.pendingCandidates || []
         parsed.importBatches = parsed.importBatches || []
         parsed.evidences = parsed.evidences || []
+        parsed.evidenceBlobs = parsed.evidenceBlobs || []
         parsed.dataSources = parsed.dataSources || []
         return parsed
       }
