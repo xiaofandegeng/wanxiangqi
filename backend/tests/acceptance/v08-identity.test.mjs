@@ -4,19 +4,24 @@
 
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { bootAcceptanceStack, countRows, pgAvailable } from './_helpers.mjs'
+import { bootAcceptanceStack, countRows, insertEvidenceWithBlob, pgAvailable } from './_helpers.mjs'
 
 let stack = null
 
 before(async () => {
   if (!pgAvailable) return
   stack = await bootAcceptanceStack('wanxiangqi_v08_test')
-  // 复验2：核验强制证据链 —— 导入记录须关联真实存证材料
-  await stack.pool.query(
-    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
-     VALUES ('ev-v08', $1, 'src-manual-review', '2026-09-01T09:00:00Z', 'VERIFIED')`,
-    ['e'.repeat(64)]
-  )
+  // 复验2 + v4 W1：核验强制证据链且原件可恢复 —— 三条存证材料连同原件一次就位
+  //（ev-v08 供导入核验放行；ev-v08-r2 / ev-v08-r3 供两场席位确认）
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v08', sha256: 'e'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-01T09:00:00Z'
+  })
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v08-r2', sha256: 'c'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-02T09:00:00Z'
+  })
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v08-r3', sha256: 'd'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-03T09:00:00Z'
+  })
 })
 
 after(async () => {
@@ -60,13 +65,12 @@ test('V08-2: 昵称变更 → 同一稳定身份，战绩随人走，不产生�
     method: 'POST', token: stack.adminToken, body: { verifiedBy: 'v08' }
   })
 
-  // 昵称变更为“新昵称”：走人工核验席位确认（按 playerId upsert）
-  const sha = 'c'.repeat(64)
+  // 昵称变更为“新昵称”：走人工核验席位确认（按 playerId upsert；证据为已入库可恢复原件）
   const audit = await stack.api('/api/v1/admin/slots/confirm', {
     method: 'POST', token: stack.adminToken,
     body: {
       title: '昵称变更后的场次', scheduledAt: '2026-09-02T10:00:00Z', mode: 'RANKED_DIAMOND',
-      evidenceSha256: sha,
+      evidenceId: 'ev-v08-r2', evidenceSha256: 'c'.repeat(64),
       slots: Array.from({ length: 6 }, (_, i) => ({
         slot: i + 1, playerId: i === 0 ? 'p-rename' : `p-fill-${i}`, nickname: i === 0 ? '新昵称' : `补位${i}`,
         finalRank: i + 1
@@ -92,13 +96,12 @@ test('V08-2: 昵称变更 → 同一稳定身份，战绩随人走，不产生�
 })
 
 test('V08-3: 同名不同玩家 → 各自独立统计，互不串档', { skip: !pgAvailable }, async () => {
-  const sha = 'd'.repeat(64)
-  // 同一场次两个席位昵称完全相同、playerId 不同
+  // 同一场次两个席位昵称完全相同、playerId 不同（证据 ev-v08-r3 已随 before() 入库）
   const audit = await stack.api('/api/v1/admin/slots/confirm', {
     method: 'POST', token: stack.adminToken,
     body: {
       title: '同名选手对局', scheduledAt: '2026-09-03T10:00:00Z', mode: 'RANKED_DIAMOND',
-      evidenceSha256: sha,
+      evidenceId: 'ev-v08-r3', evidenceSha256: 'd'.repeat(64),
       slots: [
         { slot: 1, playerId: 'p-same-a', nickname: '同名甲', finalRank: 1 },
         { slot: 2, playerId: 'p-same-b', nickname: '同名甲', finalRank: 6 },

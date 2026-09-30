@@ -7,7 +7,7 @@
 
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { bootAcceptanceStack, insertPlayerRow, insertMatchRow, pgAvailable } from './_helpers.mjs'
+import { bootAcceptanceStack, insertPlayerRow, insertMatchRow, insertEvidenceWithBlob, pgAvailable } from './_helpers.mjs'
 
 let stack = null
 
@@ -37,6 +37,11 @@ before(async () => {
 
   // C: p-empty 已登记选手、零记录
   await insertPlayerRow(stack.pool, { id: 'p-empty', nickname: '空样本选手' })
+
+  // D 前置（v4 W1）：六席人工核验必须绑定已入库、人工确认有效、原件可恢复的存证
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v10', sha256: 'e'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-20T09:00:00Z'
+  })
 })
 
 after(async () => {
@@ -82,12 +87,11 @@ test('V10-C: 空样本 → 比率/均名全 null、如实告知', { skip: !pgAva
 })
 
 test('V10-D: 整场六席人工核验 → 六选手聚合口径与 A 等价', { skip: !pgAvailable }, async () => {
-  const sha = 'e'.repeat(64)
   const audit = await stack.api('/api/v1/admin/slots/confirm', {
     method: 'POST', token: stack.adminToken,
     body: {
       title: '六席完整场次', scheduledAt: '2026-09-20T10:00:00Z', mode: 'RANKED_DIAMOND',
-      evidenceSha256: sha,
+      evidenceId: 'ev-v10', evidenceSha256: 'e'.repeat(64),
       slots: Array.from({ length: 6 }, (_, i) => ({
         slot: i + 1, playerId: `p-seat-${i + 1}`, nickname: `席位${i + 1}`, finalRank: i + 1
       }))

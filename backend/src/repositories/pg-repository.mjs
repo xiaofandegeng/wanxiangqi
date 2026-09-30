@@ -227,7 +227,8 @@ export class PgRepository {
     sourceId: r.source_id,
     externalMatchId: r.external_match_id,
     verifiedBy: r.verified_by,
-    verifiedAt: iso(r.verified_at)
+    verifiedAt: iso(r.verified_at),
+    evidenceLocator: r.evidence_locator ?? null
   })
 
   async getPlayerMatches(playerId, { recordStatus = null } = {}) {
@@ -867,15 +868,15 @@ export class PgRepository {
       `INSERT INTO matches (id, player_id, match_time, available_at, mode, final_rank, commander, lineup,
                             rounds_survived, three_stars, verified, evidence_id, batch_id, revision,
                             record_key, source_id, external_match_id, external_player_id,
-                            player_count, game_version, record_status, synthetic, operator)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,FALSE,$11,$12,$13,$14,$15,$16,$17,$18,$19,'PENDING',$20,$21)`,
+                            player_count, game_version, record_status, synthetic, operator, evidence_locator)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,FALSE,$11,$12,$13,$14,$15,$16,$17,$18,$19,'PENDING',$20,$21,$22)`,
       [
         id, rec.playerId, rec.matchTime, rec.availableAt, rec.mode ?? null, rec.finalRank,
         rec.commander ?? null, rec.lineup ?? null, rec.roundsSurvived ?? null,
         JSON.stringify(rec.threeStars || []), rec.evidenceId ?? null, rec.batchId,
         rec.revision || 1, rec.recordKey, rec.sourceId ?? null, rec.externalMatchId ?? null,
         rec.externalPlayerId ?? null, rec.playerCount ?? null, rec.gameVersion ?? null,
-        rec.synthetic === true, rec.operator ?? null
+        rec.synthetic === true, rec.operator ?? null, rec.evidenceLocator ?? null
       ]
     )
     return id
@@ -895,27 +896,53 @@ export class PgRepository {
     try {
       await client.query('BEGIN')
 
-      // ① 存证（按 sha256 复用；无 sha 则拒绝——不得伪造证据指纹）
-      if (!payload.evidenceSha256 || !/^[0-9a-f]{64}$/i.test(payload.evidenceSha256)) {
-        throw new Error('人工核验必须提供材料 sha256 指纹（64 位十六进制），不得省略或伪造')
+      // ① 证据链（v4 W1/W2 统一要求）：必须引用已上传、人工确认有效、原件可恢复的证据。
+      //    不得仅凭客户端 64 位哈希字符串创建"完整证据"——六席校对与单人逐局同一铁律。
+      if (!payload.evidenceId || typeof payload.evidenceId !== 'string') {
+        throw Object.assign(
+          new Error('六席校对必须提供 evidenceId（先经 /api/v1/admin/evidences/upload 上传原件并人工确认有效）——客户端哈希不再构成证据'),
+          { status: 422, code: 'NO_EVIDENCE' }
+        )
       }
-      let evidenceId = payload.evidenceId || null
-      if (evidenceId) {
-        const exists = await client.query(`SELECT id, sha256 FROM evidences WHERE id = $1`, [evidenceId])
-        if (exists.rows.length > 0 && exists.rows[0].sha256 !== payload.evidenceSha256) {
-          throw new Error(`证据 ${evidenceId} 已存在且指纹不一致，禁止覆盖`)
-        }
-      }
-      if (!evidenceId) {
-        const bySha = await client.query(`SELECT id FROM evidences WHERE sha256 = $1`, [payload.evidenceSha256])
-        evidenceId = bySha.rows.length > 0 ? bySha.rows[0].id : `ev-${Date.now()}`
-      }
-      await client.query(
-        `INSERT INTO evidences (id, sha256, source_id, captured_at, verified_at, verified_by, status, note)
-         VALUES ($1,$2,'src-manual-review',$3,$4,$5,'VERIFIED',$6)
-         ON CONFLICT (id) DO NOTHING`,
-        [evidenceId, payload.evidenceSha256, payload.capturedAt || matchTime, now.toISOString(), staff, payload.title || '工作台人工校对存证']
+      const evidenceId = payload.evidenceId
+      const evd = await client.query(
+        `SELECT e.id, e.status, e.sha256, b.sha256 AS blob_sha
+           FROM evidences e
+           LEFT JOIN evidence_blobs b ON b.sha256 = e.sha256
+          WHERE e.id = $1
+          FOR UPDATE OF e`,
+        [evidenceId]
       )
+      if (evd.rows.length === 0) {
+        throw Object.assign(
+          new Error(`证据 [${evidenceId}] 不存在，无法以此完成校对`),
+          { status: 422, code: 'EVIDENCE_NOT_FOUND' }
+        )
+      }
+      if (payload.evidenceSha256 && payload.evidenceSha256.toLowerCase() !== evd.rows[0].sha256) {
+        throw Object.assign(
+          new Error(`提供的哈希与证据 [${evidenceId}] 指纹不一致`),
+          { status: 422, code: 'SHA_MISMATCH' }
+        )
+      }
+      if (evd.rows[0].status === 'QUARANTINED') {
+        throw Object.assign(
+          new Error(`证据 [${evidenceId}] 已被隔离，不得作为校对依据`),
+          { status: 422, code: 'EVIDENCE_QUARANTINED' }
+        )
+      }
+      if (evd.rows[0].status !== 'VERIFIED') {
+        throw Object.assign(
+          new Error(`证据 [${evidenceId}] 尚未人工确认有效（${evd.rows[0].status}）——请先在证据工作台确认材料`),
+          { status: 422, code: 'EVIDENCE_PENDING' }
+        )
+      }
+      if (!evd.rows[0].blob_sha) {
+        throw Object.assign(
+          new Error(`证据 [${evidenceId}] 只有哈希元信息、无可恢复原件，不得作为校对依据`),
+          { status: 422, code: 'ORIGINAL_MISSING' }
+        )
+      }
 
       // ② 选手：仅按 playerId 稳定身份 upsert（V08 禁止按昵称归并）
       for (const [idx, s] of payload.slots.entries()) {
@@ -988,13 +1015,13 @@ export class PgRepository {
           await client.query(
             `INSERT INTO matches (id, player_id, match_time, available_at, mode, final_rank, commander, lineup,
                                   rounds_survived, three_stars, verified, evidence_id, batch_id, revision,
-                                  record_key, record_status, verified_by, verified_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,TRUE,$11,$12,1,$13,'ACTIVE',$14,$15)`,
+                                  record_key, record_status, verified_by, verified_at, evidence_locator)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,TRUE,$11,$12,1,$13,'ACTIVE',$14,$15,$16)`,
             [`mh-${eventId}-s${slotNum}`, playerId, matchTime, now.toISOString(), payload.mode || null,
              rank, s.commander || null, s.lineup || null,
              Number.isInteger(Number(s.roundsSurvived)) ? Number(s.roundsSurvived) : null,
              JSON.stringify(s.threeStars || []), evidenceId, `audit-${eventId}`,
-             recordKey, staff, now.toISOString()]
+             recordKey, staff, now.toISOString(), s.evidenceLocator ?? null]
           )
         } else {
           const existing = current.rows[0]
@@ -1006,13 +1033,13 @@ export class PgRepository {
           await client.query(
             `INSERT INTO matches (id, player_id, match_time, available_at, mode, final_rank, commander, lineup,
                                   rounds_survived, three_stars, verified, evidence_id, batch_id, revision,
-                                  record_key, record_status, verified_by, verified_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,TRUE,$11,$12,$13,$14,'ACTIVE',$15,$16)`,
+                                  record_key, record_status, verified_by, verified_at, evidence_locator)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,TRUE,$11,$12,$13,$14,'ACTIVE',$15,$16,$17)`,
             [`${existing.id}-r${newRev}`, playerId, matchTime, now.toISOString(), payload.mode || null,
              rank, s.commander || null, s.lineup || null,
              Number.isInteger(Number(s.roundsSurvived)) ? Number(s.roundsSurvived) : null,
              JSON.stringify(s.threeStars || []), evidenceId, `audit-${eventId}`,
-             newRev, recordKey, staff, now.toISOString()]
+             newRev, recordKey, staff, now.toISOString(), s.evidenceLocator ?? null]
           )
         }
       }
@@ -1074,7 +1101,10 @@ export class PgRepository {
         throw err
       }
 
-      // —— 证据链校验（复验2）：无证据 → 拒绝；证据不存在/被隔离 → 拒绝 ——
+      // —— 证据链校验（复验2 + v4 W1 统一要求）：
+      //    无证据 → 拒绝；证据不存在 → 拒绝；被隔离 → 拒绝；未人工确认（PENDING）→ 拒绝；
+      //    无可恢复原件（哈希-only 存量）→ 拒绝。校验顺序固定：NOT_FOUND → QUARANTINED →
+      //    PENDING → ORIGINAL_MISSING（隔离语义优先于原件检查，v31 复验2 依赖此顺序）——
       const effectiveEvidenceId = evidenceId || row.evidence_id
       if (!effectiveEvidenceId) {
         await client.query('ROLLBACK')
@@ -1084,7 +1114,7 @@ export class PgRepository {
         throw err
       }
       const evd = await client.query(
-        `SELECT id, status FROM evidences WHERE id = $1 FOR UPDATE`, [effectiveEvidenceId]
+        `SELECT id, status, sha256 FROM evidences WHERE id = $1 FOR UPDATE`, [effectiveEvidenceId]
       )
       if (evd.rows.length === 0) {
         await client.query('ROLLBACK')
@@ -1100,6 +1130,23 @@ export class PgRepository {
         err.code = 'EVIDENCE_QUARANTINED'
         throw err
       }
+      if (evd.rows[0].status === 'PENDING') {
+        await client.query('ROLLBACK')
+        const err = new Error(`证据 [${effectiveEvidenceId}] 尚未人工确认有效（PENDING）——上传不等于核验，请先在证据工作台确认材料有效`)
+        err.status = 422
+        err.code = 'EVIDENCE_PENDING'
+        throw err
+      }
+      const blob = await client.query(
+        `SELECT 1 FROM evidence_blobs WHERE sha256 = $1`, [evd.rows[0].sha256]
+      )
+      if (blob.rows.length === 0) {
+        await client.query('ROLLBACK')
+        const err = new Error(`证据 [${effectiveEvidenceId}] 只有哈希元信息、无可恢复原件，不得作为放行依据（所有核验入口统一要求原件可恢复）`)
+        err.status = 422
+        err.code = 'ORIGINAL_MISSING'
+        throw err
+      }
 
       // —— SCD-2 放行（复验1）：旧版本先封存（腾出 record_key 当前唯一槽），再建新版本 ——
       // 顺序不可颠倒：uq_matches_record_key_current 部分唯一索引要求同键同时只有一行 superseded_at IS NULL
@@ -1113,12 +1160,12 @@ export class PgRepository {
                               rounds_survived, three_stars, verified, evidence_id, batch_id, source_id,
                               external_match_id, external_player_id, record_key, player_count, game_version,
                               revision, record_status, superseded_at, synthetic, quarantine_reason,
-                              verified_by, verified_at, operator)
+                              verified_by, verified_at, operator, evidence_locator)
          SELECT id || '-r' || (revision + 1), player_id, match_time, $2, mode, final_rank, commander, lineup,
                 rounds_survived, three_stars, TRUE, $3, batch_id, source_id,
                 external_match_id, external_player_id, record_key, player_count, game_version,
                 revision + 1, 'ACTIVE', NULL, synthetic, NULL,
-                $4, $2, $5
+                $4, $2, $5, evidence_locator
          FROM matches WHERE id = $1
          RETURNING *`,
         [matchId, now, effectiveEvidenceId, verifiedBy, 'api:admin/verify']

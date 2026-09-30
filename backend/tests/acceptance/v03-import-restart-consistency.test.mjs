@@ -6,7 +6,7 @@
 
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { bootAcceptanceStack, reconnectStack, countRows, pgAvailable } from './_helpers.mjs'
+import { bootAcceptanceStack, reconnectStack, countRows, insertEvidenceWithBlob, pgAvailable } from './_helpers.mjs'
 
 const DB = 'wanxiangqi_v03_test'
 const TOKEN = 'v3-acceptance-admin-token'
@@ -23,12 +23,10 @@ const RECORDS = [
 before(async () => {
   if (!pgAvailable) return
   stack = await bootAcceptanceStack(DB, { adminToken: TOKEN })
-  // 复验2：核验强制证据链 —— 导入的记录须先关联真实存证材料才能放行
-  await stack.pool.query(
-    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
-     VALUES ('ev-v03', $1, 'src-manual-review', '2026-09-10T09:00:00Z', 'VERIFIED')`,
-    ['b'.repeat(64)]
-  )
+  // 复验2 + v4 W1：核验强制证据链且原件可恢复 —— 存证材料连同原件一次就位
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v03', sha256: 'b'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-10T09:00:00Z'
+  })
 })
 
 after(async () => {

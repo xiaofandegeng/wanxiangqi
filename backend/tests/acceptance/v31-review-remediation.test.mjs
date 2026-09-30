@@ -11,7 +11,7 @@
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import http from 'node:http'
-import { bootAcceptanceStack, insertPlayerRow, pgAvailable } from './_helpers.mjs'
+import { bootAcceptanceStack, insertPlayerRow, insertEvidenceWithBlob, pgAvailable } from './_helpers.mjs'
 import { HOKACE_ADAPTER_METADATA } from '../../../tools/emulator-watcher/adapters/hokace.mjs'
 
 let stack = null
@@ -50,11 +50,10 @@ test('v3.1: 环境前置（本地 PG 不可用则整体 skip）', { skip: !pgAva
 test('复验1: 核验以实际核验时刻建新版本 —— 过去截点统计不被回写', { skip: !pgAvailable }, async () => {
   // 现场复刻：比赛 9/3 发生、9/4 收录入库（PENDING），9/30 才核验
   await insertPlayerRow(stack.pool, { id: 'p-r1', nickname: '复验一选手' })
-  await stack.pool.query(
-    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
-     VALUES ('ev-r1', $1, 'src-manual-review', '2026-09-03T09:00:00Z', 'VERIFIED')`,
-    ['2'.repeat(64)]
-  )
+  // v4 W1：证据须连同可恢复原件入库（verifyMatch 收紧后无原件不得放行）
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-r1', sha256: '2'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-03T09:00:00Z'
+  })
   const imp = await stack.api('/api/v1/admin/imports', {
     method: 'POST', token: stack.adminToken,
     body: {

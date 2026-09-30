@@ -196,6 +196,19 @@ export class FileRepository {
       err.code = 'EVIDENCE_QUARANTINED'
       throw err
     }
+    // v4 W1 与 PG 同语义：未人工确认（PENDING）或无可恢复原件 → 拒绝放行
+    if (evd.status === 'PENDING') {
+      const err = new Error(`证据 [${effEvidenceId}] 尚未人工确认有效（PENDING）——上传不等于核验，请先确认材料有效`)
+      err.status = 422
+      err.code = 'EVIDENCE_PENDING'
+      throw err
+    }
+    if (!(this.engine.state.evidenceBlobs || []).some(b => b.sha256 === evd.sha256)) {
+      const err = new Error(`证据 [${effEvidenceId}] 只有哈希元信息、无可恢复原件，不得作为放行依据`)
+      err.status = 422
+      err.code = 'ORIGINAL_MISSING'
+      throw err
+    }
 
     // SCD-2：新版本 = 旧版本数据 + 核验放行字段；旧版本仅封存不篡改（复验1）
     const newRevision = (Number(m.revision) || 1) + 1

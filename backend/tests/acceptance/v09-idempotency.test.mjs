@@ -4,7 +4,7 @@
 
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { bootAcceptanceStack, countRows, pgAvailable } from './_helpers.mjs'
+import { bootAcceptanceStack, countRows, insertEvidenceWithBlob, pgAvailable } from './_helpers.mjs'
 
 let stack = null
 
@@ -36,12 +36,10 @@ before(async () => {
     `INSERT INTO data_sources (source_id, name, type, status)
      VALUES ('src-v09', 'V09 幂等语义测试来源', 'THIRD_PARTY_AGGREGATE', 'UNCONFIGURED')`
   )
-  // 复验2：核验强制证据链 —— 记录未带证据时，核验请求必须显式提供可用存证
-  await stack.pool.query(
-    `INSERT INTO evidences (id, sha256, source_id, captured_at, status)
-     VALUES ('ev-v09', $1, 'src-manual-review', '2026-09-10T09:00:00Z', 'VERIFIED')`,
-    ['f'.repeat(64)]
-  )
+  // 复验2 + v4 W1：核验强制证据链且原件可恢复 —— 记录未带证据时，核验请求须显式提供可用存证
+  await insertEvidenceWithBlob(stack.pool, {
+    id: 'ev-v09', sha256: 'f'.repeat(64), status: 'VERIFIED', capturedAt: '2026-09-10T09:00:00Z'
+  })
 })
 
 after(async () => {

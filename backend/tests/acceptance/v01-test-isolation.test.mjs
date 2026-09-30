@@ -49,6 +49,16 @@ test('V01: 后端写入负载全程业务 storage.json 哈希不变（每次写�
     capturedAt: '2026-09-01T09:00:00Z', verifiedAt: '2026-09-01T09:00:00Z',
     verifiedBy: 'v01', status: 'VERIFIED', note: 'V01 沙箱存证'
   })
+  // v4 W1：证据须有可恢复原件（evidenceBlobs）才能作为放行依据 —— 元信息与原件同点登记
+  const v01Original = Buffer.from('V01-FIXTURE-sandbox-original-bytes')
+  tmp.engine.state.evidenceBlobs.push({
+    sha256: 'a'.repeat(64),
+    contentBase64: v01Original.toString('base64'),
+    mimeType: 'image/png',
+    sizeBytes: v01Original.length,
+    storageUri: `file:evidence-blobs:sha-${'a'.repeat(16)}`,
+    createdAt: '2026-09-01T09:00:00Z'
+  })
   tmp.engine.saveState()
   const records = [
     { playerId: 'p-v01', matchTime: '2026-09-01T10:00:00Z', finalRank: 1, mode: 'RANKED_DIAMOND', nickname: '隔离样本A', evidenceId: 'ev-v01-sandbox' },

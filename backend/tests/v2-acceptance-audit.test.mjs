@@ -297,12 +297,30 @@ test('F05: 人工核验工作台席位校对持久化确认 (confirmSlotAudit)',
   const { engine, cleanup } = makeTmpStore()
   t.after(cleanup)
 
+  // v4 W1：席位确认强制证据链 —— 先登记已人工确认（VERIFIED）且原件可恢复的存证材料
+  const f05Sha = 'e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82'
+  const f05Original = Buffer.from('F05-FIXTURE-six-seat-original-NOT-REAL')
+  engine.state.evidences.push({
+    id: 'ev-f05', sha256: f05Sha, sourceId: 'src-manual-review',
+    capturedAt: '2026-09-27T09:00:00Z', verifiedAt: '2026-09-27T09:05:00Z',
+    verifiedBy: 'f05', status: 'VERIFIED', note: 'F05 测试存证'
+  })
+  engine.state.evidenceBlobs.push({
+    sha256: f05Sha,
+    contentBase64: f05Original.toString('base64'),
+    mimeType: 'image/png',
+    sizeBytes: f05Original.length,
+    storageUri: `file:evidence-blobs:sha-${f05Sha.slice(0, 16)}`,
+    createdAt: '2026-09-27T09:00:00Z'
+  })
+
   const auditPayload = {
     eventId: 'evt-audit-test-01',
     title: '实战核验场次',
     scheduledAt: '2026-09-27T10:00:00.000Z',
     mode: 'RANKED_DIAMOND',
-    evidenceSha256: 'e4ea43a1b70ad626d5e5508684d5de3d9bf1eb12265ca703a3fb45c2ec4bfa82',
+    evidenceId: 'ev-f05',
+    evidenceSha256: f05Sha,
     slots: [
       { slot: 1, nickname: 'EZ夜余', rankScore: 18824, odds: 1.8, finalRank: 1, commander: '弈星', lineup: '九五之尊' },
       { slot: 2, nickname: 'DY校长神Gin', rankScore: 12091, odds: 7.1, finalRank: 2, commander: '司空震', lineup: '雷霆扶桑刺' },

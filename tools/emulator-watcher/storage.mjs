@@ -12,7 +12,6 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { validateStatsParams, computeStatsFromMatches } from './stats-core.mjs'
 
@@ -376,7 +375,10 @@ export class StorageEngine {
       verified: rec.verified === true, // 绝对不强制转为 true！保持其真实状态
       recordStatus: rec.recordStatus || (rec.verified === true ? 'ACTIVE' : 'PENDING'), // 正式口径状态；HTTP 导入由服务层强制 PENDING
       evidenceId: rec.evidenceId || null,
-      revision: Number(rec.revision) || 1
+      revision: Number(rec.revision) || 1,
+      recordKey: rec.recordKey || null, // 服务层推导的稳定键（透传，不在此重算）
+      slot: Number.isInteger(Number(rec.slot)) ? Number(rec.slot) : null, // 材料内序号（ev 键组成段）
+      evidenceLocator: rec.evidenceLocator || null // v4 W2：记录在原件中的定位
     }
   }
 
@@ -501,23 +503,47 @@ export class StorageEngine {
 
     const eventId = payload.eventId || `evt-${Date.now()}`
     const matchTime = payload.scheduledAt || new Date().toISOString()
-    const evidenceSha256 = payload.evidenceSha256 || crypto.randomBytes(16).toString('hex')
     const now = new Date().toISOString()
 
-    // 1. 存证记录入库
-    const existingEv = this.state.evidences.find(e => (payload.evidenceId && e.id === payload.evidenceId) || (evidenceSha256 && e.sha256 === evidenceSha256))
-    const evidenceId = existingEv ? existingEv.id : (payload.evidenceId || `ev-${Date.now()}`)
-    if (!existingEv) {
-      this.state.evidences.push({
-        id: evidenceId,
-        sha256: evidenceSha256,
-        sourceId: 'src-manual-review',
-        capturedAt: payload.capturedAt || matchTime,
-        verifiedAt: now,
-        verifiedBy: auditStaff,
-        status: 'VERIFIED',
-        note: payload.title || '工作台人工校对存证'
-      })
+    // 1. 证据链强制（v4 W1，与 PG 同语义）：必须引用已上传、人工确认有效、原件可恢复的证据；
+    //    不再接受"客户端哈希即造 VERIFIED 证据"，更不捏造随机 sha
+    if (!payload.evidenceId || typeof payload.evidenceId !== 'string') {
+      const err = new Error('六席校对必须提供 evidenceId（先经 /api/v1/admin/evidences/upload 上传原件并人工确认有效）——客户端哈希不再构成证据')
+      err.status = 422
+      err.code = 'NO_EVIDENCE'
+      throw err
+    }
+    const evidenceId = payload.evidenceId
+    const evd = (this.state.evidences || []).find(e => e.id === evidenceId)
+    if (!evd) {
+      const err = new Error(`证据 [${evidenceId}] 不存在，无法以此完成校对`)
+      err.status = 422
+      err.code = 'EVIDENCE_NOT_FOUND'
+      throw err
+    }
+    if (payload.evidenceSha256 && payload.evidenceSha256.toLowerCase() !== evd.sha256) {
+      const err = new Error(`提供的哈希与证据 [${evidenceId}] 指纹不一致`)
+      err.status = 422
+      err.code = 'SHA_MISMATCH'
+      throw err
+    }
+    if (evd.status === 'QUARANTINED') {
+      const err = new Error(`证据 [${evidenceId}] 已被隔离，不得作为校对依据`)
+      err.status = 422
+      err.code = 'EVIDENCE_QUARANTINED'
+      throw err
+    }
+    if (evd.status !== 'VERIFIED') {
+      const err = new Error(`证据 [${evidenceId}] 尚未人工确认有效（${evd.status}）——请先在证据工作台确认材料`)
+      err.status = 422
+      err.code = 'EVIDENCE_PENDING'
+      throw err
+    }
+    if (!(this.state.evidenceBlobs || []).some(b => b.sha256 === evd.sha256)) {
+      const err = new Error(`证据 [${evidenceId}] 只有哈希元信息、无可恢复原件，不得作为校对依据`)
+      err.status = 422
+      err.code = 'ORIGINAL_MISSING'
+      throw err
     }
 
     // 2. 6 席位战绩正式录入 (verified: true, availableAt 明确标定)
@@ -569,6 +595,7 @@ export class StorageEngine {
           verified: true,
           recordStatus: 'ACTIVE', // 人工核验动作即放行动作 (V17)：经证据链核验 → ACTIVE
           evidenceId,
+          evidenceLocator: s.evidenceLocator || null, // v4 W2：该席次在原件中的定位
           batchId: `audit-${eventId}`
         })
       }

@@ -3,7 +3,8 @@
 // 策略（任务书 §6-2 / V17）：
 // 1. importMatches：入参 verified 一律忽略 → verified=false + record_status=PENDING；
 //    availableAt 缺省=导入时刻且必须 ≥ matchTime；record_key 由 deriveRecordKey 统一推导
-// 2. confirmSlotAudit：单事务（存证→选手→场次→席位→战绩），sha256 必填不得伪造
+// 2. confirmSlotAudit：单事务（证据校验→选手→场次→席位→战绩），evidenceId 必填且须为
+//    已上传、人工确认有效（VERIFIED）、原件可恢复的证据（v4 W1 与单人入口同一铁律）
 // 3. verifyMatch：核验动作放行（verifiedBy + availableAt=now + →ACTIVE），被隔离/被取代记录拒绝
 
 import { StorageEngine } from '../../../tools/emulator-watcher/storage.mjs'
@@ -52,6 +53,9 @@ export class ImportsService {
           playerCount: Number.isInteger(Number(rec.playerCount)) ? Number(rec.playerCount) : null,
           gameVersion: rec.gameVersion || null,
           nickname: rec.nickname || null,
+          // v4 W2：单人逐局材料定位（页码/图片区域/行）与材料内序号（ev:<evidenceId>:<slot> 键的组成段）
+          slot: Number.isInteger(Number(rec.slot)) ? Number(rec.slot) : null,
+          evidenceLocator: rec.evidenceLocator || null,
           operator: 'api:admin/imports'
           // verified 已在校验器内按入参保留，仓储写路径统一强制 FALSE+PENDING
         })

@@ -50,14 +50,40 @@
 
     <!-- 工作台双栏布局 (窄屏自动变为单栏，绝不裁切) -->
     <div class="verify-layout-grid">
-      <!-- 左侧：证据原图与哈希存证 -->
+      <!-- 左侧：材料原件入库与证据生命周期（v4 W1：上传 ≠ 核验） -->
       <div class="verify-panel">
         <div class="panel-top">
-          <h3 class="panel-title">原始材料存证 (Evidence)</h3>
-          <span class="evidence-type-badge">实盘对决房间截图</span>
+          <h3 class="panel-title">材料原件入库 (Evidence)</h3>
+          <span class="evidence-type-badge">上传 ≠ 核验</span>
         </div>
 
-        <!-- 材料粘贴 / 拖拽上传（仅计算 SHA-256 哈希，不做识别） -->
+        <!-- 最小元信息（capturedAt 必填）+ 文件选择 -->
+        <div class="upload-meta-row">
+          <div class="field-input-group flex-1">
+            <label>材料采集时间（必填）</label>
+            <input v-model="evidenceCapturedAt" type="datetime-local" class="input-text" />
+          </div>
+          <div class="field-input-group flex-1">
+            <label>材料类型</label>
+            <select v-model="evidenceKind" class="input-select">
+              <option value="SIX_SEAT_SHEET">六席对决截图</option>
+              <option value="PERSONAL_SCREENSHOT">个人战绩截图</option>
+              <option value="DOCUMENT">文档</option>
+              <option value="OTHER">其他</option>
+            </select>
+          </div>
+          <div class="field-input-group">
+            <label>文件选择（PNG/JPEG/WebP/PDF）</label>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,application/pdf"
+              class="input-file"
+              @change="handleFileChange"
+            />
+          </div>
+        </div>
+
+        <!-- 材料粘贴 / 拖拽上传：原件字节直传服务端存证 -->
         <div
           class="evidence-drop-zone"
           :class="{ 'is-dragover': isDragOver }"
@@ -68,23 +94,108 @@
           @drop.prevent="handleDrop"
         >
           <span class="drop-icon">📋</span>
-          <span class="drop-main">粘贴截图（Cmd+V / Ctrl+V）或拖拽到此处</span>
-          <span class="drop-sub">{{ isHashing ? '正在计算 SHA-256…' : '客户端仅计算材料哈希，席位信息由人工在右侧录入' }}</span>
+          <span class="drop-main">粘贴截图（Cmd+V / Ctrl+V）、拖拽到此处或使用上方文件选择</span>
+          <span class="drop-sub">
+            {{ isUploading ? '原件正在上传入库…' : '原件字节直接上传服务端存证（服务端计算 SHA-256、校验真实文件类型），上传后须人工确认有效' }}
+          </span>
         </div>
 
+        <!-- 当前材料状态卡（如实回显服务端状态） -->
         <div class="hash-meta-card">
           <div class="meta-row">
-            <span class="label">SHA-256 存证指纹:</span>
-            <span class="hash-val font-mono">{{ evidenceSha256 || '尚未上传材料（可留空直接录入席位）' }}</span>
+            <span class="label">证据编号:</span>
+            <span class="hash-val font-mono">{{ currentEvidence ? currentEvidence.id : '尚未上传材料' }}</span>
           </div>
           <div class="meta-row">
-            <span class="label">存证状态:</span>
-            <span class="status-verified font-bold">{{ evidenceSha256 ? '已计算哈希，随席位校对一并提交' : '未上传材料' }}</span>
+            <span class="label">SHA-256 存证指纹:</span>
+            <span class="hash-val font-mono">{{ currentEvidence ? currentEvidence.sha256 : '—（服务端以上传字节计算）' }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="label">材料状态:</span>
+            <span v-if="currentEvidence" :class="evidenceStatusClass(currentEvidence.status)" class="font-bold">
+              {{ evidenceStatusText(currentEvidence.status) }}{{ currentEvidence.hasOriginal ? '' : '（无可恢复原件，不得放行）' }}
+            </span>
+            <span v-else class="text-secondary">未上传材料 —— 席位确认必须绑定已确认有效的证据</span>
           </div>
           <div class="meta-row">
             <span class="label">入库保护机制:</span>
-            <span class="text-secondary">严格 1~6 整数名次校验 · 导入记录一律以待核验状态入库</span>
+            <span class="text-secondary">魔数嗅探拒改名文件 · 严格 1~6 整数名次校验 · 导入记录一律以待核验状态入库</span>
           </div>
+          <div v-if="currentEvidence" class="meta-actions">
+            <button
+              class="token-btn primary"
+              :disabled="isVerifyingEvidence || currentEvidence.status !== 'PENDING'"
+              @click="confirmEvidenceById(currentEvidence.id)"
+            >
+              {{ currentEvidence.status === 'PENDING' ? '确认材料有效（PENDING → VERIFIED）' : currentEvidence.status === 'VERIFIED' ? '✓ 已人工确认有效' : '已隔离材料不可确认' }}
+            </button>
+            <button v-if="currentEvidence.hasOriginal" class="token-btn ghost" :disabled="isOpeningOriginal" @click="openOriginal(currentEvidence.id)">
+              查看原件
+            </button>
+          </div>
+        </div>
+
+        <!-- 原件预览（本地 objectURL，不回流服务端） -->
+        <div v-if="previewUrl" class="screenshot-preview-box">
+          <img :src="previewUrl" alt="材料原图预览" class="evidence-preview-img" />
+        </div>
+
+        <!-- 证据台账（服务端列表；席位确认从这里选用证据） -->
+        <div class="evidence-list-wrap">
+          <div class="list-head">
+            <span class="list-title">证据台账（{{ evidenceList.length }} 条）</span>
+            <button class="token-btn ghost" :disabled="isLoadingEvidences" @click="loadEvidences">
+              {{ isLoadingEvidences ? '加载中…' : '刷新' }}
+            </button>
+          </div>
+          <div class="table-scroll-wrapper">
+            <table class="slots-edit-table evidence-table">
+              <thead>
+                <tr>
+                  <th style="width: 36px">选用</th>
+                  <th>证据编号</th>
+                  <th>状态</th>
+                  <th>类型</th>
+                  <th>采集时间</th>
+                  <th>原件</th>
+                  <th style="width: 90px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="e in evidenceList" :key="e.id">
+                  <td class="center-cell">
+                    <input
+                      type="radio"
+                      name="pick-evidence"
+                      :value="e.id"
+                      :disabled="e.status !== 'VERIFIED' || !e.hasOriginal"
+                      v-model="selectedEvidenceId"
+                    />
+                  </td>
+                  <td class="font-mono td-id">{{ e.id }}</td>
+                  <td><span :class="evidenceStatusClass(e.status)">{{ evidenceStatusText(e.status) }}</span></td>
+                  <td>{{ e.kind || '未标注' }}</td>
+                  <td class="font-mono">{{ formatDateTime(e.capturedAt) }}</td>
+                  <td>{{ e.hasOriginal ? `${e.mimeType || '未知类型'} · ${e.sizeBytes ?? '?'} B` : '缺失（不得放行）' }}</td>
+                  <td>
+                    <button v-if="e.status === 'PENDING'" class="mini-btn" :disabled="isVerifyingEvidence" @click="confirmEvidenceById(e.id)">
+                      确认有效
+                    </button>
+                    <button v-else-if="e.hasOriginal" class="mini-btn ghost" :disabled="isOpeningOriginal" @click="openOriginal(e.id)">
+                      原件
+                    </button>
+                    <span v-else class="text-secondary">—</span>
+                  </td>
+                </tr>
+                <tr v-if="evidenceList.length === 0">
+                  <td colspan="7" class="empty-cell">暂无证据记录（上传后在此列出）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="honest-note">
+            席位确认只能选用「已确认有效（VERIFIED）」且原件可恢复的证据；待确认（PENDING）与已隔离（QUARANTINED）材料一律不可放行。
+          </p>
         </div>
 
         <!-- 已录入席位摘要（如实反映右侧输入，未知即空） -->
@@ -92,7 +203,9 @@
           <div class="evidence-preview-card">
             <div class="preview-header">
               <span class="room-title">{{ matchTitle || '未命名对决' }}</span>
-              <span class="room-tag">{{ evidenceSha256 ? '哈希就绪' : '待存证' }}</span>
+              <span class="room-tag">
+                {{ selectedEvidence ? '证据已绑定' : (currentEvidence ? '材料待确认' : '待存证') }}
+              </span>
             </div>
             <div class="slots-summary-list">
               <div v-for="slot in verifiedSlots" :key="slot.slot" class="slot-summary-item">
@@ -264,7 +377,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import {
   confirmSlotAudit,
   importMatchRecords,
@@ -272,9 +385,13 @@ import {
   setAdminToken,
   hasAdminToken,
   AdminTokenMissingError,
-  type ImportBatchResult
+  uploadEvidence,
+  fetchEvidences,
+  verifyEvidence,
+  fetchEvidenceObjectUrl,
+  type ImportBatchResult,
+  type EvidenceRecord
 } from '../api'
-import { computeFileSha256 } from '../utils/image-analyzer'
 
 const currentTab = ref<'MANUAL' | 'BATCH'>('MANUAL')
 const isSubmitting = ref(false)
@@ -310,10 +427,141 @@ function clearToken() {
   showAlert('管理凭证已清除；写接口将拒绝发起', 'success')
 }
 
-// —— 材料存证：粘贴/拖拽计算 SHA-256（不做识别，不预填名单） ——
-const evidenceSha256 = ref('')
-const isHashing = ref(false)
+// —— 材料原件入库（v4 W1）：原件字节直传服务端存证；上传只产生 PENDING，人工确认才 VERIFIED ——
+const evidenceCapturedAt = ref(toLocalDatetime(new Date()))
+const evidenceKind = ref('SIX_SEAT_SHEET')
+const isUploading = ref(false)
+const isVerifyingEvidence = ref(false)
+const isOpeningOriginal = ref(false)
 const isDragOver = ref(false)
+const currentEvidence = ref<EvidenceRecord | null>(null)
+const evidenceList = ref<EvidenceRecord[]>([])
+const isLoadingEvidences = ref(false)
+const selectedEvidenceId = ref('')
+const previewUrl = ref('')
+
+/** 当前选用于席位确认的证据：仅 VERIFIED 且原件可恢复者可用（服务端同规则二次校验） */
+const selectedEvidence = computed(
+  () => evidenceList.value.find(e => e.id === selectedEvidenceId.value && e.status === 'VERIFIED' && e.hasOriginal) || null
+)
+
+function toLocalDatetime(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function evidenceStatusText(status: string): string {
+  if (status === 'VERIFIED') return '已确认有效'
+  if (status === 'QUARANTINED') return '已隔离'
+  return '待人工确认（PENDING）'
+}
+
+function evidenceStatusClass(status: string): string {
+  if (status === 'VERIFIED') return 'status-verified'
+  if (status === 'QUARANTINED') return 'status-qua'
+  return 'status-pending'
+}
+
+function formatDateTime(iso: string | null): string {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime()) ? String(iso) : d.toLocaleString('zh-CN', { hour12: false })
+}
+
+/** 拉取服务端证据台账；当前材料状态以服务端为准回显 */
+async function loadEvidences() {
+  if (!hasAdminToken()) return
+  isLoadingEvidences.value = true
+  try {
+    evidenceList.value = await fetchEvidences()
+    if (currentEvidence.value) {
+      const fresh = evidenceList.value.find(e => e.id === currentEvidence.value!.id)
+      if (fresh) currentEvidence.value = fresh
+    }
+    if (selectedEvidence.value == null) selectedEvidenceId.value = ''
+  } catch (err: any) {
+    showAlert(`证据台账加载失败: ${err?.message || '未知错误'}`, 'error')
+  } finally {
+    isLoadingEvidences.value = false
+  }
+}
+
+/** 原件上传入库（真实字节 + 最小元信息；服务端计算 SHA-256 并做魔数嗅探） */
+async function ingestMaterial(file: File) {
+  if (!requireToken()) return
+  const capturedMs = new Date(evidenceCapturedAt.value).getTime()
+  if (!evidenceCapturedAt.value || Number.isNaN(capturedMs)) {
+    showAlert('请先正确填写材料采集时间（必填的最小元信息）', 'error')
+    return
+  }
+  isUploading.value = true
+  try {
+    const res = await uploadEvidence(file, {
+      capturedAt: new Date(capturedMs).toISOString(),
+      kind: evidenceKind.value,
+      usageScope: 'INTERNAL_ONLY'
+    })
+    currentEvidence.value = res.evidence
+    setPreviewFromFile(file)
+    await loadEvidences()
+    if (res.deduplicated) {
+      showAlert(
+        `该原件已入库为证据 ${res.evidence.id}（内容去重复用），状态如实回显：${evidenceStatusText(res.evidence.status)}`,
+        'success'
+      )
+    } else {
+      showAlert(
+        `原件已上传入库：${res.evidence.id}（PENDING）—— 上传不等于核验，请先「确认材料有效」再绑定席位`,
+        'success'
+      )
+    }
+  } catch (err: any) {
+    if (err instanceof AdminTokenMissingError) {
+      showAlert('管理凭证缺失或已失效，请先在顶部面板录入 Token', 'error')
+    } else {
+      showAlert(`原件上传失败: ${err?.message || '未知错误'}${err?.code ? `（${err.code}）` : ''}`, 'error')
+    }
+  } finally {
+    isUploading.value = false
+  }
+}
+
+function setPreviewFromFile(file: File) {
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
+  previewUrl.value = file.type.startsWith('image/') ? URL.createObjectURL(file) : ''
+}
+
+/** 人工确认材料有效（PENDING → VERIFIED），确认后自动选用于席位确认 */
+async function confirmEvidenceById(id: string) {
+  if (!requireToken()) return
+  isVerifyingEvidence.value = true
+  try {
+    const updated = await verifyEvidence(id, '人工核验工作台')
+    if (currentEvidence.value?.id === id) currentEvidence.value = updated
+    await loadEvidences()
+    selectedEvidenceId.value = id
+    showAlert(`证据 ${id} 已人工确认有效（VERIFIED），可在席位确认时选用`, 'success')
+  } catch (err: any) {
+    showAlert(`确认材料有效失败: ${err?.message || '未知错误'}`, 'error')
+  } finally {
+    isVerifyingEvidence.value = false
+  }
+}
+
+/** 取回服务端原件（objectURL 新窗口预览，服务端 nosniff + attachment） */
+async function openOriginal(id: string) {
+  if (!requireToken()) return
+  isOpeningOriginal.value = true
+  try {
+    const url = await fetchEvidenceObjectUrl(id)
+    window.open(url, '_blank', 'noopener')
+    setTimeout(() => URL.revokeObjectURL(url), 60000)
+  } catch (err: any) {
+    showAlert(`原件获取失败: ${err?.message || '未知错误'}${err?.code ? `（${err.code}）` : ''}`, 'error')
+  } finally {
+    isOpeningOriginal.value = false
+  }
+}
 
 const matchTitle = ref('')
 const matchMode = ref('')
@@ -343,22 +591,6 @@ const verifiedSlots = ref<EditableSlot[]>(
   }))
 )
 
-async function ingestMaterial(file: File) {
-  if (!file.type.startsWith('image/')) {
-    showAlert('仅支持图片材料（截图）', 'error')
-    return
-  }
-  isHashing.value = true
-  try {
-    evidenceSha256.value = await computeFileSha256(file)
-    showAlert(`材料哈希已计算：${evidenceSha256.value.slice(0, 16)}…，请在右侧录入席位信息`, 'success')
-  } catch (err: any) {
-    showAlert(`材料哈希计算失败: ${err?.message || '未知错误'}`, 'error')
-  } finally {
-    isHashing.value = false
-  }
-}
-
 async function handlePaste(e: ClipboardEvent) {
   const items = e.clipboardData?.items
   if (!items) return
@@ -379,6 +611,21 @@ async function handleDrop(e: DragEvent) {
   if (file) await ingestMaterial(file)
 }
 
+async function handleFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) await ingestMaterial(file)
+  input.value = ''
+}
+
+onMounted(() => {
+  loadEvidences()
+})
+
+onBeforeUnmount(() => {
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
+})
+
 function showAlert(msg: string, type: 'success' | 'error' = 'success') {
   alertMessage.value = msg
   alertType.value = type
@@ -391,10 +638,19 @@ function requireToken(): boolean {
 }
 
 /**
- * 真实提交席位校对持久化 (F05)
+ * 真实提交席位校对持久化 (F05 + v4 W1：必须绑定已确认有效且原件可恢复的证据)
  */
 async function submitSlotAudit() {
   if (!requireToken()) return
+
+  // v4 W1 证据闸门：未绑定 VERIFIED + 可恢复原件的证据 → 前端先拦（服务端同规则二次校验）
+  if (!selectedEvidence.value) {
+    showAlert(
+      '席位确认必须绑定一条「已确认有效（VERIFIED）」且原件可恢复的证据：请在左侧上传原件并确认有效，再于证据台账中选用',
+      'error'
+    )
+    return
+  }
 
   // 前端名次合法性校验
   for (const s of verifiedSlots.value) {
@@ -413,7 +669,8 @@ async function submitSlotAudit() {
     const res = await confirmSlotAudit({
       title: matchTitle.value.trim() || undefined,
       mode: matchMode.value || undefined,
-      evidenceSha256: evidenceSha256.value || undefined,
+      evidenceId: selectedEvidence.value.id,
+      evidenceSha256: selectedEvidence.value.sha256,
       slots: verifiedSlots.value.map(s => ({
         slot: s.slot,
         nickname: s.nickname.trim(),
@@ -427,7 +684,7 @@ async function submitSlotAudit() {
     })
 
     confirmedEventId.value = res.id
-    showAlert(`校对事实已成功持久化至主数据库！对局编号: ${res.id}`, 'success')
+    showAlert(`校对事实已成功持久化至主数据库！对局编号: ${res.id}（证据 ${selectedEvidence.value.id}）`, 'success')
   } catch (err: any) {
     console.error('持久化保存失败:', err)
     if (err instanceof AdminTokenMissingError) {
@@ -1183,5 +1440,113 @@ async function submitBatchImport() {
 .text-primary {
   color: #2563eb;
   font-weight: 600;
+}
+
+// ---------------- v4 W1：材料原件入库工作台 ----------------
+
+.upload-meta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  .flex-1 {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+.input-file {
+  font-size: 12px;
+  color: #475569;
+  max-width: 240px;
+}
+
+.status-verified {
+  color: #16a34a;
+}
+.status-pending {
+  color: #b45309;
+}
+.status-qua {
+  color: #dc2626;
+}
+
+.meta-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.evidence-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.evidence-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .list-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+}
+
+.evidence-table {
+  min-width: 620px;
+
+  td {
+    font-size: 12px;
+  }
+
+  .td-id {
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  .center-cell {
+    text-align: center;
+  }
+
+  .empty-cell {
+    text-align: center;
+    color: #94a3b8;
+    padding: 14px 8px;
+  }
+}
+
+.mini-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  color: #ffffff;
+
+  &.ghost {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  &:disabled {
+    background: #94a3b8;
+    border-color: #94a3b8;
+    cursor: not-allowed;
+  }
 }
 </style>

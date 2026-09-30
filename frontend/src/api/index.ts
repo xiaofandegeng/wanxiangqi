@@ -92,6 +92,30 @@ export interface MatchRecord {
   sourceId?: string | null
   verifiedBy?: string | null
   verifiedAt?: string | null
+  // v4 W2：材料内定位（页码/图片区域/行），缺省 null 如实展示
+  evidenceLocator?: string | null
+}
+
+/**
+ * 证据材料（v4 W1 wire）：status PENDING（上传≠核验）→ VERIFIED（人工确认）/ QUARANTINED。
+ * hasOriginal=false 表示只有哈希元信息、无可恢复原件，不得作为放行依据。
+ */
+export interface EvidenceRecord {
+  id: string
+  sha256: string
+  sourceId: string | null
+  kind: string | null
+  status: 'PENDING' | 'VERIFIED' | 'QUARANTINED'
+  capturedAt: string | null
+  verifiedAt: string | null
+  verifiedBy: string | null
+  providedBy: string | null
+  usageScope: string | null
+  note: string | null
+  hasOriginal: boolean
+  mimeType: string | null
+  sizeBytes: number | null
+  storageUri: string | null
 }
 
 export interface EventParticipant {
@@ -367,13 +391,16 @@ export async function fetchImportBatch(batchId: string): Promise<any> {
 }
 
 /**
- * 7.2 人工校对工作台 6 席位持久化入库确认（evidenceSha256 存证关联）
+ * 7.2 人工校对工作台 6 席位持久化入库确认
+ * v4 W1 收紧：必须绑定已入库、人工确认有效（VERIFIED）、原件可恢复的证据 evidenceId；
+ * 客户端自带哈希字符串不再构成证据。evidenceSha256 为可选传输校验（须与库内一致）。
  */
 export async function confirmSlotAudit(payload: {
   eventId?: string
   title?: string
   scheduledAt?: string
   mode?: string
+  evidenceId: string
   evidenceSha256?: string
   slots: Array<{
     slot: number
@@ -398,6 +425,113 @@ export async function confirmSlotAudit(payload: {
     throw new Error(res.error || '持久化保存失败')
   }
   return res.data
+}
+
+/**
+ * 7.3 核验放行单条待核验记录（SCD-2：availableAt=实际核验时刻，旧版本封存）。
+ * evidenceId 可选——记录自带证据时可直接放行，否则必须显式提供可用证据。
+ */
+export async function verifyMatch(
+  matchId: string,
+  body: { verifiedBy: string; evidenceId?: string }
+): Promise<MatchRecord> {
+  const res = await requestApi<any>(`/api/v1/admin/matches/${encodeURIComponent(matchId)}/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+  if (res.code !== 0 || !res.data) {
+    throw new Error(res.error || '核验放行失败')
+  }
+  return res.data
+}
+
+// ---------------- v4 W1：材料原件入库与证据生命周期 ----------------
+
+/**
+ * 8.1 上传材料原件（原始字节直传，元信息走 query）。
+ * 独立 fetch：请求体是 File 二进制、响应为 JSON，且须透传 4xx 的 code_name（如 MIME_MISMATCH）。
+ * 上传只产生 PENDING —— 上传不等于核验。
+ */
+export async function uploadEvidence(
+  file: File | Blob,
+  meta: {
+    capturedAt: string
+    kind?: string
+    usageScope?: 'INTERNAL_ONLY' | 'PUBLIC'
+    providedBy?: string
+    note?: string
+    clientSha256?: string
+  }
+): Promise<{ evidenceId: string; deduplicated: boolean; evidence: EvidenceRecord }> {
+  const token = getAdminToken()
+  if (!token) throw new AdminTokenMissingError()
+
+  const q = new URLSearchParams({ capturedAt: meta.capturedAt })
+  if (meta.kind) q.set('kind', meta.kind)
+  if (meta.usageScope) q.set('usageScope', meta.usageScope)
+  if (meta.providedBy) q.set('providedBy', meta.providedBy)
+  if (meta.note) q.set('note', meta.note)
+  if (meta.clientSha256) q.set('clientSha256', meta.clientSha256)
+
+  const contentType = (file as File).type || 'application/octet-stream'
+  const res = await fetch(`/api/v1/admin/evidences/upload?${q}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': contentType },
+    body: file
+  })
+  const json = await res.json().catch(() => null)
+  if (!res.ok) {
+    const err: any = new Error(json?.error || `HTTP ${res.status} 上传失败`)
+    err.status = res.status
+    err.code = json?.code_name
+    throw err
+  }
+  return json
+}
+
+/**
+ * 8.2 证据台账列表（可按状态过滤）
+ */
+export async function fetchEvidences(status?: string): Promise<EvidenceRecord[]> {
+  const qs = status ? `?status=${encodeURIComponent(status)}` : ''
+  const res = await requestApi<any>(`/api/v1/admin/evidences${qs}`)
+  return Array.isArray(res.data) ? res.data : []
+}
+
+/**
+ * 8.3 人工确认材料有效（PENDING → VERIFIED；上传不等于核验）
+ */
+export async function verifyEvidence(evidenceId: string, verifiedBy: string): Promise<EvidenceRecord> {
+  const res = await requestApi<any>(`/api/v1/admin/evidences/${encodeURIComponent(evidenceId)}/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ verifiedBy })
+  })
+  if (res.code !== 0 || !res.data) {
+    throw new Error(res.error || '确认材料有效失败')
+  }
+  return res.data
+}
+
+/**
+ * 8.4 取回材料原件（Blob → objectURL 预览；服务端 nosniff + attachment）。
+ * 返回的 URL 由调用方负责 URL.revokeObjectURL 释放。
+ */
+export async function fetchEvidenceObjectUrl(evidenceId: string): Promise<string> {
+  const token = getAdminToken()
+  if (!token) throw new AdminTokenMissingError()
+  const res = await fetch(`/api/v1/admin/evidences/${encodeURIComponent(evidenceId)}/content`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    const err: any = new Error(json?.error || `HTTP ${res.status} 原件获取失败`)
+    err.status = res.status
+    err.code = json?.code_name
+    throw err
+  }
+  return URL.createObjectURL(await res.blob())
 }
 
 /**
