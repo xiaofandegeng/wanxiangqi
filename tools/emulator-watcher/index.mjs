@@ -413,6 +413,33 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     }
 
     // ----------------------------------------------------
+    // v4 W2 新增：管理端战绩记录列表（单人逐局导入核验工作台）
+    // GET /api/v1/admin/matches?recordStatus=&playerId=&mode=&limit=&offset=
+    // 默认 recordStatus=PENDING（待核验候选口径）；公开 /api/v1/matches 行为不变。
+    // 前缀 Bearer 守卫已覆盖（含 GET：PENDING 候选含未放行材料定位，属运营细节）。
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/matches' && req.method === 'GET') {
+      try {
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '200', 10) || 200, 500)
+        const offset = Math.max(parseInt(url.searchParams.get('offset') || '0', 10) || 0, 0)
+        const playerId = url.searchParams.get('playerId') || null
+        const mode = url.searchParams.get('mode') || null
+        const recordStatus = url.searchParams.get('recordStatus') || 'PENDING'
+        const result = await svc.getAllMatches({ limit, offset, playerId, mode, recordStatus })
+        return sendJson(200, {
+          code: 0,
+          total: result.total,
+          limit,
+          offset,
+          data: result.data,
+          dataAsOf: new Date().toISOString()
+        })
+      } catch (err) {
+        return handleServiceError(err)
+      }
+    }
+
+    // ----------------------------------------------------
     // v3 新增 (V17)：核验放行动作
     // POST /api/v1/admin/matches/:id/verify  { verifiedBy, evidenceId? }
     // 复验1/2：无证据链 → 422 拒绝；放行 = SCD-2 新版本（availableAt=实际核验时刻）

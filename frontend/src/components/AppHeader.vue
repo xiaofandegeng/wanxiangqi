@@ -49,6 +49,9 @@
         <router-link to="/admin/verify" class="nav-item" active-class="is-active">
           🔍 证据核验工作台
         </router-link>
+        <router-link to="/admin/personal-import" class="nav-item" active-class="is-active">
+          🧾 单人战绩导入
+        </router-link>
       </nav>
     </div>
 

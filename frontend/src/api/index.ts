@@ -446,6 +446,26 @@ export async function verifyMatch(
   return res.data
 }
 
+/**
+ * 7.4 管理端战绩记录列表（v4 W2 单人导入工作台）。
+ * 默认 recordStatus=PENDING 拉取待核验候选；记录含 recordKey/revision/evidenceLocator，
+ * 用于逐条核验放行与 ev 键更正（同键 revision+1 → 新版本，不裂成两条 ACTIVE）。
+ */
+export async function fetchAdminMatches(
+  params: { recordStatus?: string; playerId?: string; mode?: string; limit?: number; offset?: number } = {},
+  signal?: AbortSignal
+): Promise<{ total: number; data: MatchRecord[] }> {
+  const query = new URLSearchParams()
+  if (params.recordStatus) query.set('recordStatus', params.recordStatus)
+  if (params.playerId) query.set('playerId', params.playerId)
+  if (params.mode) query.set('mode', params.mode)
+  if (params.limit) query.set('limit', String(params.limit))
+  if (params.offset) query.set('offset', String(params.offset))
+  const qs = query.toString() ? `?${query.toString()}` : ''
+  const res = await requestApi<any>(`/api/v1/admin/matches${qs}`, { signal })
+  return { total: res.total || 0, data: Array.isArray(res.data) ? res.data : [] }
+}
+
 // ---------------- v4 W1：材料原件入库与证据生命周期 ----------------
 
 /**

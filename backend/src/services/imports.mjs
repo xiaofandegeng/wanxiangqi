@@ -8,7 +8,7 @@
 // 3. verifyMatch：核验动作放行（verifiedBy + availableAt=now + →ACTIVE），被隔离/被取代记录拒绝
 
 import { StorageEngine } from '../../../tools/emulator-watcher/storage.mjs'
-import { deriveRecordKey } from '../../../tools/emulator-watcher/stats-core.mjs'
+import { deriveRecordKey, nullableInt } from '../../../tools/emulator-watcher/stats-core.mjs'
 
 export class ImportsService {
   constructor(repo) {
@@ -50,11 +50,12 @@ export class ImportsService {
           sourceId: rec.sourceId || null,
           externalMatchId: rec.externalMatchId || null,
           externalPlayerId: rec.externalPlayerId || null,
-          playerCount: Number.isInteger(Number(rec.playerCount)) ? Number(rec.playerCount) : null,
+          playerCount: nullableInt(rec.playerCount),
           gameVersion: rec.gameVersion || null,
           nickname: rec.nickname || null,
           // v4 W2：单人逐局材料定位（页码/图片区域/行）与材料内序号（ev:<evidenceId>:<slot> 键的组成段）
-          slot: Number.isInteger(Number(rec.slot)) ? Number(rec.slot) : null,
+          // 注意 Number(null)===0：显式 null/空串必须保持 null，否则 slot 会变 0 撕裂 ev 键
+          slot: nullableInt(rec.slot),
           evidenceLocator: rec.evidenceLocator || null,
           operator: 'api:admin/imports'
           // verified 已在校验器内按入参保留，仓储写路径统一强制 FALSE+PENDING

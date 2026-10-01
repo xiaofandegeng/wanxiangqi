@@ -203,3 +203,14 @@ export function deriveRecordKey(rec = {}) {
   const matchTime = rec.matchTime ? new Date(rec.matchTime).toISOString() : 'unknown'
   return `${rec.playerId || 'unknown'}:${matchTime}`
 }
+
+/**
+ * 可空整数规整（v4 W2）：显式 null/undefined/空串必须保持 null。
+ * 直接 Number.isInteger(Number(v)) 会把 null 变 0（Number(null)===0），
+ * 使「留空=null」的可选字段（slot/roundsSurvived/playerCount）被静默填 0。
+ */
+export function nullableInt(v) {
+  if (v === null || v === undefined || v === '') return null
+  const n = Number(v)
+  return Number.isInteger(n) ? n : null
+}

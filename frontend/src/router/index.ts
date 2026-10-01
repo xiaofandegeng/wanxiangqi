@@ -53,6 +53,12 @@ const router = createRouter({
       meta: { title: '证据链与人工核验工作台 - 王者万象棋数据站' }
     },
     {
+      path: '/admin/personal-import',
+      name: 'personal-evidence-import',
+      component: () => import('../views/personal-evidence-import.vue'),
+      meta: { title: '单人真实战绩导入 - 王者万象棋数据站' }
+    },
+    {
       path: '/models/backtest',
       name: 'model-backtest',
       component: () => import('../views/model-backtest.vue'),

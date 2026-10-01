@@ -13,7 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { validateStatsParams, computeStatsFromMatches } from './stats-core.mjs'
+import { validateStatsParams, computeStatsFromMatches, nullableInt } from './stats-core.mjs'
 
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url))
 export const DEFAULT_DATA_DIR = path.join(MODULE_DIR, 'data')
@@ -367,7 +367,7 @@ export class StorageEngine {
       finalRank: rank,
       commander: rec.commander || null,
       lineup: rec.lineup || null,
-      roundsSurvived: Number.isInteger(Number(rec.roundsSurvived)) ? Number(rec.roundsSurvived) : null,
+      roundsSurvived: nullableInt(rec.roundsSurvived), // Number(null)===0，显式留空必须保持 null
       threeStars: Array.isArray(rec.threeStars) ? rec.threeStars : [],
       mode: rec.mode || null,
       synthetic: rec.synthetic === true, // P0-B：合成/demo 数据必须显式标记，正式统计一律排除
@@ -377,7 +377,7 @@ export class StorageEngine {
       evidenceId: rec.evidenceId || null,
       revision: Number(rec.revision) || 1,
       recordKey: rec.recordKey || null, // 服务层推导的稳定键（透传，不在此重算）
-      slot: Number.isInteger(Number(rec.slot)) ? Number(rec.slot) : null, // 材料内序号（ev 键组成段）
+      slot: nullableInt(rec.slot), // 材料内序号（ev 键组成段）；null 保持 null，禁 0 填充
       evidenceLocator: rec.evidenceLocator || null // v4 W2：记录在原件中的定位
     }
   }
