@@ -13,7 +13,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8080',
+        // W5 浏览器验收：harness 用 WXQ_API_TARGET 把代理指向临时验收后端；
+        // 默认仍是本机 8080（不影响日常开发）。仅作用于 dev server，与 vitest 无关。
+        target: process.env.WXQ_API_TARGET || 'http://127.0.0.1:8080',
         changeOrigin: true
       }
     }

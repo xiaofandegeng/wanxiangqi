@@ -1,0 +1,2147 @@
+{
+  "startedAt": "2026-10-01T07:04:00.483Z",
+  "node": "v22.21.1",
+  "scenarios": [
+    {
+      "name": "empty",
+      "db": "wanxiangqi_w5_empty_test",
+      "status": "DONE",
+      "routes": [
+        {
+          "scenario": "empty",
+          "route": "home",
+          "path": "/",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__home__desktop.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__roster__desktop.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "player-profile",
+          "path": "/players/p-none",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/players/p-none",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__player-profile__desktop.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__lineups__desktop.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__lineup-detail__desktop.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载阵容详情失败: Error: 阵容 [lu-fx-1] 不存在\n    at requestApi (http://127.0.0.1:5228/src/api/index.ts:58:15)\n    at async fetchLineupDetail (http://127.0.0.1:5228/src/api/index.ts:153:14)\n    at async loadDetai",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "empty",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__archive__desktop.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__event-detail__desktop.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__admin-verify__desktop.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5228/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__personal-import__desktop.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "home",
+          "path": "/",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__home__mobile.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__roster__mobile.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "player-profile",
+          "path": "/players/p-none",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/players/p-none",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__player-profile__mobile.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__lineups__mobile.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__lineup-detail__mobile.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载阵容详情失败: Error: 阵容 [lu-fx-1] 不存在\n    at requestApi (http://127.0.0.1:5228/src/api/index.ts:58:15)\n    at async fetchLineupDetail (http://127.0.0.1:5228/src/api/index.ts:153:14)\n    at async loadDetai",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "empty",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__archive__mobile.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__event-detail__mobile.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__admin-verify__mobile.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "empty",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5228/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/empty__personal-import__mobile.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        }
+      ]
+    },
+    {
+      "name": "normal",
+      "db": "wanxiangqi_w5_normal_test",
+      "status": "DONE",
+      "routes": [
+        {
+          "scenario": "normal",
+          "route": "home",
+          "path": "/",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__home__desktop.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__roster__desktop.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__player-profile__desktop.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__lineups__desktop.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__lineup-detail__desktop.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__archive__desktop.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__event-detail__desktop.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__admin-verify__desktop.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5192/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__personal-import__desktop.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "home",
+          "path": "/",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__home__mobile.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__roster__mobile.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__player-profile__mobile.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__lineups__mobile.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__lineup-detail__mobile.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__archive__mobile.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__event-detail__mobile.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__admin-verify__mobile.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "normal",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5192/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/normal__personal-import__mobile.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        }
+      ],
+      "interactions": {
+        "tabWalk": [
+          {
+            "tag": "A",
+            "text": "弈王者万象棋 · 真实数据站王牌对决已核验战绩与统计台账",
+            "disabled": false
+          },
+          {
+            "tag": "BUTTON",
+            "text": "存证材料录入",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "text": "💎 王牌对决场次",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "text": "📊 选手数据",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "text": "⚔️ 阵容快照参考",
+            "disabled": false
+          },
+          {
+            "tag": "A",
+            "text": "📋 已核验流水",
+            "disabled": false
+          }
+        ],
+        "tabWalkProgresses": true,
+        "archiveScroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "canScroll": false,
+          "bodyOverflow": false
+        },
+        "filterInteraction": {
+          "typedInInput": false,
+          "rowsBefore": 18,
+          "rowsAfter": 18,
+          "filtered": null
+        },
+        "touchTargetProbe": [
+          {
+            "text": "弈王者万象棋 · 真实数",
+            "h": 32,
+            "w": 215
+          },
+          {
+            "text": "存证材料录入",
+            "h": 30,
+            "w": 104
+          },
+          {
+            "text": "💎 王牌对决场次",
+            "h": 30,
+            "w": 121
+          },
+          {
+            "text": "📊 选手数据",
+            "h": 30,
+            "w": 95
+          },
+          {
+            "text": "⚔️ 阵容快照参考",
+            "h": 30,
+            "w": 121
+          },
+          {
+            "text": "📋 已核验流水",
+            "h": 30,
+            "w": 108
+          },
+          {
+            "text": "📈 模型状态",
+            "h": 30,
+            "w": 95
+          },
+          {
+            "text": "🔍 证据核验工作台",
+            "h": 30,
+            "w": 134
+          }
+        ]
+      },
+      "drill": {
+        "steps": [
+          {
+            "name": "open-page",
+            "ok": true,
+            "detail": null
+          },
+          {
+            "name": "save-admin-token",
+            "ok": true,
+            "detail": "token 面板显示已配置"
+          },
+          {
+            "name": "upload-fixture-png",
+            "ok": true,
+            "detail": "FIXTURE PNG 已上传，材料 PENDING"
+          },
+          {
+            "name": "verify-evidence",
+            "ok": true,
+            "detail": "材料 VERIFIED"
+          },
+          {
+            "name": "identity-check",
+            "ok": true,
+            "detail": "身份核对完成（p-fx-02/清风徐来）"
+          },
+          {
+            "name": "add-candidate",
+            "ok": true,
+            "detail": "候选：2026-10-01T14:04 / 名次 2"
+          },
+          {
+            "name": "submit-pending",
+            "ok": true,
+            "detail": "提交成功，出现待核验候选"
+          },
+          {
+            "name": "release-verify",
+            "ok": true,
+            "detail": "已放行（ACTIVE）"
+          },
+          {
+            "name": "stats-reflected",
+            "ok": true,
+            "detail": "统计 4 局（API 复核一致）："
+          }
+        ],
+        "apiStatsAfterDrill": {
+          "sampleCount": 4,
+          "firstPlaces": 0,
+          "top3Places": 3,
+          "winRate": 0,
+          "top3Rate": 0.75,
+          "avgRank": 2.75,
+          "coverageNote": "已收录 4 局",
+          "warning": "样本量较少 (N < 20)",
+          "isSmallSample": true
+        }
+      }
+    },
+    {
+      "name": "filter",
+      "db": "wanxiangqi_w5_filter_test",
+      "status": "DONE",
+      "routes": [
+        {
+          "scenario": "filter",
+          "route": "home",
+          "path": "/",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__home__desktop.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__roster__desktop.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__player-profile__desktop.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__lineups__desktop.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__lineup-detail__desktop.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__archive__desktop.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__event-detail__desktop.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__admin-verify__desktop.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5236/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__personal-import__desktop.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "home",
+          "path": "/",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__home__mobile.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__roster__mobile.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__player-profile__mobile.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__lineups__mobile.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__lineup-detail__mobile.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__archive__mobile.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__event-detail__mobile.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__admin-verify__mobile.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "filter",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5236/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/filter__personal-import__mobile.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        }
+      ],
+      "filterChecks": {
+        "rosterRowsBefore": 6,
+        "rosterRowsAfterSearch": 1,
+        "searchFilters": true,
+        "noMatchEmptyState": true,
+        "archiveTabSwitched": false
+      }
+    },
+    {
+      "name": "stale",
+      "db": "wanxiangqi_w5_stale_test",
+      "status": "DONE",
+      "routes": [
+        {
+          "scenario": "stale",
+          "route": "home",
+          "path": "/",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__home__desktop.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__roster__desktop.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__player-profile__desktop.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__lineups__desktop.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__lineup-detail__desktop.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__archive__desktop.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__event-detail__desktop.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__admin-verify__desktop.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5239/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__personal-import__desktop.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "home",
+          "path": "/",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__home__mobile.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__roster__mobile.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__player-profile__mobile.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__lineups__mobile.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__lineup-detail__mobile.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__archive__mobile.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__event-detail__mobile.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "hasLoadingError": false,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__admin-verify__mobile.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "stale",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5239/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/stale__personal-import__mobile.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "hasLoadingError": false,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        }
+      ],
+      "staleChecks": {
+        "lineupsStaleTagCount": 2,
+        "lineupTextHasStale": true,
+        "versionChipShown": true,
+        "detailShowsVersionOrWindow": true
+      }
+    },
+    {
+      "name": "fail",
+      "db": "wanxiangqi_w5_fail_test",
+      "status": "DONE",
+      "routes": [
+        {
+          "scenario": "fail",
+          "route": "home",
+          "path": "/",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__home__desktop.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__roster__desktop.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__player-profile__desktop.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__lineups__desktop.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__lineup-detail__desktop.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载阵容详情失败: Error: HTTP 502 请求失败\n    at requestApi (http://127.0.0.1:5202/src/api/index.ts:58:15)\n    at async fetchLineupDetail (http://127.0.0.1:5202/src/api/index.ts:153:14)\n    at async loadDetail (",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "fail",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__archive__desktop.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载战绩流水失败: Error: HTTP 502 请求失败\n    at requestApi (http://127.0.0.1:5202/src/api/index.ts:58:15)\n    at async fetchMatchesList (http://127.0.0.1:5202/src/api/index.ts:125:14)\n    at async loadCampMatch",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "fail",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__event-detail__desktop.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__admin-verify__desktop.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "desktop",
+          "url": "http://127.0.0.1:5202/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__personal-import__desktop.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "home",
+          "path": "/",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__home__mobile.png",
+          "checks": {
+            "title": "王牌对决已收录场次 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "roster",
+          "path": "/roster",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/roster",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__roster__mobile.png",
+          "checks": {
+            "title": "选手数据一览 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "player-profile",
+          "path": "/players/p-fx-01",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/players/p-fx-01",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__player-profile__mobile.png",
+          "checks": {
+            "title": "选手数据画像 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "lineups",
+          "path": "/lineups",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/lineups",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__lineups__mobile.png",
+          "checks": {
+            "title": "第三方阵容快照参考 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "lineup-detail",
+          "path": "/lineups/lu-fx-1",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/lineups/lu-fx-1",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__lineup-detail__mobile.png",
+          "checks": {
+            "title": "阵容快照详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载阵容详情失败: Error: HTTP 502 请求失败\n    at requestApi (http://127.0.0.1:5202/src/api/index.ts:58:15)\n    at async fetchLineupDetail (http://127.0.0.1:5202/src/api/index.ts:153:14)\n    at async loadDetail (",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "fail",
+          "route": "archive",
+          "path": "/archive",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/archive",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__archive__mobile.png",
+          "checks": {
+            "title": "已核验对局流水 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": [
+            {
+              "kind": "console",
+              "text": "加载战绩流水失败: Error: HTTP 502 请求失败\n    at requestApi (http://127.0.0.1:5202/src/api/index.ts:58:15)\n    at async fetchMatchesList (http://127.0.0.1:5202/src/api/index.ts:125:14)\n    at async loadCampMatch",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "scenario": "fail",
+          "route": "event-detail",
+          "path": "/events/ev-fx-today",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/events/ev-fx-today",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__event-detail__mobile.png",
+          "checks": {
+            "title": "单场对局详情 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": false,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "noHorizontalOverflow": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "admin-verify",
+          "path": "/admin/verify",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/admin/verify",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__admin-verify__mobile.png",
+          "checks": {
+            "title": "证据链与人工核验工作台 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        },
+        {
+          "scenario": "fail",
+          "route": "personal-import",
+          "path": "/admin/personal-import",
+          "viewport": "mobile",
+          "url": "http://127.0.0.1:5202/admin/personal-import",
+          "screenshot": "docs/v4_artifacts/browser-acceptance-2026-10-01T07-04-00/fail__personal-import__mobile.png",
+          "checks": {
+            "title": "单人真实战绩导入 - 王者万象棋数据站",
+            "heading": "王者万象棋 · 真实数据站",
+            "headingPresent": true,
+            "hasTokenPanel": true,
+            "expectErrorState": true,
+            "errorStateShown": true,
+            "contrastProbe": {
+              "text": "王者万象棋 · 真实数据站",
+              "ratio": 17.85
+            }
+          },
+          "consoleIssues": []
+        }
+      ]
+    }
+  ],
+  "status": "PASSED",
+  "chromeBinary": "/Users/lhw/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+  "summary": {
+    "routeShots": 90,
+    "routesWithUnexpectedConsoleErrors": [],
+    "routesMissingHeading": [],
+    "routesMissingErrorState": [],
+    "drillSteps": [
+      "open-page:ok",
+      "save-admin-token:ok",
+      "upload-fixture-png:ok",
+      "verify-evidence:ok",
+      "identity-check:ok",
+      "add-candidate:ok",
+      "submit-pending:ok",
+      "release-verify:ok",
+      "stats-reflected:ok"
+    ]
+  },
+  "finishedAt": "2026-10-01T07:05:49.670Z"
+}

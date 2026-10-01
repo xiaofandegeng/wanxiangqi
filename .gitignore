@@ -35,3 +35,14 @@ tools/emulator-watcher/fixtures/data/
 
 # v3 验收测试运行产生的测试库隔离清单（业务库证据文件正常入库，*_test 系测试噪音）
 docs/v3_artifacts/*_v06_test-*.json
+
+# v4 浏览器验收：单次运行全量截图约 11MB，只入库 manifest/README + 演练/筛选/各态代表性截图
+# （完整产物保留在运行机，检查结果以 run-manifest.json 为准）
+docs/v4_artifacts/browser-acceptance-*/*.png
+!docs/v4_artifacts/browser-acceptance-*/drill__*.png
+!docs/v4_artifacts/browser-acceptance-*/fixture-personal.png
+!docs/v4_artifacts/browser-acceptance-*/filter__*.png
+!docs/v4_artifacts/browser-acceptance-*/empty__home__desktop.png
+!docs/v4_artifacts/browser-acceptance-*/normal__home__desktop.png
+!docs/v4_artifacts/browser-acceptance-*/stale__lineups__desktop.png
+!docs/v4_artifacts/browser-acceptance-*/fail__home__desktop.png
