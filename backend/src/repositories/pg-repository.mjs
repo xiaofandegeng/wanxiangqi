@@ -295,26 +295,39 @@ export class PgRepository {
 
   // ---------------- 对决场次 ----------------
 
-  async getEventsList(dateStr = '', mode = null) {
+  // 复验P1（续）：INTERNAL_ONLY 材料生成的对决场次同属内部记录——
+  // 公开列表排除、详情 404，仅授权管理端（includeInternal）可见。
+  async getEventsList(dateStr = '', mode = null, { includeInternal = false } = {}) {
     const params = []
-    const conds = [`status <> 'QUARANTINED'`]
+    // LEFT JOIN evidences 后列名必须全限定（两表均有 status，裸引用会歧义报错）
+    const conds = [`events.status <> 'QUARANTINED'`]
     if (dateStr) {
       params.push(`${dateStr}%`)
-      conds.push(`scheduled_at::text LIKE $${params.length}`)
+      conds.push(`events.scheduled_at::text LIKE $${params.length}`)
     }
     if (mode && mode !== 'ALL') {
       params.push(mode)
-      conds.push(`mode = $${params.length}`)
+      conds.push(`events.mode = $${params.length}`)
+    }
+    if (!includeInternal) {
+      conds.push(PgRepository.INTERNAL_SCOPE_EXCLUDED('events'))
     }
     const res = await this.pool.query(
-      `SELECT * FROM events WHERE ${conds.join(' AND ')} ORDER BY scheduled_at DESC LIMIT 200`, params
+      `SELECT events.*, e.usage_scope FROM events
+       LEFT JOIN evidences e ON e.id = events.evidence_id
+       WHERE ${conds.join(' AND ')} ORDER BY scheduled_at DESC LIMIT 200`, params
     )
     return Promise.all(res.rows.map(r => this.#eventWire(r)))
   }
 
-  async getEventById(eventId) {
-    const res = await this.pool.query(`SELECT * FROM events WHERE id = $1`, [eventId])
+  async getEventById(eventId, { includeInternal = false } = {}) {
+    const res = await this.pool.query(
+      `SELECT events.*, e.usage_scope FROM events
+       LEFT JOIN evidences e ON e.id = events.evidence_id
+       WHERE events.id = $1`, [eventId]
+    )
     if (res.rows.length === 0) return null
+    if (!includeInternal && res.rows[0].usage_scope === 'INTERNAL_ONLY') return null
     return this.#eventWire(res.rows[0])
   }
 
@@ -331,6 +344,7 @@ export class PgRepository {
       evidenceId: evt.evidence_id,
       verifiedAt: iso(evt.verified_at),
       verifiedBy: evt.verified_by,
+      usageScope: evt.usage_scope ?? null,
       participants: parts.rows.map(p => ({
         slot: p.slot,
         playerId: p.player_id,
@@ -1090,7 +1104,8 @@ export class PgRepository {
       client.release()
     }
 
-    return this.getEventById(eventId)
+    // 校对动作由授权管理端发起，回传完整场次（含内部材料场次与 usageScope 标注）
+    return this.getEventById(eventId, { includeInternal: true })
   }
 
   // ---------------- 写路径：核验放行动作 (V17 + 复验1/2) ----------------

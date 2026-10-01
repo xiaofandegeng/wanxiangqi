@@ -342,3 +342,83 @@ test('W1-8: 复验P1 —— INTERNAL_ONLY 材料记录不进公开统计/流水�
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+test('W1-9: 复验P1（续）—— 内部六席材料 → 核验 → 匿名赛事列表/详情不可见（PG 全链路）', { skip: !pgAvailable }, async () => {
+  // ① 上传仅限内部使用的材料并人工确认有效（真实链路，非 SQL 直插）
+  const up = await upload(fixturePng('W1-9-INTERNAL'), { token: stack.adminToken, usageScope: 'INTERNAL_ONLY' })
+  assert.equal(up.status, 201)
+  const ve = await stack.api(`/api/v1/admin/evidences/${up.json.evidenceId}/verify`, {
+    method: 'POST', token: stack.adminToken, body: { verifiedBy: 'w1-auditor' }
+  })
+  assert.equal(ve.status, 200)
+
+  // ② 六席核验创建赛事（标题/六名选手昵称/名次/证据编号均入库）
+  const slots = Array.from({ length: 6 }, (_, i) => ({
+    slot: i + 1, playerId: `p-w1-9-s${i + 1}`, nickname: `W1九席选手${i + 1}`, finalRank: i + 1
+  }))
+  const confirm = await stack.api(`/api/v1/admin/slots/confirm`, {
+    method: 'POST', token: stack.adminToken,
+    body: { evidenceId: up.json.evidenceId, eventId: 'evt-w1-9-internal', title: 'W1-9 内部材料赛事（不得公开）', slots }
+  })
+  assert.equal(confirm.status, 200, JSON.stringify(confirm.json))
+  assert.equal(confirm.json.data.usageScope, 'INTERNAL_ONLY', '核验回传如实标注内部范围')
+
+  // ③ 匿名赛事列表：不含该赛事（标题/昵称/证据编号零泄漏）
+  const publicList = await stack.api(`/api/v1/events`)
+  assert.equal(publicList.status, 200)
+  assert.ok(!publicList.json.data.some(e => e.id === 'evt-w1-9-internal'),
+    'INTERNAL_ONLY 材料赛事不得出现在公开列表')
+  assert.ok(!JSON.stringify(publicList.json).includes('W1-9 内部材料赛事'), '标题不得泄漏')
+  assert.ok(!JSON.stringify(publicList.json).includes('W1九席选手'), '选手昵称不得泄漏')
+  assert.ok(!JSON.stringify(publicList.json).includes(up.json.evidenceId), '证据编号不得泄漏')
+
+  // ④ 匿名详情：等同不存在 → 404
+  const publicDetail = await stack.api(`/api/v1/events/evt-w1-9-internal`)
+  assert.equal(publicDetail.status, 404, '内部材料赛事详情对匿名必须 404')
+
+  // ⑤ 管理端：鉴权后可见（无凭证 401；有凭证列表+详情含 usageScope）
+  const anonAdmin = await stack.api(`/api/v1/admin/events`)
+  assert.equal(anonAdmin.status, 401, '管理端赛事列表必须鉴权')
+  const adminList = await stack.api(`/api/v1/admin/events`, { token: stack.adminToken })
+  assert.equal(adminList.status, 200)
+  const row = adminList.json.data.find(e => e.id === 'evt-w1-9-internal')
+  assert.ok(row, '授权管理端可见内部材料赛事')
+  assert.equal(row.usageScope, 'INTERNAL_ONLY')
+  assert.equal(row.participants.length, 6)
+  const adminDetail = await stack.api(`/api/v1/admin/events/evt-w1-9-internal`, { token: stack.adminToken })
+  assert.equal(adminDetail.status, 200)
+  assert.equal(adminDetail.json.data.usageScope, 'INTERNAL_ONLY')
+})
+
+test('W1-10: 复验P1（续）—— 内部材料赛事公开排除（demo 文件引擎同语义）', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'wxq-w1-file-evt-'))
+  const repo = new FileRepository({ dataDir: dir })
+  try {
+    const st = repo.engine.state
+    // 已确认有效 + 原件可恢复的内部材料（满足六席核验前置）
+    const buf = fixturePng('W1-10-FILE')
+    st.evidences.push({
+      id: 'ev-evt-int', sha256: sha256Hex(buf), sourceId: 'src-manual-review',
+      capturedAt: '2026-09-29T00:00:00Z', status: 'VERIFIED', usageScope: 'INTERNAL_ONLY'
+    })
+    st.evidenceBlobs.push({ sha256: sha256Hex(buf), contentBase64: buf.toString('base64'), mimeType: 'image/png', sizeBytes: buf.length })
+    const evt = await repo.confirmSlotAudit({
+      evidenceId: 'ev-evt-int', eventId: 'evt-file-int', title: 'demo 内部赛事',
+      slots: Array.from({ length: 6 }, (_, i) => ({ slot: i + 1, playerId: `p-fs${i + 1}`, nickname: `文件引擎席${i + 1}`, finalRank: i + 1 }))
+    }, 'w1-file-auditor')
+    assert.equal(evt.id, 'evt-file-int')
+
+    // 公开面：列表空、详情 null（等同不存在）
+    assert.equal((await repo.getEventsList()).length, 0, '内部材料赛事不进公开列表')
+    assert.equal(await repo.getEventById('evt-file-int'), null, '内部材料赛事详情对匿名等同不存在')
+    // 管理端：可见且如实标注范围
+    const adminList = await repo.getEventsList('', null, { includeInternal: true })
+    assert.equal(adminList.length, 1)
+    assert.equal(adminList[0].usageScope, 'INTERNAL_ONLY')
+    const adminDetail = await repo.getEventById('evt-file-int', { includeInternal: true })
+    assert.equal(adminDetail.usageScope, 'INTERNAL_ONLY')
+    assert.equal(adminDetail.participants.length, 6)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

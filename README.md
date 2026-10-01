@@ -132,7 +132,7 @@ node tools/browser-acceptance/harness.mjs   # 五态×9 路由×双视口 + 上�
 5. **管理写接口 Bearer 鉴权**：`/api/v1/admin/*` 未授权 401；token 只走环境变量，不落仓库。
 6. **同步失败不撒谎**：上游结构变化/断网 → sync_jobs 记 FAILED、旧快照逐字节保留、lastSuccessAt 不动（V15）；同步成功走**单事务**（快照替换 + 存证 + 成功台账 + 来源推进一致提交，中途失败整体回滚）；原始响应全文落 `raw_materials`（正文 + 实测字节数 + 内容寻址 storage_uri，`GET /api/v1/admin/raw-materials(/:id)` 可离线复核）；hokace 页面公布的快照版本/窗口文本如实提取，精确时间边界未知保持 null。
 7. **来源登记制**：记录引用未登记来源 → 400 拒绝，零写入（杜绝再造 `batch-datatft-s1-seed` 式无主数据）。
-8. **允许使用范围强制执行（v4 复验整改）**：`INTERNAL_ONLY` 材料关联的对局在公开统计、公开流水、选手详情统一排除，仅授权管理端可见（`GET /api/v1/admin/matches`）；单人导入页范围是显式选择项（默认最保守的仅内部验收），放行记录的 `usageScope` 对外如实标注。
+8. **允许使用范围强制执行（v4 复验整改）**：`INTERNAL_ONLY` 材料关联的对局在公开统计、公开流水、选手详情统一排除，其生成的对决场次同样不进公开赛事列表、详情对匿名 404；仅授权管理端可见（`GET /api/v1/admin/matches`、`GET /api/v1/admin/events(/:id)`）。单人导入页范围是显式选择项（默认最保守的仅内部验收），放行记录与场次的 `usageScope` 对外如实标注。
 
 ---
 

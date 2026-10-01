@@ -103,12 +103,20 @@ export class FileRepository {
     return { ...matchRow, usageScope: ev?.usageScope ?? null }
   }
 
-  async getEventsList(dateStr = '', mode = null) {
+  // 复验P1（续）：内部材料生成的对决场次不进公开面（与 PG 同语义）；
+  // 详情对匿名等同不存在（路由层 404），仅授权管理端 includeInternal 可见
+  async getEventsList(dateStr = '', mode = null, { includeInternal = false } = {}) {
+    const internal = this.#internalEvidenceIds()
     return this.engine.getEventsList(dateStr, mode)
+      .filter(e => includeInternal || !internal.has(e.evidenceId))
+      .map(e => this.#withUsageScope(e))
   }
 
-  async getEventById(eventId) {
-    return this.engine.getEventById(eventId)
+  async getEventById(eventId, { includeInternal = false } = {}) {
+    const evt = await this.engine.getEventById(eventId)
+    if (!evt) return null
+    if (!includeInternal && this.#internalEvidenceIds().has(evt.evidenceId)) return null
+    return this.#withUsageScope(evt)
   }
 
   // 公开口径（复验3，与 PG 同语义）：仅 来源 READY/ACTIVE 且快照 ACTIVE 的行

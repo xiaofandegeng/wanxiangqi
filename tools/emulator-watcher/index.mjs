@@ -299,6 +299,8 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     // ----------------------------------------------------
     // v2 标准 API: 4. 对局场次大盘列表
     // GET /api/v1/events?date=&mode=
+    // 复验P1（续）：INTERNAL_ONLY 材料生成的场次不进公开列表
+    // （仓储层统一排除；管理端走 /api/v1/admin/events）
     // ----------------------------------------------------
     if (pathname === '/api/v1/events' && req.method === 'GET') {
       const dateStr = url.searchParams.get('date') || ''
@@ -310,12 +312,34 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     // ----------------------------------------------------
     // v2 标准 API: 4.1 对局场次单场详情 (F13)
     // GET /api/v1/events/:id
+    // 复验P1（续）：内部材料场次对匿名等同不存在 → 404
     // ----------------------------------------------------
     const eventDetailMatch = pathname.match(/^\/api\/v1\/events\/([^/]+)$/)
     if (eventDetailMatch && req.method === 'GET') {
       const eventData = await svc.getEventById(eventDetailMatch[1])
       if (!eventData) {
         return sendJson(404, { code: 404, error: `对决场次 [${eventDetailMatch[1]}] 不存在` })
+      }
+      return sendJson(200, { code: 0, data: eventData })
+    }
+
+    // ----------------------------------------------------
+    // 复验P1（续）新增：管理端对决场次列表/详情
+    // GET /api/v1/admin/events?date=&mode=   ·   GET /api/v1/admin/events/:id
+    // includeInternal=true —— 内部材料场次仅授权管理端可见，wire 如实回 usageScope
+    // 前缀 Bearer 守卫已覆盖。
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/events' && req.method === 'GET') {
+      const dateStr = url.searchParams.get('date') || ''
+      const mode = url.searchParams.get('mode') || null
+      const list = await svc.getEventsList(dateStr, mode, { includeInternal: true })
+      return sendJson(200, { code: 0, total: list.length, data: list, dataAsOf: new Date().toISOString() })
+    }
+    const adminEventDetailMatch = pathname.match(/^\/api\/v1\/admin\/events\/([^/]+)$/)
+    if (adminEventDetailMatch && req.method === 'GET') {
+      const eventData = await svc.getEventById(adminEventDetailMatch[1], { includeInternal: true })
+      if (!eventData) {
+        return sendJson(404, { code: 404, error: `对决场次 [${adminEventDetailMatch[1]}] 不存在` })
       }
       return sendJson(200, { code: 0, data: eventData })
     }

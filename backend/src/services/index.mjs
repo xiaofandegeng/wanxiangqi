@@ -57,12 +57,12 @@ export function createServices(repo, env = {}) {
       return this.repo.getLineupById(id)
     },
 
-    async getEventsList(dateStr, mode) {
-      return this.repo.getEventsList(dateStr, mode)
+    async getEventsList(dateStr, mode, opts) {
+      return this.repo.getEventsList(dateStr, mode, opts)
     },
 
-    async getEventById(id) {
-      return this.repo.getEventById(id)
+    async getEventById(id, opts) {
+      return this.repo.getEventById(id, opts)
     },
 
     async getAllMatches(params) {

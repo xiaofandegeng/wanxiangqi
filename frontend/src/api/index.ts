@@ -143,6 +143,8 @@ export interface EventRecord {
   participants: EventParticipant[]
   verifiedAt?: string | null
   verifiedBy?: string | null
+  /** 材料允许使用范围（公开面永不出现 INTERNAL_ONLY 场次；管理核验回传如实标注） */
+  usageScope?: 'INTERNAL_ONLY' | 'PUBLIC' | null
 }
 
 export interface LineupSnapshot {
