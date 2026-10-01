@@ -1,0 +1,28 @@
+{
+  "operatedAt": "2026-10-01T07:20:00+00:00",
+  "target": "业务库 wanxiangqi (PGHOST=127.0.0.1 PGPORT=5432)",
+  "operation": "npm run migrate（node src/migrate.mjs，每迁移独立事务，幂等）",
+  "applied": ["0005_evidence_originals.sql (sha256 前缀 680b2e7eba0a)"],
+  "skipped": ["0001_baseline.sql", "0002_v3.sql", "0003_s6_lineup_semantics.sql", "0004_v31_review_fixes.sql"],
+  "before": {
+    "players": 79,
+    "matches": { "total": 212, "active": 0, "verified": 208 },
+    "evidences": { "total": 3, "quarantined": 3, "verified": 0, "pending": 0 },
+    "raw_materials": 2,
+    "lineup_snapshots": { "total": 71, "active": 35 }
+  },
+  "after": {
+    "players": 79,
+    "matches": { "total": 212, "active": 0, "verified": 208 },
+    "evidences": { "total": 3, "quarantined": 3, "noteMarkedOriginalMissing": 3 },
+    "evidence_blobs": 0,
+    "raw_materials": 2,
+    "lineup_snapshots": { "total": 71, "active": 35 }
+  },
+  "notes": [
+    "0005 为纯增量 DDL（新表 evidence_blobs + evidences 新列 kind/provided_by/usage_scope + matches.evidence_locator）+ 旧只有哈希材料的 note 标记 UPDATE",
+    "唯一数据影响：3 条已隔离（QUARANTINED）旧材料 note 追加 [ORIGINAL_MISSING: pre-0005 hash-only]，与预期一致",
+    "业务计数前后完全一致；未清空、未重新生成任何业务数据",
+    "8080 服务重启时 server.js 会再次走 runMigrations，幂等跳过"
+  ]
+}
