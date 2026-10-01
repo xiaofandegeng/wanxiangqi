@@ -128,10 +128,11 @@ node tools/browser-acceptance/harness.mjs   # 五态×9 路由×双视口 + 上�
    N=0 时比率/均名一律 `null`（禁 `||` 兜底）；`coverageNote` 如实写"已收录 N 局"。
 2. **双时间截点防未来泄漏**：比赛早但录入晚（`available_at > cutoff`）的记录在截点时刻统计中剔除；更正/撤销走 SCD-2 版本区间，过去截点永远取当时版本（V13）。
 3. **核验是唯一提真路径，且要求原件可恢复**：导入接口忽略入参 `verified`（一律 PENDING）；`POST /api/v1/admin/matches/:id/verify` 强制证据链四段校验（证据不存在 → 已隔离 → 未确认(PENDING) → 原件缺失均 422/409 拒绝），并以**实际核验时刻**建立新可见版本（SCD-2）——旧版本原样封存，过去截点统计不被回写。
-4. **上传不等于核验（v4）**：`POST /api/v1/admin/evidences/upload` 原件入库返回 PENDING（服务端 SHA256 + 魔数嗅探 + 双重限额）；人工 `POST /:id/verify` 才 VERIFIED；`GET /:id/content` 鉴权回原件字节。旧哈希-only 材料标记 `[ORIGINAL_MISSING]`，不伪造原件。
+4. **上传不等于核验（v4）**：`POST /api/v1/admin/evidences/upload` 原件入库返回 PENDING（服务端 SHA256 + 魔数嗅探 + 双重限额）；人工 `POST /:id/verify` 才 VERIFIED，且**材料核验事务内检查原件可恢复**——缺失即 422 `ORIGINAL_MISSING`、状态保持不变（无原件的材料不可能被标记有效）；`GET /:id/content` 鉴权回原件字节。旧哈希-only 材料标记 `[ORIGINAL_MISSING]`，不伪造原件。
 5. **管理写接口 Bearer 鉴权**：`/api/v1/admin/*` 未授权 401；token 只走环境变量，不落仓库。
 6. **同步失败不撒谎**：上游结构变化/断网 → sync_jobs 记 FAILED、旧快照逐字节保留、lastSuccessAt 不动（V15）；同步成功走**单事务**（快照替换 + 存证 + 成功台账 + 来源推进一致提交，中途失败整体回滚）；原始响应全文落 `raw_materials`（正文 + 实测字节数 + 内容寻址 storage_uri，`GET /api/v1/admin/raw-materials(/:id)` 可离线复核）；hokace 页面公布的快照版本/窗口文本如实提取，精确时间边界未知保持 null。
 7. **来源登记制**：记录引用未登记来源 → 400 拒绝，零写入（杜绝再造 `batch-datatft-s1-seed` 式无主数据）。
+8. **允许使用范围强制执行（v4 复验整改）**：`INTERNAL_ONLY` 材料关联的对局在公开统计、公开流水、选手详情统一排除，仅授权管理端可见（`GET /api/v1/admin/matches`）；单人导入页范围是显式选择项（默认最保守的仅内部验收），放行记录的 `usageScope` 对外如实标注。
 
 ---
 
@@ -156,7 +157,7 @@ node tools/browser-acceptance/harness.mjs   # 五态×9 路由×双视口 + 上�
 * `/lineups` `/lineups/:id`：阵容环境大盘（仅公开 READY/ACTIVE 来源的 ACTIVE 快照，**按来源分组陈列、组内独立排序**——不同来源样本口径互不可比；缺失字段 null）
 * `/archive`：历史对战记录档案（增量巡检，无新增如实提示）
 * `/admin/verify`：证据存证与人工核验工作台（原件上传入库 PENDING→VERIFIED、SHA-256 存证、6 席位赛事校对）
-* `/admin/personal-import`：单人真实战绩逐局导入（上传原件→身份核对→候选 PENDING→逐条放行；不要求补齐六席）
+* `/admin/personal-import`：单人真实战绩逐局导入（上传原件→身份核对→候选 PENDING→逐条放行；不要求补齐六席；允许使用范围显式选择，仅内部材料不进公开面）
 * `/models/backtest`：回测基线（暂无正式验证结果，展示真实空态）
 
 ---

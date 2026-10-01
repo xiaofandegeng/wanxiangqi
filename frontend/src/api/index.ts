@@ -94,6 +94,8 @@ export interface MatchRecord {
   verifiedAt?: string | null
   // v4 W2：材料内定位（页码/图片区域/行），缺省 null 如实展示
   evidenceLocator?: string | null
+  // 复验P1：材料允许使用范围（INTERNAL_ONLY 不进公开统计/流水，仅管理端可见）
+  usageScope?: 'INTERNAL_ONLY' | 'PUBLIC' | null
 }
 
 /**

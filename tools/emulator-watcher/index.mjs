@@ -416,6 +416,8 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     // v4 W2 新增：管理端战绩记录列表（单人逐局导入核验工作台）
     // GET /api/v1/admin/matches?recordStatus=&playerId=&mode=&limit=&offset=
     // 默认 recordStatus=PENDING（待核验候选口径）；公开 /api/v1/matches 行为不变。
+    // 复验P1：includeInternal=true —— INTERNAL_ONLY 材料记录仅授权管理端可见
+    // （公开 /matches、/players/:id/matches、/stats 一律排除）。
     // 前缀 Bearer 守卫已覆盖（含 GET：PENDING 候选含未放行材料定位，属运营细节）。
     // ----------------------------------------------------
     if (pathname === '/api/v1/admin/matches' && req.method === 'GET') {
@@ -425,7 +427,7 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
         const playerId = url.searchParams.get('playerId') || null
         const mode = url.searchParams.get('mode') || null
         const recordStatus = url.searchParams.get('recordStatus') || 'PENDING'
-        const result = await svc.getAllMatches({ limit, offset, playerId, mode, recordStatus })
+        const result = await svc.getAllMatches({ limit, offset, playerId, mode, recordStatus, includeInternal: true })
         return sendJson(200, {
           code: 0,
           total: result.total,

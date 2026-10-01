@@ -1,0 +1,63 @@
+{
+  "testedAt": "2026-10-01T07:55:04.140Z",
+  "target": "https://hokace.wiki/zh/lineups/",
+  "status": "SUCCESS",
+  "fetchedCount": 35,
+  "snapshotVersion": "v260924",
+  "windowText": "7 日对局快照",
+  "contentSha256": "b07ec4ad88b634b0894d325167e531b6c37d19f0643a5ea25227e3ac011b1585",
+  "contentLength": 389351,
+  "error": null,
+  "sample": [
+    {
+      "lineupName": "嬴政 · 庄周 · 芈月",
+      "winRate": 0.3801,
+      "top3Rate": 0.8446,
+      "avgRank": 2.2024,
+      "sampleCount": 3186,
+      "dataCutoffAt": null,
+      "snapshotVersion": "v260924",
+      "windowText": "7 日对局快照"
+    },
+    {
+      "lineupName": "司空震 · 姬小满 · 亚瑟",
+      "winRate": 0.7554,
+      "top3Rate": 0.9445,
+      "avgRank": 1.4426,
+      "sampleCount": 793,
+      "dataCutoffAt": null,
+      "snapshotVersion": "v260924",
+      "windowText": "7 日对局快照"
+    },
+    {
+      "lineupName": "花木兰 · 程咬金 · 李白",
+      "winRate": 0.3465,
+      "top3Rate": 0.7119,
+      "avgRank": 2.6222,
+      "sampleCount": 10446,
+      "dataCutoffAt": null,
+      "snapshotVersion": "v260924",
+      "windowText": "7 日对局快照"
+    },
+    {
+      "lineupName": "李信 · 花木兰 · 铠",
+      "winRate": 0.3691,
+      "top3Rate": 0.8041,
+      "avgRank": 2.2964,
+      "sampleCount": 1623,
+      "dataCutoffAt": null,
+      "snapshotVersion": "v260924",
+      "windowText": "7 日对局快照"
+    },
+    {
+      "lineupName": "敖隐 · 东皇太一 · 少司缘",
+      "winRate": 0.2834,
+      "top3Rate": 0.7812,
+      "avgRank": 2.4671,
+      "sampleCount": 2537,
+      "dataCutoffAt": null,
+      "snapshotVersion": "v260924",
+      "windowText": "7 日对局快照"
+    }
+  ]
+}

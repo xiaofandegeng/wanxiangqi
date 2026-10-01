@@ -36,12 +36,12 @@ async function api(pathname, { method = 'GET', token = null, body = null, raw = 
 }
 
 /** 上传并人工确认一件个人截图材料（真实 HTTP 链路：upload → PENDING → verify → VERIFIED） */
-async function makeVerifiedEvidence(label) {
+async function makeVerifiedEvidence(label, { usageScope = 'PUBLIC' } = {}) {
   const buf = fixturePng(label)
   const q = new URLSearchParams({
     capturedAt: '2026-09-30T08:00:00Z',
     kind: 'PERSONAL_SCREENSHOT',
-    usageScope: 'INTERNAL_ONLY',
+    usageScope,
     providedBy: 'w2-self'
   })
   const up = await api(`/api/v1/admin/evidences/upload?${q}`, {
@@ -272,4 +272,57 @@ test('W2-4: 逐条放行后统计计入——单人材料闭环（PENDING 0 局 
   const after = await api('/api/v1/players/p-w2-flow/stats')
   assert.equal(after.json.stats.sampleCount, 1, '放行后统计计入')
   assert.equal(after.json.stats.firstPlaces, 1)
+})
+
+test('W2-5: 复验P1 —— INTERNAL_ONLY 材料放行后仍不进公开面（统计/流水/大盘），仅管理端可见', { skip: !pgAvailable }, async () => {
+  await insertPlayerRow(stack.pool, { id: 'p-w2-scope', nickname: 'W2范围选手' })
+  // 同一玩家两条同口径记录：一内部一公开，除材料范围外无差异
+  const evInt = await makeVerifiedEvidence('W2-5-INT', { usageScope: 'INTERNAL_ONLY' })
+  const evPub = await makeVerifiedEvidence('W2-5-PUB', { usageScope: 'PUBLIC' })
+  const rec = evidenceId => ({
+    playerId: 'p-w2-scope', nickname: 'W2范围选手', matchTime: '2026-09-30T14:00:00.000Z',
+    finalRank: 1, mode: 'RANKED_DIAMOND', evidenceId, slot: 1
+  })
+  const imp = await api('/api/v1/admin/imports', {
+    method: 'POST', token: stack.adminToken,
+    body: { records: [rec(evInt), rec(evPub)], source: 'PERSONAL_IMPORT' }
+  })
+  assert.equal(imp.status, 200, JSON.stringify(imp.json))
+  assert.equal(imp.json.result.inserted, 2)
+
+  // 两条候选都放行（ACTIVE）
+  const list = await api('/api/v1/admin/matches?recordStatus=PENDING', { token: stack.adminToken })
+  for (const evidenceId of [evInt, evPub]) {
+    const row = list.json.data.find(m => m.evidenceId === evidenceId)
+    assert.ok(row, `候选 ${evidenceId} 在管理列表`)
+    const ver = await api(`/api/v1/admin/matches/${row.id}/verify`, {
+      method: 'POST', token: stack.adminToken, body: { verifiedBy: 'w2-staff', evidenceId }
+    })
+    assert.equal(ver.status, 200, JSON.stringify(ver.json))
+  }
+
+  // 公开统计：只计 PUBLIC 一条 —— 内部材料即便已核验放行也不得泄漏
+  const stats = await api('/api/v1/players/p-w2-scope/stats')
+  assert.equal(stats.json.stats.sampleCount, 1, 'INTERNAL_ONLY 记录不得进入公开统计')
+  assert.equal(stats.json.stats.firstPlaces, 1, '计入的是 PUBLIC 那条（名次1）')
+
+  // 公开选手流水 / 大盘：内部记录整行排除
+  const flow = await api('/api/v1/players/p-w2-scope/matches')
+  assert.equal(flow.json.total, 1)
+  assert.ok(flow.json.data.every(m => m.evidenceId !== evInt), '公开流水不含内部材料记录')
+  assert.equal(flow.json.data[0].usageScope, 'PUBLIC')
+
+  const board = await api('/api/v1/matches?playerId=p-w2-scope&recordStatus=ACTIVE')
+  assert.equal(board.json.total, 1)
+  assert.ok(board.json.data.every(m => m.evidenceId !== evInt))
+
+  // 管理端（Bearer）：两条都可见且范围如实随行回传
+  const adminActive = await api('/api/v1/admin/matches?recordStatus=ACTIVE&playerId=p-w2-scope', { token: stack.adminToken })
+  assert.equal(adminActive.json.total, 2, '管理端可见内部材料记录（授权范围内运营）')
+  const intRow = adminActive.json.data.find(m => m.evidenceId === evInt)
+  assert.equal(intRow.usageScope, 'INTERNAL_ONLY', 'wire 如实标注允许使用范围')
+
+  // 选手榜统计口径同排除（roster 复算不泄漏）
+  const roster = await api('/api/v1/players?query=W2范围选手')
+  assert.equal(roster.json.data[0].stats.sampleCount, 1)
 })

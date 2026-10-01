@@ -238,13 +238,26 @@ export class StorageEngine {
   computePlayerStats(playerId, options = {}) {
     const { cutoffTime = null, mode = null, from = null, to = null } = options
     const params = validateStatsParams({ cutoffTime, mode, from, to })
-    const playerMatches = this.state.matches.filter(m => m.playerId === playerId)
+    // 复验P1：仅限内部使用（INTERNAL_ONLY）材料的记录不进公开统计（与 PG effective CTE 同语义）
+    const internal = this.internalEvidenceIds()
+    const playerMatches = this.state.matches.filter(
+      m => m.playerId === playerId && !internal.has(m.evidenceId)
+    )
     return computeStatsFromMatches(playerMatches, {
       cutoffMs: params.cutoffMs,
       fromMs: params.fromMs,
       toMs: params.toMs,
       modeFilter: params.modeFilter
     })
+  }
+
+  /** 复验P1：INTERNAL_ONLY 材料关联的对局记录集合（公开口径统一排除） */
+  internalEvidenceIds() {
+    return new Set(
+      (this.state.evidences || [])
+        .filter(e => e.usageScope === 'INTERNAL_ONLY')
+        .map(e => e.id)
+    )
   }
 
   /**

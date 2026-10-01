@@ -264,3 +264,81 @@ test('W1-6: demo 文件引擎同语义 —— contentBase64 原件往返一致�
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+test('W1-7: 复验P2 —— 无可恢复原件的材料不得标记 VERIFIED（422 ORIGINAL_MISSING，状态保持）', { skip: !pgAvailable }, async () => {
+  // PG：模拟 pre-0005 哈希-only 的 PENDING 材料（SQL 直插，无 evidence_blobs 行）
+  const sha = createHash('sha256').update('w1-7-blob-less-pending').digest('hex')
+  await stack.pool.query(
+    `INSERT INTO evidences (id, sha256, source_id, captured_at, status, usage_scope)
+     VALUES ('ev-w1-7-noblob', $1, 'src-manual-review', '2026-09-30T00:00:00Z', 'PENDING', 'PUBLIC')`,
+    [sha]
+  )
+  const ve = await stack.api(`/api/v1/admin/evidences/ev-w1-7-noblob/verify`, {
+    method: 'POST', token: stack.adminToken, body: { verifiedBy: 'w1-auditor' }
+  })
+  assert.equal(ve.status, 422, JSON.stringify(ve.json))
+  assert.equal(ve.json.code_name, 'ORIGINAL_MISSING')
+  const row = (await stack.pool.query(`SELECT status, verified_at FROM evidences WHERE id = 'ev-w1-7-noblob'`)).rows[0]
+  assert.equal(row.status, 'PENDING', '核验失败保持原状态，不产出无原件的 VERIFIED')
+  assert.equal(row.verified_at, null, '不得写入核验时刻')
+
+  // demo 文件引擎同语义：state 直插无 blob 的 PENDING 证据
+  const dir = mkdtempSync(join(tmpdir(), 'wxq-w1-file-p2-'))
+  const repo = new FileRepository({ dataDir: dir })
+  try {
+    repo.engine.state.evidences.push({
+      id: 'ev-file-noblob', sha256: sha256Hex(Buffer.from('demo-no-blob')), sourceId: 'src-manual-review',
+      capturedAt: '2026-09-30T00:00:00Z', status: 'PENDING', usageScope: 'PUBLIC'
+    })
+    await assert.rejects(
+      () => repo.verifyEvidence('ev-file-noblob', { verifiedBy: 'x' }),
+      err => err.status === 422 && err.code === 'ORIGINAL_MISSING'
+    )
+    assert.equal(repo.engine.state.evidences[0].status, 'PENDING', 'demo 引擎同保原状态')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('W1-8: 复验P1 —— INTERNAL_ONLY 材料记录不进公开统计/流水（demo 引擎同语义）', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'wxq-w1-file-scope-'))
+  const repo = new FileRepository({ dataDir: dir })
+  try {
+    const st = repo.engine.state
+    st.players.push({ id: 'p-scope', nickname: '范围语义选手', rankScore: 100 })
+    // 两件已确认材料：一件仅内部、一件允许公开；各挂一条已放行记录（其余字段同口径）
+    st.evidences.push(
+      { id: 'ev-int', sha256: sha256Hex(Buffer.from('int')), sourceId: 'src-manual-review', capturedAt: '2026-09-29T00:00:00Z', status: 'VERIFIED', usageScope: 'INTERNAL_ONLY' },
+      { id: 'ev-pub', sha256: sha256Hex(Buffer.from('pub')), sourceId: 'src-manual-review', capturedAt: '2026-09-29T00:00:00Z', status: 'VERIFIED', usageScope: 'PUBLIC' }
+    )
+    const mkMatch = (id, evidenceId, rank) => ({
+      id, playerId: 'p-scope', matchTime: '2026-09-29T10:00:00.000Z', availableAt: '2026-09-29T10:05:00.000Z',
+      mode: 'RANKED_DIAMOND', finalRank: rank, verified: true, recordStatus: 'ACTIVE', synthetic: false,
+      recordKey: `ev:${evidenceId}:1`, revision: 1, evidenceId
+    })
+    st.matches.push(mkMatch('m-int', 'ev-int', 1), mkMatch('m-pub', 'ev-pub', 3))
+
+    // 公开统计：只计 PUBLIC 那条（N=1，非 2）
+    const raw = await repo.computePlayerStatsRaw('p-scope')
+    assert.equal(raw.n, 1, 'INTERNAL_ONLY 记录不得进入公开统计')
+    assert.equal(raw.firstPlaces, 0, '内部材料的夺冠名次不得计入')
+
+    // 公开流水/大盘：整行排除；usageScope 随行回传供管理端识别
+    const flow = await repo.getPlayerMatches('p-scope', { recordStatus: 'ACTIVE' })
+    assert.equal(flow.length, 1)
+    assert.equal(flow[0].id, 'm-pub')
+    assert.equal(flow[0].usageScope, 'PUBLIC')
+    const board = await repo.getAllMatches({ recordStatus: 'ACTIVE' })
+    assert.equal(board.total, 1)
+    assert.ok(!board.data.some(m => m.id === 'm-int'))
+
+    // 管理端（includeInternal）：两条都可见，含内部范围标注
+    const adminFlow = await repo.getPlayerMatches('p-scope', { recordStatus: 'ACTIVE', includeInternal: true })
+    assert.equal(adminFlow.length, 2)
+    assert.equal(adminFlow.find(m => m.id === 'm-int').usageScope, 'INTERNAL_ONLY')
+    const adminBoard = await repo.getAllMatches({ recordStatus: 'ACTIVE', includeInternal: true })
+    assert.equal(adminBoard.total, 2)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

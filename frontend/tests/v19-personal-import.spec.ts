@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => {
     players: [] as any[],
     pendingRows: [] as any[],
     importCalls: [] as any[],
+    uploadCalls: [] as any[],
     verifyMatchCalls: [] as any[],
     verifyEvidenceCalls: [] as any[]
   }
@@ -28,11 +29,14 @@ vi.mock('../src/api', () => ({
   setAdminToken: vi.fn(),
   hasAdminToken: () => mocks.tokenConfigured,
   AdminTokenMissingError: mocks.AdminTokenMissingError,
-  uploadEvidence: vi.fn(async () => ({
-    evidenceId: mocks.evidence.id,
-    deduplicated: false,
-    evidence: mocks.evidence
-  })),
+  uploadEvidence: vi.fn(async (file: unknown, opts: any) => {
+    mocks.uploadCalls.push({ opts })
+    return {
+      evidenceId: mocks.evidence.id,
+      deduplicated: false,
+      evidence: mocks.evidence
+    }
+  }),
   verifyEvidence: vi.fn(async (id: string, verifiedBy: string) => {
     mocks.verifyEvidenceCalls.push({ id, verifiedBy })
     return mocks.evidenceAfterVerify
@@ -134,14 +138,26 @@ describe('V19: 单人真实战绩导入页七段流程', () => {
     mocks.players = []
     mocks.pendingRows = []
     mocks.importCalls = []
+    mocks.uploadCalls = []
 
     const { dom, unmount } = await mountView()
     try {
+      // 复验P1：允许使用范围为显式选择项（默认最保守的仅内部验收），随上传真实发送
+      const scopeSelect = dom.querySelector('select.usage-scope-select') as HTMLSelectElement
+      expect(scopeSelect).toBeTruthy()
+      expect(scopeSelect.value).toBe('INTERNAL_ONLY')
+      scopeSelect.value = 'PUBLIC'
+      scopeSelect.dispatchEvent(new Event('change', { bubbles: true }))
+      await tick()
+
       setFile(
         dom.querySelector('input[type=file]') as HTMLInputElement,
         new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])], 'personal.png', { type: 'image/png' })
       )
       await tick()
+
+      expect(mocks.uploadCalls.length).toBe(1)
+      expect(mocks.uploadCalls[0].opts.usageScope).toBe('PUBLIC', '范围来自选择项，不得写死')
 
       const text = dom.textContent || ''
       expect(text).toContain('ev-v19-personal')
@@ -175,6 +191,7 @@ describe('V19: 单人真实战绩导入页七段流程', () => {
       }
     ]
     mocks.importCalls = []
+    mocks.uploadCalls = []
     mocks.verifyMatchCalls = []
     mocks.verifyEvidenceCalls = []
 

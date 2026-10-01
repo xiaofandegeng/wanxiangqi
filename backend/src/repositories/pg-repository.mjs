@@ -113,6 +113,12 @@ export class PgRepository {
         AND (p.from_t IS NULL OR v.match_time >= p.from_t)
         AND (p.to_t IS NULL OR v.match_time < p.to_t)
       AND ($4::text IS NULL OR v.mode = $4)
+      -- 复验P1：仅限内部使用（INTERNAL_ONLY）材料的记录不进公开统计；
+      -- 无证据关联行（events 侧/存量）不受影响。统计端点只有公开口径，故在此统一排除。
+      AND NOT EXISTS (
+        SELECT 1 FROM evidences ie
+        WHERE ie.id = v.evidence_id AND ie.usage_scope = 'INTERNAL_ONLY'
+      )
     )`
 
   #statsParams({ cutoffTime = null, mode = null, from = null, to = null } = {}) {
@@ -228,26 +234,37 @@ export class PgRepository {
     externalMatchId: r.external_match_id,
     verifiedBy: r.verified_by,
     verifiedAt: iso(r.verified_at),
-    evidenceLocator: r.evidence_locator ?? null
+    evidenceLocator: r.evidence_locator ?? null,
+    // 复验P1：随行回传材料允许使用范围（管理端可见内部记录；公开查询直接整行排除）
+    usageScope: r.usage_scope ?? null
   })
 
-  async getPlayerMatches(playerId, { recordStatus = null } = {}) {
+  /** 复验P1：内部材料排除谓词（m 为 matches 别名）。includeInternal=true（管理端）时不排除。 */
+  static INTERNAL_SCOPE_EXCLUDED = mAlias => `NOT EXISTS (
+    SELECT 1 FROM evidences ie WHERE ie.id = ${mAlias}.evidence_id AND ie.usage_scope = 'INTERNAL_ONLY'
+  )`
+
+  async getPlayerMatches(playerId, { recordStatus = null, includeInternal = false } = {}) {
     const params = [playerId]
-    let where = 'player_id = $1 AND (record_key IS NULL OR superseded_at IS NULL)'
+    let where = 'm.player_id = $1 AND (m.record_key IS NULL OR m.superseded_at IS NULL)'
     if (recordStatus) {
       params.push(recordStatus)
-      where += ` AND record_status = $${params.length}`
+      where += ` AND m.record_status = $${params.length}`
     } else {
-      where += ` AND record_status NOT IN ('QUARANTINED', 'REVOKED')`
+      where += ` AND m.record_status NOT IN ('QUARANTINED', 'REVOKED')`
     }
+    if (!includeInternal) where += ` AND ${PgRepository.INTERNAL_SCOPE_EXCLUDED('m')}`
     params.push(200)
     const res = await this.pool.query(
-      `SELECT * FROM matches WHERE ${where} ORDER BY match_time DESC LIMIT $${params.length}`, params
+      `SELECT m.*, e.usage_scope FROM matches m
+         LEFT JOIN evidences e ON e.id = m.evidence_id
+       WHERE ${where} ORDER BY m.match_time DESC LIMIT $${params.length}`,
+      params
     )
     return res.rows.map(PgRepository.MATCH_WIRE)
   }
 
-  async getAllMatches({ limit = 50, offset = 0, playerId = null, mode = null, recordStatus = 'ACTIVE' } = {}) {
+  async getAllMatches({ limit = 50, offset = 0, playerId = null, mode = null, recordStatus = 'ACTIVE', includeInternal = false } = {}) {
     const params = []
     const conds = ['(record_key IS NULL OR superseded_at IS NULL)']
     if (recordStatus) {
@@ -263,10 +280,14 @@ export class PgRepository {
       params.push(mode)
       conds.push(`mode = $${params.length}`) // 指定模式：未知(null)一律排除
     }
+    if (!includeInternal) conds.push(PgRepository.INTERNAL_SCOPE_EXCLUDED('matches'))
     const where = conds.join(' AND ')
     const total = (await this.pool.query(`SELECT count(*)::int AS n FROM matches WHERE ${where}`, params)).rows[0].n
     const data = await this.pool.query(
-      `SELECT * FROM matches WHERE ${where} ORDER BY match_time DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+      `SELECT matches.*, e.usage_scope FROM matches
+         LEFT JOIN evidences e ON e.id = matches.evidence_id
+       WHERE ${where}
+       ORDER BY matches.match_time DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
       [...params, limit, offset]
     )
     return { total, data: data.rows.map(PgRepository.MATCH_WIRE) }
@@ -623,7 +644,12 @@ export class PgRepository {
     }
   }
 
-  /** 人工确认材料有效：PENDING → VERIFIED（幂等；QUARANTINED 拒绝）。不存在返回 null。 */
+  /**
+   * 人工确认材料有效：PENDING → VERIFIED（幂等；QUARANTINED 拒绝）。
+   * 复验P2：材料核验事务内强制原件可恢复——无 blob（pre-0005 哈希-only / 入库失败）
+   * 保持原状态并抛 422 ORIGINAL_MISSING，不得产出「无原件的 VERIFIED」。
+   * 不存在返回 null。
+   */
   async verifyEvidence(id, { verifiedBy = 'AUDIT_STAFF' } = {}) {
     const client = await this.client()
     try {
@@ -636,6 +662,18 @@ export class PgRepository {
       if (cur.rows[0].status === 'QUARANTINED') {
         await client.query('ROLLBACK')
         throw Object.assign(new Error(`证据 [${id}] 已被隔离，不得确认为有效材料`), { status: 409 })
+      }
+      const blob = await client.query(
+        `SELECT 1 FROM evidence_blobs b
+          WHERE b.sha256 = (SELECT sha256 FROM evidences WHERE id = $1)`,
+        [id]
+      )
+      if (!blob.rows.length) {
+        await client.query('ROLLBACK')
+        throw Object.assign(
+          new Error(`材料 [${id}] 无可恢复原件（哈希-only 存量或原件入库失败），不得标记为有效：状态保持不变`),
+          { status: 422, code: 'ORIGINAL_MISSING' }
+        )
       }
       if (cur.rows[0].status !== 'VERIFIED') {
         await client.query(
@@ -1171,7 +1209,11 @@ export class PgRepository {
         [matchId, now, effectiveEvidenceId, verifiedBy, 'api:admin/verify']
       )
       await client.query('COMMIT')
-      return PgRepository.MATCH_WIRE(inserted.rows[0])
+      // 复验P1：放行响应如实携带材料允许使用范围（单表 RETURNING 无此列，回查补充）
+      const scope = await this.pool.query(
+        `SELECT usage_scope FROM evidences WHERE id = $1`, [effectiveEvidenceId]
+      )
+      return PgRepository.MATCH_WIRE({ ...inserted.rows[0], usage_scope: scope.rows[0]?.usage_scope ?? null })
     } catch (err) {
       try { await client.query('ROLLBACK') } catch { /* 已回滚 */ }
       throw err
@@ -1254,7 +1296,10 @@ export class PgRepository {
     const batch = await this.pool.query(`SELECT * FROM import_batches WHERE batch_id = $1`, [batchId])
     if (batch.rows.length === 0) return null
     const records = await this.pool.query(
-      `SELECT * FROM matches WHERE batch_id = $1 ORDER BY match_time`, [batchId]
+      `SELECT m.*, e.usage_scope FROM matches m
+         LEFT JOIN evidences e ON e.id = m.evidence_id
+       WHERE m.batch_id = $1 ORDER BY m.match_time`,
+      [batchId]
     )
     const b = batch.rows[0]
     return {

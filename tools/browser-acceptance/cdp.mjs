@@ -320,6 +320,17 @@ export class CdpPage {
     })()`)
   }
 
+  /** 向 v-model 下拉选择写值（select：value 赋值 + change 事件） */
+  async chooseSelect(selectorExpr, value) {
+    return this.eval(`(() => {
+      const el = eval(${JSON.stringify(selectorExpr)})
+      if (!el || el.tagName !== 'SELECT') return false
+      el.value = ${JSON.stringify(value)}
+      el.dispatchEvent(new Event('change', { bubbles: true }))
+      return true
+    })()`)
+  }
+
   /** 按可见文本点击按钮（真实 click，触发完整事件链） */
   async clickText(needle, { settleMs = 350 } = {}) {
     const ok = await this.eval(`(() => {

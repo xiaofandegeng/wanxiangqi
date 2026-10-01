@@ -72,6 +72,13 @@
           <input v-model="evidenceCapturedAt" type="datetime-local" class="input-text" />
         </div>
         <div class="field-input-group">
+          <label>允许使用范围（必选，对应材料授权）</label>
+          <select v-model="evidenceUsageScope" class="input-text usage-scope-select">
+            <option value="INTERNAL_ONLY">仅内部验收（不进公开统计/流水）</option>
+            <option value="PUBLIC">允许公开展示（放行后计入公开统计）</option>
+          </select>
+        </div>
+        <div class="field-input-group">
           <label>文件选择（PNG/JPEG/WebP/PDF）</label>
           <input
             type="file"
@@ -81,6 +88,10 @@
           />
         </div>
       </div>
+      <p class="usage-scope-note">
+        「仅内部验收」材料的记录只对授权管理端可见，公开统计 / 流水 / 详情一律排除；
+        范围变更须凭材料方授权走人工治理，同一原件重复上传不允许静默改写范围。
+      </p>
       <div
         class="evidence-drop-zone"
         :class="{ 'is-dragover': isDragOver }"
@@ -337,6 +348,7 @@
               <th>对局时间</th>
               <th>模式</th>
               <th>名次</th>
+              <th>范围</th>
               <th>材料定位</th>
               <th>操作</th>
             </tr>
@@ -351,6 +363,17 @@
               <td>{{ formatDateTime(m.matchTime) }}</td>
               <td>{{ m.mode || '—' }}</td>
               <td class="center-cell">{{ m.finalRank }}</td>
+              <td>
+                <span
+                  v-if="m.usageScope"
+                  class="scope-chip"
+                  :class="m.usageScope === 'INTERNAL_ONLY' ? 'scope-internal' : 'scope-public'"
+                  :title="m.usageScope === 'INTERNAL_ONLY' ? '仅内部验收：放行后也不进公开统计/流水，仅授权管理端可见' : '允许公开展示：放行后计入公开统计'"
+                >
+                  {{ m.usageScope === 'INTERNAL_ONLY' ? '内部' : '公开' }}
+                </span>
+                <span v-else>—</span>
+              </td>
               <td>{{ m.evidenceLocator ?? '—' }}</td>
               <td class="center-cell">
                 <button
@@ -444,6 +467,9 @@ function clearToken() {
 
 // —— ①②③ 材料：上传 → 预览 → 人工确认 ——
 const evidenceCapturedAt = ref(toLocalDatetime(new Date()))
+// 复验P1：允许使用范围由操作者按材料授权显式选择（默认最保守的仅内部验收），
+// 不再固定写死；INTERNAL_ONLY 记录公开统计/流水/详情一律排除
+const evidenceUsageScope = ref<'INTERNAL_ONLY' | 'PUBLIC'>('INTERNAL_ONLY')
 const isUploading = ref(false)
 const isVerifyingEvidence = ref(false)
 const isDragOver = ref(false)
@@ -514,7 +540,7 @@ async function ingestMaterial(file: File) {
     const res = await uploadEvidence(file, {
       capturedAt: new Date(capturedMs).toISOString(),
       kind: 'PERSONAL_SCREENSHOT',
-      usageScope: 'INTERNAL_ONLY'
+      usageScope: evidenceUsageScope.value
     })
     currentEvidence.value = res.evidence
     setPreviewFromFile(file)
@@ -1128,6 +1154,35 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.usage-scope-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.scope-chip {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.scope-internal {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.scope-public {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.usage-scope-select {
+  min-width: 220px;
 }
 
 .field-input-group {

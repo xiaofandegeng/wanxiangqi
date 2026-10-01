@@ -65,21 +65,42 @@ export class FileRepository {
     }
   }
 
-  async getPlayerMatches(playerId, { recordStatus = null } = {}) {
+  async getPlayerMatches(playerId, { recordStatus = null, includeInternal = false } = {}) {
     let list = this.engine.state.matches.filter(m => m.playerId === playerId)
     if (recordStatus) list = list.filter(m => (m.recordStatus || 'PENDING') === recordStatus)
     else list = list.filter(m => m.recordStatus !== 'QUARANTINED' && m.recordStatus !== 'REVOKED')
-    return list.slice().sort((a, b) => new Date(b.matchTime).getTime() - new Date(a.matchTime).getTime())
+    if (!includeInternal) list = list.filter(m => !this.#internalEvidenceIds().has(m.evidenceId))
+    return list
+      .slice()
+      .sort((a, b) => new Date(b.matchTime).getTime() - new Date(a.matchTime).getTime())
+      .map(m => this.#withUsageScope(m))
   }
 
-  async getAllMatches({ limit = 50, offset = 0, playerId = null, mode = null, recordStatus = 'ACTIVE' } = {}) {
+  async getAllMatches({ limit = 50, offset = 0, playerId = null, mode = null, recordStatus = 'ACTIVE', includeInternal = false } = {}) {
     let list = this.engine.state.matches.slice()
     if (recordStatus) list = list.filter(m => (m.recordStatus == null ? 'ACTIVE' : m.recordStatus) === recordStatus)
     if (recordStatus === 'ACTIVE') list = list.filter(m => m.synthetic !== true) // 正式口径默认排除合成
     if (playerId) list = list.filter(m => m.playerId === playerId)
     if (mode && mode !== 'ALL') list = list.filter(m => m.mode === mode)
+    // 复验P1：公开流水排除仅限内部使用材料的记录（管理端 includeInternal=true 可见）
+    if (!includeInternal) list = list.filter(m => !this.#internalEvidenceIds().has(m.evidenceId))
     list.sort((a, b) => new Date(b.matchTime).getTime() - new Date(a.matchTime).getTime())
-    return { total: list.length, data: list.slice(offset, offset + limit) }
+    return { total: list.length, data: list.slice(offset, offset + limit).map(m => this.#withUsageScope(m)) }
+  }
+
+  /** 复验P1：INTERNAL_ONLY 材料关联的记录集合（公开查询统一排除） */
+  #internalEvidenceIds() {
+    return new Set(
+      (this.engine.state.evidences || [])
+        .filter(e => e.usageScope === 'INTERNAL_ONLY')
+        .map(e => e.id)
+    )
+  }
+
+  /** 复验P1：随行回传材料允许使用范围（与 PG MATCH_WIRE.usageScope 同语义） */
+  #withUsageScope(matchRow) {
+    const ev = (this.engine.state.evidences || []).find(e => e.id === matchRow.evidenceId)
+    return { ...matchRow, usageScope: ev?.usageScope ?? null }
   }
 
   async getEventsList(dateStr = '', mode = null) {
@@ -376,6 +397,13 @@ export class FileRepository {
     if (!e) return null
     if (e.status === 'QUARANTINED') {
       throw Object.assign(new Error(`证据 [${id}] 已被隔离，不得确认为有效材料`), { status: 409 })
+    }
+    // 复验P2：与 PG 同语义——无原件不得标记 VERIFIED（保持原状态，422 ORIGINAL_MISSING）
+    if (!this.#blobMeta(e.sha256)) {
+      throw Object.assign(
+        new Error(`材料 [${id}] 无可恢复原件（哈希-only 存量或原件入库失败），不得标记为有效：状态保持不变`),
+        { status: 422, code: 'ORIGINAL_MISSING' }
+      )
     }
     if (e.status !== 'VERIFIED') {
       const now = new Date().toISOString()

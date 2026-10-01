@@ -206,6 +206,10 @@ async function personalImportDrill(page, base, stack, seeded) {
   })
 
   await step('upload-fixture-png', async () => {
+    // 复验P1：演练显式选择「允许公开展示（PUBLIC）」——放行后公开统计须反映本局；
+    // INTERNAL_ONLY 的公开排除语义由后端 W2-5 验收覆盖，不在浏览器演练重复构造
+    const chosen = await page.chooseSelect(`document.querySelector('select.usage-scope-select')`, 'PUBLIC')
+    if (!chosen) throw new Error('允许使用范围选择项未找到')
     const fixturePath = path.join(ARTIFACTS_DIR, 'fixture-personal.png')
     fs.writeFileSync(fixturePath, makeWatermarkedPng('FIXTURE'))
     await page.setFileInputFiles('input[type=file]', [fixturePath])
@@ -213,7 +217,7 @@ async function personalImportDrill(page, base, stack, seeded) {
     const text = await page.eval(`document.body.innerText`)
     if (!text.includes('待人工确认') && !text.includes('PENDING')) throw new Error('上传后未进入 PENDING 呈现')
     await page.screenshot(shot('03-uploaded'))
-    return 'FIXTURE PNG 已上传，材料 PENDING'
+    return 'FIXTURE PNG 已上传（范围=PUBLIC），材料 PENDING'
   })
 
   await step('verify-evidence', async () => {
