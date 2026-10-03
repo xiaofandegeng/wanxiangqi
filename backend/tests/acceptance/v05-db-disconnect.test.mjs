@@ -1,19 +1,16 @@
-// V05 · 数据库断开 → readiness=503、写失败；只读端点如实降级，绝不伪造数据
-// 任务书 §5 V05。
+// V05 · 数据库断开 → readiness=503、写失败；只读端点如实降级，绝不伪造数据（v6 适配）
 //
 // 断链构造：pool 指向本机无监听的端口（连接拒绝 = 权威存储不可达）。
-// 注意 /api/v1/players 等读端点在断链下的行为：SQL 异常 → 非 2xx 错误响应
-// （本栈读端点无缓存层；dataAsOf 每次现生成，不存在“旧缓存冒充现值”的路径）。
+// 读端点在断链下的行为：SQL 异常 → 非 2xx 错误响应（无缓存层，不存在“旧缓存冒充现值”）。
 //
 // 对照组：同一套栈先连健康测试库验证 ready=200，确保 503 来自断链本身。
 
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import http from 'node:http'
 import { bootAcceptanceStack, pgAvailable } from './_helpers.mjs'
 import { PgRepository } from '../../src/repositories/pg-repository.mjs'
 import { createServices } from '../../src/services/index.mjs'
-import { createApiServer } from '../../../tools/emulator-watcher/index.mjs'
+import { createApiServer } from '../../src/http-server.mjs'
 
 let healthy = null
 let deadStack = null
@@ -45,6 +42,7 @@ before(async () => {
   }
   deadStack = {
     call,
+    base,
     cleanup: async () => {
       await new Promise(r => server.close(r))
       await deadPool.end().catch(() => {})
@@ -79,23 +77,26 @@ test('V05: 断链下 readiness=503、健康如实报告不可达', { skip: !pgAv
 })
 
 test('V05: 断链下写接口失败且不返回成功语义', { skip: !pgAvailable }, async () => {
-  const res = await deadStack.call('/api/v1/admin/imports', {
-    method: 'POST', token: 'v05-token',
-    body: {
-      records: [{ playerId: 'p-v05', matchTime: '2026-09-01T10:00:00Z', finalRank: 1, mode: 'RANKED_DIAMOND' }],
-      source: 'V05_DISCONNECTED'
-    }
+  const buf = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    Buffer.from('V05-FIXTURE-dead-pool-upload')
+  ])
+  const q = new URLSearchParams({ capturedAt: '2026-10-03T09:00:00Z' })
+  const res = await fetch(`${deadStack.base}/api/v1/admin/evidences/upload?${q}`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer v05-token', 'Content-Type': 'image/png', 'Content-Length': String(buf.length) },
+    body: buf
   })
+  const json = await res.json().catch(() => null)
   assert.ok(res.status >= 400, `断链写必须失败（实际 ${res.status}），不得返回成功`)
-  assert.notEqual(res.json?.code, 0)
-  assert.equal(res.json?.result, undefined, '失败响应不得携带伪造的导入结果')
+  assert.notEqual(json?.code, 0)
 })
 
 test('V05: 断链下读接口失败响应不含任何编造数据；无缓存层冒充现值', { skip: !pgAvailable }, async () => {
-  const players = await deadStack.call('/api/v1/players')
-  assert.ok(players.status >= 400, '断链读不得伪装成空结果成功（任务书：失败展示失败）')
-  assert.notEqual(players.json?.code, 0)
-  assert.equal(Array.isArray(players.json?.data) && players.json.data.length > 0, false,
+  const lineups = await deadStack.call('/api/v1/lineups')
+  assert.ok(lineups.status >= 400, '断链读不得伪装成空结果成功（失败展示失败）')
+  assert.notEqual(lineups.json?.code, 0)
+  assert.equal(Array.isArray(lineups.json?.data) && lineups.json.data.length > 0, false,
     '错误响应不得携带数据载荷')
 })
 

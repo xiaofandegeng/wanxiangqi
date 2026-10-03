@@ -1,15 +1,15 @@
-// 王者万象棋数据站 - 统一 RESTful API 客户端 (v3 真实数据整改版)
-// 任务书 §P2-C / F04 / F06 / F09 / V16:
+// 王者万象棋阵容研习站 - RESTful API 客户端 (v6)
+// 原则（延续已验收规范）：
 // 1. 严格使用真实 API 状态渲染，无任何生产 mock 回退；失败态如实抛出由视图呈现
-// 2. 管理凭证由运营者显式提供（内存 + localStorage 记忆），不再硬编码于仓库
+// 2. 管理凭证由运营者显式提供（内存 + localStorage 记忆），不硬编码于仓库
 // 3. 未知/缺失字段类型一律可空，视图必须如实展示（禁默认值伪装）
-// 4. 筛选请求可取消（AbortController），切换筛选时过期请求不再覆盖新结果
-// 5. 不宣称任何数据来源标签；来源以每条记录自带 sourceId/batchId 可追溯
+// 4. 旧赛事/玩家战绩接口已随 v6 退役（服务端 410），客户端不再保留对应请求
+// 5. 内容契约（课程/资料/阵容手册/版本动态）随 M2 内容底座接入扩展
 
 const ADMIN_TOKEN_STORAGE_KEY = 'wxq-admin-token'
 
 /**
- * 管理凭证：由运营者在核验工作台等写操作处显式录入。
+ * 管理凭证：由运营者在管理页显式录入。
  * 写接口（/api/v1/admin/*）未配置凭证时直接拒绝发起，不静默降级。
  */
 let adminTokenInMemory: string | null = null
@@ -36,115 +36,6 @@ export function setAdminToken(token: string | null) {
 
 export function hasAdminToken(): boolean {
   return Boolean(getAdminToken())
-}
-
-export interface PlayerStats {
-  sampleCount: number
-  firstPlaces?: number
-  top3Places?: number
-  winRate: number | null
-  top3Rate: number | null
-  avgRank: number | null
-  coverageNote?: string | null
-  isSmallSample?: boolean
-}
-
-export interface PlayerRecord {
-  id: string
-  nickname: string
-  platform: string | null
-  serverZone: string | null
-  rankScore: number | null
-  rankText: string | null
-  title?: string | null
-  commander?: string | null
-  style?: string | null
-  // 天梯与赛事积分分列（F06：赛事积分不得再伪装成天梯分）
-  ladderScore?: number | null
-  ladderSource?: string | null
-  ladderAt?: string | null
-  tournamentPoints?: number | null
-  tournamentRank?: number | null
-  tournamentName?: string | null
-  tournamentAt?: string | null
-  stats?: PlayerStats
-}
-
-export interface MatchRecord {
-  id: string
-  playerId: string
-  matchTime: string
-  availableAt: string
-  mode?: string | null
-  finalRank: number
-  commander?: string | null
-  lineup?: string | null
-  roundsSurvived?: number | null
-  threeStars?: string[]
-  verified: boolean
-  evidenceId?: string | null
-  batchId?: string | null
-  recordStatus?: string
-  recordKey?: string | null
-  revision?: number
-  supersededAt?: string | null
-  synthetic?: boolean
-  sourceId?: string | null
-  verifiedBy?: string | null
-  verifiedAt?: string | null
-  // v4 W2：材料内定位（页码/图片区域/行），缺省 null 如实展示
-  evidenceLocator?: string | null
-  // 复验P1：材料允许使用范围（INTERNAL_ONLY 不进公开统计/流水，仅管理端可见）
-  usageScope?: 'INTERNAL_ONLY' | 'PUBLIC' | null
-}
-
-/**
- * 证据材料（v4 W1 wire）：status PENDING（上传≠核验）→ VERIFIED（人工确认）/ QUARANTINED。
- * hasOriginal=false 表示只有哈希元信息、无可恢复原件，不得作为放行依据。
- */
-export interface EvidenceRecord {
-  id: string
-  sha256: string
-  sourceId: string | null
-  kind: string | null
-  status: 'PENDING' | 'VERIFIED' | 'QUARANTINED'
-  capturedAt: string | null
-  verifiedAt: string | null
-  verifiedBy: string | null
-  providedBy: string | null
-  usageScope: string | null
-  note: string | null
-  hasOriginal: boolean
-  mimeType: string | null
-  sizeBytes: number | null
-  storageUri: string | null
-}
-
-export interface EventParticipant {
-  slot: number
-  playerId: string | null
-  nickname: string
-  rankText?: string | null
-  rankScore: number | null
-  odds: number | null
-  supportCount: number | null
-  finalRank: number | null
-  commander: string | null
-  lineup: string | null
-}
-
-export interface EventRecord {
-  id: string
-  mode: string
-  scheduledAt: string
-  title: string
-  status: string
-  evidenceId?: string | null
-  participants: EventParticipant[]
-  verifiedAt?: string | null
-  verifiedBy?: string | null
-  /** 材料允许使用范围（公开面永不出现 INTERNAL_ONLY 场次；管理核验回传如实标注） */
-  usageScope?: 'INTERNAL_ONLY' | 'PUBLIC' | null
 }
 
 export interface LineupSnapshot {
@@ -188,19 +79,46 @@ export interface DataSourceStatus {
   note?: string | null
 }
 
-export interface ImportBatchResult {
-  batchId: string
-  source?: string
-  totalRecords?: number
-  inserted: number
-  duplicates: number
-  superseded?: number
-  createdAt?: string
+export interface SyncJobRecord {
+  id: number
+  sourceId: string
+  jobType: string | null
+  status: string
+  startedAt: string | null
+  finishedAt: string | null
+  fetchedCount: number | null
+  insertedCount: number | null
+  duplicateCount: number | null
+  failedCount: number | null
+  errorSummary: string | null
+}
+
+/**
+ * 证据/素材材料（v6 承接内容素材资产）：status PENDING（上传≠核验）→
+ * VERIFIED（人工确认）/ QUARANTINED。hasOriginal=false 表示只有哈希元信息、
+ * 无可恢复原件，不得作为内容来源引用依据。
+ */
+export interface EvidenceRecord {
+  id: string
+  sha256: string
+  sourceId: string | null
+  kind: string | null
+  status: 'PENDING' | 'VERIFIED' | 'QUARANTINED'
+  capturedAt: string | null
+  verifiedAt: string | null
+  verifiedBy: string | null
+  providedBy: string | null
+  usageScope: string | null
+  note: string | null
+  hasOriginal: boolean
+  mimeType: string | null
+  sizeBytes: number | null
+  storageUri: string | null
 }
 
 export class AdminTokenMissingError extends Error {
   constructor() {
-    super('管理凭证未配置：请先在核验工作台录入管理 Token（服务端 ADMIN_TOKEN）')
+    super('管理凭证未配置：请先在管理页录入管理 Token（服务端 ADMIN_TOKEN）')
     this.name = 'AdminTokenMissingError'
   }
 }
@@ -225,6 +143,7 @@ async function requestApi<T>(path: string, options: RequestInit = {}): Promise<T
     const errorMsg = json?.error || `HTTP ${res.status} 请求失败`
     const err: any = new Error(errorMsg)
     err.status = res.status
+    err.code = json?.code_name
     err.details = json?.details
     throw err
   }
@@ -233,103 +152,7 @@ async function requestApi<T>(path: string, options: RequestInit = {}): Promise<T
 }
 
 /**
- * 1. 获取选手大盘列表 (真实双截点过滤统计；失败如实抛出，视图呈现失败态)
- */
-export async function fetchPlayersList(
-  params: { query?: string; sort?: string; mode?: string; from?: string; to?: string } = {},
-  signal?: AbortSignal
-): Promise<{ players: PlayerRecord[]; total: number; dataAsOf: string }> {
-  const queryParts: string[] = []
-  if (params.query) queryParts.push(`query=${encodeURIComponent(params.query)}`)
-  if (params.sort) queryParts.push(`sort=${encodeURIComponent(params.sort)}`)
-  if (params.mode) queryParts.push(`mode=${encodeURIComponent(params.mode)}`)
-  if (params.from) queryParts.push(`from=${encodeURIComponent(params.from)}`)
-  if (params.to) queryParts.push(`to=${encodeURIComponent(params.to)}`)
-
-  const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : ''
-  const res = await requestApi<any>(`/api/v1/players${queryString}`, { signal })
-  return {
-    players: Array.isArray(res.data) ? res.data : [],
-    total: res.total || (res.data ? res.data.length : 0),
-    dataAsOf: res.dataAsOf || new Date().toISOString()
-  }
-}
-
-/**
- * 2. 获取单选手统计及分母（N=0 时比率均为 null）
- */
-export async function fetchPlayerStats(
-  playerId: string,
-  options: { cutoff?: string; mode?: string; from?: string; to?: string } = {},
-  signal?: AbortSignal
-): Promise<PlayerStats | null> {
-  const query = new URLSearchParams()
-  if (options.cutoff) query.set('cutoff', options.cutoff)
-  if (options.mode) query.set('mode', options.mode)
-  if (options.from) query.set('from', options.from)
-  if (options.to) query.set('to', options.to)
-  const qs = query.toString() ? `?${query.toString()}` : ''
-
-  const res = await requestApi<any>(`/api/v1/players/${encodeURIComponent(playerId)}/stats${qs}`, { signal })
-  return res.stats || null
-}
-
-/**
- * 3. 获取单选手历史战绩事实流水（默认仅已核验 ACTIVE 记录）
- */
-export async function fetchPlayerMatches(playerId: string, signal?: AbortSignal): Promise<MatchRecord[]> {
-  const res = await requestApi<any>(`/api/v1/players/${encodeURIComponent(playerId)}/matches`, { signal })
-  return Array.isArray(res.data) ? res.data : []
-}
-
-/**
- * 4. 获取对局场次大盘列表
- */
-export async function fetchEventsList(
-  params: { date?: string; mode?: string } = {},
-  signal?: AbortSignal
-): Promise<EventRecord[]> {
-  const query = new URLSearchParams()
-  if (params.date) query.set('date', params.date)
-  if (params.mode) query.set('mode', params.mode)
-  const qs = query.toString() ? `?${query.toString()}` : ''
-
-  const res = await requestApi<any>(`/api/v1/events${qs}`, { signal })
-  return Array.isArray(res.data) ? res.data : []
-}
-
-/**
- * 4.0.5 获取已收录对局流水大盘（v3：服务端不再宣称来源标签，返回原始 total/data）
- */
-export async function fetchMatchesList(
-  params: { limit?: number; offset?: number; playerId?: string; mode?: string; recordStatus?: string } = {},
-  signal?: AbortSignal
-): Promise<{ total: number; data: MatchRecord[] }> {
-  const query = new URLSearchParams()
-  if (params.limit) query.set('limit', String(params.limit))
-  if (params.offset) query.set('offset', String(params.offset))
-  if (params.playerId) query.set('playerId', params.playerId)
-  if (params.mode) query.set('mode', params.mode)
-  if (params.recordStatus) query.set('recordStatus', params.recordStatus)
-  const qs = query.toString() ? `?${query.toString()}` : ''
-
-  const res = await requestApi<any>(`/api/v1/matches${qs}`, { signal })
-  return {
-    total: res.total || 0,
-    data: Array.isArray(res.data) ? res.data : []
-  }
-}
-
-/**
- * 4.1 获取单场对决详情
- */
-export async function fetchEventDetail(eventId: string, signal?: AbortSignal): Promise<EventRecord | null> {
-  const res = await requestApi<any>(`/api/v1/events/${encodeURIComponent(eventId)}`, { signal })
-  return res.data || null
-}
-
-/**
- * 5. 获取第三方阵容快照大盘（含来源/窗口/样本口径语义字段；缺失字段为 null）
+ * 1. 来源阵容快照大盘（含来源/窗口/样本口径语义字段；缺失字段为 null）
  */
 export async function fetchLineupSnapshots(
   signal?: AbortSignal
@@ -343,7 +166,7 @@ export async function fetchLineupSnapshots(
 }
 
 /**
- * 5.1 获取单套阵容详情
+ * 1.1 单阵容快照详情
  */
 export async function fetchLineupDetail(lineupId: string, signal?: AbortSignal): Promise<LineupSnapshot | null> {
   const res = await requestApi<any>(`/api/v1/lineups/${encodeURIComponent(lineupId)}`, { signal })
@@ -351,129 +174,27 @@ export async function fetchLineupDetail(lineupId: string, signal?: AbortSignal):
 }
 
 /**
- * 6. 获取数据源健康度与同步状态
+ * 2. 数据源健康度与同步状态（来源注册表 + 最近任务 + 内容计数）
  */
 export async function fetchDataStatus(signal?: AbortSignal): Promise<{
   sources: DataSourceStatus[]
-  totalMatches: number
-  totalPlayers: number
-  totalEvents: number
+  recentSyncJobs: SyncJobRecord[]
+  counts: Record<string, number> | null
   lastUpdated: string
 }> {
   const res = await requestApi<any>('/api/v1/data-status', { signal })
   return {
     sources: res.sources || [],
-    totalMatches: res.totalMatches || 0,
-    totalPlayers: res.totalPlayers || 0,
-    totalEvents: res.totalEvents || 0,
+    recentSyncJobs: res.recentSyncJobs || [],
+    counts: res.counts ?? null,
     lastUpdated: res.lastUpdated || new Date().toISOString()
   }
 }
 
-/**
- * 7. 导入战绩流水 (verified 一律由服务端忽略 → PENDING 待核验，V17)
- */
-export async function importMatchRecords(records: any[], source = 'ADMIN_IMPORT'): Promise<ImportBatchResult> {
-  const res = await requestApi<any>('/api/v1/admin/imports', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ records, source })
-  })
-
-  if (res.code !== 0 || !res.result) {
-    throw new Error(res.error || '导入未成功完成')
-  }
-  return res.result
-}
+// ---------------- 管理面：素材证据生命周期 + 来源同步 ----------------
 
 /**
- * 7.1 查询指定导入批次
- */
-export async function fetchImportBatch(batchId: string): Promise<any> {
-  const res = await requestApi<any>(`/api/v1/admin/imports/${encodeURIComponent(batchId)}`)
-  return res.data
-}
-
-/**
- * 7.2 人工校对工作台 6 席位持久化入库确认
- * v4 W1 收紧：必须绑定已入库、人工确认有效（VERIFIED）、原件可恢复的证据 evidenceId；
- * 客户端自带哈希字符串不再构成证据。evidenceSha256 为可选传输校验（须与库内一致）。
- */
-export async function confirmSlotAudit(payload: {
-  eventId?: string
-  title?: string
-  scheduledAt?: string
-  mode?: string
-  evidenceId: string
-  evidenceSha256?: string
-  slots: Array<{
-    slot: number
-    playerId?: string
-    nickname: string
-    rankScore?: number | null
-    rankText?: string | null
-    odds?: number | null
-    supportCount?: number | null
-    finalRank: number
-    commander?: string | null
-    lineup?: string | null
-  }>
-}): Promise<EventRecord> {
-  const res = await requestApi<any>('/api/v1/admin/slots/confirm', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-
-  if (res.code !== 0 || !res.data) {
-    throw new Error(res.error || '持久化保存失败')
-  }
-  return res.data
-}
-
-/**
- * 7.3 核验放行单条待核验记录（SCD-2：availableAt=实际核验时刻，旧版本封存）。
- * evidenceId 可选——记录自带证据时可直接放行，否则必须显式提供可用证据。
- */
-export async function verifyMatch(
-  matchId: string,
-  body: { verifiedBy: string; evidenceId?: string }
-): Promise<MatchRecord> {
-  const res = await requestApi<any>(`/api/v1/admin/matches/${encodeURIComponent(matchId)}/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  })
-  if (res.code !== 0 || !res.data) {
-    throw new Error(res.error || '核验放行失败')
-  }
-  return res.data
-}
-
-/**
- * 7.4 管理端战绩记录列表（v4 W2 单人导入工作台）。
- * 默认 recordStatus=PENDING 拉取待核验候选；记录含 recordKey/revision/evidenceLocator，
- * 用于逐条核验放行与 ev 键更正（同键 revision+1 → 新版本，不裂成两条 ACTIVE）。
- */
-export async function fetchAdminMatches(
-  params: { recordStatus?: string; playerId?: string; mode?: string; limit?: number; offset?: number } = {},
-  signal?: AbortSignal
-): Promise<{ total: number; data: MatchRecord[] }> {
-  const query = new URLSearchParams()
-  if (params.recordStatus) query.set('recordStatus', params.recordStatus)
-  if (params.playerId) query.set('playerId', params.playerId)
-  if (params.mode) query.set('mode', params.mode)
-  if (params.limit) query.set('limit', String(params.limit))
-  if (params.offset) query.set('offset', String(params.offset))
-  const qs = query.toString() ? `?${query.toString()}` : ''
-  const res = await requestApi<any>(`/api/v1/admin/matches${qs}`, { signal })
-  return { total: res.total || 0, data: Array.isArray(res.data) ? res.data : [] }
-}
-
-// ---------------- v4 W1：材料原件入库与证据生命周期 ----------------
-
-/**
- * 8.1 上传材料原件（原始字节直传，元信息走 query）。
+ * 3.1 上传素材原件（原始字节直传，元信息走 query）。
  * 独立 fetch：请求体是 File 二进制、响应为 JSON，且须透传 4xx 的 code_name（如 MIME_MISMATCH）。
  * 上传只产生 PENDING —— 上传不等于核验。
  */
@@ -515,7 +236,7 @@ export async function uploadEvidence(
 }
 
 /**
- * 8.2 证据台账列表（可按状态过滤）
+ * 3.2 素材证据台账列表（可按状态过滤）
  */
 export async function fetchEvidences(status?: string): Promise<EvidenceRecord[]> {
   const qs = status ? `?status=${encodeURIComponent(status)}` : ''
@@ -524,7 +245,7 @@ export async function fetchEvidences(status?: string): Promise<EvidenceRecord[]>
 }
 
 /**
- * 8.3 人工确认材料有效（PENDING → VERIFIED；上传不等于核验）
+ * 3.3 人工确认材料有效（PENDING → VERIFIED；上传不等于核验）
  */
 export async function verifyEvidence(evidenceId: string, verifiedBy: string): Promise<EvidenceRecord> {
   const res = await requestApi<any>(`/api/v1/admin/evidences/${encodeURIComponent(evidenceId)}/verify`, {
@@ -539,7 +260,7 @@ export async function verifyEvidence(evidenceId: string, verifiedBy: string): Pr
 }
 
 /**
- * 8.4 取回材料原件（Blob → objectURL 预览；服务端 nosniff + attachment）。
+ * 3.4 取回素材原件（Blob → objectURL 预览；服务端 nosniff + attachment）。
  * 返回的 URL 由调用方负责 URL.revokeObjectURL 释放。
  */
 export async function fetchEvidenceObjectUrl(evidenceId: string): Promise<string> {
@@ -559,10 +280,33 @@ export async function fetchEvidenceObjectUrl(evidenceId: string): Promise<string
 }
 
 /**
- * 8. 触发外部数据源同步（服务端按 data_sources 状态门禁：409/400 如实返回）
+ * 4. 触发外部数据源同步（服务端按 data_sources 状态门禁：409/400 如实返回）
  */
 export async function syncSource(sourceId: string): Promise<any> {
   return requestApi<any>(`/api/v1/admin/sources/${encodeURIComponent(sourceId)}/sync`, {
     method: 'POST'
   })
+}
+
+/**
+ * 5. 同步任务台账
+ */
+export async function fetchSyncJobs(limit = 20, signal?: AbortSignal): Promise<SyncJobRecord[]> {
+  const res = await requestApi<any>(`/api/v1/admin/sync-jobs?limit=${limit}`, { signal })
+  return Array.isArray(res.data) ? res.data : []
+}
+
+/**
+ * 6. 原始材料存证列表（离线复核入口）
+ */
+export async function fetchRawMaterials(
+  params: { sourceId?: string; limit?: number } = {},
+  signal?: AbortSignal
+): Promise<Array<Record<string, unknown>>> {
+  const query = new URLSearchParams()
+  if (params.sourceId) query.set('sourceId', params.sourceId)
+  if (params.limit) query.set('limit', String(params.limit))
+  const qs = query.toString() ? `?${query.toString()}` : ''
+  const res = await requestApi<any>(`/api/v1/admin/raw-materials${qs}`, { signal })
+  return Array.isArray(res.data) ? res.data : []
 }

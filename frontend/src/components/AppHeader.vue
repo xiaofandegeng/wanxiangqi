@@ -2,25 +2,22 @@
   <header class="app-header">
     <div class="header-container">
       <div class="header-main-row">
-        <!-- 品牌标识 -->
+        <!-- 品牌标识（v6：阵容研习站） -->
         <div class="brand-section">
           <router-link to="/" class="brand-link">
             <div class="brand-icon">
               <span class="icon-text">弈</span>
             </div>
             <div class="brand-text">
-              <h1 class="brand-title">王者万象棋 · 真实数据站</h1>
-              <span class="brand-subtitle">王牌对决已核验战绩与统计台账</span>
+              <h1 class="brand-title">王者万象棋 · 阵容研习站</h1>
+              <span class="brand-subtitle">新手教学 · 阵容研习 · 资料与版本</span>
             </div>
           </router-link>
         </div>
 
-        <!-- 右侧状态与操作 -->
+        <!-- 右侧状态（管理入口不进新手主导航，折叠为次级链接） -->
         <div class="header-right">
-          <button class="live-radar-trigger-btn" @click="openRadar">
-            <span class="live-beacon"></span>
-            <span class="btn-text">存证材料录入</span>
-          </button>
+          <router-link to="/admin/sources" class="admin-entry-link">管理</router-link>
 
           <div class="api-status-badge" :class="{ 'is-connected': isBackendOnline }">
             <span class="status-dot"></span>
@@ -29,48 +26,33 @@
         </div>
       </div>
 
-      <!-- 导航导航栏 -->
+      <!-- 公开主导航（v6 §3 固定五项） -->
       <nav class="nav-links-bar">
         <router-link to="/" class="nav-item" active-class="is-active">
-          💎 王牌对决场次
+          首页
         </router-link>
-        <router-link to="/roster" class="nav-item" active-class="is-active">
-          📊 选手数据
+        <router-link to="/learn" class="nav-item" active-class="is-active">
+          新手学堂
         </router-link>
         <router-link to="/lineups" class="nav-item" active-class="is-active">
-          ⚔️ 阵容快照参考
+          阵容库
         </router-link>
-        <router-link to="/archive" class="nav-item" active-class="is-active">
-          📋 已核验流水
+        <router-link to="/library" class="nav-item" active-class="is-active">
+          资料库
         </router-link>
-        <router-link to="/models/backtest" class="nav-item" active-class="is-active">
-          📈 模型状态
-        </router-link>
-        <router-link to="/admin/verify" class="nav-item" active-class="is-active">
-          🔍 证据核验工作台
-        </router-link>
-        <router-link to="/admin/personal-import" class="nav-item" active-class="is-active">
-          🧾 单人战绩导入
+        <router-link to="/updates" class="nav-item" active-class="is-active">
+          版本动态
         </router-link>
       </nav>
     </div>
-
-    <!-- 挂载全局实战雷达弹窗 -->
-    <LiveRadarModal ref="radarModalRef" />
   </header>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import LiveRadarModal from './LiveRadarModal.vue'
 import { fetchDataStatus } from '../api'
 
-const radarModalRef = ref<InstanceType<typeof LiveRadarModal> | null>(null)
 const isBackendOnline = ref(false)
-
-function openRadar() {
-  radarModalRef.value?.openModal()
-}
 
 onMounted(async () => {
   try {
@@ -164,35 +146,17 @@ onMounted(async () => {
   gap: 10px;
 }
 
-.live-radar-trigger-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 6px;
+.admin-entry-link {
   font-size: 12px;
-  font-weight: 600;
-  color: #2563eb;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  color: #64748b;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
 
   &:hover {
-    background: #dbeafe;
-  }
-
-  .live-beacon {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #2563eb;
-  }
-
-  @media (max-width: 480px) {
-    .btn-text {
-      font-size: 11px;
-    }
+    color: #0f172a;
+    background: #f1f5f9;
   }
 }
 

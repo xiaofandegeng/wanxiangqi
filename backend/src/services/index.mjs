@@ -1,25 +1,20 @@
-// v3 P1-A · 服务编排（compose 根）
+// v6 · 服务编排（compose 根）
 // createServices({ repo, env }) → HTTP 层唯一依赖对象；
-// HTTP 层不再直接触达任何存储引擎（demo 自建 FileRepository / 正式注入 PgRepository）。
+// HTTP 层不直接触达存储引擎（正式注入 PgRepository；测试注入隔离测试库栈）。
+// v6 M1-4：stats/imports 服务随赛事与玩家战绩产品退役删除；
+// 保留同步（hokace 快照）、素材证据生命周期、来源台账与健康面。
 
-import { StatsService } from './stats.mjs'
-import { ImportsService } from './imports.mjs'
 import { SyncService } from './sync.mjs'
 
 export function createServices(repo, env = {}) {
-  const stats = new StatsService(repo, { smallSampleThreshold: env.smallSampleThreshold || 20 })
-  const imports = new ImportsService(repo)
-  const sync = new SyncService(repo, { enableDatatft: env.enableDatatft === true })
+  const sync = new SyncService(repo)
 
   return {
     repo,
-    stats,
-    imports,
     sync,
-    mode: env.appMode || 'demo',
-    smallSampleThreshold: env.smallSampleThreshold || 20,
+    mode: env.appMode || 'formal',
 
-    /** 就绪探测（/api/v1/ready）：正式模式 PG ping，200/503 (F04) */
+    /** 就绪探测（/api/v1/ready）：权威存储 ping，200/503 (F04) */
     async isReady() {
       return this.repo.ping()
     },
@@ -55,18 +50,6 @@ export function createServices(repo, env = {}) {
 
     async getLineupById(id) {
       return this.repo.getLineupById(id)
-    },
-
-    async getEventsList(dateStr, mode, opts) {
-      return this.repo.getEventsList(dateStr, mode, opts)
-    },
-
-    async getEventById(id, opts) {
-      return this.repo.getEventById(id, opts)
-    },
-
-    async getAllMatches(params) {
-      return this.repo.getAllMatches(params)
     }
   }
 }

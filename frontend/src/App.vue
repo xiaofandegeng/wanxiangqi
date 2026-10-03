@@ -6,8 +6,8 @@
     </main>
     <footer class="app-footer">
       <div class="footer-container">
-        <p class="footer-copy">王者万象棋 · 王牌对决数据站 (v1.0-MVP)</p>
-        <p class="footer-note">严守数据真实性 · 赛前画像切片防泄漏 · 杜绝虚构接口</p>
+        <p class="footer-copy">王者万象棋 · 阵容研习站</p>
+        <p class="footer-note">教学内容以第一方资料核实为准 · 阵容统计如实标注来源与窗口 · 不虚构规则与数值</p>
       </div>
     </footer>
   </div>

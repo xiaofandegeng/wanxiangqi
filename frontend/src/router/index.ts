@@ -1,3 +1,6 @@
+// 王者万象棋阵容研习站 - 路由表 (v6 §3 信息架构)
+// 公开主导航固定为：首页 / 新手学堂 / 阵容库 / 资料库 / 版本动态（管理端不进新手主导航）。
+// 旧赛事/选手/预测路由不再注册，统一落入 catch-all（not-found 视图给出退役说明）。
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -5,64 +8,77 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'diamond-prediction',
-      component: () => import('../views/event-today.vue'),
-      meta: { title: '王牌对决已收录场次 - 王者万象棋数据站' }
+      name: 'home',
+      component: () => import('../views/home.vue'),
+      meta: { title: '首页 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/events/:id',
-      name: 'event-detail',
-      component: () => import('../views/event-detail.vue'),
-      meta: { title: '单场对局详情 - 王者万象棋数据站' }
+      path: '/learn',
+      name: 'learn',
+      component: () => import('../views/learn.vue'),
+      meta: { title: '新手学堂 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/players/:id',
-      name: 'player-profile',
-      component: () => import('../views/player-profile.vue'),
-      meta: { title: '选手数据画像 - 王者万象棋数据站' }
-    },
-    {
-      path: '/roster',
-      name: 'player-roster',
-      component: () => import('../views/player-roster.vue'),
-      meta: { title: '选手数据一览 - 王者万象棋数据站' }
+      path: '/learn/:slug',
+      name: 'lesson',
+      component: () => import('../views/lesson.vue'),
+      meta: { title: '课程 - 王者万象棋阵容研习站' }
     },
     {
       path: '/lineups',
       name: 'lineup-roster',
       component: () => import('../views/lineup-roster.vue'),
-      meta: { title: '第三方阵容快照参考 - 王者万象棋数据站' }
+      meta: { title: '阵容库 - 王者万象棋阵容研习站' }
     },
     {
       path: '/lineups/:id',
       name: 'lineup-detail',
       component: () => import('../views/lineup-detail.vue'),
-      meta: { title: '阵容快照详情 - 王者万象棋数据站' }
+      meta: { title: '阵容详情 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/archive',
-      alias: '/matches',
-      name: 'match-archive',
-      component: () => import('../views/match-archive.vue'),
-      meta: { title: '已核验对局流水 - 王者万象棋数据站' }
+      path: '/library',
+      name: 'library',
+      component: () => import('../views/library.vue'),
+      meta: { title: '资料库 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/admin/verify',
-      name: 'evidence-verify',
-      component: () => import('../views/evidence-verify.vue'),
-      meta: { title: '证据链与人工核验工作台 - 王者万象棋数据站' }
+      path: '/library/:kind/:slug',
+      name: 'entity',
+      component: () => import('../views/entity.vue'),
+      meta: { title: '资料详情 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/admin/personal-import',
-      name: 'personal-evidence-import',
-      component: () => import('../views/personal-evidence-import.vue'),
-      meta: { title: '单人真实战绩导入 - 王者万象棋数据站' }
+      path: '/updates',
+      name: 'updates',
+      component: () => import('../views/updates.vue'),
+      meta: { title: '版本动态 - 王者万象棋阵容研习站' }
     },
     {
-      path: '/models/backtest',
-      name: 'model-backtest',
-      component: () => import('../views/model-backtest.vue'),
-      meta: { title: '预测模型状态 - 王者万象棋数据站' }
+      path: '/updates/:slug',
+      name: 'update-detail',
+      component: () => import('../views/update-detail.vue'),
+      meta: { title: '版本详情 - 王者万象棋阵容研习站' }
+    },
+    {
+      path: '/admin/content',
+      name: 'admin-content',
+      component: () => import('../views/admin-content.vue'),
+      meta: { title: '内容管理 - 王者万象棋阵容研习站' }
+    },
+    {
+      path: '/admin/sources',
+      name: 'admin-sources',
+      component: () => import('../views/admin-sources.vue'),
+      meta: { title: '来源与同步 - 王者万象棋阵容研习站' }
+    },
+    {
+      // 兜底：旧 v2–v5 路由（赛事/选手/流水/预测/旧管理页）在此给出退役说明；
+      // 其余未知路径如实 404。不注册旧路由本身 —— 退役即删除，不是隐藏。
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/not-found.vue'),
+      meta: { title: '页面不存在 - 王者万象棋阵容研习站' }
     }
   ]
 })

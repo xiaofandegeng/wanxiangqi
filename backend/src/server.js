@@ -1,17 +1,16 @@
-// 王者万象棋数据站 - 正式模式主入口 (Formal Server Entry, v3)
+// 王者万象棋阵容研习站 - 正式模式主入口 (v6)
 // compose 顺序：env 校验 → PG 连接（失败=退出）→ 迁移 → PgRepository → services → listen
 //
-// 任务书 P1-A：
-// - PostgreSQL 为唯一权威存储；WXQ_APP_MODE=formal 下关键环境变量必须显式（无默认值）
-// - 启动时 pool 连接失败 → 打印原因并退出（禁止静默降级到文件引擎，F04 根因之一）
+// - PostgreSQL 为唯一权威存储；关键环境变量必须显式（无默认值）
+// - 启动时 pool 连接失败 → 打印原因并退出（禁止静默降级，F04 根因之一）
 // - 运行中 PG 失联 → /api/v1/ready = 503、写路径报错；liveness(/health) 正常返回
-// - db.js/schema.sql 已退役：DDL 全部走版本化迁移 (migrations/)
+// - DDL 全部走版本化迁移 (migrations/)
 
 import { loadEnvFile, getEnv, assertFormalEnv } from './env.mjs'
 import { runMigrations } from './migrate.mjs'
 import { PgRepository } from './repositories/pg-repository.mjs'
 import { createServices } from './services/index.mjs'
-import { createApiServer } from '../../tools/emulator-watcher/index.mjs'
+import { createApiServer } from './http-server.mjs'
 
 async function bootstrap() {
   loadEnvFile()
@@ -19,7 +18,7 @@ async function bootstrap() {
   assertFormalEnv(env)
 
   console.log('========================================================')
-  console.log('王者万象棋数据站 - 正式模式后端服务 (PostgreSQL 唯一权威)')
+  console.log('王者万象棋阵容研习站 - 正式模式后端服务 (PostgreSQL 唯一权威)')
   console.log(`- 数据库: ${env.pg.host}:${env.pg.port}/${env.pg.database} (user: ${env.pg.user})`)
 
   // 1. 连接权威库（formal 下失败即退出，不降级）
@@ -61,7 +60,7 @@ async function bootstrap() {
   server.listen(env.port, env.host, () => {
     console.log(`- 业务服务监听于: http://${env.host}:${env.port}`)
     console.log('- 管理鉴权已生效: Authorization: Bearer <ADMIN_TOKEN>（显式注入，无默认值）')
-    console.log(`- 小样本阈值: N < ${env.smallSampleThreshold} 标记 isSmallSample`)
+    console.log('- 旧赛事/玩家战绩 API 已退役: 410 API_RETIRED（docs/v6旧功能删除与数据归档对照表.md）')
     console.log('- 就绪探测: GET /api/v1/ready（PG 失联时 503）')
     console.log('========================================================')
   })

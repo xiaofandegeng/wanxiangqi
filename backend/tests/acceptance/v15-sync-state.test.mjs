@@ -15,7 +15,7 @@ import assert from 'node:assert/strict'
 import http from 'node:http'
 import { bootAcceptanceStack, pgAvailable } from './_helpers.mjs'
 import { HOKACE_PARSER_VERSION } from '../../src/services/sync.mjs'
-import { HOKACE_ADAPTER_METADATA } from '../../../tools/emulator-watcher/adapters/hokace.mjs'
+import { HOKACE_ADAPTER_METADATA } from '../../src/adapters/hokace.mjs'
 
 let stack = null
 let stub = null

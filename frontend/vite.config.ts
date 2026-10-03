@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // W5 浏览器验收：harness 用 WXQ_API_TARGET 把代理指向临时验收后端；
+        // 浏览器验收：harness 用 WXQ_API_TARGET 把代理指向临时验收后端；
         // 默认仍是本机 8080（不影响日常开发）。仅作用于 dev server，与 vitest 无关。
         target: process.env.WXQ_API_TARGET || 'http://127.0.0.1:8080',
         changeOrigin: true
@@ -21,9 +21,9 @@ export default defineConfig({
     }
   },
   test: {
-    // v3 P0-A 测试隔离（V01 雏形）：
-    // 1. 业务 storage.json 哈希护栏 —— 整轮 vitest 前后哈希必须一致
-    // 2. WXQ_DATA_DIR 指向临时目录 —— 任何残留的隐式业务存储访问都被重定向
-    globalSetup: fileURLToPath(new URL('./tests/guards/business-assets-guard.setup.mts', import.meta.url))
+    // v6：demo 文件引擎与业务 storage.json 已退役，前端测试隔离不再依赖
+    // storage.json 哈希护栏（原 guards/business-assets-guard.setup.mts 随 v6 删除）。
+    // 后端业务库隔离由 backend/tests/helpers/business-guard.mjs（PG 计数）承担；
+    // 前端 vitest 全部走 mock fetch / mock api 层，不触达任何真实数据面。
   }
 })

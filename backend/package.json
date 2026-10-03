@@ -1,18 +1,16 @@
 {
   "name": "wanxiangqi-backend",
   "version": "1.0.0",
-  "description": "王者万象棋王牌对决数据站 - 真实数据后端业务服务 (符合 v2 任务书规范)",
+  "description": "王者万象棋阵容研习站 - 内容与阵容快照后端服务 (v6)",
   "type": "module",
-  "main": "src/server.ts",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "node --loader ts-node/esm src/server.ts",
+    "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "migrate": "node src/migrate.mjs",
     "test": "node --test \"tests/**/*.test.mjs\" \"tests/*.test.mjs\""
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
     "pg": "^8.23.0"
   }
 }

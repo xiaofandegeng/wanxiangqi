@@ -18,7 +18,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ARTIFACTS = path.resolve(__dirname, '../../../docs/v4_artifacts')
 
 test('V14: hokace.wiki 真实页面实测（联网门控）', { skip: !GATED && '需 WXQ_NETWORK_TESTS=1 显式开启（默认零联网）' }, async () => {
-  const { syncHokaceLineups } = await import('../../../tools/emulator-watcher/adapters/hokace.mjs')
+  const { syncHokaceLineups } = await import('../../src/adapters/hokace.mjs')
   const result = await syncHokaceLineups(10_000)
 
   // v4 W4：证据含页面级版本/窗口说明与正文指纹（sha256 + 长度），可离线复核
