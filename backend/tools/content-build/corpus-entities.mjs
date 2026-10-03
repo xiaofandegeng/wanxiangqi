@@ -283,6 +283,8 @@ const EQUIPMENT_ENTITIES = [
   { id: 'equip-fayuanzhibei', slug: 'equip-fayuanzhibei', displayName: '法源之杯', bearer: 'hero-zhouyu' }
 ]
 
+const HERO_NAME_BY_ID = Object.fromEntries(HERO_ENTITIES.map(h => [h.id, h.displayName]))
+
 export const EFFECT_CARD_ENTITIES = [
   {
     id: 'effcard-huanshuai', slug: 'effcard-huanshuai', displayName: '换帅', source: 'IMG',
@@ -303,7 +305,8 @@ export const ALL_ENTITIES = [
     id: e.id, slug: e.slug, kind: 'EQUIPMENT', displayName: e.displayName, source: 'IMG',
     facts: {
       officialRecommendation: `官方教学图装备推荐（三分登场流）`,
-      bearerEntity: e.bearer,
+      // 展示层可读：英雄名 + 稳定 ID（事实值保持对实体的稳定引用）
+      bearerEntity: `${HERO_NAME_BY_ID[e.bearer]}（${e.bearer}）`,
       stats: null, // 官方图未附数值文本；未核实不写
       verificationNote: IMG_NOTE
     }

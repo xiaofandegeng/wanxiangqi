@@ -1,0 +1,345 @@
+{
+  "ranAt": "2026-10-03T15:25:13.894Z",
+  "stack": {
+    "backend": "node src/server.js @ http://127.0.0.1:18081 (PGDATABASE=wanxiangqi_v6dev)",
+    "frontend": "vite dev @ http://127.0.0.1:5188 (WXQ_API_TARGET=http://127.0.0.1:18081)",
+    "viewport": "1440x900",
+    "chrome": "/Users/lhw/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "name": "首页（新手入口）",
+      "url": "http://127.0.0.1:5188/",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "站点定位文案（阵容研习站）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "新手主路径引导（先看规则→第一套阵容）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "教学内容计数非占位（已上线课程）",
+          "detail": "已上线 6 门课程"
+        },
+        {
+          "ok": true,
+          "label": "主导航含 新手学堂/阵容库/资料库/版本动态",
+          "detail": "弈王者万象棋 · 阵容研习站新手教学 · 阵容研习 · 资料与版本,管理,首页,新手学堂,阵容库,资料库,版本动态"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S2",
+      "name": "新手学堂（阶段路径）",
+      "url": "http://127.0.0.1:5188/learn",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "六阶段 A–F 依序呈现",
+          "detail": "ABCDEF"
+        },
+        {
+          "ok": true,
+          "label": "每阶段有「学完能做什么」目标",
+          "detail": "6"
+        },
+        {
+          "ok": true,
+          "label": "六门课程标题可见（含 A 与 F）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无「暂无课程」占位（闭环已建全）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "课程链接指向 /learn/a-first-look",
+          "detail": "/learn/a-first-look"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S3",
+      "name": "课程 A 详情（第一次进入游戏）",
+      "url": "http://127.0.0.1:5188/learn/a-first-look",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "标题与适用版本",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "统一结构·学习目标",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "统一结构·一张规则图",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "统一结构·常见错误",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "来源引用区",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "基础层默认隐藏进阶段落",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "切换「我已理解规则」后进阶段落展开",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "进阶段落带「进阶」标注",
+          "detail": "进阶"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S4",
+      "name": "情境练习（课程 D/E 情景案例）",
+      "url": "http://127.0.0.1:5188/learn/d-transition-stabilize",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "情景案例区呈现",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "课程 D 含情境（开局没有孙尚香）",
+          "detail": "教学情境 · 三分登场流：第 3 回合还没有孙尚香"
+        },
+        {
+          "ok": true,
+          "label": "课程 E 含情境（成型缺吕布）",
+          "detail": "教学情境 · 三分登场流：8-11 回合吕布迟迟不来"
+        },
+        {
+          "ok": true,
+          "label": "情境标注「教学情境（非真实对局）」不可达时不伪造",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": [
+        "情境清单：D=[教学情境 · 三分登场流：第 3 回合还没有孙尚香] E=[教学情境 · 三分登场流：8-11 回合吕布迟迟不来]"
+      ]
+    },
+    {
+      "id": "S5",
+      "name": "阵容库（第一套阵容入口）",
+      "url": "http://127.0.0.1:5188/lineups",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "阵容手册卡（三分登场流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "难度标注（LOW）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "新手路线标注",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册链接 → /lineups/sanfen-dengchang",
+          "detail": "/lineups/sanfen-dengchang"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S6",
+      "name": "阵容手册详情（三分登场流）",
+      "url": "http://127.0.0.1:5188/lineups/sanfen-dengchang",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "手册章节（定阵条件）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（阶段）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（站位）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（替补）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（技能操作链）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（稳血）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "构成成员（吕布/曹操/蔡文姬）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "替补方案（甄姬/阿轲）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "站位未核实项如实标注",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "来源引用区",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": [
+        "页面含统计区块（无快照时应为如实提示）"
+      ]
+    },
+    {
+      "id": "S7",
+      "name": "资料库（英雄/装备/效果牌）",
+      "url": "http://127.0.0.1:5188/library",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "页签（英雄/棋手/装备/效果牌/天赋）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "英雄清单含 吕布 与 白歌（棋手）待切页签",
+          "detail": "吕布hero-lvbuv1.1.14 已登记字段：stageNote / lineupRole / verificationNote / recommendedEquipment / 周瑜hero-zhouyuv1.1.14 已登记字段：stageNote / lineupRole / equipmentNote / verificationNote / 太乙真人hero-taiyizhenren"
+        },
+        {
+          "ok": true,
+          "label": "装备页签可切换（炽热/不死鸟）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S8",
+      "name": "实体详情（吕布 / 炽热）",
+      "url": "http://127.0.0.1:5188/library/heroes/hero-lvbu",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "吕布定位事实（核心C位）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "官方阶段指引事实",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "炽热：推荐佩戴者（吕布 + 稳定 ID）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "炽热：数值未公布如实呈现（不编数值）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "AI 转写声明可见",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    }
+  ],
+  "total": 51,
+  "passed": 51,
+  "failed": 0
+}
