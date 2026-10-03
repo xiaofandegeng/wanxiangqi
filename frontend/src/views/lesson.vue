@@ -61,7 +61,21 @@
 
       <!-- 课程正文：结构化 sections 如实陈列；形态未知回退原始 JSON，不编造字段语义 -->
       <div class="section-card">
-        <h3 class="section-title">课程内容</h3>
+        <div class="content-head-row">
+          <h3 class="section-title">课程内容</h3>
+          <!-- 两种观看层次（任务书 §4）：「第一次玩」隐藏进阶，「我已理解规则」展开 -->
+          <div class="layer-toggle" role="group" aria-label="观看层次切换">
+            <button
+              type="button" class="layer-btn" :class="{ 'is-active': layer === 'first' }"
+              @click="setLayer('first')"
+            >第一次玩</button>
+            <button
+              type="button" class="layer-btn" :class="{ 'is-active': layer === 'advanced' }"
+              @click="setLayer('advanced')"
+            >我已理解规则</button>
+          </div>
+        </div>
+        <p class="layer-hint">{{ layer === 'first' ? '正在显示基础内容；切换到「我已理解规则」查看进阶细节。' : '进阶细节已展开（各节内标注「进阶」的段落）。' }}</p>
         <div v-if="!lesson.sections || !lesson.sections.length" class="section-empty">
           课程正文未登记（数据不完整，如实呈现）
         </div>
@@ -72,6 +86,9 @@
             <ul v-if="sec.items.length" class="ls-items">
               <li v-for="(item, j) in sec.items" :key="j">{{ item }}</li>
             </ul>
+            <p v-if="layer === 'advanced' && sec.advanced" class="ls-advanced">
+              <span class="adv-chip">进阶</span>{{ sec.advanced }}
+            </p>
             <pre v-if="sec.restJson" class="json-block">{{ sec.restJson }}</pre>
           </section>
         </div>
@@ -129,6 +146,17 @@ const lesson = ref<LessonDetail | null>(null)
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
+// 两种观看层次（任务书 §4）：偏好走本地存储；浏览器禁止存储时默认基础层仍可用
+const LAYER_KEY = 'wxq-lesson-layer'
+const layer = ref<'first' | 'advanced'>('first')
+try {
+  if (localStorage.getItem(LAYER_KEY) === 'advanced') layer.value = 'advanced'
+} catch { /* 存储不可用：保持默认，不阻断课程 */ }
+function setLayer(next: 'first' | 'advanced') {
+  layer.value = next
+  try { localStorage.setItem(LAYER_KEY, next) } catch { /* 偏好不持久化，本次会话仍生效 */ }
+}
+
 let loadAbort: AbortController | null = null
 
 async function loadLesson() {
@@ -154,17 +182,18 @@ watch(() => route.params.slug, () => {
   if (route.name === 'lesson') loadLesson()
 })
 
-/** 课程 sections：识别 title/body/items 常见形态；其余键原样 JSON 陈列 */
+/** 课程 sections：识别 title/body/items/advanced 常见形态；其余键原样 JSON 陈列 */
 const renderedSections = computed(() => {
   const secs = lesson.value?.sections
   if (!secs || !Array.isArray(secs)) return []
   return secs.map(sec => {
     const row = (sec && typeof sec === 'object' ? sec : {}) as Record<string, unknown>
-    const rest = Object.entries(row).filter(([k]) => !['title', 'body', 'items'].includes(k))
+    const rest = Object.entries(row).filter(([k]) => !['title', 'body', 'items', 'advanced'].includes(k))
     return {
       title: typeof row.title === 'string' ? row.title : '（未命名小节）',
       body: typeof row.body === 'string' ? row.body : null,
       items: Array.isArray(row.items) ? row.items.map(String) : [],
+      advanced: typeof row.advanced === 'string' ? row.advanced : null,
       restJson: rest.length ? JSON.stringify(Object.fromEntries(rest), null, 2) : null
     }
   })
@@ -398,6 +427,70 @@ function formatTime(isoStr: string | null | undefined) {
   color: $text-primary;
   padding-left: 10px;
   border-left: 3px solid rgba(37, 99, 235, 0.4);
+}
+
+.content-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.layer-toggle {
+  display: inline-flex;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.layer-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+
+  &.is-active {
+    background: $color-primary;
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 1px;
+  }
+}
+
+.layer-hint {
+  margin: -4px 0 0;
+  font-size: 12px;
+  color: $text-muted;
+}
+
+.ls-advanced {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: $text-secondary;
+  background: rgba(139, 92, 246, 0.06);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: $radius-md;
+  padding: 10px 12px;
+}
+
+.adv-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: $radius-sm;
+  padding: 0 6px;
+  margin-right: 8px;
+  vertical-align: 1px;
 }
 
 .ls-body {

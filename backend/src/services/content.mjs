@@ -278,7 +278,9 @@ export class ContentService {
 
   async addReference(payload, operator = 'ADMIN') {
     const { contentType, contentId, revisionId = null, refKind, refLocator, usageScope = 'INTERNAL_ONLY', licenseNote = null } = payload
-    if (!Object.values(CONTENT_TYPES).some(t => t.label === contentType)) {
+    // PATCH_NOTE：无修订的根级内容（0006 DDL 引用类型枚举含 PATCH_NOTE，§7.4 公告须登记来源）
+    const knownLabels = Object.values(CONTENT_TYPES).map(t => t.label).concat(['PATCH_NOTE'])
+    if (!knownLabels.includes(contentType)) {
       throw new ContentError(`未知引用内容类型 [${contentType}]`, { status: 422, code: 'BAD_CONTENT_TYPE' })
     }
     if (!['URL', 'RAW_MATERIAL', 'EVIDENCE', 'OFFICIAL_PAGE'].includes(refKind)) {
