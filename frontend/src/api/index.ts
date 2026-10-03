@@ -63,6 +63,82 @@ export interface LineupSnapshot {
   dataCutoffAt?: string | null
   updatedAt: string
   stale?: boolean | null
+  sourceUrl?: string | null
+  sourceLicenseNote?: string | null
+  mode?: string | null
+  rawMetrics?: Record<string, unknown> | null
+}
+
+/** 阵容手册构成项（§5.5 结构化：每张卡的角色与必需性） */
+export interface LineupComponent {
+  entityId: string
+  slug: string | null
+  displayName: string | null
+  kind: string | null
+  role: string
+  necessity: string
+  substituteFor?: string | null
+  notes?: Record<string, unknown> | null
+}
+
+export interface GameVersionRef {
+  versionId: string
+  status?: string | null
+  effectiveAt?: string | null
+}
+
+/** 稳定阵容（教学实体）—— 列表项；来源统计以 snapshots 子对象挂接 */
+export interface LineupManual {
+  id: string
+  slug: string
+  displayName: string
+  oneLineSummary: string | null
+  difficulty: string | null
+  newbieFitRationale: string | null
+  gameVersion: GameVersionRef | null
+  commander: { id: string; slug: string | null; displayName: string | null } | null
+  components: LineupComponent[]
+  hasOpenRecheck: boolean | null
+  publishedAt: string | null
+  snapshots: LineupSnapshot[]
+}
+
+/** 阵容手册详情：§5.1–5.6 全字段 + 修订历史索引 + 公开来源引用 */
+export interface LineupManualDetail extends LineupManual {
+  sections: {
+    playConditions: unknown
+    structureLevels: unknown
+    stages: unknown
+    stabilization: unknown
+    skillChains: unknown
+    positioning: unknown
+    substitutes: unknown
+    practiceCases: unknown
+  }
+  revision: { id: string; no: number; publishedAt: string | null } | null
+  references: ContentReference[]
+  revisionHistory: Array<{
+    revisionId: string
+    no: number
+    status: string
+    publishedAt: string | null
+    supersededAt: string | null
+    createdBy: string | null
+  }>
+}
+
+/** 内容来源引用（公开面只含 usage_scope=PUBLIC 的记录） */
+export interface ContentReference {
+  id: number
+  contentType: string
+  contentId: string
+  revisionId: number | null
+  refKind: string
+  refLocator: string
+  usageScope: string
+  licenseNote: string | null
+  createdBy: string | null
+  createdAt: string
 }
 
 export interface DataSourceStatus {
@@ -152,25 +228,34 @@ async function requestApi<T>(path: string, options: RequestInit = {}): Promise<T
 }
 
 /**
- * 1. 来源阵容快照大盘（含来源/窗口/样本口径语义字段；缺失字段为 null）
+ * 1. 阵容库（v6 M2-7 新契约）：稳定阵容教学实体为根，
+ *    来源统计快照作为子对象（statsNotice 说明统计口径）。
  */
-export async function fetchLineupSnapshots(
+export async function fetchLineups(
   signal?: AbortSignal
-): Promise<{ lineups: LineupSnapshot[]; sourceNotice: string; dataAsOf: string }> {
+): Promise<{ manuals: LineupManual[]; statsNotice: string; dataAsOf: string }> {
   const res = await requestApi<any>('/api/v1/lineups', { signal })
   return {
-    lineups: Array.isArray(res.data) ? res.data : [],
-    sourceNotice: res.sourceNotice || '数据来源于第三方阵容汇总快照，仅供流派参考，不代表个人真实战绩',
+    manuals: Array.isArray(res.data) ? res.data : [],
+    statsNotice: res.statsNotice || '',
     dataAsOf: res.dataAsOf || new Date().toISOString()
   }
 }
 
 /**
- * 1.1 单阵容快照详情
+ * 1.1 阵容手册详情（§5.1–5.6 全字段；未发布/不存在返回 null 由视图如实呈现）
  */
-export async function fetchLineupDetail(lineupId: string, signal?: AbortSignal): Promise<LineupSnapshot | null> {
-  const res = await requestApi<any>(`/api/v1/lineups/${encodeURIComponent(lineupId)}`, { signal })
-  return res.data || null
+export async function fetchLineupManual(
+  slugOrId: string,
+  signal?: AbortSignal
+): Promise<LineupManualDetail | null> {
+  try {
+    const res = await requestApi<any>(`/api/v1/lineups/${encodeURIComponent(slugOrId)}`, { signal })
+    return res.data || null
+  } catch (err: any) {
+    if (err?.status === 404) return null
+    throw err
+  }
 }
 
 /**
@@ -188,6 +273,202 @@ export async function fetchDataStatus(signal?: AbortSignal): Promise<{
     recentSyncJobs: res.recentSyncJobs || [],
     counts: res.counts ?? null,
     lastUpdated: res.lastUpdated || new Date().toISOString()
+  }
+}
+
+// ---------------- 内容底座（M2）：学堂 / 资料库 / 版本动态 ----------------
+
+export interface LessonSummary {
+  id: string
+  slug: string
+  title: string
+  stage: string
+  sortOrder: number | null
+  objectives: string[] | null
+  gameVersion: GameVersionRef | null
+  hasOpenRecheck: boolean | null
+  publishedAt: string | null
+  prerequisites: Array<{ id: string; slug: string | null; title: string | null }>
+}
+
+export interface LearnPath {
+  stages: Array<{ stage: string; lessons: LessonSummary[] }>
+  total: number
+}
+
+/**
+ * 2.1 学习路径（阶段 A–F + 已发布课程；课程缺席如实为空，不造占位课程）
+ */
+export async function fetchLearnPath(signal?: AbortSignal): Promise<LearnPath> {
+  const res = await requestApi<any>('/api/v1/learn', { signal })
+  return {
+    stages: Array.isArray(res.stages) ? res.stages : [],
+    total: res.total ?? 0
+  }
+}
+
+export interface LessonDetail extends LessonSummary {
+  sections: Array<Record<string, unknown>> | null
+  practice: Array<Record<string, unknown>> | null
+  revision: { id: string; no: number; publishedAt: string | null } | null
+  scenarios: Array<{ id: string; slug: string; title: string; kind: string }>
+  references: ContentReference[]
+}
+
+/**
+ * 2.2 课程详情（未发布/不存在 → null）
+ */
+export async function fetchLessonDetail(slug: string, signal?: AbortSignal): Promise<LessonDetail | null> {
+  try {
+    const res = await requestApi<any>(`/api/v1/lessons/${encodeURIComponent(slug)}`, { signal })
+    return res.data || null
+  } catch (err: any) {
+    if (err?.status === 404) return null
+    throw err
+  }
+}
+
+export interface CatalogEntry {
+  id: string
+  slug: string
+  kind: string
+  displayName: string
+  gameVersion: GameVersionRef | null
+  publishedAt: string | null
+  factsSummary: Record<string, unknown> | null
+}
+
+/**
+ * 2.3 资料库检索（kind 接受 URL 友好段或大写枚举，如 heroes / HERO）
+ */
+export async function fetchCatalog(
+  params: { kind?: string; q?: string } = {},
+  signal?: AbortSignal
+): Promise<CatalogEntry[]> {
+  const query = new URLSearchParams()
+  if (params.kind) query.set('kind', params.kind)
+  if (params.q) query.set('q', params.q)
+  const qs = query.toString() ? `?${query.toString()}` : ''
+  const res = await requestApi<any>(`/api/v1/catalog${qs}`, { signal })
+  return Array.isArray(res.data) ? res.data : []
+}
+
+export interface EntityDetail {
+  id: string
+  slug: string
+  kind: string
+  displayName: string
+  facts: Record<string, unknown> | null
+  gameVersion: GameVersionRef | null
+  revision: { id: string; no: number; publishedAt: string | null } | null
+  references: ContentReference[]
+}
+
+/**
+ * 2.4 实体档案详情（未发布/不存在 → null）
+ */
+export async function fetchEntityDetail(
+  kind: string,
+  slugOrId: string,
+  signal?: AbortSignal
+): Promise<EntityDetail | null> {
+  try {
+    const res = await requestApi<any>(
+      `/api/v1/catalog/${encodeURIComponent(kind)}/${encodeURIComponent(slugOrId)}`, { signal })
+    return res.data || null
+  } catch (err: any) {
+    if (err?.status === 404) return null
+    throw err
+  }
+}
+
+export interface MechanicEntry {
+  id: string
+  slug: string
+  title: string
+  statementRaw: string | null
+  params: Record<string, unknown> | null
+  appliesTo: Record<string, unknown> | null
+  gameVersion: GameVersionRef | null
+  publishedAt: string | null
+  references?: ContentReference[]
+}
+
+/**
+ * 2.5 规则条目列表（statementRaw 为来源原文，不做转述替换）
+ */
+export async function fetchMechanics(q?: string, signal?: AbortSignal): Promise<MechanicEntry[]> {
+  const qs = q ? `?q=${encodeURIComponent(q)}` : ''
+  const res = await requestApi<any>(`/api/v1/mechanics${qs}`, { signal })
+  return Array.isArray(res.data) ? res.data : []
+}
+
+export async function fetchMechanicDetail(slug: string, signal?: AbortSignal): Promise<MechanicEntry | null> {
+  try {
+    const res = await requestApi<any>(`/api/v1/mechanics/${encodeURIComponent(slug)}`, { signal })
+    return res.data || null
+  } catch (err: any) {
+    if (err?.status === 404) return null
+    throw err
+  }
+}
+
+export interface GameVersion {
+  versionId: string
+  status: string
+  effectiveAt?: string | null
+  officialBasis?: string | null
+  note?: string | null
+  publishedNotes?: number
+}
+
+/**
+ * 2.6 游戏版本列表（登记≠激活；status CURRENT/HISTORICAL 如实呈现）
+ */
+export async function fetchVersions(signal?: AbortSignal): Promise<GameVersion[]> {
+  const res = await requestApi<any>('/api/v1/versions', { signal })
+  return Array.isArray(res.data) ? res.data : []
+}
+
+export interface ContentImpact {
+  id: number
+  patchNoteId: string
+  contentType: string
+  contentId: string
+  impact: string
+  note: string | null
+  resolvedAt: string | null
+}
+
+export interface UpdateNote {
+  id: string
+  slug: string
+  title: string
+  versionId: string
+  officialUrl: string | null
+  officialPublishedAt: string | null
+  fetchedAt: string | null
+  summary: string | null
+  status: string
+  publishedAt?: string | null
+  impacts?: ContentImpact[]
+}
+
+/**
+ * 2.7 官方更新公告（仅已发布；明细含受影响内容清单）
+ */
+export async function fetchUpdates(signal?: AbortSignal): Promise<UpdateNote[]> {
+  const res = await requestApi<any>('/api/v1/updates', { signal })
+  return Array.isArray(res.data) ? res.data : []
+}
+
+export async function fetchUpdateDetail(slug: string, signal?: AbortSignal): Promise<UpdateNote | null> {
+  try {
+    const res = await requestApi<any>(`/api/v1/updates/${encodeURIComponent(slug)}`, { signal })
+    return res.data || null
+  } catch (err: any) {
+    if (err?.status === 404) return null
+    throw err
   }
 }
 

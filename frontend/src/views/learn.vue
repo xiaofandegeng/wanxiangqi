@@ -8,67 +8,112 @@
       </p>
     </div>
 
-    <!-- 学习阶段路线（教学框架；课程内容分阶段上线） -->
-    <div class="stage-list">
-      <div v-for="(stage, idx) in STAGES" :key="stage.key" class="stage-card">
-        <div class="stage-head">
-          <span class="stage-index font-mono">{{ String.fromCharCode(65 + idx) }}</span>
-          <h3 class="stage-title">{{ stage.title }}</h3>
-          <span class="stage-status">课程建设中</span>
-        </div>
-        <p class="stage-goal">
-          <strong>学完能做什么：</strong>{{ stage.goal }}
-        </p>
-      </div>
+    <div v-if="isLoading" class="state-panel">正在加载学习路径...</div>
+
+    <div v-else-if="loadError" class="state-panel is-error">
+      <p>学习路径加载失败：{{ loadError }}</p>
+      <button class="empty-action-btn" @click="loadPath">重新加载</button>
     </div>
 
-    <!-- 如实的空态：不放假课程链接，不冒充已有内容 -->
-    <div class="state-panel empty-state">
-      <p>首批课程正在建设中（随 M3 最小教学闭环上线）</p>
-      <span class="sub-hint">
-        课程上线前，可先到阵容库查看第三方来源公布的真实阵容快照，熟悉阵容的基本构成与统计口径。
-      </span>
-      <router-link to="/lineups" class="empty-action-btn">先逛阵容库</router-link>
-    </div>
+    <template v-else>
+      <!-- 学习阶段路线：课程来自 /api/v1/learn 已发布课程；无课程阶段如实「暂无课程」 -->
+      <div class="stage-list">
+        <div v-for="stage in stageCards" :key="stage.key" class="stage-card">
+          <div class="stage-head">
+            <span class="stage-index font-mono">{{ stage.letter }}</span>
+            <h3 class="stage-title">{{ stage.title }}</h3>
+            <span class="stage-status" :class="{ 'has-lessons': stage.lessons.length > 0 }">
+              {{ stage.lessons.length > 0 ? `${stage.lessons.length} 门课程` : '暂无课程' }}
+            </span>
+          </div>
+          <p class="stage-goal">
+            <strong>学完能做什么：</strong>{{ stage.goal }}
+          </p>
+
+          <div v-if="stage.lessons.length" class="lesson-list">
+            <router-link
+              v-for="lesson in stage.lessons"
+              :key="lesson.id"
+              :to="`/learn/${lesson.slug}`"
+              class="lesson-row"
+            >
+              <span class="lesson-title">
+                {{ lesson.title }}
+                <span v-if="lesson.hasOpenRecheck" class="recheck-chip">待版本复核</span>
+              </span>
+              <span class="lesson-meta">
+                <span v-if="lesson.gameVersion" class="font-mono">{{ lesson.gameVersion.versionId }}</span>
+                <span v-if="lesson.prerequisites.length" class="prereq-count">
+                  先修 {{ lesson.prerequisites.length }} 门
+                </span>
+              </span>
+            </router-link>
+          </div>
+        </div>
+      </div>
+
+      <!-- 如实空态：不放假课程链接，不冒充已有内容 -->
+      <div v-if="total === 0" class="state-panel empty-state">
+        <p>首批课程正在建设中（随 M3 最小教学闭环上线）</p>
+        <span class="sub-hint">
+          课程上线前，可先到阵容库查看第三方来源公布的真实阵容快照，熟悉阵容的基本构成与统计口径。
+        </span>
+        <router-link to="/lineups" class="empty-action-btn">先逛阵容库</router-link>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { fetchLearnPath, type LessonSummary } from '../api'
+
 // 六阶段教学框架来自 v6 任务书 §4（产品结构，非游戏事实）。
-// M1 阶段仅呈现框架与如实“建设中”状态；课程内容（规则图解/操作顺序/案例/练习）
-// 须待 M2 内容底座 + M3 最小教学闭环逐课落地，未上线前不展示任何课程正文。
-const STAGES = [
-  {
-    key: 'a-first-game',
-    title: '第一次进入游戏',
-    goal: '看懂界面，完成买牌、打出、查看技能等基础操作。'
-  },
-  {
-    key: 'b-growth-resources',
-    title: '认识成长和资源',
-    goal: '解释为何现在买牌、刷新、升级或保留资源。'
-  },
-  {
-    key: 'c-card-effects',
-    title: '认识卡牌效果',
-    goal: '能判断触发条件和操作顺序，而非只看战力数字。'
-  },
-  {
-    key: 'd-transition',
-    title: '学会过渡稳血',
-    goal: '不为追最终阵容而空场或无预算搜牌。'
-  },
-  {
-    key: 'e-first-lineup',
-    title: '玩会第一套阵容',
-    goal: '独立打完一局并解释主要决策。'
-  },
-  {
-    key: 'f-adapt-review',
-    title: '学会变阵与复盘',
-    goal: '用条件改变计划，找出下一局要改的一件事。'
-  }
+// 课程清单来自内容底座 /api/v1/learn（仅已发布课程；缺席阶段如实为空，不造占位课程）。
+const STAGE_TITLES: Array<{ letter: string; title: string; goal: string }> = [
+  { letter: 'A', title: '第一次进入游戏', goal: '看懂界面，完成买牌、打出、查看技能等基础操作。' },
+  { letter: 'B', title: '认识成长和资源', goal: '解释为何现在买牌、刷新、升级或保留资源。' },
+  { letter: 'C', title: '认识卡牌效果', goal: '能判断触发条件和操作顺序，而非只看战力数字。' },
+  { letter: 'D', title: '学会过渡稳血', goal: '不为追最终阵容而空场或无预算搜牌。' },
+  { letter: 'E', title: '玩会第一套阵容', goal: '独立打完一局并解释主要决策。' },
+  { letter: 'F', title: '学会变阵与复盘', goal: '用条件改变计划，找出下一局要改的一件事。' }
 ]
+
+const stages = ref<Array<{ stage: string; lessons: LessonSummary[] }>>([])
+const total = ref(0)
+const isLoading = ref(true)
+const loadError = ref<string | null>(null)
+
+async function loadPath() {
+  isLoading.value = true
+  loadError.value = null
+  try {
+    const res = await fetchLearnPath()
+    stages.value = res.stages
+    total.value = res.total
+  } catch (err: any) {
+    loadError.value = err?.message || '未知错误'
+    stages.value = []
+    total.value = 0
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const stageCards = computed(() =>
+  STAGE_TITLES.map(meta => {
+    const remote = stages.value.find(s => s.stage === meta.letter)
+    return {
+      key: `stage-${meta.letter}`,
+      letter: meta.letter,
+      title: meta.title,
+      goal: meta.goal,
+      lessons: remote ? remote.lessons : []
+    }
+  })
+)
+
+onMounted(loadPath)
 </script>
 
 <style lang="scss" scoped>
@@ -153,6 +198,12 @@ const STAGES = [
   padding: 2px 8px;
   border-radius: $radius-sm;
   white-space: nowrap;
+
+  &.has-lessons {
+    color: $color-primary;
+    background: $color-primary-light;
+    border-color: rgba(37, 99, 235, 0.3);
+  }
 }
 
 .stage-goal {
@@ -163,6 +214,64 @@ const STAGES = [
 
   strong {
     color: $text-muted;
+  }
+}
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lesson-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  text-decoration: none;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: rgba(37, 99, 235, 0.4);
+    background: $color-primary-light;
+  }
+}
+
+.lesson-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-primary;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recheck-chip {
+  font-size: 10px;
+  font-weight: 600;
+  color: $color-primary;
+  background: $color-primary-light;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  padding: 0 6px;
+  border-radius: $radius-sm;
+}
+
+.lesson-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: $text-muted;
+
+  .font-mono {
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0 6px;
+    border-radius: $radius-sm;
   }
 }
 
@@ -179,6 +288,10 @@ const STAGES = [
     font-size: 12px;
     color: $text-muted;
   }
+
+  &.is-error {
+    color: $color-danger;
+  }
 }
 
 .empty-action-btn {
@@ -191,6 +304,8 @@ const STAGES = [
   padding: 8px 18px;
   border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: $radius-md;
+  background: transparent;
+  cursor: pointer;
 
   &:hover {
     background: $color-primary-light;

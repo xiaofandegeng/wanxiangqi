@@ -30,8 +30,9 @@ test('M1-E1: 空库下 ready/health 正常，内容计数全 0（来源注册表
   assert.equal(health.json.db.connected, true)
   assert.deepEqual(health.json.counts, {
     sources: 5, lineups: 0, lineupsActive: 0, evidences: 0,
-    evidenceBlobs: 0, rawMaterials: 0, syncJobs: 0
-  }, '空库内容计数全 0；5 个来源为迁移种子注册行')
+    evidenceBlobs: 0, rawMaterials: 0, syncJobs: 0,
+    publishedLineups: 0, publishedLessons: 0, publishedEntities: 0, publishedMechanics: 0
+  }, '空库内容计数全 0；5 个来源为迁移种子注册行（v6 M2 计数含内容模型发布量）')
 })
 
 test('M1-E2: 空库读取端点返回空列表（无编造内容）', { skip: !pgAvailable }, async () => {

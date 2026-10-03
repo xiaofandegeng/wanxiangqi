@@ -4,24 +4,198 @@
       <router-link to="/learn" class="back-link">← 返回新手学堂</router-link>
     </div>
 
-    <!-- M1：课程内容尚未上线，如实呈现“不存在/建设中”，不渲染任何编造的课程正文 -->
-    <div class="state-panel">
-      <h3 class="state-title">课程内容建设中</h3>
+    <div v-if="isLoading" class="state-panel">正在加载课程...</div>
+
+    <div v-else-if="loadError" class="state-panel is-error">
+      <h3 class="state-title">课程加载失败</h3>
+      <p class="state-desc">{{ loadError }}</p>
+      <button class="state-btn" @click="loadLesson">重新加载</button>
+    </div>
+
+    <!-- 未发布/不存在：如实呈现，不渲染任何编造的课程正文 -->
+    <div v-else-if="!lesson" class="state-panel">
+      <h3 class="state-title">未找到该课程</h3>
       <p class="state-desc">
-        课程「<span class="font-mono">{{ slug }}</span>」的课程体系随 M3 最小教学闭环上线。
-        在内容经过第一方资料核实并完成审核前，本站不会展示任何课程正文、规则图解或练习。
+        课程「<span class="font-mono">{{ slug }}</span>」不存在或尚未发布
+        （草稿 / 待审核 / 退役内容不在公开面陈列）。
       </p>
       <router-link to="/learn" class="state-btn">返回学习路径</router-link>
     </div>
+
+    <template v-else>
+      <div class="lesson-header-card">
+        <div class="lesson-title-wrap">
+          <span class="stage-chip font-mono">阶段 {{ lesson.stage }}</span>
+          <h2 class="lesson-title">
+            {{ lesson.title }}
+            <span v-if="lesson.hasOpenRecheck" class="recheck-chip">待版本复核</span>
+          </h2>
+          <p class="lesson-meta-row">
+            <template v-if="lesson.gameVersion">适用版本 <span class="font-mono">{{ lesson.gameVersion.versionId }}</span> · </template>
+            <template v-if="lesson.revision">修订 r{{ lesson.revision.no }} · </template>
+            <template v-if="lesson.publishedAt">发布于 {{ formatTime(lesson.publishedAt) }}</template>
+          </p>
+        </div>
+      </div>
+
+      <!-- 先修课程（依赖关系来自内容底座；无先修如实隐藏） -->
+      <div v-if="lesson.prerequisites.length" class="section-card">
+        <h3 class="section-title">先修课程</h3>
+        <div class="prereq-list">
+          <router-link
+            v-for="p in lesson.prerequisites"
+            :key="p.id"
+            :to="`/learn/${p.slug}`"
+            class="prereq-link"
+          >{{ p.title || p.slug }}</router-link>
+        </div>
+      </div>
+
+      <!-- 学习目标 -->
+      <div v-if="lesson.objectives && lesson.objectives.length" class="section-card">
+        <h3 class="section-title">学完你能</h3>
+        <ul class="objectives-list">
+          <li v-for="(o, i) in lesson.objectives" :key="i">{{ o }}</li>
+        </ul>
+      </div>
+
+      <!-- 课程正文：结构化 sections 如实陈列；形态未知回退原始 JSON，不编造字段语义 -->
+      <div class="section-card">
+        <h3 class="section-title">课程内容</h3>
+        <div v-if="!lesson.sections || !lesson.sections.length" class="section-empty">
+          课程正文未登记（数据不完整，如实呈现）
+        </div>
+        <div v-else class="sections-wrap">
+          <section v-for="(sec, i) in renderedSections" :key="i" class="lesson-section">
+            <h4 class="ls-title">{{ sec.title }}</h4>
+            <p v-if="sec.body" class="ls-body">{{ sec.body }}</p>
+            <ul v-if="sec.items.length" class="ls-items">
+              <li v-for="(item, j) in sec.items" :key="j">{{ item }}</li>
+            </ul>
+            <pre v-if="sec.restJson" class="json-block">{{ sec.restJson }}</pre>
+          </section>
+        </div>
+      </div>
+
+      <!-- 配套练习 -->
+      <div class="section-card">
+        <h3 class="section-title">配套练习</h3>
+        <div v-if="!lesson.practice || !lesson.practice.length" class="section-empty">
+          本课暂无配套练习
+        </div>
+        <div v-else class="practice-wrap">
+          <div v-for="(p, i) in lesson.practice" :key="i" class="practice-item">
+            <pre class="json-block">{{ JSON.stringify(p, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- 情景卡（成功/失败案例，链接到情景详情或内联呈现） -->
+      <div class="section-card">
+        <h3 class="section-title">情景案例</h3>
+        <div v-if="!lesson.scenarios.length" class="section-empty">本课暂无情景案例</div>
+        <div v-else class="scenario-list">
+          <div v-for="s in lesson.scenarios" :key="s.id" class="scenario-item">
+            <span class="scenario-kind" :class="kindClass(s.kind)">{{ kindLabel(s.kind) }}</span>
+            <span class="scenario-title">{{ s.title }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 来源引用 -->
+      <div class="section-card">
+        <h3 class="section-title">来源与依据（公开引用）</h3>
+        <div v-if="!lesson.references.length" class="section-empty">无公开来源引用</div>
+        <ul v-else class="ref-list">
+          <li v-for="r in lesson.references" :key="r.id" class="ref-item">
+            <span class="ref-kind">{{ refKindLabel(r.refKind) }}</span>
+            <span class="ref-locator font-mono">{{ r.refLocator }}</span>
+          </li>
+        </ul>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { fetchLessonDetail, type LessonDetail } from '../api'
 
 const route = useRoute()
 const slug = computed(() => (route.params.slug as string) || '')
+
+const lesson = ref<LessonDetail | null>(null)
+const isLoading = ref(true)
+const loadError = ref<string | null>(null)
+
+let loadAbort: AbortController | null = null
+
+async function loadLesson() {
+  loadAbort?.abort()
+  loadAbort = new AbortController()
+  isLoading.value = true
+  loadError.value = null
+  try {
+    lesson.value = await fetchLessonDetail(slug.value, loadAbort.signal)
+  } catch (err: any) {
+    if (err?.name === 'AbortError') return
+    console.error('加载课程失败:', err)
+    loadError.value = err?.message || '未知错误'
+    lesson.value = null
+  } finally {
+    if (!loadAbort?.signal.aborted) isLoading.value = false
+  }
+}
+
+onMounted(loadLesson)
+onUnmounted(() => loadAbort?.abort())
+watch(() => route.params.slug, () => {
+  if (route.name === 'lesson') loadLesson()
+})
+
+/** 课程 sections：识别 title/body/items 常见形态；其余键原样 JSON 陈列 */
+const renderedSections = computed(() => {
+  const secs = lesson.value?.sections
+  if (!secs || !Array.isArray(secs)) return []
+  return secs.map(sec => {
+    const row = (sec && typeof sec === 'object' ? sec : {}) as Record<string, unknown>
+    const rest = Object.entries(row).filter(([k]) => !['title', 'body', 'items'].includes(k))
+    return {
+      title: typeof row.title === 'string' ? row.title : '（未命名小节）',
+      body: typeof row.body === 'string' ? row.body : null,
+      items: Array.isArray(row.items) ? row.items.map(String) : [],
+      restJson: rest.length ? JSON.stringify(Object.fromEntries(rest), null, 2) : null
+    }
+  })
+})
+
+function kindLabel(kind: string): string {
+  const map: Record<string, string> = { SUCCESS: '成功案例', FAILURE: '失败案例', DECISION: '决策情景' }
+  return map[kind] || kind
+}
+
+function kindClass(kind: string): string {
+  if (kind === 'SUCCESS') return 'is-success'
+  if (kind === 'FAILURE') return 'is-failure'
+  return 'is-neutral'
+}
+
+function refKindLabel(k: string): string {
+  const map: Record<string, string> = {
+    URL: '链接', RAW_MATERIAL: '原始材料存证', EVIDENCE: '证据原件', OFFICIAL_PAGE: '官方页面'
+  }
+  return map[k] || k
+}
+
+function formatTime(isoStr: string | null | undefined) {
+  if (!isoStr) return '—'
+  try {
+    return new Date(isoStr).toLocaleString('zh-CN', { hour12: false })
+  } catch {
+    return isoStr
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -52,6 +226,10 @@ const slug = computed(() => (route.params.slug as string) || '')
   flex-direction: column;
   align-items: center;
   gap: 10px;
+
+  &.is-error {
+    color: $color-danger;
+  }
 }
 
 .state-title {
@@ -86,9 +264,263 @@ const slug = computed(() => (route.params.slug as string) || '')
   padding: 8px 18px;
   border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: $radius-md;
+  background: transparent;
+  cursor: pointer;
 
   &:hover {
     background: $color-primary-light;
   }
+}
+
+.lesson-header-card {
+  @include glass-panel;
+  padding: 22px 24px;
+}
+
+.lesson-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stage-chip {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-primary;
+  background: $color-primary-light;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  padding: 1px 8px;
+  border-radius: $radius-sm;
+}
+
+.lesson-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: $text-primary;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.recheck-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: $radius-sm;
+  background: $color-primary-light;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  color: $color-primary;
+}
+
+.lesson-meta-row {
+  margin: 0;
+  font-size: 12px;
+  color: $text-muted;
+}
+
+.section-card {
+  @include glass-panel;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: $text-primary;
+}
+
+.section-empty {
+  font-size: 13px;
+  color: $text-muted;
+  background: $bg-tertiary;
+  border: 1px dashed $border-color;
+  border-radius: $radius-md;
+  padding: 14px;
+}
+
+.prereq-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.prereq-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-primary;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  border-radius: $radius-md;
+
+  &:hover {
+    background: $color-primary-light;
+  }
+}
+
+.objectives-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: $text-secondary;
+  }
+}
+
+.sections-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lesson-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ls-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: $text-primary;
+  padding-left: 10px;
+  border-left: 3px solid rgba(37, 99, 235, 0.4);
+}
+
+.ls-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: $text-secondary;
+  white-space: pre-wrap;
+}
+
+.ls-items {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: $text-secondary;
+  }
+}
+
+.json-block {
+  margin: 0;
+  font-family: $font-mono;
+  font-size: 12px;
+  line-height: 1.7;
+  color: $text-secondary;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: 12px 14px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.practice-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scenario-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+}
+
+.scenario-kind {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+
+  &.is-success {
+    color: #059669;
+    background: rgba(5, 150, 105, 0.08);
+    border: 1px solid rgba(5, 150, 105, 0.3);
+  }
+
+  &.is-failure {
+    color: #b91c1c;
+    background: rgba(220, 38, 38, 0.06);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+  }
+
+  &.is-neutral {
+    color: $color-primary;
+    background: $color-primary-light;
+    border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+}
+
+.scenario-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.ref-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ref-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.ref-kind {
+  font-size: 11px;
+  color: #7c3aed;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  padding: 1px 8px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+}
+
+.ref-locator {
+  font-size: 12px;
+  color: $text-secondary;
+  word-break: break-all;
 }
 </style>

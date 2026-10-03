@@ -48,7 +48,11 @@ export class PgRepository {
         (SELECT count(*) FROM evidences)::int AS evidences,
         (SELECT count(*) FROM evidence_blobs)::int AS evidence_blobs,
         (SELECT count(*) FROM raw_materials)::int AS raw_materials,
-        (SELECT count(*) FROM sync_jobs)::int AS sync_jobs
+        (SELECT count(*) FROM sync_jobs)::int AS sync_jobs,
+        (SELECT count(*) FROM lineups WHERE status = 'PUBLISHED')::int AS published_lineups,
+        (SELECT count(*) FROM lessons WHERE status = 'PUBLISHED')::int AS published_lessons,
+        (SELECT count(*) FROM catalog_entities WHERE status = 'PUBLISHED')::int AS published_entities,
+        (SELECT count(*) FROM mechanics WHERE status = 'PUBLISHED')::int AS published_mechanics
     `)
     const r = res.rows[0]
     return {
@@ -58,7 +62,11 @@ export class PgRepository {
       evidences: r.evidences,
       evidenceBlobs: r.evidence_blobs,
       rawMaterials: r.raw_materials,
-      syncJobs: r.sync_jobs
+      syncJobs: r.sync_jobs,
+      publishedLineups: r.published_lineups,
+      publishedLessons: r.published_lessons,
+      publishedEntities: r.published_entities,
+      publishedMechanics: r.published_mechanics
     }
   }
 
@@ -98,25 +106,9 @@ export class PgRepository {
 
   // 公开口径（复验3）：只展示 来源状态 READY/ACTIVE 且快照未被隔离 的行；
   // 未治理来源（UNCONFIGURED/UNAVAILABLE）的存量快照保留在库中可审计，但不公开混排
-  static LINEUP_PUBLIC_JOIN = `
-    FROM lineup_snapshots ls
-    JOIN data_sources ds ON ds.source_id = ls.source_id
-    WHERE ds.status IN ('ACTIVE', 'READY') AND ls.record_status = 'ACTIVE'`
-
-  async getLineupsList() {
-    const res = await this.pool.query(`
-      SELECT ls.*, ds.name AS source_name, ds.status AS source_status, ds.type AS source_type
-      ${PgRepository.LINEUP_PUBLIC_JOIN}
-      ORDER BY ls.source_id, ls.updated_at DESC`)
-    return res.rows.map(PgRepository.LINEUP_WIRE)
-  }
-
-  async getLineupById(lineupId) {
-    const res = await this.pool.query(`
-      SELECT ls.*, ds.name AS source_name, ds.status AS source_status, ds.type AS source_type
-      ${PgRepository.LINEUP_PUBLIC_JOIN} AND ls.id = $1`, [lineupId])
-    return res.rows.length ? PgRepository.LINEUP_WIRE(res.rows[0]) : null
-  }
+  // v6 M2-7：旧「快照即阵容」列表/详情契约退役（getLineupsList/getLineupById 删除）；
+  // 快照作为稳定阵容的统计子对象，经 lineup_snapshot_links 显式映射后公开——
+  // 公开口径 SQL 与本 wire 由 ContentRepository.listLinkedSnapshotRows 复用。
 
   // ---------------- 数据源状态与同步台账 ----------------
 

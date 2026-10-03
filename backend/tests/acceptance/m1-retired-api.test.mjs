@@ -72,8 +72,9 @@ test('M1-3c: 保留面正常 —— ready/health/lineups/data-status', { skip: !
 
   const lineups = await stack.api('/api/v1/lineups')
   assert.equal(lineups.status, 200)
-  assert.equal(lineups.json.total, 0, '空库快照列表如实为空')
-  assert.equal(typeof lineups.json.sourceNotice, 'string', '来源口径提示保留')
+  assert.equal(lineups.json.total, 0, '空库阵容列表如实为空（v6 M2-7 新契约：稳定阵容为根）')
+  assert.equal(typeof lineups.json.statsNotice, 'string', '来源统计口径提示保留（statsNotice）')
+  assert.equal(lineups.json.sourceNotice, undefined, '旧快照页契约字段退役')
 
   const status = await stack.api('/api/v1/data-status')
   assert.equal(status.status, 200)

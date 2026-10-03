@@ -8,8 +8,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   getAdminToken, setAdminToken, hasAdminToken, AdminTokenMissingError,
-  fetchLineupSnapshots, fetchDataStatus, uploadEvidence, syncSource,
-  fetchSyncJobs, fetchEvidences
+  fetchLineups, fetchDataStatus, uploadEvidence, syncSource,
+  fetchSyncJobs, fetchEvidences,
+  fetchLearnPath, fetchCatalog, fetchLineupManual
 } from '../src/api'
 
 function jsonResponse(status: number, body: unknown) {
@@ -55,7 +56,7 @@ describe('管理凭证机制', () => {
   })
 
   it('公开只读接口（lineups）匿名可请求', async () => {
-    await fetchLineupSnapshots()
+    await fetchLineups()
     const call = (globalThis as any).fetch.mock.calls[0]
     expect(call[0]).toBe('/api/v1/lineups')
   })
@@ -71,24 +72,67 @@ describe('响应映射（v6 新形态）', () => {
     vi.unstubAllGlobals()
   })
 
-  it('fetchLineupSnapshots 映射 data/sourceNotice/dataAsOf', async () => {
+  it('fetchLineups 映射 data/statsNotice/dataAsOf（稳定手册 + 统计子对象契约）', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(200, {
       code: 0,
       total: 1,
       data: [{
-        id: 'lm-1', sourceId: 'src-hokace-wiki', lineupName: '示例阵容',
-        tier: null, commander: null, coreHeroes: [], sampleCount: 100,
-        winRate: 0.1, top3Rate: 0.5, avgRank: null, snapshotVersion: 'v260924',
-        windowText: '7日对局快照', scope: null, updatedAt: '2026-10-03T00:00:00Z'
+        id: 'lu-1', slug: 'lu-1', displayName: '示例阵容手册',
+        oneLineSummary: null, difficulty: 'LOW', newbieFitRationale: null,
+        gameVersion: { versionId: 'v261001' }, commander: null,
+        components: [], hasOpenRecheck: false, publishedAt: '2026-10-03T00:00:00Z',
+        snapshots: [{
+          id: 'ls-1', sourceId: 'src-hokace-wiki', lineupName: '示例阵容',
+          tier: null, commander: null, coreHeroes: [], sampleCount: 100,
+          winRate: 0.1, top3Rate: 0.5, avgRank: null, snapshotVersion: 'v260924',
+          windowText: '7日对局快照', scope: null, updatedAt: '2026-10-03T00:00:00Z'
+        }]
       }],
-      sourceNotice: '来源口径说明',
+      statsNotice: '统计口径说明',
       dataAsOf: '2026-10-03T08:00:00Z'
     })))
-    const res = await fetchLineupSnapshots()
-    expect(res.lineups).toHaveLength(1)
-    expect(res.lineups[0].lineupName).toBe('示例阵容')
-    expect(res.sourceNotice).toBe('来源口径说明')
+    const res = await fetchLineups()
+    expect(res.manuals).toHaveLength(1)
+    expect(res.manuals[0].displayName).toBe('示例阵容手册')
+    expect(res.manuals[0].snapshots[0].sampleCount).toBe(100)
+    expect(res.statsNotice).toBe('统计口径说明')
     expect(res.dataAsOf).toBe('2026-10-03T08:00:00Z')
+  })
+
+  it('fetchLearnPath 映射 stages/total；空阶段如实为空数组', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(200, {
+      code: 0,
+      stages: [
+        { stage: 'A', lessons: [{ id: 'l-1', slug: 'l-1', title: '第一课', stage: 'A', sortOrder: 1, objectives: null, gameVersion: null, hasOpenRecheck: false, publishedAt: null, prerequisites: [] }] },
+        { stage: 'B', lessons: [] }
+      ],
+      total: 1
+    })))
+    const res = await fetchLearnPath()
+    expect(res.total).toBe(1)
+    expect(res.stages).toHaveLength(2)
+    expect(res.stages[0].lessons[0].title).toBe('第一课')
+    expect(res.stages[1].lessons).toEqual([])
+  })
+
+  it('fetchCatalog 携带 kind/q 查询参数并映射 data 数组', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(200, {
+      code: 0, total: 1,
+      data: [{ id: 'ent-1', slug: 'hero-a', kind: 'HERO', displayName: '英雄A', gameVersion: null, publishedAt: null, factsSummary: null }]
+    })))
+    const items = await fetchCatalog({ kind: 'heroes', q: '英雄' })
+    const call = (globalThis as any).fetch.mock.calls[0]
+    expect(call[0]).toBe('/api/v1/catalog?kind=heroes&q=' + encodeURIComponent('英雄'))
+    expect(items).toHaveLength(1)
+    expect(items[0].kind).toBe('HERO')
+  })
+
+  it('fetchLineupManual 404 → null（未发布/不存在由视图如实呈现）', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(404, {
+      code: 404, error: '阵容 [ghost] 不存在或未发布'
+    })))
+    const res = await fetchLineupManual('ghost')
+    expect(res).toBeNull()
   })
 
   it('fetchDataStatus 映射 sources/recentSyncJobs/counts（新计数形态）', async () => {

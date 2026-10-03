@@ -175,18 +175,19 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     }
 
     // ----------------------------------------------------
-    // 来源阵容快照大盘（缺失字段 null + 窗口/单位/截止/过期标识）
+    // 阵容库（M2-7 新契约）：稳定阵容教学实体为根，
+    // 来源统计作为快照子对象（§6 口径原样：来源/窗口/单位/截止/抓取分列）
     // GET /api/v1/lineups
-    // v6：快照语义保留（来源统计子对象），稳定阵容教学契约在 M2-7 接入
+    // GET /api/v1/lineups/:slugOrId
     // ----------------------------------------------------
     if (pathname === '/api/v1/lineups' && req.method === 'GET') {
       try {
-        const list = await svc.getLineupsList()
+        const list = await svc.content.getLineupsList()
         return sendJson(200, {
           code: 0,
           total: list.length,
           data: list,
-          sourceNotice: '数据来源于第三方阵容汇总快照（含来源/窗口/样本口径），仅供流派参考，不代表个人真实战绩',
+          statsNotice: '统计为来源公布的阵容快照（经人工映射挂接；窗口/样本/单位如实标注，不跨来源平均，不代表任何个人真实战绩）',
           dataAsOf: new Date().toISOString()
         })
       } catch (err) {
@@ -194,18 +195,146 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
       }
     }
 
-    // ----------------------------------------------------
-    // 单阵容快照详情
-    // GET /api/v1/lineups/:id
-    // ----------------------------------------------------
     const lineupDetailMatch = pathname.match(/^\/api\/v1\/lineups\/([^/]+)$/)
     if (lineupDetailMatch && req.method === 'GET') {
       try {
-        const lineup = await svc.getLineupById(lineupDetailMatch[1])
+        const lineup = await svc.content.getLineupDetail(lineupDetailMatch[1])
         if (!lineup) {
-          return sendJson(404, { code: 404, error: `阵容 [${lineupDetailMatch[1]}] 不存在` })
+          return sendJson(404, { code: 404, error: `阵容 [${lineupDetailMatch[1]}] 不存在或未发布` })
         }
         return sendJson(200, { code: 0, data: lineup })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    // ----------------------------------------------------
+    // 新手学堂：阶段化课程路径（M2-7）
+    // GET /api/v1/learn
+    // GET /api/v1/lessons/:slug
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/learn' && req.method === 'GET') {
+      try {
+        const path = await svc.content.getLearnPath()
+        return sendJson(200, { code: 0, ...path })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    const lessonMatch = pathname.match(/^\/api\/v1\/lessons\/([^/]+)$/)
+    if (lessonMatch && req.method === 'GET') {
+      try {
+        const lesson = await svc.content.getLessonDetail(lessonMatch[1])
+        if (!lesson) return sendJson(404, { code: 404, error: `课程 [${lessonMatch[1]}] 不存在或未发布` })
+        return sendJson(200, { code: 0, data: lesson })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    // ----------------------------------------------------
+    // 资料库：实体/规则（M2-7）
+    // GET /api/v1/catalog?kind=&q=
+    // GET /api/v1/catalog/:kind/:slug
+    // GET /api/v1/mechanics?q=
+    // GET /api/v1/mechanics/:slug
+    // ----------------------------------------------------
+    // URL 友好 kind → DB 枚举（同名实体按种类区别；直写枚举值也可）。
+    // 列表与详情共用同一映射：?kind=heroes 与 /catalog/heroes/:slug 语义一致
+    const CATALOG_KINDS = {
+      heroes: 'HERO', commanders: 'COMMANDER', equipment: 'EQUIPMENT',
+      'effect-cards': 'EFFECT_CARD', talents: 'TALENT', camps: 'CAMP',
+      hero: 'HERO', commander: 'COMMANDER', effect_card: 'EFFECT_CARD'
+    }
+    const resolveCatalogKind = raw => {
+      if (!raw) return null
+      return CATALOG_KINDS[raw.toLowerCase()] || (/^[A-Z_]+$/.test(raw) ? raw : null)
+    }
+
+    if (pathname === '/api/v1/catalog' && req.method === 'GET') {
+      try {
+        const rawKind = url.searchParams.get('kind') || null
+        const kind = resolveCatalogKind(rawKind)
+        if (rawKind && !kind) {
+          return sendJson(400, { code: 400, error: `未知资料种类 [${rawKind}]`, code_name: 'UNKNOWN_KIND' })
+        }
+        const q = url.searchParams.get('q') || null
+        const items = await svc.content.getCatalog({ kind, q })
+        return sendJson(200, { code: 0, total: items.length, data: items })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    const catalogDetailMatch = pathname.match(/^\/api\/v1\/catalog\/([a-zA-Z_-]+)\/([^/]+)$/)
+    if (catalogDetailMatch && req.method === 'GET') {
+      try {
+        const seg = catalogDetailMatch[1].toLowerCase()
+        const kind = resolveCatalogKind(catalogDetailMatch[1])
+        if (!kind) {
+          return sendJson(400, { code: 400, error: `未知资料种类 [${seg}]`, code_name: 'UNKNOWN_KIND' })
+        }
+        const entity = await svc.content.getEntityDetail(kind, catalogDetailMatch[2])
+        if (!entity) {
+          return sendJson(404, { code: 404, error: `资料 [${catalogDetailMatch[1]}/${catalogDetailMatch[2]}] 不存在或未发布` })
+        }
+        return sendJson(200, { code: 0, data: entity })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    if (pathname === '/api/v1/mechanics' && req.method === 'GET') {
+      try {
+        const items = await svc.content.getMechanics({ q: url.searchParams.get('q') || null })
+        return sendJson(200, { code: 0, total: items.length, data: items })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    const mechanicMatch = pathname.match(/^\/api\/v1\/mechanics\/([^/]+)$/)
+    if (mechanicMatch && req.method === 'GET') {
+      try {
+        const mech = await svc.content.getMechanicDetail(mechanicMatch[1])
+        if (!mech) return sendJson(404, { code: 404, error: `规则条目 [${mechanicMatch[1]}] 不存在或未发布` })
+        return sendJson(200, { code: 0, data: mech })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    // ----------------------------------------------------
+    // 版本动态（M2-7）：版本登记 + 官方更新公告（已发布）
+    // GET /api/v1/versions
+    // GET /api/v1/updates
+    // GET /api/v1/updates/:slug
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/versions' && req.method === 'GET') {
+      try {
+        const versions = await svc.content.listVersions()
+        return sendJson(200, { code: 0, total: versions.length, data: versions })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    if (pathname === '/api/v1/updates' && req.method === 'GET') {
+      try {
+        const updates = await svc.content.listUpdates()
+        return sendJson(200, { code: 0, total: updates.length, data: updates })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    const updateMatch = pathname.match(/^\/api\/v1\/updates\/([^/]+)$/)
+    if (updateMatch && req.method === 'GET') {
+      try {
+        const update = await svc.content.getUpdate(updateMatch[1])
+        if (!update) return sendJson(404, { code: 404, error: `更新公告 [${updateMatch[1]}] 不存在或未发布` })
+        return sendJson(200, { code: 0, data: update })
       } catch (err) {
         return handleServiceError(err, 500)
       }
@@ -386,6 +515,257 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
       } catch (err) {
         return handleServiceError(err)
       }
+    }
+
+    // ----------------------------------------------------
+    // 管理端 · 版本与官方更新（M2-1 / M2-8；Bearer 已由命名空间门禁覆盖）
+    // GET/POST  /api/v1/admin/game-versions
+    // POST      /api/v1/admin/game-versions/:id/activate     {patchNoteId?, note?}
+    // GET/POST  /api/v1/admin/patch-notes
+    // POST      /api/v1/admin/patch-notes/:id/publish
+    // POST      /api/v1/admin/patch-notes/:id/impacts        {impacts:[{contentType,contentId,impact,note}]}
+    // GET       /api/v1/admin/content-impacts?open=1         待复核清单（A09）
+    // POST      /api/v1/admin/content-impacts/:id/resolve    {resolution, note}
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/game-versions' && req.method === 'GET') {
+      const versions = await svc.content.listVersions()
+      return sendJson(200, { code: 0, total: versions.length, data: versions })
+    }
+    if (pathname === '/api/v1/admin/game-versions' && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(201, { code: 0, message: '版本已登记（登记≠激活当前版本）', data: await svc.content.createVersion(body || {}, 'ADMIN_API') })
+      } catch (err) { return handleServiceError(err) }
+    }
+    const activateVersionMatch = pathname.match(/^\/api\/v1\/admin\/game-versions\/([^/]+)\/activate$/)
+    if (activateVersionMatch && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        const result = await svc.content.activateVersion(activateVersionMatch[1], body || {}, 'ADMIN_API')
+        return sendJson(200, {
+          code: 0,
+          message: `已激活为当前版本；${result.markedCount} 项绑定旧版本的已发布内容登记待复核`,
+          data: result
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    if (pathname === '/api/v1/admin/patch-notes' && req.method === 'GET') {
+      const notes = await svc.content.listUpdates()
+      return sendJson(200, { code: 0, total: notes.length, data: notes })
+    }
+    if (pathname === '/api/v1/admin/patch-notes' && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(201, { code: 0, data: await svc.content.createPatchNote(body || {}, 'ADMIN_API') })
+      } catch (err) { return handleServiceError(err) }
+    }
+    const patchNotePublishMatch = pathname.match(/^\/api\/v1\/admin\/patch-notes\/([^/]+)\/publish$/)
+    if (patchNotePublishMatch && req.method === 'POST') {
+      try {
+        return sendJson(200, { code: 0, data: await svc.content.publishPatchNote(patchNotePublishMatch[1], 'ADMIN_API') })
+      } catch (err) { return handleServiceError(err) }
+    }
+    const patchNoteImpactsMatch = pathname.match(/^\/api\/v1\/admin\/patch-notes\/([^/]+)\/impacts$/)
+    if (patchNoteImpactsMatch && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(201, {
+          code: 0,
+          data: await svc.content.addImpacts(patchNoteImpactsMatch[1], body?.impacts || [], 'ADMIN_API')
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    if (pathname === '/api/v1/admin/content-impacts' && req.method === 'GET') {
+      const openOnly = url.searchParams.get('open') !== '0'
+      return sendJson(200, { code: 0, total: 0, data: await svc.content.listRechecks({ openOnly }) })
+    }
+    const impactResolveMatch = pathname.match(/^\/api\/v1\/admin\/content-impacts\/([^/]+)\/resolve$/)
+    if (impactResolveMatch && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(200, {
+          code: 0,
+          data: await svc.content.resolveImpact(impactResolveMatch[1], body || {})
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    // ----------------------------------------------------
+    // 管理端 · 内容生命周期（M2-8；上传≠发布，发布校验在服务层）
+    // GET/POST   /api/v1/admin/content/:type            列表（含草稿）/ 创建
+    // GET/PATCH  /api/v1/admin/content/:type/:idOrSlug  详情（含修订+引用+台账）/ 改展示字段
+    // POST       /api/v1/admin/content/:type/:idOrSlug/revisions   新建修订
+    // POST       /api/v1/admin/content/:type/:idOrSlug/retract     {reason}
+    // POST       /api/v1/admin/content/:type/:idOrSlug/rollback    {targetRevisionId, reason}
+    // POST       /api/v1/admin/content/:type/:idOrSlug/publish     （scenarios 根级发布）
+    // POST       /api/v1/admin/revisions/:type/:revId/submit
+    // POST       /api/v1/admin/revisions/:type/:revId/publish
+    // PUT        /api/v1/admin/lessons/:idOrSlug/dependencies     {dependsOn:[]}
+    // GET/POST   /api/v1/admin/content-references
+    // GET        /api/v1/admin/review-log?contentType=&contentId=
+    // ----------------------------------------------------
+    const CONTENT_TYPE_SEGMENTS = ['catalog-entities', 'mechanics', 'lineups', 'lessons', 'scenarios']
+    const adminContentListMatch = pathname.match(/^\/api\/v1\/admin\/content\/([a-z-]+)$/)
+    if (adminContentListMatch && CONTENT_TYPE_SEGMENTS.includes(adminContentListMatch[1])) {
+      const typeName = adminContentListMatch[1]
+      if (req.method === 'GET') {
+        try {
+          const items = await svc.content.listContent(typeName, {
+            status: url.searchParams.get('status') || null,
+            kind: url.searchParams.get('kind') || null,
+            stage: url.searchParams.get('stage') || null
+          })
+          return sendJson(200, { code: 0, total: items.length, data: items })
+        } catch (err) { return handleServiceError(err) }
+      }
+      if (req.method === 'POST') {
+        try {
+          const { body } = await readJsonBody()
+          return sendJson(201, { code: 0, message: '已创建（草稿；上传/创建不等于发布）', data: await svc.content.createContent(typeName, body || {}, 'ADMIN_API') })
+        } catch (err) { return handleServiceError(err) }
+      }
+    }
+
+    const adminRevisionActionMatch = pathname.match(/^\/api\/v1\/admin\/revisions\/([a-z-]+)\/([^/]+)\/(submit|publish)$/)
+    if (adminRevisionActionMatch && req.method === 'POST') {
+      try {
+        const [, typeName, revId, action] = adminRevisionActionMatch
+        if (action === 'submit') {
+          return sendJson(200, { code: 0, data: await svc.content.submitRevision(typeName, revId, 'ADMIN_API') })
+        }
+        const { body } = await readJsonBody()
+        return sendJson(200, {
+          code: 0,
+          message: '修订已发布（发布与审核台账同事务写入）',
+          data: await svc.content.publishRevision(typeName, revId, { operator: 'ADMIN_API', reason: body?.reason || null })
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    const adminContentItemActionMatch = pathname.match(
+      /^\/api\/v1\/admin\/content\/([a-z-]+)\/([^/]+)\/(revisions|retract|rollback|publish)$/)
+    if (adminContentItemActionMatch && CONTENT_TYPE_SEGMENTS.includes(adminContentItemActionMatch[1])) {
+      try {
+        const [, typeName, idOrSlug, action] = adminContentItemActionMatch
+        const needsBody = action === 'revisions' || action === 'retract' || action === 'rollback'
+        const { body } = needsBody ? await readJsonBody() : { body: null }
+        if (action === 'revisions') {
+          return sendJson(201, { code: 0, data: await svc.content.createRevision(typeName, idOrSlug, body || {}, 'ADMIN_API') })
+        }
+        if (action === 'retract') {
+          const row = await svc.content.retractContent(typeName, idOrSlug, { reason: body?.reason, operator: 'ADMIN_API' })
+          if (!row) return sendJson(404, { code: 404, error: `内容 [${idOrSlug}] 不存在` })
+          return sendJson(200, { code: 0, message: '内容已退役（RETIRED，台账已记录）', data: row })
+        }
+        if (action === 'rollback') {
+          return sendJson(201, {
+            code: 0,
+            message: '已生成回滚草稿修订（历史保留，可追踪；发布仍需走校验）',
+            data: await svc.content.rollbackContent(typeName, idOrSlug, body || {}, 'ADMIN_API')
+          })
+        }
+        // publish（scenarios 根级发布）
+        if (typeName !== 'scenarios') {
+          return sendJson(400, { code: 400, error: '带修订的内容请走 /admin/revisions/:type/:revId/publish', code_name: 'USE_REVISION_PUBLISH' })
+        }
+        return sendJson(200, { code: 0, data: await svc.content.publishScenario(idOrSlug, { operator: 'ADMIN_API', reason: body?.reason || null }) })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    const adminContentItemMatch = pathname.match(/^\/api\/v1\/admin\/content\/([a-z-]+)\/([^/]+)$/)
+    if (adminContentItemMatch && CONTENT_TYPE_SEGMENTS.includes(adminContentItemMatch[1])) {
+      const typeName = adminContentItemMatch[1]
+      if (req.method === 'GET') {
+        try {
+          const item = await svc.content.getContent(typeName, adminContentItemMatch[2])
+          if (!item) return sendJson(404, { code: 404, error: `内容 [${adminContentItemMatch[2]}] 不存在` })
+          return sendJson(200, { code: 0, data: item })
+        } catch (err) { return handleServiceError(err) }
+      }
+      if (req.method === 'PATCH') {
+        try {
+          const { body } = await readJsonBody()
+          const row = await svc.content.updateContent(typeName, adminContentItemMatch[2], body || {}, 'ADMIN_API')
+          if (!row) return sendJson(404, { code: 404, error: `内容 [${adminContentItemMatch[2]}] 不存在` })
+          return sendJson(200, { code: 0, data: row })
+        } catch (err) { return handleServiceError(err) }
+      }
+    }
+
+    const lessonDepsMatch = pathname.match(/^\/api\/v1\/admin\/lessons\/([^/]+)\/dependencies$/)
+    if (lessonDepsMatch && req.method === 'PUT') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(200, {
+          code: 0,
+          data: await svc.content.setDependencies(lessonDepsMatch[1], body?.dependsOn || [], 'ADMIN_API')
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    if (pathname === '/api/v1/admin/content-references' && req.method === 'GET') {
+      try {
+        return sendJson(200, {
+          code: 0,
+          data: await svc.content.listReferences({
+            contentType: url.searchParams.get('contentType') || null,
+            contentId: url.searchParams.get('contentId') || null
+          })
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+    if (pathname === '/api/v1/admin/content-references' && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(201, { code: 0, data: await svc.content.addReference(body || {}, 'ADMIN_API') })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    if (pathname === '/api/v1/admin/review-log' && req.method === 'GET') {
+      try {
+        return sendJson(200, {
+          code: 0,
+          data: await svc.content.getReviewLog({
+            contentType: url.searchParams.get('contentType') || null,
+            contentId: url.searchParams.get('contentId') || null
+          })
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+
+    // ----------------------------------------------------
+    // 管理端 · 阵容 ↔ 来源快照显式映射（M2-9；未匹配快照不自动编成攻略）
+    // GET    /api/v1/admin/lineup-snapshot-links?lineupId=
+    // POST   /api/v1/admin/lineup-snapshot-links        {lineupId, sourceId, structureKey, note}
+    // DELETE /api/v1/admin/lineup-snapshot-links/:id
+    // GET    /api/v1/admin/unmapped-snapshots           待映射快照工作台
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/admin/lineup-snapshot-links' && req.method === 'GET') {
+      try {
+        return sendJson(200, {
+          code: 0,
+          data: await svc.content.listSnapshotLinks({ lineupId: url.searchParams.get('lineupId') || null })
+        })
+      } catch (err) { return handleServiceError(err) }
+    }
+    if (pathname === '/api/v1/admin/lineup-snapshot-links' && req.method === 'POST') {
+      try {
+        const { body } = await readJsonBody()
+        return sendJson(201, { code: 0, data: await svc.content.linkSnapshot(body || {}, 'ADMIN_API') })
+      } catch (err) { return handleServiceError(err) }
+    }
+    const snapshotLinkDeleteMatch = pathname.match(/^\/api\/v1\/admin\/lineup-snapshot-links\/([^/]+)$/)
+    if (snapshotLinkDeleteMatch && req.method === 'DELETE') {
+      try {
+        return sendJson(200, { code: 0, data: await svc.content.unlinkSnapshot(snapshotLinkDeleteMatch[1]) })
+      } catch (err) { return handleServiceError(err) }
+    }
+    if (pathname === '/api/v1/admin/unmapped-snapshots' && req.method === 'GET') {
+      try {
+        return sendJson(200, { code: 0, data: await svc.content.listUnmappedSnapshots() })
+      } catch (err) { return handleServiceError(err) }
     }
 
     // 404 兜底

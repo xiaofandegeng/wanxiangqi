@@ -23,11 +23,11 @@
           <span class="status-val">{{ verifiedVersionText }}</span>
         </div>
         <div class="status-block">
-          <span class="status-label">阵容库收录快照</span>
-          <span class="status-val font-mono">{{ counts?.lineups ?? '—' }}</span>
+          <span class="status-label">已发布阵容手册</span>
+          <span class="status-val font-mono">{{ manualCount ?? '—' }}</span>
         </div>
         <div class="status-block">
-          <span class="status-label">教学内容（课程/资料/手册）</span>
+          <span class="status-label">教学内容（课程/手册）</span>
           <span class="status-val">{{ contentCountText }}</span>
         </div>
         <div class="status-block">
@@ -56,10 +56,8 @@
       <router-link to="/lineups" class="section-card">
         <div class="section-icon">⚔️</div>
         <h3 class="section-title">阵容库</h3>
-        <p class="section-desc">第三方来源公布的阵容聚合快照（登顶率 / 前三率 / 样本量），按来源分组陈列并标注口径。</p>
-        <span class="section-state">
-          {{ counts ? `已收录 ${counts.lineups ?? 0} 条快照` : '建设中' }}
-        </span>
+        <p class="section-desc">阵容手册（定阵条件 / 阶段操作 / 站位变阵）挂接第三方来源公布的聚合统计，标注口径与窗口。</p>
+        <span class="section-state">{{ lineupStateText }}</span>
       </router-link>
 
       <router-link to="/library" class="section-card">
@@ -87,29 +85,66 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { fetchDataStatus, type DataSourceStatus } from '../api'
+import {
+  fetchDataStatus,
+  fetchVersions,
+  fetchLearnPath,
+  fetchLineups,
+  type DataSourceStatus
+} from '../api'
 
-// 首页数字全部来自真实 /api/v1/data-status：
+// 首页数字全部来自真实 API：
+// 已核实版本 ← /versions（CURRENT 状态）；课程/手册计数 ← /learn、/lineups；
 // 内容计数为 0 或接口缺失时如实展示“暂无/建设中”，不做兜底数字。
 const sources = ref<DataSourceStatus[]>([])
-const counts = ref<Record<string, number> | null>(null)
 const apiError = ref<string | null>(null)
 
-// 已核实版本：M2 内容底座（game_versions）上线前如实为“暂无”。
-const verifiedVersionText = computed(() => '暂无（版本库建设中）')
-const contentCountText = computed(() => '0（建设中）')
-const learnStateText = computed(() => '课程建设中（M3 上线首批课程）')
+const currentVersion = ref<string | null>(null)
+const lessonCount = ref<number | null>(null)
+const manualCount = ref<number | null>(null)
+
+// 已核实版本：取 status=CURRENT 的登记版本（版本登记以官方依据为唯一来源）。
+const verifiedVersionText = computed(() => currentVersion.value || '暂无（版本库建设中）')
+const contentCountText = computed(() => {
+  if (lessonCount.value === null || manualCount.value === null) return '加载中…'
+  return `课程 ${lessonCount.value} · 手册 ${manualCount.value}`
+})
+const learnStateText = computed(() => {
+  if (lessonCount.value === null) return '加载中…'
+  return lessonCount.value > 0 ? `已上线 ${lessonCount.value} 门课程` : '课程建设中（M3 上线首批课程）'
+})
+const lineupStateText = computed(() => {
+  if (manualCount.value === null) return '加载中…'
+  return manualCount.value > 0 ? `已发布 ${manualCount.value} 本手册` : '手册建设中'
+})
 
 async function loadStatus() {
   apiError.value = null
   try {
     const status = await fetchDataStatus()
     sources.value = status.sources
-    counts.value = status.counts
   } catch (err: any) {
     apiError.value = err?.message || '未知错误'
     sources.value = []
-    counts.value = null
+  }
+  // 内容计数独立加载：单个接口失败不影响其余数字，失败项保持 null 如实展示
+  try {
+    const versions = await fetchVersions()
+    currentVersion.value = versions.find(v => v.status === 'CURRENT')?.versionId || null
+  } catch {
+    currentVersion.value = null
+  }
+  try {
+    const path = await fetchLearnPath()
+    lessonCount.value = path.total
+  } catch {
+    lessonCount.value = null
+  }
+  try {
+    const rosters = await fetchLineups()
+    manualCount.value = rosters.manuals.length
+  } catch {
+    manualCount.value = null
   }
 }
 

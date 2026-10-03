@@ -289,6 +289,7 @@ CREATE TABLE IF NOT EXISTS content_references (
     id            BIGSERIAL PRIMARY KEY,
     content_type  VARCHAR(24) NOT NULL,
     content_id    VARCHAR(64) NOT NULL,
+    revision_id   BIGINT,
     ref_kind      VARCHAR(16) NOT NULL,
     ref_locator   TEXT NOT NULL,
     usage_scope   VARCHAR(16) NOT NULL DEFAULT 'INTERNAL_ONLY',
@@ -301,6 +302,8 @@ CREATE TABLE IF NOT EXISTS content_references (
     CONSTRAINT ck_content_references_kind CHECK (ref_kind IN ('URL', 'RAW_MATERIAL', 'EVIDENCE', 'OFFICIAL_PAGE')),
     CONSTRAINT ck_content_references_scope CHECK (usage_scope IN ('INTERNAL_ONLY', 'PUBLIC'))
 );
+
+COMMENT ON COLUMN content_references.revision_id IS '可选：把引用钉到某一修订（revision-scoped，配合 *_REVISION 内容类型）；NULL = 该内容的全部修订共享此来源';
 
 CREATE INDEX IF NOT EXISTS idx_content_references_content
     ON content_references(content_type, content_id);
