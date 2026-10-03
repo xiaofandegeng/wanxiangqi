@@ -115,9 +115,16 @@ DROP TABLE IF EXISTS game_versions;
 ALTER TABLE lineup_snapshots DROP COLUMN IF EXISTS mode;
 ALTER TABLE lineup_snapshots DROP COLUMN IF EXISTS raw_metrics;
 
+-- 5b) 撤销 0008 官网内容来源登记（纯 INSERT 的逆操作；
+--     其 raw_materials 存证行随来源删除一并清理，回到 0005 无此来源状态）
+DELETE FROM raw_materials WHERE source_id = 'src-wxq-official';
+DELETE FROM sync_jobs WHERE source_id = 'src-wxq-official';
+DELETE FROM data_sources WHERE source_id = 'src-wxq-official';
+
 -- 6) 迁移台账回到 0005；归档 schema 必须已空（RESTRICT：有残留即失败暴露）
 DELETE FROM schema_migrations WHERE filename IN
-    ('0006_v6_content_models.sql', '0007_v6_archive_legacy.sql');
+    ('0006_v6_content_models.sql', '0007_v6_archive_legacy.sql',
+     '0008_v6_official_content_source.sql');
 
 DROP SCHEMA IF EXISTS archive_legacy RESTRICT;
 

@@ -29,10 +29,10 @@ test('M1-E1: 空库下 ready/health 正常，内容计数全 0（来源注册表
   const health = await stack.api('/api/v1/health')
   assert.equal(health.json.db.connected, true)
   assert.deepEqual(health.json.counts, {
-    sources: 5, lineups: 0, lineupsActive: 0, evidences: 0,
+    sources: 6, lineups: 0, lineupsActive: 0, evidences: 0,
     evidenceBlobs: 0, rawMaterials: 0, syncJobs: 0,
     publishedLineups: 0, publishedLessons: 0, publishedEntities: 0, publishedMechanics: 0
-  }, '空库内容计数全 0；5 个来源为迁移种子注册行（v6 M2 计数含内容模型发布量）')
+  }, '空库内容计数全 0；6 个来源为迁移种子注册行（v6 M2 计数含内容模型发布量）')
 })
 
 test('M1-E2: 空库读取端点返回空列表（无编造内容）', { skip: !pgAvailable }, async () => {
@@ -45,13 +45,14 @@ test('M1-E2: 空库读取端点返回空列表（无编造内容）', { skip: !p
   assert.equal(ghost.status, 404, '未知快照 404（如实不存在）')
 })
 
-test('M1-E3: data-status 来源注册表如实呈现（种子 5 行，无 ACTIVE 宣称）', { skip: !pgAvailable }, async () => {
+test('M1-E3: data-status 来源注册表如实呈现（种子 6 行，无 ACTIVE 宣称）', { skip: !pgAvailable }, async () => {
   const status = await stack.api('/api/v1/data-status')
   assert.equal(status.status, 200)
   const sources = status.json.sources
-  assert.equal(sources.length, 5, '迁移种子注册 5 个来源')
+  assert.equal(sources.length, 6, '迁移种子注册 6 个来源')
   assert.deepEqual(sources.map(s => s.id).sort(), [
-    'src-datatft-platform', 'src-hokace-wiki', 'src-kohcamp-official', 'src-manual-review', 'src-official-helper'
+    'src-datatft-platform', 'src-hokace-wiki', 'src-kohcamp-official',
+    'src-manual-review', 'src-official-helper', 'src-wxq-official'
   ])
   for (const s of sources) {
     // src-manual-review 是人工核验录入路径（唯一提真通道），ACTIVE 合法；

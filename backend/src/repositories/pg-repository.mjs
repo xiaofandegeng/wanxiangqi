@@ -406,7 +406,7 @@ export class PgRepository {
    * “快照已更换但报告同步失败”或“台账成功但无存证”的中间态。
    * v6：players 写路径已随赛事/玩家战绩产品退役移除。
    */
-  async commitSyncSuccess({ sourceId, snapshots = null, rawMaterial, jobPatch = {}, sourcePatch = {} }) {
+  async commitSyncSuccess({ sourceId, snapshots = null, rawMaterial, rawMaterials = null, jobPatch = {}, sourcePatch = {} }) {
     const client = await this.client()
     try {
       await client.query('BEGIN')
@@ -434,6 +434,14 @@ export class PgRepository {
       if (rawMaterial) {
         await this.insertRawMaterial(rawMaterial, client)
       }
+      // M3-1 官网存证：一次同步动作的多目标原文，同一事务逐条入库（任一失败整体回滚）
+      let rawMaterialsCount = 0
+      if (Array.isArray(rawMaterials)) {
+        for (const rm of rawMaterials) {
+          await this.insertRawMaterial(rm, client)
+          rawMaterialsCount++
+        }
+      }
 
       if (jobPatch.id) {
         await this.#markSyncJobTx(client, jobPatch.id, jobPatch)
@@ -443,7 +451,7 @@ export class PgRepository {
       }
 
       await client.query('COMMIT')
-      return { snapshots: snapshotsCount }
+      return { snapshots: snapshotsCount, rawMaterials: rawMaterialsCount }
     } catch (err) {
       await client.query('ROLLBACK')
       throw err

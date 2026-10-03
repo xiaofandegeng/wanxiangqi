@@ -30,6 +30,7 @@ export class SyncService {
    */
   async syncSource(sourceId) {
     if (sourceId === 'src-hokace-wiki') return this.#syncHokace()
+    if (sourceId === 'src-wxq-official') return this.#syncOfficialContent()
     if (sourceId === 'src-datatft-platform') {
       const err = new Error(
         'datatft 平台同步已随 v6 转型停用（原路径会写玩家/赛事数据）。' +
@@ -97,6 +98,70 @@ export class SyncService {
       const finishedAt = new Date().toISOString()
       await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-hokace-wiki', finishedAt, error: err.message })
       return { ok: false, status: 'FAILED', message: `数据源同步未完成: ${err.message}`, result: null }
+    }
+  }
+
+  /**
+   * M3-1 官网第一方内容抓取存证：只读 GET 官网公开页（首页/专题站/新手指引/
+   * 官方资讯接口），原文+SHA-256+实测字节数入 raw_materials（同事务）。
+   * 不写任何业务快照/统计——这是内容依据存证，不是数据同步。
+   * 任一目标失败 → 整单 FAILED，不落部分存证（诚实原子）。
+   */
+  async #syncOfficialContent() {
+    const startedAt = new Date().toISOString()
+    const job = await this.repo.recordSyncJob({
+      sourceId: 'src-wxq-official', jobType: 'OFFICIAL_CONTENT_CAPTURE',
+      scope: 'official:pages', startedAt
+    })
+    await this.repo.updateDataSource('src-wxq-official', { lastAttemptAt: startedAt })
+
+    try {
+      const { fetchOfficialContent } = await import('../adapters/official-site.mjs')
+      const result = await fetchOfficialContent()
+      const finishedAt = result.endedAt || new Date().toISOString()
+
+      if (result.status !== 'SUCCESS' || !Array.isArray(result.materials) || result.materials.length === 0) {
+        const error = result.error || '官网抓取未返回任何存证'
+        await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-wxq-official', finishedAt, error })
+        return { ok: false, status: 'FAILED', message: `官网内容抓取未完成: ${error}`, result }
+      }
+
+      // 多目标原文存证 + 台账 SUCCESS + 来源推进（UNCONFIGURED → READY 由首次成功动作触发）
+      // 单事务落库：任一目标入库失败整体回滚
+      await this.repo.commitSyncSuccess({
+        sourceId: 'src-wxq-official',
+        rawMaterials: result.materials.map(m => ({
+          sourceId: 'src-wxq-official',
+          recordKey: m.recordKey,
+          fetchedAt: startedAt,
+          contentSha256: m.contentSha256,
+          content: m.content,
+          parserVersion: 'official-raw-v1',
+          contentType: m.contentType,
+          sizeBytes: m.sizeBytes,
+          note: `官网公开页只读存证 ${m.url}`
+        })),
+        jobPatch: {
+          id: job.id, status: 'SUCCESS', finishedAt,
+          fetchedCount: result.materials.length, insertedCount: result.materials.length
+        },
+        sourcePatch: { lastSuccessAt: finishedAt, lastError: null, status: 'READY' }
+      })
+
+      return {
+        ok: true, status: 'SUCCESS',
+        message: `官网第一方资料抓取存证完成 (${result.materials.length} 个目标)`,
+        result: {
+          count: result.materials.length, startedAt, finishedAt, jobId: job.id,
+          materials: result.materials.map(m => ({
+            recordKey: m.recordKey, sha256: m.contentSha256, sizeBytes: m.sizeBytes
+          }))
+        }
+      }
+    } catch (err) {
+      const finishedAt = new Date().toISOString()
+      await this.repo.commitSyncFailure({ jobId: job.id, sourceId: 'src-wxq-official', finishedAt, error: err.message })
+      return { ok: false, status: 'FAILED', message: `官网内容抓取未完成: ${err.message}`, result: null }
     }
   }
 }

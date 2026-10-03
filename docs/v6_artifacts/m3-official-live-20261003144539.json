@@ -1,0 +1,89 @@
+{
+  "testedAt": "2026-10-03T14:45:39.447Z",
+  "scope": "M3-1 官网第一方内容抓取存证（完整栈：sync 端点 → raw_materials）",
+  "httpStatus": 200,
+  "responseBody": {
+    "code": 0,
+    "message": "官网第一方资料抓取存证完成 (4 个目标)",
+    "result": {
+      "count": 4,
+      "startedAt": "2026-10-03T14:45:39.457Z",
+      "finishedAt": "2026-10-03T14:45:40.447Z",
+      "jobId": "1",
+      "materials": [
+        {
+          "recordKey": "official:home",
+          "sha256": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4",
+          "sizeBytes": 107484
+        },
+        {
+          "recordKey": "official:portal",
+          "sha256": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177",
+          "sizeBytes": 126338
+        },
+        {
+          "recordKey": "official:newbie-guide",
+          "sha256": "f7aa4aa541baa81068d789179094d0013035290e1fe1badb5e45887a85c41a90",
+          "sizeBytes": 81328
+        },
+        {
+          "recordKey": "official:news:18873181",
+          "sha256": "37aa38600180539bd62fd48b3ca5f9dcd3f58dfd1e364a1bf697eb01254189ff",
+          "sizeBytes": 3009
+        }
+      ]
+    }
+  },
+  "source": {
+    "status": "READY",
+    "lastSuccessAt": "2026-10-03T14:45:40.447Z",
+    "lastError": null
+  },
+  "materials": [
+    {
+      "rowId": "1",
+      "recordKey": "official:home",
+      "url": "https://wxq.qq.com/",
+      "sha256": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4",
+      "sizeBytes": 107484,
+      "fetchedAt": "2026-10-03T14:45:39.457Z",
+      "parserVersion": "official-raw-v1",
+      "sha256Recomputed": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4",
+      "contentPreview": "<!DOCTYPE html>\n<html>\n\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-s"
+    },
+    {
+      "rowId": "3",
+      "recordKey": "official:newbie-guide",
+      "url": "https://wxq.qq.com/cp/a202609xszy/",
+      "sha256": "f7aa4aa541baa81068d789179094d0013035290e1fe1badb5e45887a85c41a90",
+      "sizeBytes": 81328,
+      "fetchedAt": "2026-10-03T14:45:39.457Z",
+      "parserVersion": "official-raw-v1",
+      "sha256Recomputed": "f7aa4aa541baa81068d789179094d0013035290e1fe1badb5e45887a85c41a90",
+      "contentPreview": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrom"
+    },
+    {
+      "rowId": "4",
+      "recordKey": "official:news:18873181",
+      "url": "https://apps.game.qq.com/wmp/v3.1/public/searchNews.php?p0=389&source=web_pc&id=18873181",
+      "sha256": "37aa38600180539bd62fd48b3ca5f9dcd3f58dfd1e364a1bf697eb01254189ff",
+      "sizeBytes": 3009,
+      "fetchedAt": "2026-10-03T14:45:39.457Z",
+      "parserVersion": "official-raw-v1",
+      "sha256Recomputed": "37aa38600180539bd62fd48b3ca5f9dcd3f58dfd1e364a1bf697eb01254189ff",
+      "contentPreview": "var searchObj={\"status\":0,\"msg\":{\"sUrl\":\"\",\"sExt2\":\"\",\"sExt3\":\"\",\"sDesc\":\"我们计划于9月21日9:00-11:00进行不停机更新，更新完成时间可能提前或推迟，具体情况"
+    },
+    {
+      "rowId": "2",
+      "recordKey": "official:portal",
+      "url": "https://wxq.qq.com/cp/a20260707sfgw/index.html",
+      "sha256": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177",
+      "sizeBytes": 126338,
+      "fetchedAt": "2026-10-03T14:45:39.457Z",
+      "parserVersion": "official-raw-v1",
+      "sha256Recomputed": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177",
+      "contentPreview": "<!DOCTYPE html>\n<html>\n\n<head>\n  <meta charset=\"utf-8\" />\n  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1"
+    }
+  ],
+  "error": "官网第一方资料抓取存证完成 (4 个目标)"
+}

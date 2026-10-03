@@ -1,6 +1,6 @@
-// M1-8 · 0006/0007 迁移隔离库三条路径演练（任务书红线：生产库不得用于测试）
-//   路径 A 空库安装：全新 *_test 库 → 全部 7 个迁移 → 内容表就位、旧表空壳入归档 schema
-//   路径 B 旧库升级：仅应用 0001–0005 并种入旧业务数据 → runMigrations 增量应用 0006/0007
+// M1-8 · 0006/0007/0008 迁移隔离库三条路径演练（任务书红线：生产库不得用于测试）
+//   路径 A 空库安装：全新 *_test 库 → 全部 8 个迁移 → 内容表就位、旧表空壳入归档 schema
+//   路径 B 旧库升级：仅应用 0001–0005 并种入旧业务数据 → runMigrations 增量应用 0006–0008
 //          → 旧表整表归档、evidences 按行拆分、来源标退役、数据零丢失
 //   路径 C 回滚：执行 migrations-rollback/0007 回滚脚本 → 恢复至 0005 状态且数据完整
 //          → runMigrations 可重新前进（回滚不破坏可重放性）
@@ -132,7 +132,7 @@ async function seedLegacyBusinessData(pool) {
 // ------------------------------------------------------------
 // 路径 A · 空库安装
 // ------------------------------------------------------------
-test('M1-8 路径A: 空库全量安装 7 个迁移，内容表入 public、旧表空壳入 archive_legacy', { skip: !pgAvailable }, async () => {
+test('M1-8 路径A: 空库全量安装 8 个迁移，内容表入 public、旧表空壳入 archive_legacy', { skip: !pgAvailable }, async () => {
   await recreateNamedTestDb('wanxiangqi_m1miga_test')
   const pool = await connectNamedTestDb('wanxiangqi_m1miga_test')
   try {
@@ -143,9 +143,9 @@ test('M1-8 路径A: 空库全量安装 7 个迁移，内容表入 public、旧�
     } finally {
       client.release()
     }
-    assert.equal(applied.applied.length, 7, '全新空库应依次应用 0001..0007')
-    assert.deepEqual(applied.applied.slice(-2),
-      ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql'])
+    assert.equal(applied.applied.length, 8, '全新空库应依次应用 0001..0008')
+    assert.deepEqual(applied.applied.slice(-3),
+      ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql', '0008_v6_official_content_source.sql'])
 
     const publicTables = await tablesIn(pool, 'public')
     for (const t of CONTENT_TABLES) {
@@ -161,16 +161,17 @@ test('M1-8 路径A: 空库全量安装 7 个迁移，内容表入 public、旧�
     }
     assert.equal(await countRows(pool, 'archive_legacy', 'evidences'), 0, '空库无旧证据行')
 
-    // data_sources 种子保留 + 旧官方个人来源已标退役
+    // data_sources 种子保留 + 旧官方个人来源已标退役 + 0008 官网内容来源登记
     const src = await pool.query(
       `SELECT source_id, status FROM data_sources ORDER BY source_id`)
-    assert.equal(src.rows.length, 5)
+    assert.equal(src.rows.length, 6)
     const byId = Object.fromEntries(src.rows.map(r => [r.source_id, r.status]))
     assert.equal(byId['src-kohcamp-official'], 'RETIRED')
     assert.equal(byId['src-official-helper'], 'RETIRED')
     assert.equal(byId['src-datatft-platform'], 'UNCONFIGURED', 'datatft 保持隔离不退役')
     assert.equal(byId['src-hokace-wiki'], 'READY', 'hokace 阵容统计来源不变')
     assert.equal(byId['src-manual-review'], 'ACTIVE', '内容素材人工通道不变')
+    assert.equal(byId['src-wxq-official'], 'UNCONFIGURED', '官网内容来源登记但未采集（M3-1）')
 
     // lineup_snapshots 补字段就位
     const cols = await pool.query(
@@ -217,7 +218,8 @@ test('M1-8 路径B: 旧库升级——旧表整表归档、evidences 按行拆�
       client2.release()
     }
     assert.deepEqual(applied.applied,
-      ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql'], '增量只应用 0006/0007')
+      ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql', '0008_v6_official_content_source.sql'],
+      '增量只应用 0006/0007/0008')
 
     // 旧业务表整表移入归档 schema，行数保持
     assert.equal(await countRows(pool, 'archive_legacy', 'players'), 2)
@@ -324,23 +326,26 @@ test('M1-8 路径C: 回滚脚本恢复 0005 状态且数据完整，迁移可重
     // data_sources 状态与说明还原
     const src = await pool.query(
       `SELECT source_id, status, note FROM data_sources WHERE source_id IN
-        ('src-kohcamp-official','src-official-helper','src-datatft-platform') ORDER BY source_id`)
+        ('src-kohcamp-official','src-official-helper','src-datatft-platform','src-wxq-official') ORDER BY source_id`)
     const byId = Object.fromEntries(src.rows.map(r => [r.source_id, r]))
     assert.equal(byId['src-kohcamp-official'].status, 'UNCONFIGURED')
     assert.equal(byId['src-official-helper'].status, 'UNAVAILABLE')
     assert.equal(byId['src-datatft-platform'].status, 'UNCONFIGURED')
+    assert.equal(src.rows.length, 3, '回滚后 src-wxq-official 登记行应随 0008 撤销移除')
+    assert.equal(byId['src-wxq-official'], undefined)
     for (const r of src.rows) {
       assert.ok(!r.note.includes('[v6 2026-10-03]'), 'v6 标记说明应移除')
     }
 
-    // 迁移台账回到 0005，且可无冲突重新前进到 0007
+    // 迁移台账回到 0005，且可无冲突重新前进到 0008
     let client4 = await pool.connect()
     try {
       const rows = (await client4.query('SELECT filename FROM schema_migrations ORDER BY filename')).rows
       assert.equal(rows.length, 5)
       const rerun = await runMigrations(client4, { logger: { log() {} } })
       assert.deepEqual(rerun.applied,
-        ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql'], '回滚后可重新应用')
+        ['0006_v6_content_models.sql', '0007_v6_archive_legacy.sql', '0008_v6_official_content_source.sql'],
+        '回滚后可重新应用')
     } finally {
       client4.release()
     }
