@@ -26,6 +26,12 @@
         </div>
       </div>
 
+      <!-- 全站搜索（§验收：一次命中阵容/英雄/规则/课程；已熟悉玩家可直接搜阵容） -->
+      <div class="header-search-row">
+        <GlobalSearch />
+        <p v-if="storageNotice" class="storage-note">{{ storageNotice }}</p>
+      </div>
+
       <!-- 公开主导航（v6 §3 固定五项） -->
       <nav class="nav-links-bar">
         <router-link to="/" class="nav-item" active-class="is-active">
@@ -51,6 +57,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { fetchDataStatus } from '../api'
+import GlobalSearch from './GlobalSearch.vue'
+import { storageNotice } from '../composables/local-prefs'
 
 const isBackendOnline = ref(false)
 
@@ -88,6 +96,23 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   height: 58px;
+}
+
+.header-search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+
+  .storage-note {
+    margin: 0;
+    font-size: 11px;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
 }
 
 .brand-section {

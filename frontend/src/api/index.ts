@@ -397,6 +397,8 @@ export interface MechanicEntry {
   appliesTo: Record<string, unknown> | null
   gameVersion: GameVersionRef | null
   publishedAt: string | null
+  /** 详情响应附带（列表无此字段） */
+  revision?: { id: string; no: number; publishedAt: string | null }
   references?: ContentReference[]
 }
 
@@ -417,6 +419,28 @@ export async function fetchMechanicDetail(slug: string, signal?: AbortSignal): P
     if (err?.status === 404) return null
     throw err
   }
+}
+
+/**
+ * 2.5b 全站搜索（任务书 §验收：一次命中课程/阵容/实体/规则，各链至唯一详情；
+ * 四组分列呈现，不混合排序，同名不同类各归各类）
+ */
+export interface SearchHit {
+  title: string
+  subtitle: string
+  href: string
+}
+
+export interface GlobalSearchResult {
+  q: string
+  groups: { lessons: SearchHit[]; manuals: SearchHit[]; entities: SearchHit[]; mechanics: SearchHit[] }
+  totals: { lessons: number; manuals: number; entities: number; mechanics: number }
+}
+
+export async function fetchGlobalSearch(q: string, signal?: AbortSignal): Promise<GlobalSearchResult> {
+  const res = await requestApi<GlobalSearchResult>(
+    `/api/v1/search?q=${encodeURIComponent(q)}`, { signal })
+  return res
 }
 
 export interface GameVersion {

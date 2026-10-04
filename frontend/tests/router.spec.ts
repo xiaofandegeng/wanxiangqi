@@ -13,6 +13,7 @@ const NEW_ROUTES: Array<[string, string]> = [
   ['/lineups/lm-example', 'lineup-detail'],
   ['/library', 'library'],
   ['/library/hero/example-hero', 'entity'],
+  ['/library/mechanics/example-mechanic', 'mechanic'],
   ['/updates', 'updates'],
   ['/updates/v260924', 'update-detail'],
   ['/admin/content', 'admin-content'],

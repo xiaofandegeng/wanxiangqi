@@ -16,6 +16,25 @@
     </div>
 
     <template v-else>
+      <!-- 我的收藏（本地存储；任务书 §4「进度与收藏先用本地存储」） -->
+      <div class="fav-card">
+        <div class="fav-head">
+          <h3 class="fav-title">我的收藏</h3>
+          <span class="fav-status font-mono">{{ favoritesList.length }} 条</span>
+        </div>
+        <p v-if="storageNotice" class="fav-storage-note">{{ storageNotice }}</p>
+        <div v-if="favoritesList.length" class="fav-list">
+          <router-link v-for="f in favoritesList" :key="`${f.kind}:${f.id}`" :to="f.href" class="fav-row">
+            <span class="fav-kind-chip font-mono">{{ f.kind === 'lesson' ? '课程' : '阵容' }}</span>
+            <span class="fav-name">{{ f.title }}</span>
+            <span class="fav-time font-mono">{{ formatSavedAt(f.savedAt) }}</span>
+          </router-link>
+        </div>
+        <p v-else class="fav-empty">
+          还没有收藏。进入课程或阵容手册页，点「☆ 收藏」即可在本机保存（不绑定账号，换设备不跟随）。
+        </p>
+      </div>
+
       <!-- 学习阶段路线：课程来自 /api/v1/learn 已发布课程；无课程阶段如实「暂无课程」 -->
       <div class="stage-list">
         <div v-for="stage in stageCards" :key="stage.key" class="stage-card">
@@ -25,6 +44,10 @@
             <span class="stage-status" :class="{ 'has-lessons': stage.lessons.length > 0 }">
               {{ stage.lessons.length > 0 ? `${stage.lessons.length} 门课程` : '暂无课程' }}
             </span>
+            <span
+              v-if="stage.lessons.length && doneCountOf(stage.letter) > 0"
+              class="stage-progress font-mono"
+            >已学 {{ doneCountOf(stage.letter) }}/{{ stage.lessons.length }}</span>
           </div>
           <p class="stage-goal">
             <strong>学完能做什么：</strong>{{ stage.goal }}
@@ -36,9 +59,12 @@
               :key="lesson.id"
               :to="`/learn/${lesson.slug}`"
               class="lesson-row"
+              :class="{ 'is-done': doneSlugs.has(lesson.slug) }"
             >
               <span class="lesson-title">
+                <span v-if="doneSlugs.has(lesson.slug)" class="done-chip font-mono">✓ 已学完</span>
                 {{ lesson.title }}
+                <span v-if="isFavorited('lesson', lesson.slug)" class="fav-star">★</span>
                 <span v-if="lesson.hasOpenRecheck" class="recheck-chip">待版本复核</span>
               </span>
               <span class="lesson-meta">
@@ -67,6 +93,18 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { fetchLearnPath, type LessonSummary } from '../api'
+import { favoritesList, isFavorited, doneLessonSlugs, storageNotice } from '../composables/local-prefs'
+
+const doneSlugs = computed(() => doneLessonSlugs())
+function doneCountOf(stage: string): number {
+  const remote = stages.value.find(s => s.stage === stage)
+  if (!remote) return 0
+  return remote.lessons.filter(l => doneSlugs.value.has(l.slug)).length
+}
+function formatSavedAt(iso: string): string {
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime()) ? '' : `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
 
 // 六阶段教学框架来自 v6 任务书 §4（产品结构，非游戏事实）。
 // 课程清单来自内容底座 /api/v1/learn（仅已发布课程；缺席阶段如实为空，不造占位课程）。
@@ -145,6 +183,82 @@ onMounted(loadPath)
   color: $text-muted;
   max-width: 760px;
 }
+
+.fav-card {
+  @include glass-panel;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fav-head { @include flex-between; }
+
+.fav-title { margin: 0; font-size: 14px; font-weight: 700; color: $text-primary; }
+
+.fav-status {
+  font-size: 11px;
+  color: $text-muted;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  padding: 1px 8px;
+}
+
+.fav-storage-note {
+  margin: 0;
+  font-size: 11px;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.fav-list { display: flex; flex-direction: column; gap: 6px; }
+
+.fav-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  text-decoration: none;
+
+  &:hover { border-color: rgba(37, 99, 235, 0.4); background: $color-primary-light; }
+  .fav-kind-chip { font-size: 10px; color: $color-primary; background: $color-primary-light; padding: 0 6px; border-radius: $radius-sm; }
+  .fav-name { flex: 1; font-size: 13px; font-weight: 600; color: $text-primary; }
+  .fav-time { font-size: 11px; color: $text-muted; }
+}
+
+.fav-empty { margin: 0; font-size: 12px; color: $text-muted; }
+
+.stage-progress {
+  font-size: 10px;
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: $radius-sm;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.done-chip {
+  font-size: 10px;
+  font-weight: 600;
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0 6px;
+  border-radius: $radius-sm;
+}
+
+.fav-star { color: #d97706; font-size: 12px; }
+
+.lesson-row.is-done { border-color: rgba(22, 101, 52, 0.35); }
 
 .stage-list {
   display: grid;

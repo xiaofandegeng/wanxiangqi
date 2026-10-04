@@ -43,6 +43,14 @@ const router = createRouter({
       meta: { title: '资料库 - 王者万象棋阵容研习站' }
     },
     {
+      // 规则条目详情（静态段优先于 /library/:kind/:slug 的动态匹配；
+      // 全站搜索的「规则」结果链接到唯一详情）
+      path: '/library/mechanics/:slug',
+      name: 'mechanic',
+      component: () => import('../views/mechanic-detail.vue'),
+      meta: { title: '规则条目 - 王者万象棋阵容研习站' }
+    },
+    {
       path: '/library/:kind/:slug',
       name: 'entity',
       component: () => import('../views/entity.vue'),

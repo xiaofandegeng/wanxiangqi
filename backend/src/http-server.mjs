@@ -308,6 +308,26 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
     }
 
     // ----------------------------------------------------
+    // 全站搜索（M5-4 前置，任务书 §验收标准）：一次命中课程/阵容/实体/规则
+    // GET /api/v1/search?q=（空/超长查询 400；四组分列、不混合排序）
+    // ----------------------------------------------------
+    if (pathname === '/api/v1/search' && req.method === 'GET') {
+      const rawQ = url.searchParams.get('q') || ''
+      if (!rawQ.trim()) {
+        return sendJson(400, { code: 400, error: '缺少搜索词（q）', code_name: 'INVALID_QUERY' })
+      }
+      if (rawQ.trim().length > 100) {
+        return sendJson(400, { code: 400, error: '搜索词过长（≤100 字符）', code_name: 'INVALID_QUERY' })
+      }
+      try {
+        const result = await svc.content.globalSearch(rawQ)
+        return sendJson(200, { code: 0, ...result })
+      } catch (err) {
+        return handleServiceError(err, 500)
+      }
+    }
+
+    // ----------------------------------------------------
     // 版本动态（M2-7）：版本登记 + 官方更新公告（已发布）
     // GET /api/v1/versions
     // GET /api/v1/updates

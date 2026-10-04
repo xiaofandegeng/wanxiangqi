@@ -96,6 +96,7 @@
           <div class="manual-main">
             <div class="manual-title-row">
               <router-link :to="`/lineups/${m.slug}`" class="manual-name">{{ m.displayName }}</router-link>
+              <span v-if="isFavorited('manual', m.slug ?? m.id)" class="fav-star-badge" title="已收藏（本机）">★</span>
               <span class="difficulty-badge" :class="difficultyClass(m.difficulty)">
                 {{ difficultyLabel(m.difficulty) }}
               </span>
@@ -110,7 +111,7 @@
                 棋手：<strong>{{ m.commander.displayName || m.commander.id }}</strong>
               </span>
               <span v-if="m.gameVersion" class="meta-chip">
-                适用版本：<span class="font-mono">{{ m.gameVersion.versionId }}</span>
+                适用版本：<span class="font-mono">{{ m.gameVersion.versionId }}</span>{{ m.gameVersion.status === 'HISTORICAL' ? '（旧版本口径）' : '' }}
               </span>
               <span class="meta-chip">构成 {{ m.components.length }} 项</span>
               <span v-if="m.publishedAt" class="meta-chip">发布于 {{ formatTime(m.publishedAt) }}</span>
@@ -194,6 +195,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { fetchLineups, type LineupManual } from '../api'
+import { isFavorited } from '../composables/local-prefs'
 
 const manuals = ref<LineupManual[]>([])
 const statsNotice = ref('')
@@ -546,6 +548,11 @@ onUnmounted(() => loadAbort?.abort())
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
+}
+
+.fav-star-badge {
+  color: #d97706;
+  font-size: 13px;
 }
 
 .manual-title-row {

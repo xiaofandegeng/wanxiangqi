@@ -31,10 +31,29 @@
             <span v-if="lesson.hasOpenRecheck" class="recheck-chip">待版本复核</span>
           </h2>
           <p class="lesson-meta-row">
-            <template v-if="lesson.gameVersion">适用版本 <span class="font-mono">{{ lesson.gameVersion.versionId }}</span> · </template>
+            <template v-if="lesson.gameVersion">适用版本 <span class="font-mono">{{ lesson.gameVersion.versionId }}</span>{{ lesson.gameVersion.status === 'HISTORICAL' ? '（旧版本口径，非当前版本）' : '' }} · </template>
             <template v-if="lesson.revision">修订 r{{ lesson.revision.no }} · </template>
             <template v-if="lesson.publishedAt">发布于 {{ formatTime(lesson.publishedAt) }}</template>
           </p>
+          <!-- 收藏 / 学完（本地存储；明确反馈；存储不可用时仅本次会话有效） -->
+          <div class="lesson-prefs-row">
+            <button
+              type="button"
+              class="pref-btn"
+              :class="{ 'is-on': favActive }"
+              :aria-pressed="favActive"
+              @click="onToggleFavorite"
+            >{{ favActive ? '★ 已收藏' : '☆ 收藏本课' }}</button>
+            <button
+              type="button"
+              class="pref-btn"
+              :class="{ 'is-on': doneActive }"
+              :aria-pressed="doneActive"
+              @click="onToggleDone"
+            >{{ doneActive ? '✓ 已标记学完' : '标记为已学完' }}</button>
+            <span v-if="prefsFeedback" class="pref-feedback" aria-live="polite">{{ prefsFeedback }}</span>
+            <span v-else-if="storageNotice" class="pref-feedback">{{ storageNotice }}</span>
+          </div>
         </div>
       </div>
 
@@ -101,8 +120,39 @@
           本课暂无配套练习
         </div>
         <div v-else class="practice-wrap">
-          <div v-for="(p, i) in lesson.practice" :key="i" class="practice-item">
-            <pre class="json-block">{{ JSON.stringify(p, null, 2) }}</pre>
+          <!-- 情境练习（任务书 §4 情境练习：状态→候选动作→答案解释；键盘可操作：原生按钮 Tab/Enter） -->
+          <div v-for="(p, i) in practiceItems" :key="i" class="practice-item">
+            <div class="practice-head">
+              <span v-if="p.teaching" class="practice-badge">教学情境（非真实对局）</span>
+              <h4 class="practice-title">{{ p.title || `情境练习 ${i + 1}` }}</h4>
+            </div>
+            <p v-if="p.state" class="practice-state">{{ p.state }}</p>
+            <div class="practice-options" role="group" :aria-label="p.title || '候选动作'">
+              <button
+                v-for="(opt, j) in p.options || []" :key="j" type="button" class="practice-opt"
+                :class="{ 'is-correct': answered[i] != null && opt.correct, 'is-wrong': answered[i] === j && !opt.correct }"
+                :disabled="answered[i] != null"
+                @click="answerPractice(i, j)"
+              >
+                <span class="opt-key font-mono">{{ String.fromCharCode(65 + j) }}</span>
+                <span class="opt-text">{{ opt.text }}</span>
+              </button>
+            </div>
+            <div v-if="answered[i] != null" class="practice-feedback" aria-live="polite">
+              <p class="practice-verdict" :class="chosenOption(i).correct ? 'is-right' : 'is-wrong'">
+                {{ chosenOption(i).correct
+                  ? '✓ 选择正确'
+                  : `✗ 再想想——更合适的动作：${p.answer ?? '见下方解释'}` }}
+              </p>
+              <ul class="practice-reasons">
+                <li v-for="(opt, j) in p.options || []" :key="j" :class="{ 'is-correct': opt.correct, 'is-chosen': answered[i] === j }">
+                  {{ opt.correct ? '✓' : answered[i] === j ? '✗（你的选择）' : '·' }} {{ opt.text }} —— {{ opt.reason }}
+                </li>
+              </ul>
+              <p v-if="p.explanation" class="practice-explain">{{ p.explanation }}</p>
+              <p v-if="p.source" class="practice-source">来源：{{ p.source }}</p>
+              <button type="button" class="practice-retry" @click="retryPractice(i)">再答一次</button>
+            </div>
           </div>
         </div>
       </div>
@@ -139,6 +189,9 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchLessonDetail, type LessonDetail } from '../api'
+import {
+  isFavorited, toggleFavorite, lessonProgressOf, setLessonLayer, toggleLessonDone, storageNotice
+} from '../composables/local-prefs'
 
 const route = useRoute()
 const slug = computed(() => (route.params.slug as string) || '')
@@ -147,18 +200,59 @@ const lesson = ref<LessonDetail | null>(null)
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
-// 两种观看层次（任务书 §4）：偏好走本地存储；浏览器禁止存储时默认基础层仍可用
-const LAYER_KEY = 'wxq-lesson-layer'
+// 两种观看层次（任务书 §4）：偏好随课程进度走本地存储；浏览器禁止存储时默认基础层仍可用
 const layer = ref<'first' | 'advanced'>('first')
-try {
-  if (localStorage.getItem(LAYER_KEY) === 'advanced') layer.value = 'advanced'
-} catch { /* 存储不可用：保持默认，不阻断课程 */ }
+function initLayer() {
+  layer.value = lessonProgressOf(slug.value).layer === 'advanced' ? 'advanced' : 'first'
+}
 function setLayer(next: 'first' | 'advanced') {
   layer.value = next
-  try { localStorage.setItem(LAYER_KEY, next) } catch { /* 偏好不持久化，本次会话仍生效 */ }
+  setLessonLayer(slug.value, next === 'advanced' ? 'advanced' : 'basic')
+}
+
+// 收藏 / 学完：本地存储 + 即时反馈（§验收「收藏/进度有明确反馈」）
+const favActive = ref(false)
+const doneActive = ref(false)
+const prefsFeedback = ref('')
+let feedbackTimer: ReturnType<typeof setTimeout> | null = null
+function flash(text: string) {
+  prefsFeedback.value = text
+  if (feedbackTimer) clearTimeout(feedbackTimer)
+  feedbackTimer = setTimeout(() => { prefsFeedback.value = '' }, 2600)
+}
+function refreshPrefs() {
+  favActive.value = isFavorited('lesson', slug.value)
+  doneActive.value = Boolean(lessonProgressOf(slug.value).done)
+}
+function onToggleFavorite() {
+  const nowOn = toggleFavorite({
+    kind: 'lesson',
+    id: slug.value,
+    title: lesson.value?.title ?? slug.value,
+    href: `/learn/${slug.value}`
+  })
+  favActive.value = nowOn
+  flash(nowOn ? '已收藏（本地保存，可在「新手学堂」查看）' : '已取消收藏')
+}
+function onToggleDone() {
+  const done = toggleLessonDone(slug.value)
+  doneActive.value = done
+  flash(done ? '已标记学完：学习路径中的进度会同步更新' : '已取消学完标记')
 }
 
 let loadAbort: AbortController | null = null
+
+// 情境练习作答状态（仅界面态；正确性由数据 correct 标记判定，不猜测）
+interface PracticeOption { text?: string; reason?: string; correct?: boolean }
+interface PracticeItem { title?: string; state?: string; answer?: string; source?: string; teaching?: boolean; explanation?: string; options?: PracticeOption[] }
+const answered = ref<Record<number, number>>({})
+const practiceItems = computed<PracticeItem[]>(() => {
+  const raw = lesson.value?.practice
+  return Array.isArray(raw) ? (raw as PracticeItem[]) : []
+})
+function answerPractice(i: number, j: number) { answered.value = { ...answered.value, [i]: j } }
+function retryPractice(i: number) { const next = { ...answered.value }; delete next[i]; answered.value = next }
+function chosenOption(i: number): PracticeOption { return practiceItems.value[i]?.options?.[answered.value[i] as number] ?? {} }
 
 async function loadLesson() {
   loadAbort?.abort()
@@ -167,6 +261,9 @@ async function loadLesson() {
   loadError.value = null
   try {
     lesson.value = await fetchLessonDetail(slug.value, loadAbort.signal)
+    answered.value = {} // 换课重置作答
+    initLayer()
+    refreshPrefs()
   } catch (err: any) {
     if (err?.name === 'AbortError') return
     console.error('加载课程失败:', err)
@@ -311,6 +408,36 @@ function formatTime(isoStr: string | null | undefined) {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.lesson-prefs-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.pref-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  cursor: pointer;
+
+  &:hover { border-color: #2563eb; color: #1d4ed8; }
+  &.is-on { color: #1d4ed8; background: #eff6ff; border-color: #93c5fd; font-weight: 600; }
+}
+
+.pref-feedback {
+  font-size: 12px;
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 3px 8px;
 }
 
 .stage-chip {
@@ -535,6 +662,123 @@ function formatTime(isoStr: string | null | undefined) {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.practice-item {
+  padding: 12px 14px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+}
+
+.practice-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.practice-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: $bg-secondary;
+  color: $text-muted;
+  border: 1px solid $border-color;
+}
+
+.practice-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.practice-state {
+  margin: 8px 0;
+  font-size: 13px;
+  color: $text-secondary;
+}
+
+.practice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.practice-opt {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 13px;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  cursor: pointer;
+
+  &:disabled { cursor: default; opacity: 0.85; }
+  &.is-correct { border-color: #2e7d32; background: rgba(46, 125, 50, 0.08); }
+  &.is-wrong { border-color: #c62828; background: rgba(198, 40, 40, 0.08); }
+  &:focus-visible { outline: 2px solid $color-gold; outline-offset: 2px; }
+}
+
+.opt-key {
+  flex: none;
+  font-size: 11px;
+  color: $text-muted;
+}
+
+.opt-text { flex: 1; }
+
+.practice-feedback {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed $border-color;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.practice-verdict {
+  margin: 0;
+  font-weight: 600;
+  font-size: 13px;
+  &.is-right { color: #2e7d32; }
+  &.is-wrong { color: #c62828; }
+}
+
+.practice-reasons {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: $text-secondary;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li.is-correct { color: #2e7d32; }
+  li.is-chosen { font-weight: 600; }
+}
+
+.practice-explain {
+  margin: 0;
+  font-size: 13px;
+}
+
+.practice-source {
+  margin: 0;
+  font-size: 11px;
+  color: $text-muted;
+}
+
+.practice-retry {
+  align-self: flex-start;
+  font-size: 12px;
+  padding: 4px 12px;
+  background: none;
+  border: 1px solid $border-color;
+  border-radius: 999px;
+  cursor: pointer;
 }
 
 .scenario-list {

@@ -1,0 +1,362 @@
+{
+  "milestone": "M5-3",
+  "title": "删除审计（A01）：旧功能清理全覆盖",
+  "ranAt": "2026-10-04T01:36:43.174Z",
+  "taskBasis": "docs/王者万象棋项目转型任务书_v6_阵容分析与新手教学_2026-10-03.md §10 A01 + 尾注",
+  "baseline": "docs/v6旧功能删除与数据归档对照表.md",
+  "result": "PASS",
+  "checks": {
+    "total": 48,
+    "failed": 0
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "title": "运行代码",
+      "checks": [
+        {
+          "ok": true,
+          "label": "对照表 D 项 26 个文件/目录全部不存在",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "活动代码（53 文件，迁移/退役断言测试除外）无 17 个旧标识残留",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "backend/src（迁移除外）无旧业务表 SQL 读写",
+          "detail": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D2",
+      "title": "路由",
+      "checks": [
+        {
+          "ok": true,
+          "label": "路由表恰为新面 13 条（无旧路由注册）",
+          "detail": "实际: / /:pathMatch(.*)* /admin/content /admin/sources /learn /learn/:slug /library /library/:kind/:slug /library/mechanics/:slug /lineups /lineups/:id /updates /updates/:slug"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D3",
+      "title": "HTTP 接口（隔离栈实访）",
+      "checks": [
+        {
+          "ok": true,
+          "label": "GET /api/v1/players → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/v1/players/p-x/stats → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/v1/players/p-x/matches → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/v1/matches → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/v1/events → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/v1/events/ev-x → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/live/stream → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "GET /api/live/analyze → 410 API_RETIRED（匿名即达）",
+          "detail": "实际 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "POST /api/live/analyze 同样 410（不因方法复活）",
+          "detail": "实际 410"
+        },
+        {
+          "ok": true,
+          "label": "/api/v1/admin/events 匿名 401 → 授权 410（鉴权先于退役）",
+          "detail": "匿名 401 / 授权 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "/api/v1/admin/matches 匿名 401 → 授权 410（鉴权先于退役）",
+          "detail": "匿名 401 / 授权 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "/api/v1/admin/imports 匿名 401 → 授权 410（鉴权先于退役）",
+          "detail": "匿名 401 / 授权 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "/api/v1/admin/matches/m-x/verify 匿名 401 → 授权 410（鉴权先于退役）",
+          "detail": "匿名 401 / 授权 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "/api/v1/admin/slots/confirm 匿名 401 → 授权 410（鉴权先于退役）",
+          "detail": "匿名 401 / 授权 410 API_RETIRED"
+        },
+        {
+          "ok": true,
+          "label": "保留面 /ready /health /lineups /data-status 全部 200（新形态）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "health 不再报告旧业务计数（players/matches/events 键不存在）",
+          "detail": "{\"sources\":6,\"lineups\":0,\"lineupsActive\":0,\"evidences\":0,\"evidenceBlobs\":0,\"rawMaterials\":0,\"syncJobs\":0,\"publishedLineups\":0,\"publishedLessons\":0,\"publishedEntities\":0,\"publishedMechanics\":0}"
+        },
+        {
+          "ok": true,
+          "label": "未注册路径 404（410/404 职责分离）",
+          "detail": "实际 404"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D2b",
+      "title": "旧页面浏览器实访（对照 not-found 退役引导）",
+      "checks": [
+        {
+          "ok": true,
+          "label": "旧页面 /roster → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /archive → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /matches → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /players/p-1 → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /events/ev-1 → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /admin/verify → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /admin/personal-import → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 /models/backtest → 退役引导（功能已退役 + 转型说明）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 功能已退役 该页面已随项"
+        },
+        {
+          "ok": true,
+          "label": "旧页面 360×800 移动视口同样呈现退役引导",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "对照现行 /lineups 正常渲染（非退役态）",
+          "detail": "弈 王者万象棋 · 阵容研习站 新手教学 · 阵容研习 · 资料与版本 管理 API 已接通 首页 新手学堂 阵容库 资料库 版本动态 阵容手册库 每套阵容一份"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D4",
+      "title": "环境变量",
+      "checks": [
+        {
+          "ok": true,
+          "label": ".env.example 激活键恰为 5 项必填（PGHOST/PGPORT/PGDATABASE/PGUSER/ADMIN_TOKEN），注释可选项恰为 PGPASSWORD/HOST/PORT/WXQ_MAX_UPLOAD_BYTES",
+          "detail": "激活: PGHOST/PGPORT/PGDATABASE/PGUSER/ADMIN_TOKEN / 注释: PGPASSWORD/HOST/PORT/WXQ_MAX_UPLOAD_BYTES"
+        },
+        {
+          "ok": true,
+          "label": "已删配置键（WXQ_APP_MODE/WXQ_DATA_DIR/WXQ_ENABLE_DATATFT/WXQ_DATATFT_SIGN_SECRET）不在文档面",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "活动代码 process.env 使用 13 个键全部有出处（.env.example/注释/测试门控/OS）",
+          "detail": "未记录: "
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D5",
+      "title": "包脚本与依赖",
+      "checks": [
+        {
+          "ok": true,
+          "label": "backend deps 恰为 { pg }（无 tesseract/演示引擎依赖）",
+          "detail": "{\"pg\":\"^8.23.0\"}"
+        },
+        {
+          "ok": true,
+          "label": "backend scripts 恰为 dev/start/migrate/test（无旧 watcher/solver 入口）",
+          "detail": "{\"dev\":\"node --watch src/server.js\",\"start\":\"node src/server.js\",\"migrate\":\"node src/migrate.mjs\",\"test\":\"node --test \\\"tests/**/*.test.mjs\\\" \\\"tests/*.test.mjs\\\"\"}"
+        },
+        {
+          "ok": true,
+          "label": "frontend devDeps/Deps 无 tesseract、无演示引擎痕迹",
+          "detail": "—"
+        },
+        {
+          "ok": true,
+          "label": "仓库根无 package.json（旧演示引擎入口已随 emulator-watcher 删除）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "tools/ 恰为 browser-acceptance（emulator-watcher 目录已删）",
+          "detail": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "D6",
+      "title": "文档与归档",
+      "checks": [
+        {
+          "ok": true,
+          "label": "docs 根恰为 5 份现行文档（含 v6实施报告.md）",
+          "detail": "实际: v6业务库归档迁移方案_M5-1.md, v6实施报告.md, v6执行清单.md, v6旧功能删除与数据归档对照表.md, 王者万象棋项目转型任务书_v6_阵容分析与新手教学_2026-10-03.md"
+        },
+        {
+          "ok": true,
+          "label": "database/ 恰为 README.md（v1 静态 DDL 已归档）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "docs/archive/legacy-v2-v5/INDEX.md 存在（退役声明索引）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "research/ 无 tracked 文件（3 个旧调研文件已归档；未入库用户文件原位保留）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "docs/v3_artifacts、docs/v4_artifacts 无 tracked 文件（tracked 产物已迁 archive）",
+          "detail": ""
+        }
+      ],
+      "notes": [
+        "archive tracked 文件数：170（12 v1–v5 文档 + v3/v4 artifacts + research + database DDL + emulator-watcher-data）"
+      ]
+    },
+    {
+      "id": "D7",
+      "title": "活动数据表",
+      "checks": [
+        {
+          "ok": true,
+          "label": "public schema 24 张表中无旧业务模型（players/player_identities/player_nicknames/events/event_participants/matches/import_batches）",
+          "detail": "误在 public: "
+        },
+        {
+          "ok": true,
+          "label": "archive_legacy schema 承接旧表（缺: 无）",
+          "detail": "archive_legacy 实际: event_participants, events, evidences, import_batches, matches, player_identities, player_nicknames, players"
+        },
+        {
+          "ok": true,
+          "label": "迁移台账 0001..0009 全应用（0007 归档生效）",
+          "detail": "0001_baseline.sql,0002_v3.sql,0003_s6_lineup_semantics.sql,0004_v31_review_fixes.sql,0005_evidence_originals.sql,0006_v6_content_models.sql,0007_v6_archive_legacy.sql,0008_v6_official_content_source.sql,0009_v6_snapshot_avg_rank_precision.sql"
+        }
+      ],
+      "notes": [
+        "public 表全集：catalog_entities, catalog_entity_revisions, content_impacts, content_references, content_review_log, data_sources, evidence_blobs, evidences, game_versions, lesson_dependencies, lesson_revisions, lessons, lineup_components, lineup_revisions, lineup_snapshot_links, lineup_snapshots, lineups, mechanic_revisions, mechanics, patch_notes, raw_materials, scenarios, schema_migrations, sync_jobs"
+      ]
+    },
+    {
+      "id": "D8",
+      "title": "构建与启动依赖",
+      "checks": [
+        {
+          "ok": true,
+          "label": "frontend vue-tsc -b && vite build 绿（2.6s，无旧模块引用）",
+          "detail": ""
+        }
+      ],
+      "notes": [
+        "启动依赖：D3 隔离栈经 _helpers.bootAcceptanceStack 导入真实 src/http-server/services/PgRepository 并监听（server 启动链完整）；构建产物含全部且仅新面视图"
+      ]
+    }
+  ],
+  "exceptions": [
+    {
+      "scope": "backend/src/migrations/0001–0005",
+      "reason": "历史迁移，sha256 防篡改不可改（迁移历史本身记录旧模型 DDL）"
+    },
+    {
+      "scope": "backend/src/migrations/0007 + migrations-rollback/",
+      "reason": "归档/回滚迁移必须引用旧表名才能整表迁入 archive_legacy / 复原"
+    },
+    {
+      "scope": "docs/archive/legacy-v2-v5/**",
+      "reason": "受控历史档案（M5-2 归档，INDEX.md 声明退役）"
+    },
+    {
+      "scope": "backend/tests/acceptance/m1-retired-api.test.mjs",
+      "reason": "退役语义断言（旧端点名是断言对象本身）"
+    },
+    {
+      "scope": "tools/browser-acceptance/m5-3-deletion-audit.mjs 自身",
+      "reason": "审计脚本：17 个旧标识与 8 条旧路径是其扫描词表/断言对象（受控审计档案；入库后 git ls-files 会列出本文件，需自排除以防自指误报）"
+    },
+    {
+      "scope": "frontend/src/views/not-found.vue RETIRED_PREFIXES",
+      "reason": "旧链接误入时的退役引导文案（不注册路由、不提供功能）"
+    },
+    {
+      "scope": "docs/v6旧功能删除与数据归档对照表.md",
+      "reason": "M5-3 审计基线文档（枚举旧对象名是职责本身）"
+    },
+    {
+      "scope": "untracked: research/ 2 个文件、docs/v3_artifacts/ 58 个、docs/v4_artifacts/ 1 个",
+      "reason": "从未入库的用户本地文件（保留用户改动，未提交、不参与构建/打包）"
+    }
+  ],
+  "stack": {
+    "http": "bootAcceptanceStack(wanxiangqi_m53_test)（隔离 *_test 库，业务库零接触）",
+    "pages": "vite dev @ :5191 + headless Chromium（1440×900 / 360×800）",
+    "tables": "wanxiangqi_v6dev information_schema 只读"
+  }
+}

@@ -71,6 +71,7 @@ const EXCEPTIONS = [
   { scope: 'backend/src/migrations/0007 + migrations-rollback/', reason: '归档/回滚迁移必须引用旧表名才能整表迁入 archive_legacy / 复原' },
   { scope: 'docs/archive/legacy-v2-v5/**', reason: '受控历史档案（M5-2 归档，INDEX.md 声明退役）' },
   { scope: 'backend/tests/acceptance/m1-retired-api.test.mjs', reason: '退役语义断言（旧端点名是断言对象本身）' },
+  { scope: 'tools/browser-acceptance/m5-3-deletion-audit.mjs 自身', reason: '审计脚本：17 个旧标识与 8 条旧路径是其扫描词表/断言对象（受控审计档案；入库后 git ls-files 会列出本文件，需自排除以防自指误报）' },
   { scope: 'frontend/src/views/not-found.vue RETIRED_PREFIXES', reason: '旧链接误入时的退役引导文案（不注册路由、不提供功能）' },
   { scope: 'docs/v6旧功能删除与数据归档对照表.md', reason: 'M5-3 审计基线文档（枚举旧对象名是职责本身）' },
   { scope: 'untracked: research/ 2 个文件、docs/v3_artifacts/ 58 个、docs/v4_artifacts/ 1 个', reason: '从未入库的用户本地文件（保留用户改动，未提交、不参与构建/打包）' },
@@ -103,6 +104,7 @@ const EXCEPTIONS = [
   const scanRoots = ['backend/src', 'backend/tests', 'frontend/src', 'frontend/tests', 'tools/browser-acceptance']
   const ignore = p => p.includes('/migrations/') || p.includes('/migrations-rollback/')
     || p.endsWith('m1-retired-api.test.mjs')
+    || p.endsWith('m5-3-deletion-audit.mjs') // 审计脚本自身：扫描词表含旧标识（见 EXCEPTIONS）
   const files = []
   for (const root of scanRoots) {
     const abs = path.join(REPO, root)
@@ -140,8 +142,8 @@ const EXCEPTIONS = [
   const router = read('frontend/src/router/index.ts')
   const paths = [...router.matchAll(/path:\s*'([^']+)'/g)].map(m => m[1])
   const expect = ['/', '/learn', '/learn/:slug', '/lineups', '/lineups/:id', '/library',
-    '/library/:kind/:slug', '/updates', '/updates/:slug', '/admin/content', '/admin/sources',
-    '/:pathMatch(.*)*'].sort()
+    '/library/mechanics/:slug', '/library/:kind/:slug', '/updates', '/updates/:slug',
+    '/admin/content', '/admin/sources', '/:pathMatch(.*)*'].sort()
   const actual = [...paths].sort()
   check(d, `路由表恰为新面 ${expect.length} 条（无旧路由注册）`,
     JSON.stringify(actual) === JSON.stringify(expect), `实际: ${actual.join(' ')}`)
@@ -312,9 +314,10 @@ try {
 {
   const d = dim('D6', '文档与归档')
   const docsRoot = fs.readdirSync(path.join(REPO, 'docs')).filter(x => x.endsWith('.md')).sort()
-  const expectDocs = ['v6业务库归档迁移方案_M5-1.md', 'v6执行清单.md', 'v6旧功能删除与数据归档对照表.md',
+  const expectDocs = ['v6业务库归档迁移方案_M5-1.md', 'v6执行清单.md', 'v6实施报告.md',
+    'v6旧功能删除与数据归档对照表.md',
     '王者万象棋项目转型任务书_v6_阵容分析与新手教学_2026-10-03.md'].sort()
-  check(d, `docs 根恰为 4 份现行文档（v6实施报告.md 待 M5-6 交付）`,
+  check(d, `docs 根恰为 5 份现行文档（含 v6实施报告.md）`,
     JSON.stringify(docsRoot) === JSON.stringify(expectDocs), `实际: ${docsRoot.join(', ')}`)
   check(d, 'database/ 恰为 README.md（v1 静态 DDL 已归档）',
     JSON.stringify(fs.readdirSync(path.join(REPO, 'database')).sort()) === JSON.stringify(['README.md']))

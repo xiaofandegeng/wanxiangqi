@@ -765,6 +765,72 @@ export class ContentService {
     }
   }
 
+  /**
+   * GET /api/v1/search?q= —— 全站搜索（任务书 §验收标准：搜索一次命中阵容、英雄、
+   * 规则和课程，每类结果链接到唯一详情）。四组内容各自过滤、各自计数，
+   * 不做跨类混合排序（与统计「不设混合指数」同一取向）；同名不同类条目各归各类。
+   */
+  async globalSearch(q, { limitPerGroup = 5 } = {}) {
+    const needle = String(q ?? '').trim().toLowerCase()
+    const empty = { lessons: [], manuals: [], entities: [], mechanics: [] }
+    if (!needle) {
+      return { q: String(q ?? ''), groups: empty, totals: { lessons: 0, manuals: 0, entities: 0, mechanics: 0 } }
+    }
+
+    const [learn, manuals, entities, mechanics] = await Promise.all([
+      this.getLearnPath(),
+      this.getLineupsList(),
+      this.getCatalog({ q: needle }),
+      this.getMechanics({ q: needle })
+    ])
+
+    const hit = (...vals) => vals.some(v => v != null && String(v).toLowerCase().includes(needle))
+
+    const lessonHits = learn.stages.flatMap(s => s.lessons)
+      .filter(l => hit(l.title, l.slug,
+        Array.isArray(l.objectives) ? l.objectives.join(' ') : null))
+      .map(l => ({ title: l.title, subtitle: `新手学堂 · 阶段 ${l.stage}`, href: `/learn/${l.slug}` }))
+
+    const manualHits = manuals
+      .filter(m => hit(m.displayName, m.slug, m.oneLineSummary,
+        m.commander ? m.commander.displayName : null,
+        ...m.components.map(c => c.displayName)))
+      .map(m => ({
+        title: m.displayName,
+        subtitle: `阵容手册${m.difficulty ? ` · 难度${m.difficulty}` : ''}`,
+        href: `/lineups/${m.slug ?? m.id}`
+      }))
+
+    // 实体 kind → 资料库 URL 段（与 http 层 CATALOG_KINDS 的 URL 形态保持一致）
+    const KIND_URL = {
+      HERO: 'heroes', COMMANDER: 'commanders', EQUIPMENT: 'equipment',
+      EFFECT_CARD: 'effect-cards', TALENT: 'talents', CAMP: 'camps'
+    }
+    const entityHits = entities.map(e => ({
+      title: e.displayName,
+      subtitle: `资料库 · ${KIND_URL[e.kind] ?? String(e.kind).toLowerCase()}`,
+      href: `/library/${KIND_URL[e.kind] ?? String(e.kind).toLowerCase()}/${e.slug}`
+    }))
+
+    const mechanicHits = mechanics.map(m => ({
+      title: m.title, subtitle: '资料库 · 规则条目', href: `/library/mechanics/${m.slug}`
+    }))
+
+    return {
+      q: String(q ?? ''),
+      groups: {
+        lessons: lessonHits.slice(0, limitPerGroup),
+        manuals: manualHits.slice(0, limitPerGroup),
+        entities: entityHits.slice(0, limitPerGroup),
+        mechanics: mechanicHits.slice(0, limitPerGroup)
+      },
+      totals: {
+        lessons: lessonHits.length, manuals: manualHits.length,
+        entities: entityHits.length, mechanics: mechanicHits.length
+      }
+    }
+  }
+
   factsSummary(facts) {
     if (!facts || typeof facts !== 'object') return null
     const keys = Object.keys(facts)

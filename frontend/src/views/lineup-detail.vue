@@ -32,7 +32,7 @@
             </h2>
             <span class="sub-scope">
               <template v-if="manual.commander">棋手 {{ manual.commander.displayName || manual.commander.id }} · </template>
-              <template v-if="manual.gameVersion">适用版本 <span class="font-mono">{{ manual.gameVersion.versionId }}</span> · </template>
+              <template v-if="manual.gameVersion">适用版本 <span class="font-mono">{{ manual.gameVersion.versionId }}</span>{{ manual.gameVersion.status === 'HISTORICAL' ? '（旧版本口径，非当前版本）' : '' }} · </template>
               <template v-if="manual.revision">手册修订 r{{ manual.revision.no }}</template>
             </span>
             <p v-if="manual.oneLineSummary" class="one-line">{{ manual.oneLineSummary }}</p>
@@ -40,6 +40,14 @@
         </div>
 
         <div class="header-right">
+          <button
+            type="button"
+            class="fav-toggle-btn"
+            :class="{ 'is-on': favActive }"
+            :aria-pressed="favActive"
+            @click="onToggleFavorite"
+          >{{ favActive ? '★ 已收藏' : '☆ 收藏手册' }}</button>
+          <span v-if="favFeedback" class="fav-feedback" aria-live="polite">{{ favFeedback }}</span>
           <span v-if="manual.publishedAt" class="update-time">发布于: {{ formatTime(manual.publishedAt) }}</span>
           <span class="source-tag font-mono">{{ manual.slug }}</span>
         </div>
@@ -236,6 +244,7 @@ import { defineComponent, h, type PropType } from 'vue'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchLineupManual, type LineupManualDetail } from '../api'
+import { isFavorited, toggleFavorite } from '../composables/local-prefs'
 
 const JsonBlock = defineComponent({
   props: { value: { type: null as unknown as PropType<unknown>, required: true } },
@@ -366,6 +375,29 @@ const manual = ref<LineupManualDetail | null>(null)
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
+// 收藏手册（本地存储 + 明确反馈；§验收「收藏/进度有明确反馈」）
+const favActive = ref(false)
+const favFeedback = ref('')
+let favTimer: ReturnType<typeof setTimeout> | null = null
+function refreshFav() {
+  const key = manual.value?.slug ?? manual.value?.id ?? ''
+  favActive.value = key ? isFavorited('manual', key) : false
+}
+function onToggleFavorite() {
+  const key = manual.value?.slug ?? manual.value?.id
+  if (!key) return
+  const nowOn = toggleFavorite({
+    kind: 'manual',
+    id: key,
+    title: manual.value?.displayName ?? key,
+    href: `/lineups/${key}`
+  })
+  favActive.value = nowOn
+  favFeedback.value = nowOn ? '已收藏（本地保存，可在「新手学堂 → 我的收藏」查看）' : '已取消收藏'
+  if (favTimer) clearTimeout(favTimer)
+  favTimer = setTimeout(() => { favFeedback.value = '' }, 2600)
+}
+
 let loadAbort: AbortController | null = null
 
 async function loadDetail() {
@@ -376,6 +408,7 @@ async function loadDetail() {
   const id = route.params.id as string
   try {
     manual.value = await fetchLineupManual(id, loadAbort.signal)
+    refreshFav()
   } catch (err: any) {
     if (err?.name === 'AbortError') return
     console.error('加载阵容手册失败:', err)
@@ -592,6 +625,28 @@ function formatTime(isoStr: string | null | undefined) {
   flex-wrap: wrap;
   gap: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.fav-toggle-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  cursor: pointer;
+
+  &:hover { border-color: #2563eb; color: #1d4ed8; }
+  &.is-on { color: #1d4ed8; background: #eff6ff; border-color: #93c5fd; font-weight: 600; }
+}
+
+.fav-feedback {
+  font-size: 12px;
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 3px 8px;
 }
 
 .title-meta {
