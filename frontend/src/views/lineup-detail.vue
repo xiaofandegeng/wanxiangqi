@@ -112,9 +112,11 @@
         </div>
       </div>
 
-      <!-- 来源统计子对象（口径原样；未映射如实「暂无统计」） -->
+      <!-- 来源统计子对象（口径原样；未映射如实「暂无统计」）。
+           栏目名「最新可用快照」：快照版本未经核实与当前游戏版本一致前不得称「当前热门」 -->
       <div class="section-card">
-        <h3 class="section-title">来源统计（参考，非战绩）</h3>
+        <h3 class="section-title">最新可用快照（来源统计，参考非战绩）</h3>
+        <p v-if="snapshotVersionNote" class="snap-version-note">{{ snapshotVersionNote }}</p>
         <div v-if="manual.snapshots.length === 0" class="section-empty">
           暂无统计（无已映射的来源快照；统计不得由本站生成或推算）
         </div>
@@ -123,35 +125,48 @@
             <strong>{{ s.sourceName || s.sourceId }}</strong>
             <span v-if="s.sourceUrl" class="snap-url font-mono">{{ s.sourceUrl }}</span>
           </div>
-          <div class="snap-metrics-grid">
-            <div class="snap-metric">
-              <span class="metric-num text-primary">{{ formatRate(s.winRate) }}</span>
-              <span class="metric-label">登顶率</span>
+          <!-- 热度 / 表现 分列（§6：不同维度分别呈现，不混排成单一指数） -->
+          <div class="snap-dim-group">
+            <em class="dim-label">表现</em>
+            <div class="snap-metrics-grid">
+              <div class="snap-metric">
+                <span class="metric-num text-primary">{{ formatRate(s.winRate) }}</span>
+                <span class="metric-label">登顶率</span>
+              </div>
+              <div class="snap-metric">
+                <span class="metric-num text-cyan">{{ formatRate(s.top3Rate) }}</span>
+                <span class="metric-label">前三率</span>
+              </div>
+              <div class="snap-metric">
+                <span class="metric-num">{{ s.avgRank != null ? s.avgRank.toFixed(2) : '未公布' }}</span>
+                <span class="metric-label">平均名次</span>
+              </div>
             </div>
-            <div class="snap-metric">
-              <span class="metric-num text-cyan">{{ formatRate(s.top3Rate) }}</span>
-              <span class="metric-label">前三率</span>
-            </div>
-            <div class="snap-metric">
-              <span class="metric-num">{{ s.avgRank != null ? s.avgRank.toFixed(2) : '未公布' }}</span>
-              <span class="metric-label">平均名次</span>
-            </div>
-            <div class="snap-metric">
-              <span class="metric-num">
-                {{ s.sampleCount != null ? s.sampleCount.toLocaleString() : '未公布' }}
-                <em class="unit" v-if="s.sampleUnit">{{ s.sampleUnit }}</em>
-              </span>
-              <span class="metric-label">样本规模</span>
+          </div>
+          <div class="snap-dim-group">
+            <em class="dim-label">热度</em>
+            <div class="snap-metrics-grid">
+              <div class="snap-metric">
+                <span class="metric-num">
+                  {{ s.sampleCount != null ? s.sampleCount.toLocaleString() : '未公布' }}
+                  <em class="unit" v-if="s.sampleUnit">{{ s.sampleUnit }}</em>
+                </span>
+                <span class="metric-label">样本规模</span>
+              </div>
+              <div class="snap-metric">
+                <span class="metric-num">{{ s.windowText || '未公布' }}</span>
+                <span class="metric-label">统计窗口</span>
+              </div>
             </div>
           </div>
           <ul class="snap-meta-list">
             <li v-if="s.snapshotVersion"><strong>快照版本:</strong> <span class="font-mono">{{ s.snapshotVersion }}</span></li>
-            <li v-if="s.windowText"><strong>统计窗口:</strong> {{ s.windowText }}</li>
             <li v-if="s.scope"><strong>统计范围:</strong> {{ s.scope }}</li>
             <li v-if="s.mode"><strong>模式:</strong> {{ s.mode }}</li>
             <li v-if="s.dataCutoffAt"><strong>数据截止:</strong> {{ formatTime(s.dataCutoffAt) }}</li>
             <li><strong>快照采集:</strong> {{ formatTime(s.updatedAt) }}（采集时间 ≠ 数据截止时间）</li>
             <li v-if="s.sourceLicenseNote"><strong>许可说明:</strong> {{ s.sourceLicenseNote }}</li>
+            <li v-if="s.rawMetrics"><strong>原始指标:</strong> 已按来源原文留档（归一化可审计）</li>
           </ul>
           <p class="snap-note">
             以上为该来源公布的聚合统计，口径原样陈列；本站不跨来源平均、不推算个人战绩、不生成对局建议。
@@ -456,6 +471,22 @@ function formatRate(v: number | null | undefined): string {
   if (v === null || v === undefined) return '未公布'
   return `${(v * 100).toFixed(1)}%`
 }
+
+/**
+ * 快照版本与手册教学版本的一致性标注（§6）：
+ * 快照版本未经核实与当前游戏版本一致前，栏目只称「最新可用快照」，
+ * 且显式列出两侧版本号——不冒称「当前热门」
+ */
+const snapshotVersionNote = computed(() => {
+  const snaps = manual.value?.snapshots || []
+  const versions = [...new Set(snaps.map(s => s.snapshotVersion).filter((v): v is string => !!v))]
+  if (!versions.length) return null
+  const gameVer = manual.value?.gameVersion?.versionId
+  const snapText = versions.join(' / ')
+  return gameVer && versions.includes(gameVer)
+    ? `快照版本 ${snapText} 与手册教学版本 ${gameVer} 一致`
+    : `快照适用版本 ${snapText}${gameVer ? `，手册教学版本 ${gameVer}` : ''} —— 两者一致性未经核实`
+})
 
 function formatTime(isoStr: string | null | undefined) {
   if (!isoStr) return '—'
@@ -963,12 +994,46 @@ function formatTime(isoStr: string | null | undefined) {
 
 .snap-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  flex: 1;
 
   @media (max-width: 720px) {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+// 热度 / 表现 分列（§6：不同维度分别呈现，不混排成单一指数）
+.snap-dim-group {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.dim-label {
+  flex: none;
+  align-self: center;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0e7490;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+// 版本一致性标注（§6：未经核实不称「当前热门」）
+.snap-version-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 6px;
+  padding: 6px 12px;
 }
 
 .snap-metric {

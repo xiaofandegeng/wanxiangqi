@@ -114,6 +114,12 @@ export function validateLineupSnapshotItem(item, idx = 0) {
     windowEnd,
     sampleUnit: item.sampleUnit || null,
     rateUnit: 'RATIO_0_1', // 归一化后统一契约（百分比通道已显式换算）
+    // M4-4（§7.1 lineup_snapshots 真实必要字段）：模式口径未公布 → null；
+    // raw_metrics 留档来源原文指标（未换算的原始数值/文本，归一化审计用）
+    mode: item.mode || null,
+    rawMetrics: item.rawMetrics && typeof item.rawMetrics === 'object' && Object.keys(item.rawMetrics).length > 0
+      ? item.rawMetrics
+      : null,
     dataCutoffAt, // 数据截止时间（来源给出才有；≠ 采集时间）
     updatedAt: new Date().toISOString() // 采集时间
   }
@@ -196,9 +202,10 @@ export function parseHokaceBody(rawBody) {
   })
 
   // 模式 A2: Astro 改版后的阵容卡（2026-09 实测结构）—— <article class="lineup-list-card"
-  // data-first/data-top3/data-placement/data-count>。比率属性本身即 [0,1] 小数（实测
-  // data-first="0.3801"），走 JSON 比率契约，不做百分比换算；名称取卡内 <strong>，
-  // 棋手取 data-players；tier/窗口/数据截止时间页面未公布 → null（不造默认值）
+  // data-heroes（官方英雄 ID 列表，与官网卡牌图鉴 hero-<id> 同源）/ data-players（推荐棋手）/
+  // data-first/data-top3/data-placement/data-count/data-score。比率属性本身即 [0,1] 小数
+  // （实测 data-first="0.3801"），走 JSON 比率契约，不做百分比换算；名称取卡内 <strong>
+  // （前三英雄摘要）；tier/窗口/数据截止时间页面未公布 → null（不造默认值）
   if (lineups.length === 0) {
     const astroCardRegex = /<article[^>]*class="[^"]*lineup-list-card[^"]*"[^>]*>/gi
     let astro
@@ -209,23 +216,49 @@ export function parseHokaceBody(rawBody) {
         return a ? a[1] : null
       }
       const strong = rawBody.slice(astro.index, astro.index + 2000).match(/<strong[^>]*>([^<]+)<\/strong>/)
-      const lineupName = ((strong ? strong[1] : attr('data-players')) || '').trim()
       const players = attr('data-players')
+      const lineupName = ((strong ? strong[1] : '') || '').trim()
+      const heroIds = (attr('data-heroes') || '').split(',').map(s => s.trim()).filter(Boolean)
+      // data-search 形如「英雄名×2 … 棋手名×2 … 7|1101|1131|…」：剥尾缀 ID 串后按序去重，
+      // 前 heroIds.length 个唯一名 = 英雄（与 data-heroes 同序），其余 = 推荐棋手。
+      // 解析不出与 ID 数一致的名单时回退 <strong> 摘要拆分（如实降级，不猜）
+      const uniqSearch = [...new Set(
+        (attr('data-search') || '').replace(/\s*\d+\|[\d|]*\s*$/, '').split(/\s+/).map(s => s.trim()).filter(Boolean)
+      )]
+      let heroNames = heroIds.length && uniqSearch.length >= heroIds.length ? uniqSearch.slice(0, heroIds.length) : []
+      if (!heroNames.length && lineupName) {
+        heroNames = lineupName.split(/[·・]/).map(s => s.trim()).filter(Boolean)
+      }
       // 稳定 id：优先来源自身 data-id（同卡跨日快照更新不换 id）；
-      // 名称是前三棋手的有损摘要（实测两卡同名不同阵容），禁用名称做唯一键
+      // 名称是前三英雄的有损摘要（实测两卡同名不同阵容），禁用名称做唯一键
       const srcCardId = attr('data-id')
+      // M4-4：structure_key 同源稳定（映射 lineup_snapshot_links 用同一键跨次同步不漂移）；
+      // raw_metrics 留档来源原文属性（归一化审计：页面属性原样字符串，不换算）
+      const id = srcCardId !== null
+        ? `hokace-card-${srcCardId}`
+        : `hokace-${crypto.createHash('sha256').update(`${lineupName}|${heroIds.join(',')}|${players || ''}`).digest('hex').slice(0, 16)}`
       lineups.push({
-        id: srcCardId !== null
-          ? `hokace-card-${srcCardId}`
-          : `hokace-${crypto.createHash('sha256').update(`${lineupName}|${players || ''}`).digest('hex').slice(0, 16)}`,
-        lineupName,
+        id,
+        structureKey: id,
+        lineupName: lineupName || heroNames.slice(0, 3).join(' · '),
         tier: null,
+        // 推荐棋手为多人（来源公布 3 人），单值 commander 列存不下 → null，
+        // 完整名单在 rawMetrics.dataPlayers 留档（不丢弃来源信息）
         commander: null,
-        coreHeroes: (players || '').split(',').map(s => s.trim()).filter(Boolean),
+        coreHeroes: heroNames,
         winRate: attr('data-first') !== null ? parseJsonRatio(attr('data-first'), '登顶率 data-first', lineups.length) : null,
         top3Rate: attr('data-top3') !== null ? parseJsonRatio(attr('data-top3'), '前三率 data-top3', lineups.length) : null,
         avgRank: attr('data-placement') !== null ? Number(attr('data-placement')) : null,
-        sampleCount: attr('data-count') !== null ? parseInt(attr('data-count'), 10) : null
+        sampleCount: attr('data-count') !== null ? parseInt(attr('data-count'), 10) : null,
+        rawMetrics: {
+          ...(heroIds.length ? { dataHeroes: heroIds.join(',') } : {}),
+          ...(players !== null ? { dataPlayers: players } : {}),
+          ...(attr('data-first') !== null ? { dataFirst: attr('data-first') } : {}),
+          ...(attr('data-top3') !== null ? { dataTop3: attr('data-top3') } : {}),
+          ...(attr('data-placement') !== null ? { dataPlacement: attr('data-placement') } : {}),
+          ...(attr('data-count') !== null ? { dataCount: attr('data-count') } : {}),
+          ...(attr('data-score') !== null ? { dataScore: attr('data-score') } : {})
+        }
       })
     }
   }

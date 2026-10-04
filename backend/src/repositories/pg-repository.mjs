@@ -418,14 +418,17 @@ export class PgRepository {
           await client.query(
             `INSERT INTO lineup_snapshots (id, source_id, lineup_name, tier, commander, core_heroes,
                   sample_count, win_rate, top3_rate, avg_rank, snapshot_version, window_text, scope,
-                  structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at, updated_at)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CURRENT_TIMESTAMP)`,
+                  structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at,
+                  mode, raw_metrics, updated_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,CURRENT_TIMESTAMP)`,
             [s.id, s.sourceId || sourceId, s.lineupName, s.tier ?? null, s.commander ?? null,
              JSON.stringify(s.coreHeroes || []), s.sampleCount ?? null,
              s.winRate ?? null, s.top3Rate ?? null, s.avgRank ?? null,
              s.snapshotVersion ?? null, s.windowText ?? null, s.scope ?? null,
              s.structureKey ?? null, s.windowStart ?? null, s.windowEnd ?? null,
-             s.sampleUnit ?? null, s.rateUnit ?? null, s.dataCutoffAt ?? null]
+             s.sampleUnit ?? null, s.rateUnit ?? null, s.dataCutoffAt ?? null,
+             s.mode ?? null,
+             s.rawMetrics ? JSON.stringify(s.rawMetrics) : null]
           )
           snapshotsCount++
         }
@@ -513,14 +516,17 @@ export class PgRepository {
         await client.query(
           `INSERT INTO lineup_snapshots (id, source_id, lineup_name, tier, commander, core_heroes,
                 sample_count, win_rate, top3_rate, avg_rank, snapshot_version, window_text, scope,
-                structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at, updated_at)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,CURRENT_TIMESTAMP)`,
+                structure_key, window_start, window_end, sample_unit, rate_unit, data_cutoff_at,
+                mode, raw_metrics, updated_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,CURRENT_TIMESTAMP)`,
           [s.id, s.sourceId || sourceId, s.lineupName, s.tier ?? null, s.commander ?? null,
            JSON.stringify(s.coreHeroes || []), s.sampleCount ?? null,
            s.winRate ?? null, s.top3Rate ?? null, s.avgRank ?? null,
            s.snapshotVersion ?? null, s.windowText ?? null, s.scope ?? null,
            s.structureKey ?? null, s.windowStart ?? null, s.windowEnd ?? null,
-           s.sampleUnit ?? null, s.rateUnit ?? null, s.dataCutoffAt ?? null]
+           s.sampleUnit ?? null, s.rateUnit ?? null, s.dataCutoffAt ?? null,
+           s.mode ?? null,
+           s.rawMetrics ? JSON.stringify(s.rawMetrics) : null]
         )
       }
       await client.query('COMMIT')

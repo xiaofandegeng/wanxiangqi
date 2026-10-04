@@ -1,0 +1,110 @@
+{
+  "milestone": "M4-4",
+  "checkedAt": "2026-10-04T00:39:00.571Z",
+  "liveSync": {
+    "sourceId": "src-hokace-wiki",
+    "targetUrl": "https://hokace.wiki/zh/lineups/",
+    "snapshotStructures": 35,
+    "dbActiveRows": 35,
+    "pageSnapshotVersion": "v260924",
+    "pageWindowText": "7 日对局快照",
+    "modeColumn": "null（来源未公布统计模式口径，不假设）",
+    "syncModel": "失败保留旧快照 + 原文/快照/台账/来源推进单事务（V15 语义沿用）"
+  },
+  "a07FieldCheck": {
+    "method": "实时再抓页面 → parseHokaceBody → 与库内 ACTIVE 行逐字段核对（win_rate/top3_rate/avg_rank/sample_count/structure_key/snapshot_version/window_text）",
+    "parsedCount": 35,
+    "mismatches": 0,
+    "fieldChecks": []
+  },
+  "normalizationAudit": {
+    "method": "raw_metrics 原文值与归一化列逐值往返核对（×1 契约 [0,1] 小数）",
+    "samples": [
+      {
+        "id": "hokace-card-14",
+        "rawDataFirst": "0.3801",
+        "normalizedWinRate": 0.3801,
+        "roundTripOk": true
+      },
+      {
+        "id": "hokace-card-32",
+        "rawDataFirst": "0.7554",
+        "normalizedWinRate": 0.7554,
+        "roundTripOk": true
+      },
+      {
+        "id": "hokace-card-4",
+        "rawDataFirst": "0.3465",
+        "normalizedWinRate": 0.3465,
+        "roundTripOk": true
+      },
+      {
+        "id": "hokace-card-23",
+        "rawDataFirst": "0.3691",
+        "normalizedWinRate": 0.3691,
+        "roundTripOk": true
+      },
+      {
+        "id": "hokace-card-17",
+        "rawDataFirst": "0.2834",
+        "normalizedWinRate": 0.2834,
+        "roundTripOk": true
+      }
+    ]
+  },
+  "precisionFix": "迁移 0009：avg_rank NUMERIC(4,2)→(5,4)（来源公布 4 位小数，4,2 静默舍入=篡改来源值；修复后重新同步取回全精度）",
+  "evidenceCheck": {
+    "storedSha256": "33e03034d50bfd0573fb3174bfe75510ac4591bc55927ba842b6367716644100",
+    "livePageSha256AtCheck": "ac65b9903d9f758f0881d502a9e078514d3bb280f7c43dd6f31a1e17fef480b0",
+    "identicalAtCheck": false,
+    "note": "存证 sha 锚定同步时刻原文；页面随源更新轮换，核对以同步时刻为准（下次同步替换快照与存证）",
+    "parserVersion": "hokace-astro-v2609-pagelevel",
+    "sizeBytes": "418791",
+    "fetchedAt": "2026-10-04T00:38:40.432Z"
+  },
+  "mapping": {
+    "criterion": "手册必需核心(官方英雄ID) ⊆ 结构英雄(data-heroes) ∧ 结构英雄 ⊆ 手册英雄池(lineup_components HERO 全集)",
+    "confirmedBy": "构建操作者：机械化比对每手册唯一命中后确认，判据与命中集合随映射 note 入库（可 DELETE 回滚）",
+    "links": [
+      {
+        "id": "1",
+        "lineupSlug": "sanfen-dengchang",
+        "structureKey": "hokace-card-21",
+        "note": "人工确认映射（M4-4，2026-10-04）：判据=手册必需核心(hero id)⊆结构英雄 ∧ 结构英雄⊆手册英雄池；结构 貂蝉·蔡文姬·曹操 官方英雄ID与手册构成机械化比对唯一命中"
+      },
+      {
+        "id": "2",
+        "lineupSlug": "riluohai-zhengbei",
+        "structureKey": "hokace-card-11",
+        "note": "人工确认映射（M4-4，2026-10-04）：判据=手册必需核心(hero id)⊆结构英雄 ∧ 结构英雄⊆手册英雄池；结构 安琪拉·米莱狄·亚连 官方英雄ID与手册构成机械化比对唯一命中"
+      },
+      {
+        "id": "3",
+        "lineupSlug": "dahe-tuteng",
+        "structureKey": "hokace-card-5",
+        "note": "人工确认映射（M4-4，2026-10-04）：判据=手册必需核心(hero id)⊆结构英雄 ∧ 结构英雄⊆手册英雄池；结构 敖隐·东皇太一·虞姬 官方英雄ID与手册构成机械化比对唯一命中"
+      },
+      {
+        "id": "4",
+        "lineupSlug": "heluo-gubi",
+        "structureKey": "hokace-card-26",
+        "note": "人工确认映射（M4-4，2026-10-04）：判据=手册必需核心(hero id)⊆结构英雄 ∧ 结构英雄⊆手册英雄池；结构 百里玄策·程咬金·李元芳 官方英雄ID与手册构成机械化比对唯一命中"
+      }
+    ],
+    "unmappedStructures": 31,
+    "gaps": [
+      {
+        "lineupSlug": "zhulu-zhanshupai",
+        "linkedSnapshots": 0,
+        "reason": "35 结构无满足判据者（最近似 hokace-card-0 含全部必需核心，但结构含嬴政 hero-1101 不在手册英雄池）→ 如实暂无统计"
+      }
+    ]
+  },
+  "a08Restart": {
+    "verified": true,
+    "method": "杀进程重启 → /api/v1/lineups 挂统计手册仍 4 套（逐鹿 0）+ data-status src-hokace-wiki READY/lastSuccessAt 保留 + 台账 SUCCESS（2026-10-04 00:34 验证）",
+    "sourceStatus": "READY",
+    "lastSuccessAt": "2026-10-04T00:38:42.226Z"
+  },
+  "browserWalkthrough": "docs/v6_artifacts/m4-4-snapshot-stats-20261004003720/（29/29）"
+}

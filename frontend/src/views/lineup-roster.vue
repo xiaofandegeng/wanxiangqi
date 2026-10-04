@@ -64,6 +64,11 @@
           <button class="sort-tab-btn" :class="{ active: onlyNewbieFit }" @click="onlyNewbieFit = !onlyNewbieFit">
             仅看新手友好（难度=低）
           </button>
+          <span class="sort-lbl">排序:</span>
+          <button class="sort-tab-btn" :class="{ active: sortMode === 'default' }" @click="sortMode = 'default'">默认</button>
+          <!-- 热度/表现分别提供排序（不设混合综合指数）；未挂快照的手册恒排末尾（如实呈现缺失） -->
+          <button class="sort-tab-btn" :class="{ active: sortMode === 'heat' }" @click="sortMode = 'heat'">按热度（样本规模）</button>
+          <button class="sort-tab-btn" :class="{ active: sortMode === 'performance' }" @click="sortMode = 'performance'">按表现（登顶率）</button>
         </div>
 
         <div class="search-box">
@@ -94,6 +99,8 @@
               <span class="difficulty-badge" :class="difficultyClass(m.difficulty)">
                 {{ difficultyLabel(m.difficulty) }}
               </span>
+              <!-- 编辑推荐（教学理由，与统计分列）：仅难度=低的新手路线；不依赖任何来源统计 -->
+              <span v-if="m.difficulty === 'LOW'" class="editor-rec-chip">编辑推荐 · 新手路线</span>
               <span v-if="m.hasOpenRecheck" class="recheck-tag">待版本复核</span>
             </div>
             <p v-if="m.oneLineSummary" class="manual-summary">{{ m.oneLineSummary }}</p>
@@ -124,16 +131,22 @@
             <div v-else class="components-empty">构成清单未登记</div>
           </div>
 
-          <!-- 来源统计子对象（口径原样；未映射如实「暂无统计」） -->
+          <!-- 来源统计子对象（口径原样；未映射如实「暂无统计」）。
+               栏目名用「最新可用快照（适用X版本）」：快照版本未经核实与当前游戏版本一致前不得称「当前热门」 -->
           <div class="manual-snapshots">
-            <div class="snap-head">来源统计（人工映射挂接）</div>
-            <div v-if="m.snapshots.length === 0" class="snap-empty">暂无统计（无已映射的来源快照）</div>
+            <div class="snap-head">
+              最新可用快照（人工映射挂接）
+              <span v-if="firstSnapVersion(m)" class="snap-ver-note">适用 {{ firstSnapVersion(m) }} · 未经核实与当前游戏版本一致</span>
+            </div>
+            <div v-if="m.snapshots.length === 0" class="snap-empty">暂无统计（无已映射的来源快照；统计不由本站生成或推算）</div>
             <div v-for="s in m.snapshots" :key="s.id" class="snap-block">
               <div class="snap-source-row">
                 <strong>{{ s.sourceName || s.sourceId }}</strong>
                 <span v-if="s.snapshotVersion" class="font-mono snap-ver">{{ s.snapshotVersion }}</span>
               </div>
-              <div class="snap-metrics">
+              <!-- 热度 / 表现 分列（§6：同时包含时分别呈现，不混合成单一指数） -->
+              <div class="snap-group">
+                <em class="snap-group-label">表现</em>
                 <span class="snap-metric">
                   <em>登顶率</em>
                   <b class="font-mono">{{ formatRate(s.winRate) }}</b>
@@ -142,6 +155,13 @@
                   <em>前三率</em>
                   <b class="font-mono">{{ formatRate(s.top3Rate) }}</b>
                 </span>
+                <span class="snap-metric">
+                  <em>平均名次</em>
+                  <b class="font-mono">{{ s.avgRank != null ? s.avgRank.toFixed(2) : '未公布' }}</b>
+                </span>
+              </div>
+              <div class="snap-group">
+                <em class="snap-group-label">热度</em>
                 <span class="snap-metric">
                   <em>样本</em>
                   <b class="font-mono">{{ s.sampleCount != null ? s.sampleCount.toLocaleString() : '未公布' }}</b>
@@ -174,12 +194,21 @@ const loading = ref(true)
 const loadError = ref<string | null>(null)
 const searchKey = ref('')
 const onlyNewbieFit = ref(false)
+// 排序模式：default=服务端返回序；heat/performance 分别按已映射快照的样本规模/登顶率
+// 降序（取手册挂接快照中的最大值），无该指标的手册如实排在末尾——不合成混合指数
+const sortMode = ref<'default' | 'heat' | 'performance'>('default')
 
 let loadAbort: AbortController | null = null
 
 const newbieFitCount = computed(() => manuals.value.filter(m => m.difficulty === 'LOW').length)
 const withSnapshots = computed(() => manuals.value.filter(m => m.snapshots.length > 0).length)
 const openRecheckCount = computed(() => manuals.value.filter(m => m.hasOpenRecheck === true).length)
+
+/** 手册挂接快照中某指标的最大值（无已公布值 → null，排序时置于末尾） */
+function maxMetric(m: LineupManual, pick: (s: LineupManual['snapshots'][number]) => number | null): number | null {
+  const vals = m.snapshots.map(pick).filter((v): v is number => v != null)
+  return vals.length ? Math.max(...vals) : null
+}
 
 const filteredManuals = computed(() => {
   let list = [...manuals.value]
@@ -192,8 +221,26 @@ const filteredManuals = computed(() => {
       m.components.some(c => (c.displayName || '').toLowerCase().includes(k))
     )
   }
+  if (sortMode.value !== 'default') {
+    const pick = sortMode.value === 'heat'
+      ? ((s: LineupManual['snapshots'][number]) => s.sampleCount)
+      : ((s: LineupManual['snapshots'][number]) => s.winRate)
+    list = list.map((m, i) => ({ m, i, v: maxMetric(m, pick) }))
+      .sort((a, b) => {
+        if (a.v == null && b.v == null) return a.i - b.i
+        if (a.v == null) return 1
+        if (b.v == null) return -1
+        return b.v - a.v || a.i - b.i
+      })
+      .map(x => x.m)
+  }
   return list
 })
+
+/** 首个已映射快照的版本号（栏目「适用X版本」标注用；无 → null） */
+function firstSnapVersion(m: LineupManual): string | null {
+  return m.snapshots.find(s => s.snapshotVersion)?.snapshotVersion ?? null
+}
 
 function difficultyLabel(d: string | null | undefined): string {
   if (d === 'LOW') return '难度：低'
@@ -626,6 +673,30 @@ onUnmounted(() => loadAbort?.abort())
   font-size: 11px;
   font-weight: 700;
   color: $text-muted;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+// 「未经核实与当前游戏版本一致」如实标注（§6：版本未核实不得称「当前热门」）
+.snap-ver-note {
+  font-weight: 400;
+  font-size: 10px;
+  color: $text-muted;
+  opacity: 0.9;
+}
+
+// 编辑推荐（教学理由分列，非统计）：新手路线手册徽标
+.editor-rec-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  background: rgba(5, 150, 105, 0.08);
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.3);
+  white-space: nowrap;
 }
 
 .snap-empty {
@@ -660,6 +731,26 @@ onUnmounted(() => loadAbort?.abort())
   display: flex;
   flex-wrap: wrap;
   gap: 6px 14px;
+}
+
+// 热度 / 表现 分列（§6：不同维度分别呈现，不混排）
+.snap-group {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 6px 8px;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+}
+
+.snap-group-label {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  color: $color-cyan;
+  margin-right: 2px;
 }
 
 .snap-metric {
