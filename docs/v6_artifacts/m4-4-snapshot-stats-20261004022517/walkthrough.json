@@ -1,0 +1,260 @@
+{
+  "ranAt": "2026-10-04T02:25:30.813Z",
+  "stack": {
+    "backend": "node src/server.js @ http://127.0.0.1:18082 (PGDATABASE=wanxiangqi_v6dev)",
+    "frontend": "vite dev @ http://127.0.0.1:5189 (WXQ_API_TARGET=http://127.0.0.1:18082)",
+    "viewport": "1440x900",
+    "chrome": "/Users/lhw/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "name": "阵容库（默认序 · 统计分列呈现）",
+      "url": "http://127.0.0.1:5189/lineups",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "栏目名「最新可用快照」（不称当前热门）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "版本一致性标注（适用 v260924 · 未经核实）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "热度/表现分列标签",
+          "detail": "表现/热度/表现/热度/表现/热度/表现/热度/表现/热度"
+        },
+        {
+          "ok": true,
+          "label": "表现指标（登顶率/前三率/平均名次）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "热度指标（样本/窗口）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "编辑推荐徽标（难度=低手册 ×3）",
+          "detail": "实际 3 枚"
+        },
+        {
+          "ok": true,
+          "label": "未映射手册如实「暂无统计」（恰 1 套 = 逐鹿）",
+          "detail": "[false,true,false,false,false,false]"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S2",
+      "name": "阵容库（按热度排序）",
+      "url": "http://127.0.0.1:5189/lineups",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "热度降序：大河图腾流第一（样本 9,541）",
+          "detail": "大河图腾流 / 日落海整备流 / 核心灌注流 / 三分登场流 / 河洛古币流 / 逐鹿战术牌流"
+        },
+        {
+          "ok": true,
+          "label": "热度降序：日落海(4,711) → 核心灌注流(4,570) → 三分(1,813) → 河洛(1,102)",
+          "detail": "大河图腾流 / 日落海整备流 / 核心灌注流 / 三分登场流 / 河洛古币流 / 逐鹿战术牌流"
+        },
+        {
+          "ok": true,
+          "label": "无统计手册（逐鹿）排末尾",
+          "detail": "大河图腾流 / 日落海整备流 / 核心灌注流 / 三分登场流 / 河洛古币流 / 逐鹿战术牌流"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S3",
+      "name": "阵容库（按表现排序）",
+      "url": "http://127.0.0.1:5189/lineups",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "表现降序：核心灌注流第一（登顶率 32.9%）",
+          "detail": "核心灌注流 / 三分登场流 / 大河图腾流 / 日落海整备流 / 河洛古币流 / 逐鹿战术牌流"
+        },
+        {
+          "ok": true,
+          "label": "表现降序：三分(30.2%) → 大河(12.2%) → 日落海(5.9%) → 河洛(5.1%)",
+          "detail": "核心灌注流 / 三分登场流 / 大河图腾流 / 日落海整备流 / 河洛古币流 / 逐鹿战术牌流"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": [
+        "热度序与表现序首位不同（大河 vs 三分）——分列排序互不混用"
+      ]
+    },
+    {
+      "id": "S4",
+      "name": "手册详情（三分登场流 · 挂接快照）",
+      "url": "http://127.0.0.1:5189/lineups/sanfen-dengchang",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "栏目「最新可用快照（来源统计，参考非战绩）」",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "版本一致性标注列出两侧版本",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "表现/热度分列标签",
+          "detail": "表现/热度"
+        },
+        {
+          "ok": true,
+          "label": "登顶率 30.2%（比率原样换算显示）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "样本 1,813",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "统计窗口（7 日对局快照）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "快照采集时间说明（采集 ≠ 数据截止）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "原始指标留档说明（归一化可审计）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "不构成战绩/建议声明",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S5",
+      "name": "手册详情（逐鹿战术牌流 · 无映射）",
+      "url": "http://127.0.0.1:5189/lineups/zhulu-zhanshupai",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "暂无统计如实呈现",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "说明统计不由本站生成",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无登顶率数值（不编造统计）",
+          "detail": "登顶率字样仅允许出现在暂无统计语境"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S6",
+      "name": "手册详情（核心灌注流 · 来源结构阵容挂接快照）",
+      "url": "http://127.0.0.1:5189/lineups/hexin-guanzhu",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "栏目「最新可用快照」+ 挂接统计呈现",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "card-13 统计（登顶率 32.9% / 样本 4,570）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "六名构成成员（司空震/海诺/亚瑟/姜子牙/莱西奥/姬小满）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "编辑归纳与官方口径分列（标注非官方）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "效果原文口径（目录效果原文字样）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无官方站位图如实声明（不虚构坐标）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "教学情境引用（卖牌灌注线）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "来源引用（官方卡牌图鉴英雄接口存证）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    }
+  ],
+  "total": 38,
+  "passed": 38,
+  "failed": 0
+}

@@ -165,7 +165,7 @@ try {
   // ---- A4 阵容库筛选（桌面）：仅看新手友好 + 关键词过滤 + 无匹配空态 ----
   await walk(page, 'A4', 'content', DESKTOP, '筛选 · 阵容库', `${SITE}/lineups`, async step => {
     const before = await page.eval('document.querySelectorAll(".manual-card").length')
-    check(step, '五套手册全列出', before === 5, `${before} 张`)
+    check(step, '六套手册全列出', before === 6, `${before} 张`)
     await page.clickText('仅看新手友好')
     await sleep(500)
     const lowOnly = await page.eval('document.querySelectorAll(".manual-card").length')

@@ -314,10 +314,11 @@ try {
 {
   const d = dim('D6', '文档与归档')
   const docsRoot = fs.readdirSync(path.join(REPO, 'docs')).filter(x => x.endsWith('.md')).sort()
-  const expectDocs = ['v6业务库归档迁移方案_M5-1.md', 'v6执行清单.md', 'v6实施报告.md',
-    'v6旧功能删除与数据归档对照表.md',
+  // 2026-10-04 UI 图文改版（用户交付）：其实施说明为现行文档，纳入 D6 现行集合
+  const expectDocs = ['UI图文改版实施说明_2026-10-04.md', 'v6业务库归档迁移方案_M5-1.md',
+    'v6执行清单.md', 'v6实施报告.md', 'v6旧功能删除与数据归档对照表.md',
     '王者万象棋项目转型任务书_v6_阵容分析与新手教学_2026-10-03.md'].sort()
-  check(d, `docs 根恰为 5 份现行文档（含 v6实施报告.md）`,
+  check(d, `docs 根恰为 6 份现行文档（含 v6实施报告.md 与 UI 图文改版说明）`,
     JSON.stringify(docsRoot) === JSON.stringify(expectDocs), `实际: ${docsRoot.join(', ')}`)
   check(d, 'database/ 恰为 README.md（v1 静态 DDL 已归档）',
     JSON.stringify(fs.readdirSync(path.join(REPO, 'database')).sort()) === JSON.stringify(['README.md']))

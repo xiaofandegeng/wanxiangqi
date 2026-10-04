@@ -1,8 +1,8 @@
-// M4-6 · 新手走查（浏览器）—— 五套手册/进阶课程/目录实体/复盘案例 全链路可理解
+// M4-6 · 新手走查（浏览器）—— 六套手册/进阶课程/目录实体/复盘案例 全链路可理解
 //
 // 与 M3-6 走查的关系：同一真实栈与走查方法（v6dev 开发库 + 正式后端 + vite dev
 // + headless Chromium 1440×900，零安装 CDP），覆盖面扩到 M4-2 内容集——
-// 11 门课（A–F + B2/C2/D2/E2/F2）、5 套全量手册、514 目录实体、12 情境/复盘。
+// 11 门课（A–F + B2/C2/D2/E2/F2）、6 套全量手册（含 M5-1 来源结构阵容「核心灌注流」）、514 目录实体、14 情境/复盘。
 // 每步断言真实内容渲染（无建设中/加载失败占位）；实体断言用官方目录稳定 ID。
 //
 // 运行：node tools/browser-acceptance/m4-newbie-walkthrough.mjs
@@ -187,10 +187,10 @@ await walk('S5', '课程 F2（复盘方法 + 四个复盘案例）', `${SITE}/le
     !kinds.some(k => ['成功案例', '失败案例', '决策情景'].includes(k)), kinds.join(' / '))
 })
 
-// S6 阵容库：五套手册全列出 + 难度分列（低/中）+ 新手册链接
-await walk('S6', '阵容库（五套手册）', `${SITE}/lineups`, async step => {
+// S6 阵容库：六套手册全列出 + 难度分列（低/中）+ 新手册链接
+await walk('S6', '阵容库（六套手册）', `${SITE}/lineups`, async step => {
   const text = await pageText(page)
-  for (const name of ['三分登场流', '日落海整备流', '大河图腾流', '河洛古币流', '逐鹿战术牌流']) {
+  for (const name of ['三分登场流', '日落海整备流', '大河图腾流', '河洛古币流', '逐鹿战术牌流', '核心灌注流']) {
     check(step, `手册卡（${name}）`, text.includes(name))
   }
   check(step, '难度分列（低 与 中）', text.includes('难度：低') && text.includes('难度：中'))
@@ -229,13 +229,14 @@ await walk('S8', '资料库（官方目录全量）', `${SITE}/library`, async s
 // S9 实体详情（官方目录稳定 ID）：目录事实 + 编辑附加并列 + 诚实标注
 await walk('S9', '实体详情（吕布 hero-1231 / 炽热支配者 equip-643803）', `${SITE}/library/heroes/hero-1231`, async step => {
   const text = await pageText(page)
-  check(step, '吕布（目录 ID hero-1231）可访问', text.includes('吕布') && text.includes('hero-1231'))
+  // 实体页改版（GameArt 卡片化）后不再呈现目录 ID 文本——可访问断言改为 名称 + 路由稳定 ID
+  check(step, '吕布（目录 ID hero-1231）可访问', text.includes('吕布') && (await page.eval('location.pathname')).includes('hero-1231'))
   check(step, '阵容角色事实（三分核心C位）', text.includes('核心C位') || text.includes('核心'))
   check(step, '官方阶段指引事实（换帅）', text.includes('换帅'))
   check(step, '目录技能原文（魔神降世）', text.includes('魔神降世'))
   await page.goto(`${SITE}/library/equipment/equip-643803`, { settleMs: 900 })
   const eqText = await pageText(page)
-  check(step, '炽热支配者（目录 ID equip-643803）可访问', eqText.includes('炽热支配者') && eqText.includes('equip-643803'))
+  check(step, '炽热支配者（目录 ID equip-643803）可访问', eqText.includes('炽热支配者') && (await page.eval('location.pathname')).includes('equip-643803'))
   check(step, '装备归属阵容（吕布）', eqText.includes('吕布'))
   check(step, '来源引用（官方卡牌图鉴存证）', eqText.includes('原始材料存证') || eqText.includes('官方'))
 })
@@ -260,7 +261,7 @@ const md = [
   '',
   `- 时间：${summary.ranAt}`,
   `- 栈：真实后端（wanxiangqi_v6dev 隔离开发库）+ vite dev 代理 + headless Chromium 1440×900`,
-  `- 覆盖：M4-2 内容集（11 课 / 5 手册 / 525 实体 / 12 情境·复盘）`,
+  `- 覆盖：M4-2 + M5-1 补齐内容集（11 课 / 6 手册 / 525 实体 / 14 情境·复盘）`,
   `- 结果：**${passed}/${total} 断言通过，${failures} 失败**；截图见 screenshots/`,
   '',
   ...steps.map(s => [

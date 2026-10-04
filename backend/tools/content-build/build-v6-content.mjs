@@ -80,7 +80,8 @@ const LESSON_IMG_REFS = {
   'e2-ribe-full-run': 'IMG_2_3' // 日落海整备流四阶段全流程
 }
 
-// 情境/复盘案例分支依据的官方教学图（键=情境 id；竞拍情境走 guide RAW 存证特例）
+// 情境/复盘案例分支依据的官方教学图（键=情境 id；两类特例：竞拍情境走 guide RAW 存证；
+// 来源结构阵容（核心灌注流）的情境/复盘走 refPlan=STRUCTURE_SNAPSHOT 的 RAW 存证路由）
 const SCENARIO_IMG_REFS = {
   'scn-early-no-sunshangxiang': 'IMG_2',
   'scn-sanfen-no-lvbu': 'IMG_2',
@@ -555,13 +556,40 @@ async function main() {
       r.skipped ? report.skipped.entities++ : report.created.entities++
     }
 
-    // 7) 阵容手册（5 套全量发布；材料不足的草稿只登记缺口不发布）
+    // 7) 阵容手册（6 套全量发布：5 套官方教学图阵容 + 1 套来源结构阵容「核心灌注流」；
+    //    材料不足的草稿只登记缺口不发布）
     const heroByName = new Map(ALL_ENTITIES.filter(e => e.kind === 'HERO').map(e => [e.displayName, e]))
     for (const lu of PUBLISHABLE_LINEUPS) {
       const { root } = await ensureRoot(services, pool, 'lineups', {
         id: lu.id, slug: lu.slug, displayName: lu.displayName, oneLineSummary: lu.oneLineSummary
       })
       const existingPub = await publishedRevisionId(pool, 'lineup_revisions', 'lineup_id', root.id)
+      // 来源结构阵容（refPlan: STRUCTURE_SNAPSHOT）无官方教学图——引用登记 RAW 存证：
+      // 卡牌目录英雄接口（六名成员效果/觉醒/属性逐字）+ 官网指引（词条与过渡位）+
+      // hokace 结构存证（名册出处；在库才挂，不在库不阻塞——M5-1 上线流程「同步及映射」
+      // 阶段重跑本脚本补挂，ensureReference 幂等去重）。登记置于发布判断之外：
+      // 修订已发布后的重跑也能补挂结构出处引用（根级引用，不绑定修订）。
+      if (lu.refPlan === 'STRUCTURE_SNAPSHOT') {
+        const hokaceMat = (await pool.query(`
+          SELECT id, content_sha256, fetched_at FROM raw_materials
+          WHERE record_key = 'lineups:all' ORDER BY fetched_at DESC, id DESC LIMIT 1`)).rows[0] || null
+        const structureRefs = [
+          { refKind: 'RAW_MATERIAL', refLocator: String(materials.get('official:cards:heroes').id), usageScope: 'PUBLIC', licenseNote: '六名构成成员的效果/觉醒/基础属性逐字来自官方卡牌图鉴英雄接口存证（三方 sha256 锁定）' },
+          { refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '词条引用（kw-akemiya-core / kw-linshi-dengji / rule-commander-levelup）与通用开局过渡位以官网新手指引存证为准' }
+        ]
+        if (hokaceMat) {
+          structureRefs.push({
+            refKind: 'RAW_MATERIAL', refLocator: String(hokaceMat.id), usageScope: 'PUBLIC',
+            licenseNote: `阵容名册与结构出处：hokace 阵容页存证（record_key=lineups:all，sha256=${String(hokaceMat.content_sha256).slice(0, 16)}…，fetched_at=${new Date(hokaceMat.fetched_at).toISOString()}）——结构「司空震 · 海诺 · 亚瑟」为手册映射判据的唯一命中结构（结构页英雄 ID 1481/1661/5371/5451/5631/5641 与官方目录逐一对齐）`
+          })
+        } else {
+          report.structureSyncPending = report.structureSyncPending || []
+          report.structureSyncPending.push({ lineupId: lu.id, note: '库内无 hokace 结构存证（lineups:all）——结构出处引用待「同步及映射」阶段补挂（M5-1 上线流程）' })
+        }
+        for (const ref of structureRefs) {
+          await ensureReference(services, pool, { contentType: 'LINEUP', contentId: root.id, ...ref })
+        }
+      }
       if (!existingPub) {
         const rev = await services.content.createRevision('lineups', root.id, {
           gameVersionId: VERSION_ID,
@@ -599,19 +627,25 @@ async function main() {
           }
         }
         // 引用：一图速览（由图文详解 URL 推导 guide_N_3 → guide_N_2）+ 图文详解 + 官网 RAW
-        const detailImg = lu.sections.positioning.officialBoard.guideImage
-        const quickImg = detailImg.replace(/_3\.jpg$/, '_2.jpg')
-        if (quickImg === detailImg || !IMAGE_SHA256[quickImg] || !IMAGE_SHA256[detailImg]) {
-          throw new Error(`阵容 ${lu.id} 教学图 URL 无法解析或未登记指纹：detail=${detailImg} quick=${quickImg}`)
+        // （仅官方教学图阵容；来源结构阵容的 RAW 引用已在上方登记）
+        if (lu.refPlan !== 'STRUCTURE_SNAPSHOT') {
+          const detailImg = lu.sections.positioning.officialBoard.guideImage
+          const quickImg = detailImg.replace(/_3\.jpg$/, '_2.jpg')
+          if (quickImg === detailImg || !IMAGE_SHA256[quickImg] || !IMAGE_SHA256[detailImg]) {
+            throw new Error(`阵容 ${lu.id} 教学图 URL 无法解析或未登记指纹：detail=${detailImg} quick=${quickImg}`)
+          }
+          for (const ref of [
+            { refKind: 'OFFICIAL_PAGE', refLocator: quickImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（一图速览）sha256=${IMAGE_SHA256[quickImg]}；事实为 AI 辅助转写，以图原件为准` },
+            { refKind: 'OFFICIAL_PAGE', refLocator: detailImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[detailImg]}；事实为 AI 辅助转写，以图原件为准` },
+            { refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引「入门阵容」明示阵容名与核心英雄' }
+          ]) {
+            await ensureReference(services, pool, { contentType: 'LINEUP', contentId: root.id, ...ref })
+          }
         }
-        for (const ref of [
-          { refKind: 'OFFICIAL_PAGE', refLocator: quickImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（一图速览）sha256=${IMAGE_SHA256[quickImg]}；事实为 AI 辅助转写，以图原件为准` },
-          { refKind: 'OFFICIAL_PAGE', refLocator: detailImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[detailImg]}；事实为 AI 辅助转写，以图原件为准` },
-          { refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引「入门阵容」明示阵容名与核心英雄' }
-        ]) {
-          await ensureReference(services, pool, { contentType: 'LINEUP', contentId: root.id, ...ref })
-        }
-        await services.content.publishRevision('lineups', rev.id, { operator: OPERATOR, reason: 'M4-2 阵容手册（官方教学图+官网存证，§5.1–5.6 全字段）' })
+        const publishReason = lu.refPlan === 'STRUCTURE_SNAPSHOT'
+          ? '阵容手册（来源结构存证+官方卡牌目录逐字效果，§5.1–5.6 全字段；编辑归纳处已标注非官方）'
+          : 'M4-2 阵容手册（官方教学图+官网存证，§5.1–5.6 全字段）'
+        await services.content.publishRevision('lineups', rev.id, { operator: OPERATOR, reason: publishReason })
         report.created.lineups++
       } else {
         report.skipped.lineups++
@@ -640,7 +674,7 @@ async function main() {
       r.skipped ? report.skipped.lessons++ : report.created.lessons++
     }
 
-    // 9) 教学情境 + 教学复盘（12）
+    // 9) 教学情境 + 教学复盘（14 = 9 阵容情境 + 5 复盘案例）
     for (const s of SCENARIOS) {
       const existing = await services.content.getContent('scenarios', s.id)
       if (!existing) {
@@ -652,7 +686,25 @@ async function main() {
       }
       const root = await services.content.getContent('scenarios', s.id)
       if (root.status !== 'PUBLISHED') {
-        if (s.slug === 'auction-bid-or-pass') {
+        if (s.refPlan === 'STRUCTURE_SNAPSHOT') {
+          // 来源结构阵容（核心灌注流）的教学情境/复盘：分支依据官方卡牌目录效果原文
+          // + 已发布词条——引用登记 RAW 存证（英雄接口存证；hokace 结构存证在库则一并挂接）
+          const scenHokace = (await pool.query(`
+            SELECT id FROM raw_materials
+            WHERE record_key = 'lineups:all' ORDER BY fetched_at DESC, id DESC LIMIT 1`)).rows[0] || null
+          await ensureReference(services, pool, {
+            contentType: 'SCENARIO', contentId: s.id, refKind: 'RAW_MATERIAL',
+            refLocator: String(materials.get('official:cards:heroes').id), usageScope: 'PUBLIC',
+            licenseNote: '分支依据官方卡牌目录效果原文（英雄接口存证）+ 已发布词条 kw-akemiya-core / kw-linshi-dengji；教学情境/复盘为机制推演，非真实对局'
+          })
+          if (scenHokace) {
+            await ensureReference(services, pool, {
+              contentType: 'SCENARIO', contentId: s.id, refKind: 'RAW_MATERIAL',
+              refLocator: String(scenHokace.id), usageScope: 'PUBLIC',
+              licenseNote: 'hokace 来源结构名册存证（record_key=lineups:all，结构「司空震 · 海诺 · 亚瑟」）'
+            })
+          }
+        } else if (s.slug === 'auction-bid-or-pass') {
           await ensureReference(services, pool, {
             contentType: 'SCENARIO', contentId: s.id, refKind: 'RAW_MATERIAL',
             refLocator: String(guide.id), usageScope: 'PUBLIC',

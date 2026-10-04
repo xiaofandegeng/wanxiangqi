@@ -1,0 +1,389 @@
+{
+  "ranAt": "2026-10-04T02:24:25.841Z",
+  "stack": {
+    "backend": "node src/server.js @ http://127.0.0.1:18082 (PGDATABASE=wanxiangqi_v6dev)",
+    "frontend": "vite dev @ http://127.0.0.1:5189 (WXQ_API_TARGET=http://127.0.0.1:18082)",
+    "viewport": "1440x900",
+    "chrome": "/Users/lhw/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "name": "首页（新手入口）",
+      "url": "http://127.0.0.1:5189/",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "站点定位文案（阵容研习站）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "新手主路径引导（先看规则→第一套阵容）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "教学内容计数非占位（11 门课程）",
+          "detail": "已上线 11 门课程"
+        },
+        {
+          "ok": true,
+          "label": "主导航含 新手学堂/阵容库/资料库/版本动态",
+          "detail": "弈王者万象棋 · 阵容研习站新手教学 · 阵容研习 · 资料与版本,管理,首页,新手学堂,阵容库,资料库,版本动态"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S2",
+      "name": "新手学堂（阶段路径 + 进阶课）",
+      "url": "http://127.0.0.1:5189/learn",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "六阶段 A–F 依序呈现",
+          "detail": "ABCDEF"
+        },
+        {
+          "ok": true,
+          "label": "基础六门（A 与 F）可见",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "进阶五门抽查（B2 能量台账 / F2 复盘方法）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无「暂无课程」占位",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "C2 词条深潜课链接可入",
+          "detail": "/learn/c2-keyword-deep-dive"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S3",
+      "name": "课程 C2（词条深潜：目录口径）",
+      "url": "http://127.0.0.1:5189/learn/c2-keyword-deep-dive",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "目录口径词条（图腾）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "目录口径词条（阿科米亚核心）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "口径来源区分（指引页词典 vs 卡牌图鉴）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "概念区分（阿科米亚之子=装备 / 核心=词条）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "来源引用区",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S4",
+      "name": "课程 D2（资源集中：三套手册情境）",
+      "url": "http://127.0.0.1:5189/learn/d2-stabilize-budget",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "情景案例区呈现",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "大河装备转交情境",
+          "detail": "教学情境 · 大河图腾流：8-11回合敖隐就位，装备何时从虞姬转出 / 教学情境 · 河洛古币流：古币和装备是不是都给玄策 / 教学情境 · 核心灌注流：卖了还是留着——卖牌灌注线的取舍 / 教学情境 · 逐鹿战术牌流：装备给谁——确保蒙犽装备最多"
+        },
+        {
+          "ok": true,
+          "label": "河洛古币集中情境",
+          "detail": "教学情境 · 大河图腾流：8-11回合敖隐就位，装备何时从虞姬转出 / 教学情境 · 河洛古币流：古币和装备是不是都给玄策 / 教学情境 · 核心灌注流：卖了还是留着——卖牌灌注线的取舍 / 教学情境 · 逐鹿战术牌流：装备给谁——确保蒙犽装备最多"
+        },
+        {
+          "ok": true,
+          "label": "逐鹿蒙犽装备情境",
+          "detail": "教学情境 · 大河图腾流：8-11回合敖隐就位，装备何时从虞姬转出 / 教学情境 · 河洛古币流：古币和装备是不是都给玄策 / 教学情境 · 核心灌注流：卖了还是留着——卖牌灌注线的取舍 / 教学情境 · 逐鹿战术牌流：装备给谁——确保蒙犽装备最多"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": [
+        "D2 情境清单：[教学情境 · 大河图腾流：8-11回合敖隐就位，装备何时从虞姬转出、教学情境 · 河洛古币流：古币和装备是不是都给玄策、教学情境 · 核心灌注流：卖了还是留着——卖牌灌注线的取舍、教学情境 · 逐鹿战术牌流：装备给谁——确保蒙犽装备最多]"
+      ]
+    },
+    {
+      "id": "S5",
+      "name": "课程 F2（复盘方法 + 四个复盘案例）",
+      "url": "http://127.0.0.1:5189/learn/f2-review-method",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "kind 徽标用 DDL 枚举口径（阵容情境/复盘案例）",
+          "detail": "复盘案例 / 复盘案例 / 复盘案例 / 复盘案例 / 复盘案例 / 阵容情境"
+        },
+        {
+          "ok": true,
+          "label": "复盘案例标注「教学复盘（非真实对局演绎」",
+          "detail": "出现 6 次"
+        },
+        {
+          "ok": true,
+          "label": "无遗留旧枚举徽标（成功案例/失败案例/决策情景）",
+          "detail": "复盘案例 / 复盘案例 / 复盘案例 / 复盘案例 / 复盘案例 / 阵容情境"
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S6",
+      "name": "阵容库（六套手册）",
+      "url": "http://127.0.0.1:5189/lineups",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "手册卡（三分登场流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册卡（日落海整备流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册卡（大河图腾流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册卡（河洛古币流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册卡（逐鹿战术牌流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册卡（核心灌注流）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "难度分列（低 与 中）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "逐鹿手册链接 → /lineups/zhulu-zhanshupai",
+          "detail": "/lineups/zhulu-zhanshupai"
+        },
+        {
+          "ok": true,
+          "label": "新手筛选（仅看新手友好）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S7",
+      "name": "手册详情（逐鹿战术牌流·中难度）",
+      "url": "http://127.0.0.1:5189/lineups/zhulu-zhanshupai",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "手册章节（定阵条件）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（阶段）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（站位）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（技能操作链）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "手册章节（实战案例引用）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "难度=中 + 新手适合度理由（非胜率）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "构成成员（蒙犽/芈月/白起）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "推荐棋手（小妲己·官网首页口径）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "复盘案例引用（非真实对局演绎）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "站位未核实项如实标注",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    },
+    {
+      "id": "S8",
+      "name": "资料库（官方目录全量）",
+      "url": "http://127.0.0.1:5189/library",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "页签（英雄/棋手/装备/效果牌/天赋）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "装备页签：目录装备（炽热支配者/不祥征兆）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": [
+        "页签计数：85 / 0 / 0 / 0 / 0 / 0 / 0"
+      ]
+    },
+    {
+      "id": "S9",
+      "name": "实体详情（吕布 hero-1231 / 炽热支配者 equip-643803）",
+      "url": "http://127.0.0.1:5189/library/heroes/hero-1231",
+      "assertions": [
+        {
+          "ok": true,
+          "label": "吕布（目录 ID hero-1231）可访问",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "阵容角色事实（三分核心C位）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "官方阶段指引事实（换帅）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "目录技能原文（魔神降世）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "炽热支配者（目录 ID equip-643803）可访问",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "装备归属阵容（吕布）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "来源引用（官方卡牌图鉴存证）",
+          "detail": ""
+        },
+        {
+          "ok": true,
+          "label": "无未捕获前端异常",
+          "detail": ""
+        }
+      ],
+      "consoleExceptions": [],
+      "notes": []
+    }
+  ],
+  "total": 58,
+  "passed": 58,
+  "failed": 0
+}

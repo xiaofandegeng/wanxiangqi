@@ -155,8 +155,8 @@ await walk('S2', '阵容库（按热度排序）', `${SITE}/lineups`, async step
   await sleep(400)
   const names = await cardNames()
   check(step, '热度降序：大河图腾流第一（样本 9,541）', names[0] === '大河图腾流', names.join(' / '))
-  check(step, '热度降序：日落海(4,711) → 三分(1,813) → 河洛(1,102)',
-    names[1] === '日落海整备流' && names[2] === '三分登场流' && names[3] === '河洛古币流', names.join(' / '))
+  check(step, '热度降序：日落海(4,711) → 核心灌注流(4,570) → 三分(1,813) → 河洛(1,102)',
+    names[1] === '日落海整备流' && names[2] === '核心灌注流' && names[3] === '三分登场流' && names[4] === '河洛古币流', names.join(' / '))
   check(step, '无统计手册（逐鹿）排末尾', names[names.length - 1] === '逐鹿战术牌流', names.join(' / '))
 })
 
@@ -165,9 +165,9 @@ await walk('S3', '阵容库（按表现排序）', `${SITE}/lineups`, async step
   await page.clickText('按表现（登顶率）')
   await sleep(400)
   const names = await cardNames()
-  check(step, '表现降序：三分登场流第一（登顶率 30.2%）', names[0] === '三分登场流', names.join(' / '))
-  check(step, '表现降序：大河(12.2%) → 日落海(5.9%) → 河洛(5.1%)',
-    names[1] === '大河图腾流' && names[2] === '日落海整备流' && names[3] === '河洛古币流', names.join(' / '))
+  check(step, '表现降序：核心灌注流第一（登顶率 32.9%）', names[0] === '核心灌注流', names.join(' / '))
+  check(step, '表现降序：三分(30.2%) → 大河(12.2%) → 日落海(5.9%) → 河洛(5.1%)',
+    names[1] === '三分登场流' && names[2] === '大河图腾流' && names[3] === '日落海整备流' && names[4] === '河洛古币流', names.join(' / '))
   step.notes.push('热度序与表现序首位不同（大河 vs 三分）——分列排序互不混用')
 })
 
@@ -193,6 +193,21 @@ await walk('S5', '手册详情（逐鹿战术牌流 · 无映射）', `${SITE}/l
   check(step, '说明统计不由本站生成', text.includes('统计不得由本站生成'))
   check(step, '无登顶率数值（不编造统计）', !text.includes('登顶率') || text.includes('暂无统计'),
     '登顶率字样仅允许出现在暂无统计语境')
+})
+
+// S6 核心灌注流详情（M5-1 来源结构阵容）：挂接快照 + 编辑归纳标注如实分列
+await walk('S6', '手册详情（核心灌注流 · 来源结构阵容挂接快照）', `${SITE}/lineups/hexin-guanzhu`, async step => {
+  const text = await pageText(page)
+  check(step, '栏目「最新可用快照」+ 挂接统计呈现', text.includes('最新可用快照') && !text.includes('暂无统计'))
+  check(step, 'card-13 统计（登顶率 32.9% / 样本 4,570）', text.includes('32.9%') && text.includes('4,570'))
+  check(step, '六名构成成员（司空震/海诺/亚瑟/姜子牙/莱西奥/姬小满）',
+    ['司空震', '海诺', '亚瑟', '姜子牙', '莱西奥', '姬小满'].every(n => text.includes(n)))
+  check(step, '编辑归纳与官方口径分列（标注非官方）',
+    text.includes('编辑建议（非官方）') || text.includes('编辑归纳') || text.includes('编辑外推'))
+  check(step, '效果原文口径（目录效果原文字样）', text.includes('目录效果原文'))
+  check(step, '无官方站位图如实声明（不虚构坐标）', text.includes('无官方站位材料') && text.includes('未核实'))
+  check(step, '教学情境引用（卖牌灌注线）', text.includes('卖了还是留着'))
+  check(step, '来源引用（官方卡牌图鉴英雄接口存证）', text.includes('官方卡牌图鉴英雄接口存证'))
 })
 
 // ---------------- 汇总与留档 ----------------
