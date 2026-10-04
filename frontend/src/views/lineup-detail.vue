@@ -121,6 +121,14 @@
           暂无统计（无已映射的来源快照；统计不得由本站生成或推算）
         </div>
         <div v-for="s in manual.snapshots" :key="s.id" class="snap-card">
+          <!-- §6 三态如实呈现：失败（保留上次快照并明确状态）→ 过期（适用旧版本） -->
+          <div v-if="s.sourceLastError" class="snap-state-banner is-fail">
+            来源最近一次同步失败（{{ formatTime(s.sourceLastAttemptAt) }}）：{{ s.sourceLastError }}；
+            以下为最近一次成功同步（{{ formatTime(s.sourceLastSuccessAt) }}）保留的快照
+          </div>
+          <div v-if="s.stale === true" class="snap-state-banner is-stale">
+            快照较旧（数据基准已超过 7 日）· 适用旧版本，仅供参考
+          </div>
           <div class="snap-head-row">
             <strong>{{ s.sourceName || s.sourceId }}</strong>
             <span v-if="s.sourceUrl" class="snap-url font-mono">{{ s.sourceUrl }}</span>
@@ -158,6 +166,11 @@
                 <span class="metric-label">统计窗口</span>
               </div>
             </div>
+            <!-- §6 小样本提示（不设阈值）：来源未公布小样本判定口径与全服覆盖分母，
+                 本站不擅自造阈值；样本量不代表全服出现率，未知样本量不得标「大样本可靠」 -->
+            <p class="snap-sample-note">
+              样本规模越小比率波动越大；来源未公布小样本判定口径与全服覆盖分母，样本量不代表全服出现率。
+            </p>
           </div>
           <ul class="snap-meta-list">
             <li v-if="s.snapshotVersion"><strong>快照版本:</strong> <span class="font-mono">{{ s.snapshotVersion }}</span></li>
@@ -1034,6 +1047,34 @@ function formatTime(isoStr: string | null | undefined) {
   border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: 6px;
   padding: 6px 12px;
+}
+
+// §6 状态横幅：同步失败（保留上次快照）/ 快照过期（适用旧版本）
+.snap-state-banner {
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid;
+
+  &.is-fail {
+    background: rgba(220, 38, 38, 0.06);
+    border-color: rgba(220, 38, 38, 0.3);
+    color: #b91c1c;
+  }
+
+  &.is-stale {
+    background: rgba(217, 119, 6, 0.06);
+    border-color: rgba(217, 119, 6, 0.3);
+    color: #92400e;
+  }
+}
+
+// §6 小样本阅读提示（不设阈值，置于热度样本指标处）
+.snap-sample-note {
+  margin: 0;
+  font-size: 11px;
+  color: #64748b;
 }
 
 .snap-metric {

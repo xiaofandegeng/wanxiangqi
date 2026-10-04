@@ -894,7 +894,12 @@ export class ContentRepository {
     if (!lineupIds.length) return []
     const res = await this.pool.query(`
       SELECT lsl.lineup_id, ls.*, ds.name AS source_name, ds.status AS source_status,
-             ds.type AS source_type, ds.url AS source_url, ds.license_note AS source_license_note
+             ds.type AS source_type, ds.url AS source_url, ds.license_note AS source_license_note,
+             -- M4-5 §6「同步失败保留上次快照并明确状态」：来源健康字段随快照一起公开，
+             -- 失败与否由 data_sources 真实台账状态决定（last_error 非空 = 最近一次尝试失败）
+             ds.last_error AS source_last_error,
+             ds.last_attempt_at AS source_last_attempt_at,
+             ds.last_success_at AS source_last_success_at
       FROM lineup_snapshot_links lsl
       JOIN lineup_snapshots ls ON ls.source_id = lsl.source_id AND ls.structure_key = lsl.structure_key
       JOIN data_sources ds ON ds.source_id = ls.source_id

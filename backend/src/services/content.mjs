@@ -618,15 +618,21 @@ export class ContentService {
     }
   }
 
-  /** 快照子对象（§6 口径：来源公布值原样 + 单位/窗口/截止/抓取时间，不换算不平均） */
+  /** 快照子对象（§6 口径：来源公布值原样 + 单位/窗口/截止/抓取时间，不换算不平均；
+   *  M4-5 附来源健康三字段：失败时前端可明确「以上为最近一次成功同步的快照」） */
   snapshotSubObject(s) {
     const wire = PgRepository.LINEUP_WIRE(s)
+    // pg 驱动返回 Date 对象；与 LINEUP_WIRE 的 iso 语义一致（Date→ISO，字符串原样）
+    const isoTime = v => (v instanceof Date ? v.toISOString() : (v ?? null))
     return {
       ...wire,
       sourceUrl: s.source_url ?? null,
       sourceLicenseNote: s.source_license_note ?? null,
       mode: s.mode ?? null,
-      rawMetrics: s.raw_metrics ?? null
+      rawMetrics: s.raw_metrics ?? null,
+      sourceLastError: s.source_last_error ?? null,
+      sourceLastAttemptAt: isoTime(s.source_last_attempt_at),
+      sourceLastSuccessAt: isoTime(s.source_last_success_at)
     }
   }
 

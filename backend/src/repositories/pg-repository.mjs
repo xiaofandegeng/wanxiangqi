@@ -410,6 +410,10 @@ export class PgRepository {
     const client = await this.client()
     try {
       await client.query('BEGIN')
+      // A08 重复任务：同一来源的并发同步按来源串行化（事务级咨询锁）——
+      // 后到者等先行者提交后再整体替换（幂等语义），而不是并发 DELETE+INSERT
+      // 撞主键让其中一次无谓失败。锁随事务结束自动释放，无需显式解锁。
+      await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`sync:${sourceId}`])
 
       let snapshotsCount = 0
       if (Array.isArray(snapshots)) {

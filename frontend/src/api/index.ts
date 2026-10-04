@@ -67,6 +67,11 @@ export interface LineupSnapshot {
   sourceLicenseNote?: string | null
   mode?: string | null
   rawMetrics?: Record<string, unknown> | null
+  /** 来源健康（M4-5 §6「同步失败保留上次快照并明确状态」）：
+   *  sourceLastError 非空 = 最近一次同步尝试失败，当前快照为最近一次成功同步保留值 */
+  sourceLastError?: string | null
+  sourceLastAttemptAt?: string | null
+  sourceLastSuccessAt?: string | null
 }
 
 /** 阵容手册构成项（§5.5 结构化：每张卡的角色与必需性） */

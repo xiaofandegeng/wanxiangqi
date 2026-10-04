@@ -140,6 +140,14 @@
             </div>
             <div v-if="m.snapshots.length === 0" class="snap-empty">暂无统计（无已映射的来源快照；统计不由本站生成或推算）</div>
             <div v-for="s in m.snapshots" :key="s.id" class="snap-block">
+              <!-- §6 三态如实呈现：失败（保留上次快照并明确状态）→ 过期（适用旧版本） -->
+              <div v-if="s.sourceLastError" class="snap-state-banner is-fail">
+                来源最近一次同步失败（{{ formatTime(s.sourceLastAttemptAt) }}）：{{ s.sourceLastError }}；
+                以上为最近一次成功同步（{{ formatTime(s.sourceLastSuccessAt) }}）保留的快照
+              </div>
+              <div v-if="s.stale === true" class="snap-state-banner is-stale">
+                快照较旧（数据基准已超过 7 日）· 适用旧版本，仅供参考
+              </div>
               <div class="snap-source-row">
                 <strong>{{ s.sourceName || s.sourceId }}</strong>
                 <span v-if="s.snapshotVersion" class="font-mono snap-ver">{{ s.snapshotVersion }}</span>
@@ -702,6 +710,27 @@ onUnmounted(() => loadAbort?.abort())
 .snap-empty {
   font-size: 12px;
   color: $text-muted;
+}
+
+// §6 状态横幅：同步失败（保留上次快照）/ 快照过期（适用旧版本）
+.snap-state-banner {
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 6px 10px;
+  border-radius: $radius-sm;
+  border: 1px solid;
+
+  &.is-fail {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.35);
+    color: #dc2626;
+  }
+
+  &.is-stale {
+    background: rgba(217, 119, 6, 0.08);
+    border-color: rgba(217, 119, 6, 0.35);
+    color: #d97706;
+  }
 }
 
 .snap-block {

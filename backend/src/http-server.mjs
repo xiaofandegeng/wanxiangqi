@@ -187,7 +187,9 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
           code: 0,
           total: list.length,
           data: list,
-          statsNotice: '统计为来源公布的阵容快照（经人工映射挂接；窗口/样本/单位如实标注，不跨来源平均，不代表任何个人真实战绩）',
+          // §6 小样本提示（不设阈值）：来源未公布小样本判定口径与全服覆盖分母，
+          // 本站不擅自造阈值，只给阅读指引；样本量未知不得标「大样本可靠」
+          statsNotice: '统计为来源公布的阵容快照（经人工映射挂接；窗口/样本/单位如实标注，不跨来源平均，不代表任何个人真实战绩）。样本规模越小比率波动越大；来源未公布小样本判定口径与全服覆盖分母，样本量不代表全服出现率',
           dataAsOf: new Date().toISOString()
         })
       } catch (err) {
