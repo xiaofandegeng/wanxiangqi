@@ -1,12 +1,13 @@
-// v6 M3-2 · 术语/规则条目语料（36 条 = 13 关键词条 + 23 基础规则）
+// v6 M3-2 + M4-2 · 术语/规则条目语料（38 条 = 13 新手指引词条 + 2 目录口径词条 + 23 基础规则）
 //
 // 铁律：
-// - statementRaw 为官网原文逐字（官网新手指引页，存证 record_key='official:newbie-guide'）；
-//   构建脚本做机械化来源核查：去标签/折叠空白后必须能在存证原文中找到该子串，
-//   找不到即构建失败——不靠人工自觉，不放过转写错误。
+// - statementRaw 为官方原文逐字；默认来源为官网新手指引页（存证
+//   record_key='official:newbie-guide'），个别条目带 verifyAgainst 指向其他存证
+//   （卡牌图鉴 cards.js / 英雄目录 JSON）——构建脚本对每条按其声明的存证做
+//   机械化核查：去标签/折叠空白后必须命中子串，找不到即构建失败。
 // - params 只收录 statementRaw 中字面出现的数值/结构；官方未公布的数值一律写
 //   '官方未公布…' 字符串，不编造数字。
-// - 每条引用同页 RAW_MATERIAL 存证（root 级，跨修订共享）。
+// - 每条引用对应存证 RAW_MATERIAL（root 级，跨修订共享）。
 
 // 官网新手指引「关键词词典」13 词条（原文逐字）
 const KEYWORDS = [
@@ -31,6 +32,31 @@ const KEYWORDS = [
   { term: '凯旋', statementRaw: '英雄上阵期间若战斗胜利，触发效果。' },
   { term: '败阵', statementRaw: '英雄上阵期间若战斗失败，触发效果。' },
   { term: '退场', statementRaw: '场上的此英雄被出售时，触发效果。' }
+]
+
+// M4-2 目录口径词条（新手指引页词典未收录，官方卡牌图鉴口径给出定义）
+// - 图腾：专题站 cards.js 关键词清单（存证 official:cards:js）
+//   注：cards.js 的「合成」词条 mark 文案与其「凯旋」完全相同，与新手指引页
+//   词典的「合成」定义冲突——已按较新来源（新手指引）维持 kw-hecheng，冲突登记 conflictLog。
+// - 阿科米亚核心：英雄目录 JSON 全部带此关键词的英雄共用同一段定义（存证
+//   official:cards:heroes，脚本断言变体数=1）
+const CALIBER_KEYWORDS = [
+  {
+    term: '图腾', statementRaw: '大河流域阵营专属单位，存活时提供特殊效果。',
+    verifyAgainst: 'official:cards:js',
+    params: { scope: '大河流域阵营专属单位' }
+  },
+  {
+    term: '阿科米亚核心',
+    statementRaw: '战斗开始时，核心的等级会以临时等级的形式，平均分配给己方【日落海】英雄（单英雄分配上限50%）。',
+    verifyAgainst: 'official:cards:heroes',
+    params: {
+      timing: '战斗开始时',
+      distribution: '平均分配（以临时等级形式）',
+      cap: '单英雄分配上限50%',
+      scope: '己方【日落海】英雄'
+    }
+  }
 ]
 
 // 官网新手指引「基础规则介绍」各版块（原文逐字，按事实粒度拆条）
@@ -176,7 +202,7 @@ const RULES = [
   }
 ]
 
-/** 词条 → 统一 mechanic 记录（id/slug/title/statementRaw/params/appliesTo） */
+/** 词条 → 统一 mechanic 记录（id/slug/title/statementRaw/params/appliesTo/verifyAgainst） */
 export const MECHANICS = [
   ...KEYWORDS.map(k => ({
     id: `kw-${pinyinSlug(k.term)}`,
@@ -186,15 +212,25 @@ export const MECHANICS = [
     params: k.params || {},
     appliesTo: { scope: '卡牌词条' }
   })),
+  ...CALIBER_KEYWORDS.map(k => ({
+    id: `kw-${pinyinSlug(k.term)}`,
+    slug: `kw-${pinyinSlug(k.term)}`,
+    title: `词条：${k.term}`,
+    statementRaw: k.statementRaw,
+    params: k.params || {},
+    appliesTo: { scope: '卡牌词条' },
+    verifyAgainst: k.verifyAgainst
+  })),
   ...RULES
 ]
 
-// 13 个词条的稳定 slug（手工拼音映射，避免引入依赖）
+// 15 个词条的稳定 slug（手工拼音映射，避免引入依赖）
 function pinyinSlug(term) {
   const map = {
     登场: 'dengchang', 开团: 'kaituan', 整备: 'zhengbei', 牺牲: 'xisheng',
     合成: 'hecheng', 闪现: 'shanxian', 夺取: 'duoqu', 临时等级: 'linshi-dengji',
-    转瞬: 'zhuanshun', 复生: 'fusheng', 凯旋: 'kaixuan', 败阵: 'baizhen', 退场: 'tuichang'
+    转瞬: 'zhuanshun', 复生: 'fusheng', 凯旋: 'kaixuan', 败阵: 'baizhen', 退场: 'tuichang',
+    图腾: 'tuteng', 阿科米亚核心: 'akemiya-core'
   }
   if (!map[term]) throw new Error(`词条 [${term}] 缺少拼音 slug 映射`)
   return map[term]

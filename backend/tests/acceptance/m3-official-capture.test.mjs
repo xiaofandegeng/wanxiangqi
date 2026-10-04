@@ -21,12 +21,18 @@ let stack = null
 let stub = null
 let stubPhase = 'ok'
 
-// 存根正文（按 recordKey 区分，保证 4 目标内容互不相同、sha256 可独立复核）
+// 存根正文（按 recordKey 区分，保证各目标内容互不相同、sha256 可独立复核）
 const STUB_BODIES = {
   'official:home': '<html><body>官网首页存根 桃源 WyQ home</body></html>',
   'official:portal': '<html><body>专题站存根 portal 三分归来</body></html>',
   'official:newbie-guide': '<html><body>新手指引存根 基础规则/入门阵容/棋手推荐</body></html>',
-  'official:news:18873181': 'searchNews({status:0,data:{title:"版本更新公告存根"}})'
+  'official:news:18873181': 'searchNews({status:0,data:{title:"版本更新公告存根"}})',
+  // M4 卡牌图鉴数据接口存根（形态与真实接口一致：JSON 正文）
+  'official:cards:heroes': '{"heroCards":[{"id":1231,"name":"吕布存根","quality":5,"desc":"开团存根"}]}',
+  'official:cards:effects': '{"effectCards":[{"id":1,"name":"换帅存根","quality":3,"desc":"存根"}]}',
+  'official:cards:equips': '{"equipCards":[{"id":1,"name":"炽热支配者存根","quality":2,"desc":"存根"}]}',
+  'official:cards:talents': '{"talentCards":[{"id":1,"name":"乐善好施存根","quality":2,"desc":"存根"}]}',
+  'official:cards:js': 'var cardTypeMap = {/* cards.js 存根 */}'
 }
 
 // 适配器目标 URL 指向本地存根（同 v15 对 HOKACE_ADAPTER_METADATA.targetUrl 的做法）
@@ -96,18 +102,18 @@ test('M3-1a: 0008 种子登记 UNCONFIGURED；同步触发鉴权与未知来源�
   assert.equal(ghost.json.code_name, 'UNCONFIGURED')
 })
 
-test('M3-1b: 首次抓取成功 → 4 目标原文/哈希/字节数/时间入库，来源 UNCONFIGURED→READY', { skip: !pgAvailable }, async () => {
+test('M3-1b: 首次抓取成功 → 全部目标原文/哈希/字节数/时间入库，来源 UNCONFIGURED→READY', { skip: !pgAvailable }, async () => {
   const res = await triggerSync()
   assert.equal(res.status, 200, JSON.stringify(res.json))
   assert.equal(res.json.code, 0)
-  assert.equal(res.json.result.count, 4)
+  assert.equal(res.json.result.count, OFFICIAL_CONTENT_TARGETS.length)
 
   // 原文存证逐条复核（验收方法：原文/哈希/时间入库可复核）
   const rows = (await stack.pool.query(
     `SELECT id, record_key, fetched_at, content_sha256, content, content_type, size_bytes, parser_version
      FROM raw_materials WHERE source_id = 'src-wxq-official' ORDER BY record_key`
   )).rows
-  assert.equal(rows.length, 4, '4 个官网目标各一条存证')
+  assert.equal(rows.length, OFFICIAL_CONTENT_TARGETS.length, '全部官网目标各一条存证')
   assert.deepEqual(rows.map(r => r.record_key), Object.keys(STUB_BODIES).sort())
 
   for (const r of rows) {
@@ -129,7 +135,7 @@ test('M3-1b: 首次抓取成功 → 4 目标原文/哈希/字节数/时间入库
   const jobs = await stack.api('/api/v1/admin/sync-jobs', { token: stack.adminToken })
   assert.equal(jobs.json.data[0].sourceId, 'src-wxq-official')
   assert.equal(jobs.json.data[0].status, 'SUCCESS')
-  assert.equal(jobs.json.data[0].fetchedCount, 4)
+  assert.equal(jobs.json.data[0].fetchedCount, OFFICIAL_CONTENT_TARGETS.length)
 
   // 抓取存证 ≠ 数据同步：不写任何阵容快照
   const snapshots = await stack.pool.query(`SELECT count(*)::int AS n FROM lineup_snapshots`)
@@ -171,7 +177,7 @@ test('M3-1d: 恢复后再抓取成功；进程重启后来源状态与存证持�
   const total = (await stack.pool.query(
     `SELECT count(*)::int AS n FROM raw_materials WHERE source_id = 'src-wxq-official'`
   )).rows[0]
-  assert.equal(total.n, 8, '两次成功采集共 8 条存证')
+  assert.equal(total.n, OFFICIAL_CONTENT_TARGETS.length * 2, '两次成功采集存证翻倍累积')
 
   // 模拟进程重启：全新 pool/services/server，库内状态保留
   await stack.cleanup()
@@ -184,7 +190,7 @@ test('M3-1d: 恢复后再抓取成功；进程重启后来源状态与存证持�
   const persisted = (await stack.pool.query(
     `SELECT count(*)::int AS n FROM raw_materials WHERE source_id = 'src-wxq-official'`
   )).rows[0]
-  assert.equal(persisted.n, 8, '重启后存证持久')
+  assert.equal(persisted.n, OFFICIAL_CONTENT_TARGETS.length * 2, '重启后存证持久')
 
   // data-status 公开面如实呈现新来源（空 lastSuccessAt 断言已在 M1-E3 覆盖种子态）
   const status = await stack.api('/api/v1/data-status')

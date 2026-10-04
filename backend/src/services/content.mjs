@@ -547,6 +547,10 @@ export class ContentService {
     const refs = await this.content.listContentReferences({
       contentType: 'LINEUP', contentId: row.id, publicOnly: true
     })
+    // §5.6 实战案例引用：scenarios/reviewCases 仅存 {id,title} 引用——
+    // 关联 scenarios 表补 kind 与「教学复盘（非真实对局演绎…）」声明（单一事实源），
+    // 引用处必须可见非真实对局属性，不复制声明文本
+    const practiceCases = await this.decoratePracticeCases(row.practice_cases)
     return {
       id: row.id,
       slug: row.slug,
@@ -568,7 +572,7 @@ export class ContentService {
         skillChains: row.skill_chains,
         positioning: row.positioning,
         substitutes: row.substitutes,
-        practiceCases: row.practice_cases
+        practiceCases
       },
       components: (comps.get(Number(row.revision_id)) || []).map(c => ({
         entityId: c.entityId, slug: c.entitySlug, displayName: c.entityName,
@@ -583,6 +587,34 @@ export class ContentService {
         revisionId: h.id, no: h.revision, status: h.review_status,
         publishedAt: h.published_at, supersededAt: h.superseded_at, createdBy: h.created_by
       }))
+    }
+  }
+
+  /**
+   * §5.6 实战案例引用装配：{id,title} 引用 → 关联已发布 scenarios 行，
+   * 附加 kind 与 disclaimer（initialState.label，含「教学复盘（非真实对局演绎…）」
+   * 声明）——引用处如实呈现非真实对局属性；引用缺失/未发布时 kind=null 如实呈现
+   */
+  async decoratePracticeCases(practiceCases) {
+    if (!practiceCases || typeof practiceCases !== 'object') return practiceCases
+    const refs = [...(practiceCases.scenarios || []), ...(practiceCases.reviewCases || [])]
+    const ids = refs.map(e => e && e.id).filter(Boolean)
+    const rows = ids.length ? await this.content.listPublishedScenarioRows({}) : []
+    const byId = new Map(rows.map(s => [s.id, s]))
+    const decorate = list => (list || []).map(e => {
+      const s = byId.get(e && e.id)
+      return {
+        ...e,
+        kind: s ? s.kind : null,
+        disclaimer: s && s.initial_state && typeof s.initial_state === 'object'
+          ? (s.initial_state.label ?? null)
+          : null
+      }
+    })
+    return {
+      ...practiceCases,
+      scenarios: decorate(practiceCases.scenarios),
+      reviewCases: decorate(practiceCases.reviewCases)
     }
   }
 
@@ -634,7 +666,13 @@ export class ContentService {
       contentType: 'LESSON', contentId: row.id, publicOnly: true
     })
     const scenarios = (await this.content.listPublishedScenarioRows({ lessonId: row.id }))
-      .map(s => ({ id: s.id, slug: s.slug, title: s.title, kind: s.kind }))
+      .map(s => ({
+        id: s.id, slug: s.slug, title: s.title, kind: s.kind,
+        // 「教学情境/教学复盘（非真实对局…）」声明随卡呈现（单一事实源 initialState.label）
+        disclaimer: s.initial_state && typeof s.initial_state === 'object'
+          ? (s.initial_state.label ?? null)
+          : null
+      }))
     return {
       id: row.id,
       slug: row.slug,

@@ -1,4 +1,4 @@
-// v6 M3-2..M3-5 · 内容构建脚本（可复跑：隔离开发库先演练，业务库 M5-1 授权后同脚本重放）
+// v6 M3-2..M3-5 + M4-2 · 内容构建脚本（可复跑：隔离开发库先演练，业务库 M5-1 授权后同脚本重放）
 //
 // 用法：
 //   node tools/content-build/build-v6-content.mjs [--db wanxiangqi_v6dev] [--recreate] [--skip-sync]
@@ -9,24 +9,38 @@
 //
 // 铁律：
 // 1. 幂等：已发布的根/修订跳过，不重复创建；引用按存在性去重。
-// 2. 机械化来源核查：全部 statementRaw（及官网棋手/装备等 RAW 事实）在去标签、
-//    折叠空白后必须能在 raw_materials 存证原文中命中子串——任一失配立即构建失败，
-//    不静默放行。
-// 3. 图片事实（三分登场流教学图）以 OFFICIAL_PAGE 引用原图 URL + sha256 指纹，
-//    facts 内标注「AI 辅助转写，以图原件为准」；冲突处理记录写入构建证据。
+// 2. 机械化来源核查（任一失配立即构建失败，不静默放行）：
+//    a. 词条/规则 statementRaw 按其声明的存证路由核查——默认官网新手指引页
+//       （去标签/折叠空白子串命中）；图腾→cards.js 原文子串；阿科米亚核心→
+//       英雄目录 JSON 解析后关键词定义变体唯一性断言（JSON 中文为 \uXXXX
+//       转义，原始字节子串核查不适用）。
+//    b. 卡牌数据两级指纹：data/<file> 本地字节 sha256 = 固定指纹（快照出处）；
+//       JSON 目标再对本地与存证双侧计算语义指纹（剥离官方轮换子树
+//       previewCards/sourceCards 与 skillList[].url 签名视频 URL——2026-10-04
+//       实测其随服务端轮换而卡牌实质数据零变化），双侧都等于 semanticSha256。
+//       目录实体 facts 由 data/*.json 在本进程内构建 ⇒ 语义一致即 facts 的
+//       全部取值域与存证一致（传递性核查，无需逐字段比对）。
+//    c. RAW 棋手/配对文案逐字核查：RAW:guide → 新手指引页；RAW:home → 首页。
+// 3. 图片事实（五套阵容教学图）以 OFFICIAL_PAGE 引用原图 URL + sha256 指纹
+//    （2026-10-03/04 本地下载计算并复验线上字节一致），facts 内标注
+//    「AI 辅助转写，以图原件为准」；冲突处理记录写入构建证据。
 // 4. 内容只经 ContentService 生命周期创建/发布（validatePublish 门槛全部走一遍），
-//    不绕过服务直写业务表。
+//    不绕过服务直写业务表；草稿阵容（材料不足）只登记缺口不发布。
 
 import fs from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { runMigrations } from '../../src/migrate.mjs'
 import { PgRepository } from '../../src/repositories/pg-repository.mjs'
 import { createServices } from '../../src/services/index.mjs'
 import { OFFICIAL_CONTENT_TARGETS } from '../../src/adapters/official-site.mjs'
 import { MECHANICS } from './corpus-mechanics.mjs'
-import { ALL_ENTITIES, IMAGE_REFS } from './corpus-entities.mjs'
-import { LINEUP } from './corpus-lineup.mjs'
+import { CARD_DATA_FILES, canonicalCardsSha256 } from './corpus-cards.mjs'
+import {
+  ALL_ENTITIES, IMAGE_REFS, RAW_GUIDE_STATEMENTS, RAW_HOME_STATEMENTS, IMG_FACT_STATS
+} from './corpus-entities.mjs'
+import { PUBLISHABLE_LINEUPS, DRAFT_LINEUPS } from './corpus-lineup.mjs'
 import { LESSONS, SCENARIOS } from './corpus-lessons.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -42,6 +56,43 @@ const CONTENT_TYPE_LABELS = {
   lineups: 'LINEUP',
   lessons: 'LESSON',
   scenarios: 'SCENARIO'
+}
+
+// 目录实体 kind → 卡牌存证 recordKey（facts 传递性核查的引用落点）
+const CATALOG_REF_BY_KIND = {
+  HERO: 'official:cards:heroes',
+  EQUIPMENT: 'official:cards:equips',
+  TALENT: 'official:cards:talents',
+  EFFECT_CARD: 'official:cards:effects'
+}
+
+// IMG 棋手的推荐事实出现在哪些官方教学图（图文详解）——引用按图逐张登记
+const CMD_IMG_REFS = {
+  'cmd-changxiaoer': ['IMG_2', 'IMG_2_3', 'IMG_3_3', 'IMG_4_3'], // 三分/日落海/大河/河洛
+  'cmd-naonao': ['IMG_2_3', 'IMG_4_3', 'IMG_5_3'], // 日落海/河洛/逐鹿
+  'cmd-jiangdao': ['IMG_4_3'], // 河洛
+  'cmd-make': ['IMG_2'] // 三分
+}
+
+// 课程正文深度依赖某张官方教学图的，加挂图引用（键=课程 slug）
+const LESSON_IMG_REFS = {
+  'e-first-lineup': 'IMG_2', // 三分登场流四阶段全流程
+  'e2-ribe-full-run': 'IMG_2_3' // 日落海整备流四阶段全流程
+}
+
+// 情境/复盘案例分支依据的官方教学图（键=情境 id；竞拍情境走 guide RAW 存证特例）
+const SCENARIO_IMG_REFS = {
+  'scn-early-no-sunshangxiang': 'IMG_2',
+  'scn-sanfen-no-lvbu': 'IMG_2',
+  'scn-final-circle-substitute': 'IMG_2', // 决赛圈替补机制出自三分官方实战技巧
+  'rvw-sanfen-inherit-success': 'IMG_2',
+  'scn-riluohai-surround-angela': 'IMG_2_3',
+  'rvw-ribe-keep-two-success': 'IMG_2_3',
+  'scn-dahe-equip-handoff': 'IMG_3_3',
+  'scn-heluo-gubi-focus': 'IMG_4_3',
+  'rvw-heluo-scatter-failure': 'IMG_4_3',
+  'scn-zhulu-mengkai-equipment-max': 'IMG_5_3',
+  'rvw-zhulu-eq-not-max-failure': 'IMG_5_3'
 }
 
 // ---------------- CLI ----------------
@@ -73,11 +124,22 @@ if (DB_NAME === BUSINESS_DB) {
   }
 }
 
-// ---------------- 官图指纹（2026-10-03 本地下载计算，人工可按 URL 复算） ----------------
+// ---------------- 官图指纹（2026-10-03/04 本地下载计算并复验线上字节一致，人工可按 URL 复算） ----------------
 const IMAGE_SHA256 = {
   [IMAGE_REFS.IMG_1]: '908537ba910b57eec5f6dfe80ae9e552b7d391e2c289271f4e03d4aa41969c65',
-  [IMAGE_REFS.IMG_2]: '00700089ed71073179119787c68a66b78d87aba77e536aa47b99e823c2f09fdc'
+  [IMAGE_REFS.IMG_2]: '00700089ed71073179119787c68a66b78d87aba77e536aa47b99e823c2f09fdc',
+  [IMAGE_REFS.IMG_2_2]: 'a6616db5ea2a6cdb80fd69c9ef98fb8c6055e4b337db8a031b4f4c2a5dceb287',
+  [IMAGE_REFS.IMG_2_3]: '078a652504179e7fa83ed43eecf6baff9c01becb244dae65dfc72d86c4a301a8',
+  [IMAGE_REFS.IMG_3_2]: 'a0944b1e80bc5cb1b4f1d2b345d25471cb1929060dc6269edd73afd37f8c435a',
+  [IMAGE_REFS.IMG_3_3]: '617e25efdddfa0e8dabd0881ec74876e9867fd536a8a9cde42868842e68a35fc',
+  [IMAGE_REFS.IMG_4_2]: '8db3101a58d4a817ebb688e7d3176633ff1c6e09af989c9f54f4a3b5aabc7ce7',
+  [IMAGE_REFS.IMG_4_3]: 'c65360e0c190d078ddf94761c91756f2442b38e02ee25490182cbabe593ecfc2',
+  [IMAGE_REFS.IMG_5_2]: '991076c9dc9bd062f7204b25c46c3213a739de79b14d926f6aadf88e40487804',
+  [IMAGE_REFS.IMG_5_3]: '7eb881ac977684efadffec3c9ae2f8b318e5b9ede2c884953045decb1de244e5'
 }
+
+// 英雄目录里以关键词定义核查的词条名（唯一一个走 cards:heroes 路由的词条）
+const AKEMIYA_KW = '阿科米亚核心'
 
 // ---------------- 引导：建库 + 迁移 + 服务 ----------------
 async function loadPoolClass() {
@@ -182,7 +244,111 @@ function verifyStatements(corpus, normalizedSource, label) {
   return failures
 }
 
+/**
+ * 词条/规则按声明的存证路由核查（§铁律 2a）。
+ * 返回 { checked, failures }；cards:heroes 路由额外做关键词定义变体唯一性断言。
+ */
+function verifyMechanicsRouted({ guideNorm, cardsJsNorm, heroesJson }) {
+  const failures = []
+  let checked = 0
+  let routed = { guide: 0, cardsJs: 0, cardsHeroes: 0 }
+  for (const m of MECHANICS) {
+    checked++
+    if (!m.verifyAgainst) {
+      routed.guide++
+      if (!guideNorm.includes(normalizeText(m.statementRaw))) {
+        failures.push({ label: 'mechanics:guide', statement: m.statementRaw })
+      }
+    } else if (m.verifyAgainst === 'official:cards:js') {
+      routed.cardsJs++
+      if (!cardsJsNorm.includes(normalizeText(m.statementRaw))) {
+        failures.push({ label: 'mechanics:cards:js', statement: m.statementRaw })
+      }
+    } else if (m.verifyAgainst === 'official:cards:heroes') {
+      routed.cardsHeroes++
+      // JSON 中文为 \uXXXX 转义：解析后收集该关键词的全部定义变体
+      const variants = new Set()
+      let carriers = 0
+      for (const card of heroesJson.heroCards || []) {
+        for (const k of card.heroCard?.keywordDescription || []) {
+          if (k.name === AKEMIYA_KW) {
+            carriers++
+            variants.add(normalizeText(k.desc))
+          }
+        }
+      }
+      const wanted = normalizeText(m.statementRaw)
+      if (carriers === 0 || variants.size !== 1 || !variants.has(wanted)) {
+        failures.push({
+          label: 'mechanics:cards:heroes',
+          statement: m.statementRaw,
+          detail: `载体英雄数=${carriers} 变体数=${variants.size}（应：载体≥1 且变体恰 1 且与 statementRaw 逐字一致）`
+        })
+      }
+    } else {
+      failures.push({ label: 'mechanics:routing', statement: `未知的存证路由 ${m.verifyAgainst}（${m.id}）` })
+    }
+  }
+  return { checked, failures, routed }
+}
+
+/**
+ * 卡牌数据三方指纹核查（§铁律 2b，两级）：
+ * - 字节级：本地 data 文件 sha256 = 固定指纹（快照出处锚定，永不变）
+ * - 语义级（JSON 目标）：剥离官方轮换子树（previewCards/sourceCards 展示区、
+ *   skillList[].url 签名视频 URL——2026-10-04 发现其随服务端轮换，但实质
+ *   卡牌数据零变化）后，本地与存证的规范化 sha256 都必须等于 semanticSha256
+ *   ——实质数据变化仍立即失败；轮换子树原件完整保留在 raw_materials 存证中。
+ * - cards.js 为静态文件：字节级锁定（存证 sha256 = 固定指纹）。
+ */
+function verifyCardDataPins(materials) {
+  const failures = []
+  for (const def of CARD_DATA_FILES) {
+    const fileBytes = fs.readFileSync(path.join(__dirname, 'data', def.file))
+    const localSha = crypto.createHash('sha256').update(fileBytes).digest('hex')
+    if (localSha !== def.sha256) {
+      failures.push({
+        label: `cards-pin:${def.file}`,
+        statement: `本地 sha256=${localSha.slice(0, 16)}… ≠ 固定指纹 ${def.sha256.slice(0, 16)}…（data 文件被改动）`
+      })
+    }
+    const mat = materials.get(def.recordKey)
+    if (!mat) {
+      failures.push({ label: `cards-material:${def.recordKey}`, statement: '库内无该存证' })
+      continue
+    }
+    if (def.semanticSha256) {
+      let localSemantic = null
+      let storedSemantic = null
+      try {
+        localSemantic = canonicalCardsSha256(JSON.parse(fileBytes.toString('utf8')))
+        storedSemantic = canonicalCardsSha256(JSON.parse(mat.content))
+      } catch (e) {
+        failures.push({
+          label: `cards-semantic:${def.recordKey}`,
+          statement: `JSON 解析失败（内容结构变化需人工复核）：${e.message}`
+        })
+        continue
+      }
+      if (localSemantic !== def.semanticSha256 || storedSemantic !== def.semanticSha256) {
+        failures.push({
+          label: `cards-semantic:${def.recordKey}`,
+          statement: `语义指纹不一致：本地 ${localSemantic.slice(0, 16)}… / 存证 ${storedSemantic.slice(0, 16)}… ≠ 固定 ${def.semanticSha256.slice(0, 16)}…（卡牌实质数据变化，需人工复核后更新 data 文件与两级指纹）`
+        })
+      }
+    } else if (mat.content_sha256 !== def.sha256) {
+      failures.push({
+        label: `cards-material:${def.recordKey}`,
+        statement: `存证 sha256=${String(mat.content_sha256).slice(0, 16)}… ≠ 固定指纹 ${def.sha256.slice(0, 16)}…（静态文件字节变化，需人工复核）`
+      })
+    }
+  }
+  return failures
+}
+
 // ---------------- 幂等写入助手 ----------------
+let referencesAdded = 0
+
 async function publishedRevisionId(pool, revTable, revFk, rootId) {
   const res = await pool.query(
     `SELECT id FROM ${revTable} WHERE ${revFk} = $1 AND review_status = 'PUBLISHED' AND superseded_at IS NULL LIMIT 1`,
@@ -206,6 +372,7 @@ async function ensureReference(services, pool, { contentType, contentId, refKind
   if (res.rows.length) return { added: false }
   await services.content.addReference(
     { contentType, contentId, revisionId: null, refKind, refLocator, usageScope, licenseNote }, OPERATOR)
+  referencesAdded++
   return { added: true }
 }
 
@@ -218,7 +385,7 @@ async function publishOnce(services, pool, typeName, rootId, revTable, revFk, pa
   for (const ref of references) {
     await ensureReference(services, pool, { contentType: typeLabel, contentId: rootId, ...ref })
   }
-  const published = await services.content.publishRevision(typeName, rev.id, { operator: OPERATOR, reason: 'M3 内容构建（来源核查通过后发布）' })
+  const published = await services.content.publishRevision(typeName, rev.id, { operator: OPERATOR, reason: 'M4-2 内容构建（来源核查通过后发布）' })
   return { revisionId: published.id, published: true, skipped: false }
 }
 
@@ -228,11 +395,11 @@ async function main() {
   const { pool, repo, services } = await bootstrap()
   const report = {
     testedAt: startedAt, db: DB_NAME, operator: OPERATOR,
-    materials: [], verification: { checked: 0, failures: [] },
+    materials: [], verification: { checked: 0, failures: [], details: {} },
     version: null, patchNote: null,
     created: { mechanics: 0, entities: 0, lineups: 0, lessons: 0, scenarios: 0 },
     skipped: { mechanics: 0, entities: 0, lineups: 0, lessons: 0, scenarios: 0 },
-    referencesAdded: 0, conflictLog: [], publicRead: null, errors: []
+    referencesAdded: 0, conflictLog: [], draftLineups: [], publicRead: null, errors: []
   }
 
   try {
@@ -255,8 +422,17 @@ async function main() {
       report.materials.push({ recordKey: t.recordKey, rawMaterialId: String(m.id), sha256: m.content_sha256, fetchedAt: m.fetched_at })
     }
     const guide = materials.get('official:newbie-guide')
+    const home = materials.get('official:home')
     const news = materials.get('official:news:18873181')
     const guideNorm = normalizeText(guide.content)
+    const homeNorm = normalizeText(home.content)
+    const cardsJsNorm = normalizeText(materials.get('official:cards:js').content)
+    let heroesJson = null
+    try {
+      heroesJson = JSON.parse(materials.get('official:cards:heroes').content)
+    } catch (e) {
+      throw new Error(`英雄目录存证 JSON 解析失败（内容变化需人工复核）：${e.message}`)
+    }
 
     // 2) 版本登记与激活（v1.1.14：官网资讯标题明示）
     const newsJson = parseNewsJsonp(news.content)
@@ -271,14 +447,14 @@ async function main() {
     const VERSION_ID = 'v1.1.14'
     await services.content.createVersion({
       versionId: VERSION_ID,
-      officialBasis: `官网资讯《${newsTitle}》（apps.game.qq.com 资讯接口 id=18873181，发布时间 ${newsJson.publishedAt || '未解析'}，原文已存证 official:news:18873181；正文载明更新时段 9月21日6:00-8:00 不停机更新）；官网新手指引页（official:newbie-guide，页面标题含「万象启航入门指南」）为本批教学内容的第一方依据`,
+      officialBasis: `官网资讯《${newsTitle}》（apps.game.qq.com 资讯接口 id=18873181，发布时间 ${newsJson.publishedAt || '未解析'}，原文已存证 official:news:18873181；正文载明更新时段 9月21日6:00-8:00 不停机更新）；官网新手指引页（official:newbie-guide，页面标题含「万象启航入门指南」）与卡牌图鉴五份目录存证（official:cards:*）为本批教学内容的第一方依据`,
       effectiveAt: '2026-09-21T06:00:00+08:00',
-      note: 'S1 赛季官网新手指引配套版本（官网页「入门阵容教学」）'
+      note: 'S1 赛季官网新手指引 + 卡牌图鉴配套版本（五套入门阵容教学 + 目录实体）'
     }, OPERATOR)
     const current = await services.content.listVersions()
     const isCurrent = current.some(v => v.versionId === VERSION_ID && v.status === 'CURRENT')
     if (!isCurrent) {
-      const act = await services.content.activateVersion(VERSION_ID, { operator: OPERATOR, note: 'M3 内容构建：激活当前版本基准' })
+      const act = await services.content.activateVersion(VERSION_ID, { operator: OPERATOR, note: 'M4-2 内容构建：激活当前版本基准' })
       report.version = { versionId: VERSION_ID, previousVersionId: act.previousVersionId, markedCount: act.markedCount }
     } else {
       report.version = { versionId: VERSION_ID, alreadyCurrent: true }
@@ -309,109 +485,152 @@ async function main() {
 
     // 4) 机械化来源核查（构建失败式：任何失配都不进入写入）
     const failures = []
-    failures.push(...verifyStatements(MECHANICS.map(m => m.statementRaw), guideNorm, 'mechanics'))
-    const rawEntityFacts = []
-    for (const e of ALL_ENTITIES.filter(e => e.source === 'RAW')) {
-      if (e.facts.tagline) rawEntityFacts.push(e.facts.tagline)
-      if (e.facts.skill?.text) rawEntityFacts.push(e.facts.skill.text)
-      for (const s of e.facts.secretProgression || []) rawEntityFacts.push(s.text)
+    const mechCheck = verifyMechanicsRouted({ guideNorm, cardsJsNorm, heroesJson })
+    failures.push(...mechCheck.failures)
+    failures.push(...verifyCardDataPins(materials))
+    const rawGuideFail = verifyStatements(RAW_GUIDE_STATEMENTS, guideNorm, 'raw:guide')
+    const rawHomeFail = verifyStatements(RAW_HOME_STATEMENTS, homeNorm, 'raw:home')
+    failures.push(...rawGuideFail, ...rawHomeFail)
+    report.verification.checked =
+      mechCheck.checked + CARD_DATA_FILES.length + RAW_GUIDE_STATEMENTS.length + RAW_HOME_STATEMENTS.length
+    report.verification.details = {
+      mechanicsRouting: mechCheck.routed, // { guide, cardsJs, cardsHeroes }
+      cardDataPins: CARD_DATA_FILES.map(d => d.recordKey),
+      cardDataPinPolicy: 'JSON 目标=字节指纹（快照出处）+语义指纹（剥离轮换子树，本地与存证双侧断言）；cards.js=纯字节锁定',
+      rawGuideStatements: RAW_GUIDE_STATEMENTS.length,
+      rawHomeStatements: RAW_HOME_STATEMENTS.length,
+      catalogFactsTransitive:
+        '目录实体 facts 由 data/*.json 在本进程内构建；语义指纹双侧一致（本地文件=存证=固定 semanticSha256，剥离的轮换子树不含任何 facts 取值域字段）⇒ facts 与存证一致（传递性核查，无需逐字段比对）',
+      imgFacts: IMG_FACT_STATS // 转写事实以图原件 URL+sha256 引用，不做存证子串核查
     }
-    failures.push(...verifyStatements(rawEntityFacts, guideNorm, 'entities(RAW)'))
-    failures.push(...verifyStatements(['三分登场流', '吕布', '安琪拉', '敖隐', '百里玄策', '蒙犽'], guideNorm, 'lineup-announcement'))
-    report.verification.checked = MECHANICS.length + rawEntityFacts.length + 6
     if (failures.length) {
       report.verification.failures = failures
       throw new Error(`来源核查失败 ${failures.length} 条（详见构建证据）：\n` +
-        failures.map(f => `  [${f.label}] ${f.statement.slice(0, 60)}…`).join('\n'))
+        failures.map(f => `  [${f.label}] ${f.statement.slice(0, 60)}…${f.detail ? '（' + f.detail + '）' : ''}`).join('\n'))
     }
-    console.log(`[build] 来源核查通过：${report.verification.checked} 条陈述全部命中存证原文`)
+    console.log(`[build] 来源核查通过：${report.verification.checked} 项（词条路由/三方指纹/RAW 逐字）`)
 
-    // 5) 规则条目（36）
+    // 5) 词条与规则条目（38）
     for (const m of MECHANICS) {
       const { root } = await ensureRoot(services, pool, 'mechanics', { id: m.id, slug: m.slug, title: m.title })
+      const ref = !m.verifyAgainst
+        ? { refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引原文存证（statementRaw 未改写）' }
+        : m.verifyAgainst === 'official:cards:js'
+          ? { refKind: 'RAW_MATERIAL', refLocator: String(materials.get('official:cards:js').id), usageScope: 'PUBLIC', licenseNote: '官方卡牌图鉴专题站 cards.js 原文存证（关键词官方定义，statementRaw 未改写）' }
+          : { refKind: 'RAW_MATERIAL', refLocator: String(materials.get('official:cards:heroes').id), usageScope: 'PUBLIC', licenseNote: '官方卡牌目录英雄接口原文存证（关键词定义变体唯一性已断言）' }
       const r = await publishOnce(services, pool, 'mechanics', root.id,
         'mechanic_revisions', 'mechanic_id',
         { gameVersionId: VERSION_ID, statementRaw: m.statementRaw, params: m.params, appliesTo: m.appliesTo },
-        [{ refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引原文存证（statementRaw 未改写）' }])
+        [ref])
       r.skipped ? report.skipped.mechanics++ : report.created.mechanics++
     }
 
-    // 6) 资料实体（26）
+    // 6) 资料实体（525 = 目录 514 + 棋手 11）
     for (const e of ALL_ENTITIES) {
       const { root } = await ensureRoot(services, pool, 'catalog-entities',
         { id: e.id, slug: e.slug, kind: e.kind, displayName: e.displayName })
-      const refs = e.source === 'RAW'
-        ? [{ refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引「棋手推荐/入门阵容」原文存证' }]
-        : [{ refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS.IMG_2, usageScope: 'PUBLIC', licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[IMAGE_REFS.IMG_2]}；事实为 AI 辅助转写，以图原件为准` }]
+      let refs
+      if (e.source === 'RAW:guide') {
+        refs = [{ refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引「棋手推荐」原文存证（statement 未改写）' }]
+      } else if (e.source === 'RAW:home') {
+        refs = [{ refKind: 'RAW_MATERIAL', refLocator: String(home.id), usageScope: 'PUBLIC', licenseNote: '官网首页「棋手推荐」栏原文存证（statement 未改写）' }]
+      } else if (e.source === 'IMG') {
+        const imgKeys = CMD_IMG_REFS[e.id]
+        if (!imgKeys) throw new Error(`IMG 棋手 ${e.id} 未登记教学图引用映射（构建脚本需显式登记）`)
+        refs = imgKeys.map(key => ({
+          refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS[key], usageScope: 'PUBLIC',
+          licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[IMAGE_REFS[key]]}；事实为 AI 辅助转写，以图原件为准`
+        }))
+      } else {
+        const recordKey = CATALOG_REF_BY_KIND[e.kind]
+        if (!recordKey) throw new Error(`目录实体 ${e.id}（kind=${e.kind}）无卡牌存证路由`)
+        refs = [{
+          refKind: 'RAW_MATERIAL', refLocator: String(materials.get(recordKey).id), usageScope: 'PUBLIC',
+          licenseNote: '官方卡牌图鉴接口原文存证（facts 逐字段来自存证 JSON：data 文件 sha256 = 固定指纹 = 存证 sha256，三方一致）'
+        }]
+      }
       const r = await publishOnce(services, pool, 'catalog-entities', root.id,
         'catalog_entity_revisions', 'entity_id',
         { gameVersionId: VERSION_ID, facts: e.facts }, refs)
       r.skipped ? report.skipped.entities++ : report.created.entities++
     }
 
-    // 7) 阵容手册（三分登场流，§5.1–5.6 全字段）
-    {
+    // 7) 阵容手册（5 套全量发布；材料不足的草稿只登记缺口不发布）
+    const heroByName = new Map(ALL_ENTITIES.filter(e => e.kind === 'HERO').map(e => [e.displayName, e]))
+    for (const lu of PUBLISHABLE_LINEUPS) {
       const { root } = await ensureRoot(services, pool, 'lineups', {
-        id: LINEUP.id, slug: LINEUP.slug, displayName: LINEUP.displayName, oneLineSummary: LINEUP.oneLineSummary
+        id: lu.id, slug: lu.slug, displayName: lu.displayName, oneLineSummary: lu.oneLineSummary
       })
       const existingPub = await publishedRevisionId(pool, 'lineup_revisions', 'lineup_id', root.id)
       if (!existingPub) {
         const rev = await services.content.createRevision('lineups', root.id, {
           gameVersionId: VERSION_ID,
-          commanderEntityId: LINEUP.commanderEntityId,
-          difficulty: LINEUP.difficulty,
-          newbieFitRationale: LINEUP.newbieFitRationale,
-          playConditions: LINEUP.sections.playConditions,
-          structureLevels: LINEUP.sections.structureLevels,
-          stages: LINEUP.sections.stages,
-          stabilization: LINEUP.sections.stabilization,
-          skillChains: LINEUP.sections.skillChains,
-          positioning: LINEUP.sections.positioning,
-          substitutes: LINEUP.sections.substitutes,
-          practiceCases: LINEUP.sections.practiceCases,
-          components: LINEUP.components.map(c => ({
+          commanderEntityId: lu.commanderEntityId,
+          difficulty: lu.difficulty,
+          newbieFitRationale: lu.newbieFitRationale,
+          playConditions: lu.sections.playConditions,
+          structureLevels: lu.sections.structureLevels,
+          stages: lu.sections.stages,
+          stabilization: lu.sections.stabilization,
+          skillChains: lu.sections.skillChains,
+          positioning: lu.sections.positioning,
+          substitutes: lu.sections.substitutes,
+          practiceCases: lu.sections.practiceCases,
+          components: lu.components.map(c => ({
             entityId: c.entityId, role: c.role, necessity: c.necessity, notes: c.notes
           }))
         }, OPERATOR)
         // 替补关系显式化：构成行已落库（自引用 FK 不允许删了重插——序列会换 id），
-        // 按实体定向 UPDATE 把 substitute_for 指向本修订内的真实行
-        for (const c of LINEUP.components) {
-          const targets = c.notes?.substituteFor || []
-          if (!targets.length) continue
+        // 按 notes.substituteForNames 解析实体后定向 UPDATE 指向本修订内的真实行
+        for (const c of lu.components) {
+          const names = c.notes?.substituteForNames || []
+          if (!names.length) continue
+          const target = heroByName.get(names[0])
+          if (!target) throw new Error(`替补关系解析失败：${c.entityId} 的替补目标「${names[0]}」未唯一命中英雄实体`)
           const upd = await pool.query(`
             UPDATE lineup_components sub
             SET substitute_for = tgt.id
             FROM lineup_components tgt
             WHERE sub.lineup_revision_id = $1 AND sub.entity_id = $2
               AND tgt.lineup_revision_id = $1 AND tgt.entity_id = $3`,
-            [rev.id, c.entityId, targets[0]])
+            [rev.id, c.entityId, target.id])
           if (upd.rowCount === 0) {
-            throw new Error(`替补关系建立失败：${c.entityId} → ${targets[0]}`)
+            throw new Error(`替补关系建立失败：${c.entityId} → ${target.id}（${names[0]}）`)
           }
         }
+        // 引用：一图速览（由图文详解 URL 推导 guide_N_3 → guide_N_2）+ 图文详解 + 官网 RAW
+        const detailImg = lu.sections.positioning.officialBoard.guideImage
+        const quickImg = detailImg.replace(/_3\.jpg$/, '_2.jpg')
+        if (quickImg === detailImg || !IMAGE_SHA256[quickImg] || !IMAGE_SHA256[detailImg]) {
+          throw new Error(`阵容 ${lu.id} 教学图 URL 无法解析或未登记指纹：detail=${detailImg} quick=${quickImg}`)
+        }
         for (const ref of [
-          { refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS.IMG_1, usageScope: 'PUBLIC', licenseNote: `官方教学图（一图速览）sha256=${IMAGE_SHA256[IMAGE_REFS.IMG_1]}；事实为 AI 辅助转写，以图原件为准` },
-          { refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS.IMG_2, usageScope: 'PUBLIC', licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[IMAGE_REFS.IMG_2]}；事实为 AI 辅助转写，以图原件为准` },
+          { refKind: 'OFFICIAL_PAGE', refLocator: quickImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（一图速览）sha256=${IMAGE_SHA256[quickImg]}；事实为 AI 辅助转写，以图原件为准` },
+          { refKind: 'OFFICIAL_PAGE', refLocator: detailImg, usageScope: 'PUBLIC', licenseNote: `官方教学图（图文详解）sha256=${IMAGE_SHA256[detailImg]}；事实为 AI 辅助转写，以图原件为准` },
           { refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '官网新手指引「入门阵容」明示阵容名与核心英雄' }
         ]) {
-          const r = await ensureReference(services, pool, { contentType: 'LINEUP', contentId: root.id, ...ref })
-          if (r.added) report.referencesAdded++
+          await ensureReference(services, pool, { contentType: 'LINEUP', contentId: root.id, ...ref })
         }
-        await services.content.publishRevision('lineups', rev.id, { operator: OPERATOR, reason: 'M3-3 第一套阵容手册（官方教学图+官网存证）' })
+        await services.content.publishRevision('lineups', rev.id, { operator: OPERATOR, reason: 'M4-2 阵容手册（官方教学图+官网存证，§5.1–5.6 全字段）' })
         report.created.lineups++
       } else {
         report.skipped.lineups++
       }
     }
+    // 草稿阵容：如实登记缺口，不创建不发布（不生成无依据攻略）
+    report.draftLineups = DRAFT_LINEUPS.map(l => ({
+      id: l.id, displayName: l.displayName, status: l.status, gaps: l.draftGaps
+    }))
 
-    // 8) 课程 A–F（含先修依赖）
+    // 8) 课程 A–F + 进阶课（含先修依赖）
     for (const l of LESSONS) {
       const { root } = await ensureRoot(services, pool, 'lessons', {
         id: l.id, slug: l.slug, title: l.title, stage: l.stage, sortOrder: l.sortOrder
       })
       const refs = [{ refKind: 'RAW_MATERIAL', refLocator: String(guide.id), usageScope: 'PUBLIC', licenseNote: '课程引用的规则事实以官网新手指引存证为准' }]
-      if (l.slug === 'e-first-lineup') {
-        refs.push({ refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS.IMG_2, usageScope: 'PUBLIC', licenseNote: `三分登场流阶段教学（官方图文详解）sha256=${IMAGE_SHA256[IMAGE_REFS.IMG_2]}` })
+      const imgKey = LESSON_IMG_REFS[l.slug]
+      if (imgKey) {
+        refs.push({ refKind: 'OFFICIAL_PAGE', refLocator: IMAGE_REFS[imgKey], usageScope: 'PUBLIC', licenseNote: `全流程教学依据官方教学图（图文详解）sha256=${IMAGE_SHA256[IMAGE_REFS[imgKey]]}；事实为 AI 辅助转写，以图原件为准` })
       }
       const r = await publishOnce(services, pool, 'lessons', root.id,
         'lesson_revisions', 'lesson_id',
@@ -421,7 +640,7 @@ async function main() {
       r.skipped ? report.skipped.lessons++ : report.created.lessons++
     }
 
-    // 9) 教学情境（3）
+    // 9) 教学情境 + 教学复盘（12）
     for (const s of SCENARIOS) {
       const existing = await services.content.getContent('scenarios', s.id)
       if (!existing) {
@@ -433,19 +652,22 @@ async function main() {
       }
       const root = await services.content.getContent('scenarios', s.id)
       if (root.status !== 'PUBLISHED') {
-        const isAuction = s.slug === 'auction-bid-or-pass'
-        await ensureReference(services, pool, isAuction
-          ? {
-              contentType: 'SCENARIO', contentId: s.id, refKind: 'RAW_MATERIAL',
-              refLocator: String(guide.id), usageScope: 'PUBLIC',
-              licenseNote: '竞拍规则四条以官网新手指引存证为唯一依据'
-            }
-          : {
-              contentType: 'SCENARIO', contentId: s.id, refKind: 'OFFICIAL_PAGE',
-              refLocator: IMAGE_REFS.IMG_2, usageScope: 'PUBLIC',
-              licenseNote: `情境分支依据官方教学图（sha256=${IMAGE_SHA256[IMAGE_REFS.IMG_2]}）与官网规则存证`
-            })
-        await services.content.publishScenario(s.id, { operator: OPERATOR, reason: 'M3-4 教学情境（官方出处登记）' })
+        if (s.slug === 'auction-bid-or-pass') {
+          await ensureReference(services, pool, {
+            contentType: 'SCENARIO', contentId: s.id, refKind: 'RAW_MATERIAL',
+            refLocator: String(guide.id), usageScope: 'PUBLIC',
+            licenseNote: '竞拍规则四条以官网新手指引存证为唯一依据'
+          })
+        } else {
+          const imgKey = SCENARIO_IMG_REFS[s.id]
+          if (!imgKey) throw new Error(`情境 ${s.id}（${s.kind}）未登记引用图映射（构建脚本需显式登记，不默认套用）`)
+          await ensureReference(services, pool, {
+            contentType: 'SCENARIO', contentId: s.id, refKind: 'OFFICIAL_PAGE',
+            refLocator: IMAGE_REFS[imgKey], usageScope: 'PUBLIC',
+            licenseNote: `情境/复盘分支依据官方教学图（sha256=${IMAGE_SHA256[IMAGE_REFS[imgKey]]}）与官网规则存证；复盘案例为机制推演，非真实对局`
+          })
+        }
+        await services.content.publishScenario(s.id, { operator: OPERATOR, reason: 'M4-2 教学情境/复盘案例（官方出处登记）' })
         report.created.scenarios++
       } else {
         report.skipped.scenarios++
@@ -465,11 +687,70 @@ async function main() {
       },
       {
         topic: '天赋「挂帅上阵」效果转写',
+        readings: ['两轮提取在「等级等同最近1名三分英雄」的表述细节上略有差异'],
+        resolution: '按最优读数录入 guideEffectText 并标注「两轮图面提取在表述细节上略有差异，以图原件为准」；实体 facts.caliberNote 同步登记。',
+        affectedContent: ['tal-636316']
+      },
+      {
+        topic: 'cards.js「合成」词条 mark 文案与其「凯旋」完全相同',
         readings: [
-          '两轮提取在「等级等同最近1名三分英雄」的表述细节上略有差异'
+          'cards.js 关键词清单：合成 mark = 凯旋 mark =「英雄上阵期间若战斗胜利，触发效果。」',
+          '新手指引页词典：合成 =「使用场上已存在的英雄牌，与场上英雄结合，使其强化。」'
         ],
-        resolution: '按最优读数录入并标注「两轮提取略有差异，以官方图原件为准」；实体 facts.verificationNote 同步登记。',
-        affectedContent: ['tal-guashuishangzhen']
+        resolution: '两个官方来源对「合成」给出不同定义；按较新来源（新手指引页）维持 kw-hecheng 的 statementRaw，cards.js 该 mark 疑似官方页面配置错误，不采信、不删除登记。图腾词条（指引页词典未收录）仍以 cards.js 为准。',
+        affectedContent: ['kw-hecheng', 'kw-tuteng']
+      },
+      {
+        topic: '教学图效果牌/天赋为简化表述，卡牌目录已公布精确文本',
+        readings: [
+          '教学图（图文详解）：远洋宝藏「提供阵营专属装备」、复印机「复制场上英雄」、智能装甲「随机获得1件日落海专属装备」等',
+          '卡牌目录 effectText：逐字段精确数值/条件（如大河新援「获得2能量，以及随机1张2-3阶【大河流域】英雄牌」）'
+        ],
+        resolution: '双源并存时以卡牌目录 effectText 为权威（第一方数据接口，三方 sha256 锁定）；教学图简化文案仅作为推荐理由引用，实体 facts.caliberNote 逐条登记差异。',
+        affectedContent: ['tal-636117', 'tal-623002', 'tal-635031', 'tal-636417', 'tal-636403', 'effcard-7529']
+      },
+      {
+        topic: '教学图装备短名 → 官方目录全名归一',
+        readings: [
+          '图示短名：炽热/无尽/近卫/法源/不死鸟/霸者/御灵/不详',
+          '官方目录全名：炽热支配者/无尽巨剑/近卫荣耀/法源之杯/不死鸟之眼/霸者重铠/御灵之纱/不祥征兆'
+        ],
+        resolution: '短名按前缀在装备目录唯一命中即归一（炽热→炽热支配者等 7 项，机械可验证）；「御灵」为御灵之纱前缀缩写、「不详→不祥征兆」为近音异形（目录唯一近似防御装+坦克佩戴定位）——后两项属编辑归一化推断，caliberNote 如实标注推断性质。',
+        affectedContent: ['equip-643805', 'equip-643601', '装备推荐各条 lineupEquip 标注（图示短名：X）']
+      },
+      {
+        topic: '「阿科米亚之子」（装备）与「阿科米亚核心」（词条）概念区分',
+        readings: [
+          '装备实体 阿科米亚之子（equip-644117，卡牌目录）',
+          '关键词词条 阿科米亚核心（英雄目录关键词定义：等级平均分配给【日落海】英雄）'
+        ],
+        resolution: '两者是不同概念（装备实体 vs 核心等级分配机制），并存登记不互相冒充；装备实体 facts.caliberNote 显式提示区分，避免读者混淆。',
+        affectedContent: ['equip-644117', 'kw-akemiya-core']
+      },
+      {
+        topic: '官方卡牌 JSON 接口内嵌轮换内容（字节不稳定）',
+        readings: [
+          '2026-10-03 存证（= data/ 快照）与 2026-10-04 新抓取的字节 sha256 不一致（heroes/effects/talents 三个目标）',
+          '连续两次抓取同一目标字节一致（接口本身稳定）；逐字段比对：85 英雄/98 效果牌/73 装备/258 天赋全部卡片的实质字段（名称/品阶/效果原文/关键词/技能文本/属性/费用/觉醒/获取）零变化',
+          '差异仅两类：heroCard.skillList[].url 为技能视频签名 URL（video2.osgame.qq.com/<签名>/<过期hex>/…，随服务端重发轮换）；previewCards/sourceCards 为官方预告卡/来源卡展示区（内容随运营轮换）'
+        ],
+        resolution: '两级指纹：字节 sha256 保留为 data 快照的出处锚定；新增语义指纹（剥离上述轮换子树后按键序规范化序列化的 sha256）对本地与存证双侧断言相等——轮换内容不参与比对但原件完整保留在 raw_materials 存证中（可独立复核），卡牌实质数据任何变化仍立即构建失败。',
+        affectedContent: ['corpus-cards.mjs CARD_DATA_FILES（semanticSha256）', '本构建脚本 verifyCardDataPins', '本构建证据']
+      },
+      {
+        topic: '「瑶」同名：英雄目录实体 vs 棋手',
+        readings: [
+          '英雄目录：瑶（hero-5051，大河图腾流成员）',
+          '官网首页棋手推荐栏：瑶妹（RAW:home，技能「可爱小鹿」，与官网新手指引「瑶」技能文本逐字一致）'
+        ],
+        resolution: '两者为不同实体（英雄牌 vs 棋手），ID 体系天然隔离（hero- vs cmd-）；棋手实体 facts.aliasNote 登记「官网首页以瑶妹呈现（同一棋手）」，名称检索各自命中。',
+        affectedContent: ['hero-5051', 'cmd-yao']
+      },
+      {
+        topic: '嫦娥四人队：官网仅一句配对文案，材料不足',
+        readings: ['官网首页小菟配对文案：「这套阵容凑齐4个英雄后每回合靠棋手技能成长，操作难度低，但找齐英雄有一定运气成分。」'],
+        resolution: '四名英雄构成/阶段/装备/站位/替补均无官方材料（卡牌目录亦无「嫦娥」英雄实体，无法按目录挂接组件）；validateLineupPublish 要求 8 板块齐备且 ≥1 组件，无法诚实填齐。按「不生成无依据攻略」红线保持 DRAFT 不创建不发布，缺口四条登记于 draftLineups。',
+        affectedContent: ['lu-change-siren（DRAFT，未发布）', '本构建证据 draftLineups']
       }
     ]
 
@@ -489,7 +770,7 @@ async function main() {
       entitiesByKind: catalogPub.reduce((acc, e) => { acc[e.kind] = (acc[e.kind] || 0) + 1; return acc }, {})
     }
     const expect = {
-      mechanics: MECHANICS.length, lineups: 1, lessons: LESSONS.length,
+      mechanics: MECHANICS.length, lineups: PUBLISHABLE_LINEUPS.length, lessons: LESSONS.length,
       entities: ALL_ENTITIES.length, scenariosPublished: SCENARIOS.length
     }
     for (const [k, v] of Object.entries(expect)) {
@@ -500,9 +781,10 @@ async function main() {
     console.log('[build] 公开读取复核通过：', JSON.stringify(report.publicRead))
 
     // 12) 证据落盘
+    report.referencesAdded = referencesAdded
     fs.mkdirSync(ARTIFACTS_DIR, { recursive: true })
     const file = path.join(ARTIFACTS_DIR,
-      `m3-content-build-${startedAt.replace(/[^\d]/g, '').slice(0, 14)}.json`)
+      `m4-content-build-${startedAt.replace(/[^\d]/g, '').slice(0, 14)}.json`)
     fs.writeFileSync(file, JSON.stringify(report, null, 2))
     console.log(`[build] 完成。证据：${file}`)
     process.exitCode = 0
@@ -512,7 +794,7 @@ async function main() {
     try {
       fs.mkdirSync(ARTIFACTS_DIR, { recursive: true })
       const file = path.join(ARTIFACTS_DIR,
-        `m3-content-build-FAILED-${startedAt.replace(/[^\d]/g, '').slice(0, 14)}.json`)
+        `m4-content-build-FAILED-${startedAt.replace(/[^\d]/g, '').slice(0, 14)}.json`)
       fs.writeFileSync(file, JSON.stringify(report, null, 2))
       console.error(`[build] 失败证据：${file}`)
     } catch { /* 落盘失败不掩盖原始错误 */ }

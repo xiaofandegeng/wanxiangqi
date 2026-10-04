@@ -1,0 +1,256 @@
+{
+  "testedAt": "2026-10-04T00:17:30.321Z",
+  "db": "wanxiangqi_v6dev",
+  "operator": "content-build/v6",
+  "materials": [
+    {
+      "recordKey": "official:home",
+      "rawMaterialId": "1",
+      "sha256": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:portal",
+      "rawMaterialId": "2",
+      "sha256": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:newbie-guide",
+      "rawMaterialId": "3",
+      "sha256": "f7aa4aa541baa81068d789179094d0013035290e1fe1badb5e45887a85c41a90",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:news:18873181",
+      "rawMaterialId": "4",
+      "sha256": "057656d8cdd44e5090c7501497bbcc4a845895b2dde0fea0629802e0b2e979a4",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:cards:heroes",
+      "rawMaterialId": "5",
+      "sha256": "12cad65233786a5e4e9e81dbd05d5292d15798fc048c24397635b105a70be9b8",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:cards:effects",
+      "rawMaterialId": "6",
+      "sha256": "4f099087a1612e99341324489268d7fab3b9c89e01c84060f012d7d3a1829129",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:cards:equips",
+      "rawMaterialId": "7",
+      "sha256": "c4b72089a4fa0699cf9314e2358d41899fe9c32fcc5d726d4a0785240e31f980",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:cards:talents",
+      "rawMaterialId": "8",
+      "sha256": "58b417616945ac8ffd32acbcbb607adaace00d3ae657d467c6e44aba15880400",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    },
+    {
+      "recordKey": "official:cards:js",
+      "rawMaterialId": "9",
+      "sha256": "b002a32d6c8c3081986d66a59122f061b0e7311f33e70a1f00dd51af027fc26c",
+      "fetchedAt": "2026-10-04T00:17:30.567Z"
+    }
+  ],
+  "verification": {
+    "checked": 107,
+    "failures": [],
+    "details": {
+      "mechanicsRouting": {
+        "guide": 36,
+        "cardsJs": 1,
+        "cardsHeroes": 1
+      },
+      "cardDataPins": [
+        "official:cards:heroes",
+        "official:cards:effects",
+        "official:cards:equips",
+        "official:cards:talents",
+        "official:cards:js"
+      ],
+      "cardDataPinPolicy": "JSON 目标=字节指纹（快照出处）+语义指纹（剥离轮换子树，本地与存证双侧断言）；cards.js=纯字节锁定",
+      "rawGuideStatements": 43,
+      "rawHomeStatements": 21,
+      "catalogFactsTransitive": "目录实体 facts 由 data/*.json 在本进程内构建；语义指纹双侧一致（本地文件=存证=固定 semanticSha256，剥离的轮换子树不含任何 facts 取值域字段）⇒ facts 与存证一致（传递性核查，无需逐字段比对）",
+      "imgFacts": {
+        "heroes": 48,
+        "equips": 16,
+        "talents": 10,
+        "effcards": 4,
+        "commanders": 4
+      }
+    }
+  },
+  "version": {
+    "versionId": "v1.1.14",
+    "previousVersionId": null,
+    "markedCount": 0
+  },
+  "patchNote": {
+    "id": "pn-20260921-v1114",
+    "created": true
+  },
+  "created": {
+    "mechanics": 38,
+    "entities": 525,
+    "lineups": 5,
+    "lessons": 11,
+    "scenarios": 12
+  },
+  "skipped": {
+    "mechanics": 0,
+    "entities": 0,
+    "lineups": 0,
+    "lessons": 0,
+    "scenarios": 0
+  },
+  "referencesAdded": 609,
+  "conflictLog": [
+    {
+      "topic": "三分登场流 站位（图内无文字标注）",
+      "readings": [
+        "第一轮独立提取（guide_1_2.jpg）：曾读出「第二排 赵云/貂蝉/周瑜…」等行列归属",
+        "第一轮独立提取（guide_1_3.jpg）：曾读出「前排 周瑜/吕布/曹操…」的相反归属"
+      ],
+      "resolution": "定向复核确认：两图站位均以棋盘头像呈现、无任何文字行列标注；先前两种读数均为对头像位置的推断而非图内原文。处理：站位事实收敛为「官方图示布局（3后排/3中排/1前排）+ 文字角色标注（吕布核心C位/曹操核心坦克/蔡文姬核心功能）」；逐格到人的坐标登记为未核实，以官方图原件为准。",
+      "affectedContent": [
+        "lu-sanfen-dengchang 定位章节 positioning.unverified",
+        "本构建证据"
+      ]
+    },
+    {
+      "topic": "天赋「挂帅上阵」效果转写",
+      "readings": [
+        "两轮提取在「等级等同最近1名三分英雄」的表述细节上略有差异"
+      ],
+      "resolution": "按最优读数录入 guideEffectText 并标注「两轮图面提取在表述细节上略有差异，以图原件为准」；实体 facts.caliberNote 同步登记。",
+      "affectedContent": [
+        "tal-636316"
+      ]
+    },
+    {
+      "topic": "cards.js「合成」词条 mark 文案与其「凯旋」完全相同",
+      "readings": [
+        "cards.js 关键词清单：合成 mark = 凯旋 mark =「英雄上阵期间若战斗胜利，触发效果。」",
+        "新手指引页词典：合成 =「使用场上已存在的英雄牌，与场上英雄结合，使其强化。」"
+      ],
+      "resolution": "两个官方来源对「合成」给出不同定义；按较新来源（新手指引页）维持 kw-hecheng 的 statementRaw，cards.js 该 mark 疑似官方页面配置错误，不采信、不删除登记。图腾词条（指引页词典未收录）仍以 cards.js 为准。",
+      "affectedContent": [
+        "kw-hecheng",
+        "kw-tuteng"
+      ]
+    },
+    {
+      "topic": "教学图效果牌/天赋为简化表述，卡牌目录已公布精确文本",
+      "readings": [
+        "教学图（图文详解）：远洋宝藏「提供阵营专属装备」、复印机「复制场上英雄」、智能装甲「随机获得1件日落海专属装备」等",
+        "卡牌目录 effectText：逐字段精确数值/条件（如大河新援「获得2能量，以及随机1张2-3阶【大河流域】英雄牌」）"
+      ],
+      "resolution": "双源并存时以卡牌目录 effectText 为权威（第一方数据接口，三方 sha256 锁定）；教学图简化文案仅作为推荐理由引用，实体 facts.caliberNote 逐条登记差异。",
+      "affectedContent": [
+        "tal-636117",
+        "tal-623002",
+        "tal-635031",
+        "tal-636417",
+        "tal-636403",
+        "effcard-7529"
+      ]
+    },
+    {
+      "topic": "教学图装备短名 → 官方目录全名归一",
+      "readings": [
+        "图示短名：炽热/无尽/近卫/法源/不死鸟/霸者/御灵/不详",
+        "官方目录全名：炽热支配者/无尽巨剑/近卫荣耀/法源之杯/不死鸟之眼/霸者重铠/御灵之纱/不祥征兆"
+      ],
+      "resolution": "短名按前缀在装备目录唯一命中即归一（炽热→炽热支配者等 7 项，机械可验证）；「御灵」为御灵之纱前缀缩写、「不详→不祥征兆」为近音异形（目录唯一近似防御装+坦克佩戴定位）——后两项属编辑归一化推断，caliberNote 如实标注推断性质。",
+      "affectedContent": [
+        "equip-643805",
+        "equip-643601",
+        "装备推荐各条 lineupEquip 标注（图示短名：X）"
+      ]
+    },
+    {
+      "topic": "「阿科米亚之子」（装备）与「阿科米亚核心」（词条）概念区分",
+      "readings": [
+        "装备实体 阿科米亚之子（equip-644117，卡牌目录）",
+        "关键词词条 阿科米亚核心（英雄目录关键词定义：等级平均分配给【日落海】英雄）"
+      ],
+      "resolution": "两者是不同概念（装备实体 vs 核心等级分配机制），并存登记不互相冒充；装备实体 facts.caliberNote 显式提示区分，避免读者混淆。",
+      "affectedContent": [
+        "equip-644117",
+        "kw-akemiya-core"
+      ]
+    },
+    {
+      "topic": "官方卡牌 JSON 接口内嵌轮换内容（字节不稳定）",
+      "readings": [
+        "2026-10-03 存证（= data/ 快照）与 2026-10-04 新抓取的字节 sha256 不一致（heroes/effects/talents 三个目标）",
+        "连续两次抓取同一目标字节一致（接口本身稳定）；逐字段比对：85 英雄/98 效果牌/73 装备/258 天赋全部卡片的实质字段（名称/品阶/效果原文/关键词/技能文本/属性/费用/觉醒/获取）零变化",
+        "差异仅两类：heroCard.skillList[].url 为技能视频签名 URL（video2.osgame.qq.com/<签名>/<过期hex>/…，随服务端重发轮换）；previewCards/sourceCards 为官方预告卡/来源卡展示区（内容随运营轮换）"
+      ],
+      "resolution": "两级指纹：字节 sha256 保留为 data 快照的出处锚定；新增语义指纹（剥离上述轮换子树后按键序规范化序列化的 sha256）对本地与存证双侧断言相等——轮换内容不参与比对但原件完整保留在 raw_materials 存证中（可独立复核），卡牌实质数据任何变化仍立即构建失败。",
+      "affectedContent": [
+        "corpus-cards.mjs CARD_DATA_FILES（semanticSha256）",
+        "本构建脚本 verifyCardDataPins",
+        "本构建证据"
+      ]
+    },
+    {
+      "topic": "「瑶」同名：英雄目录实体 vs 棋手",
+      "readings": [
+        "英雄目录：瑶（hero-5051，大河图腾流成员）",
+        "官网首页棋手推荐栏：瑶妹（RAW:home，技能「可爱小鹿」，与官网新手指引「瑶」技能文本逐字一致）"
+      ],
+      "resolution": "两者为不同实体（英雄牌 vs 棋手），ID 体系天然隔离（hero- vs cmd-）；棋手实体 facts.aliasNote 登记「官网首页以瑶妹呈现（同一棋手）」，名称检索各自命中。",
+      "affectedContent": [
+        "hero-5051",
+        "cmd-yao"
+      ]
+    },
+    {
+      "topic": "嫦娥四人队：官网仅一句配对文案，材料不足",
+      "readings": [
+        "官网首页小菟配对文案：「这套阵容凑齐4个英雄后每回合靠棋手技能成长，操作难度低，但找齐英雄有一定运气成分。」"
+      ],
+      "resolution": "四名英雄构成/阶段/装备/站位/替补均无官方材料（卡牌目录亦无「嫦娥」英雄实体，无法按目录挂接组件）；validateLineupPublish 要求 8 板块齐备且 ≥1 组件，无法诚实填齐。按「不生成无依据攻略」红线保持 DRAFT 不创建不发布，缺口四条登记于 draftLineups。",
+      "affectedContent": [
+        "lu-change-siren（DRAFT，未发布）",
+        "本构建证据 draftLineups"
+      ]
+    }
+  ],
+  "draftLineups": [
+    {
+      "id": "lu-change-siren",
+      "displayName": "嫦娥四人队",
+      "status": "DRAFT",
+      "gaps": [
+        "官网首页小菟配对文案是本阵容唯一官方材料：「这套阵容凑齐4个英雄后每回合靠棋手技能成长，操作难度低，但找齐英雄有一定运气成分。」",
+        "四名英雄构成未公布——官网首页与新手指引页均未列出成员；卡牌目录中亦无「嫦娥」英雄实体，无法按目录挂接组件",
+        "无阶段指引/装备推荐/推荐棋手（除配对文案归属小菟外）/实战技巧/站位/替补任何一块材料",
+        "validateLineupPublish 要求 8 个板块齐备且 ≥1 组件——本草稿无法诚实填齐，按「不生成无依据攻略」红线保持 DRAFT 不发布"
+      ]
+    }
+  ],
+  "publicRead": {
+    "mechanics": 38,
+    "lineups": 5,
+    "lessons": 11,
+    "entities": 525,
+    "scenariosPublished": 12,
+    "entitiesByKind": {
+      "COMMANDER": 11,
+      "EFFECT_CARD": 98,
+      "EQUIPMENT": 73,
+      "HERO": 85,
+      "TALENT": 258
+    }
+  },
+  "errors": []
+}

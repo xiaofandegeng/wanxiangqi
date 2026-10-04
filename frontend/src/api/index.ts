@@ -311,7 +311,8 @@ export interface LessonDetail extends LessonSummary {
   sections: Array<Record<string, unknown>> | null
   practice: Array<Record<string, unknown>> | null
   revision: { id: string; no: number; publishedAt: string | null } | null
-  scenarios: Array<{ id: string; slug: string; title: string; kind: string }>
+  // disclaimer：情境引用处随卡呈现的「教学复盘（非真实对局…）」声明（单一事实源装饰，可空）
+  scenarios: Array<{ id: string; slug: string; title: string; kind: string; disclaimer: string | null }>
   references: ContentReference[]
 }
 

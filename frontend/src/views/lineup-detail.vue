@@ -101,6 +101,9 @@
             <template v-else-if="sec.key === 'stages'">
               <stages-list :value="sec.value" />
             </template>
+            <template v-else-if="sec.key === 'practiceCases'">
+              <practice-cases :value="sec.value" />
+            </template>
             <template v-else>
               <json-block :value="sec.value" />
             </template>
@@ -273,6 +276,46 @@ const StagesList = defineComponent({
           rest.length ? h(JsonBlock, { value: Object.fromEntries(rest) }) : null
         ])
       }))
+    }
+  }
+})
+
+/** 实战案例引用（§5.6）：{ scenarios: [{id,title,kind,disclaimer}], reviewCases: [...], officialVideos: [...] }
+ *  kind/disclaimer 由服务端关联 scenarios 表装配；「非真实对局演绎」声明在引用处如实可见 */
+const PracticeCases = defineComponent({
+  components: { JsonBlock },
+  props: { value: { type: Object as PropType<Record<string, unknown>>, required: true } },
+  setup(props) {
+    const KIND_LABELS: Record<string, string> = { LINEUP_SCENARIO: '阵容情境', REVIEW_CASE: '复盘案例' }
+    const caseList = (list: unknown) => {
+      if (!Array.isArray(list)) return h(JsonBlock, { value: list })
+      if (!list.length) return h('p', { class: 'pc-empty' }, '未登记')
+      return h('ul', { class: 'pc-list' }, list.map((e, i) => {
+        const row = (e && typeof e === 'object') ? e as Record<string, unknown> : {}
+        const kind = row.kind ? KIND_LABELS[String(row.kind)] || String(row.kind) : null
+        return h('li', { class: 'pc-item', key: i }, [
+          kind ? h('span', { class: `pc-kind${row.kind === 'REVIEW_CASE' ? ' is-review' : ''}` }, kind) : null,
+          h('span', { class: 'pc-title' }, String(row.title ?? row.id ?? '（未命名）')),
+          row.disclaimer ? h('p', { class: 'pc-disclaimer' }, String(row.disclaimer)) : null
+        ])
+      }))
+    }
+    return () => {
+      const v = props.value || {}
+      return h('div', { class: 'pc-wrap' }, [
+        h('div', { class: 'pc-group' }, [
+          h('div', { class: 'pc-group-name' }, '教学情境'),
+          caseList(v.scenarios)
+        ]),
+        h('div', { class: 'pc-group' }, [
+          h('div', { class: 'pc-group-name' }, '教学复盘（非真实对局，依据官方机制推演）'),
+          caseList(v.reviewCases)
+        ]),
+        h('div', { class: 'pc-group' }, [
+          h('div', { class: 'pc-group-name' }, '官方视频'),
+          caseList(v.officialVideos)
+        ])
+      ])
     }
   }
 })
@@ -712,6 +755,76 @@ function formatTime(isoStr: string | null | undefined) {
   color: #1e293b;
   padding-left: 10px;
   border-left: 3px solid rgba(37, 99, 235, 0.4);
+}
+
+// §5.6 实战案例引用（结构化陈列 + 非真实对局声明可见）
+.pc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pc-group-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.pc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pc-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pc-kind {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 4px;
+  color: $color-primary;
+  background: $color-primary-light;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+
+  &.is-review {
+    color: #7c2d12;
+    background: rgba(124, 45, 18, 0.06);
+    border-color: rgba(124, 45, 18, 0.25);
+  }
+}
+
+.pc-title {
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.pc-disclaimer {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pc-empty {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
 }
 
 :deep(.json-block) {

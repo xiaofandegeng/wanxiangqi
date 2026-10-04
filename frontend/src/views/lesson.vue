@@ -115,6 +115,7 @@
           <div v-for="s in lesson.scenarios" :key="s.id" class="scenario-item">
             <span class="scenario-kind" :class="kindClass(s.kind)">{{ kindLabel(s.kind) }}</span>
             <span class="scenario-title">{{ s.title }}</span>
+            <span v-if="s.disclaimer" class="scenario-disclaimer">{{ s.disclaimer }}</span>
           </div>
         </div>
       </div>
@@ -200,13 +201,13 @@ const renderedSections = computed(() => {
 })
 
 function kindLabel(kind: string): string {
-  const map: Record<string, string> = { SUCCESS: '成功案例', FAILURE: '失败案例', DECISION: '决策情景' }
+  const map: Record<string, string> = { LINEUP_SCENARIO: '阵容情境', REVIEW_CASE: '复盘案例' }
   return map[kind] || kind
 }
 
 function kindClass(kind: string): string {
-  if (kind === 'SUCCESS') return 'is-success'
-  if (kind === 'FAILURE') return 'is-failure'
+  // REVIEW_CASE 含成功/失败两类复盘（sourceNote 标注推演依据），用中性样式不做红绿预判
+  if (kind === 'REVIEW_CASE') return 'is-review'
   return 'is-neutral'
 }
 
@@ -544,12 +545,20 @@ function formatTime(isoStr: string | null | undefined) {
 
 .scenario-item {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: baseline;
   gap: 10px;
   padding: 10px 12px;
   background: $bg-tertiary;
   border: 1px solid $border-color;
   border-radius: $radius-md;
+}
+
+// 「教学情境/教学复盘（非真实对局…）」声明随卡如实呈现（单一事实源）
+.scenario-disclaimer {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: $text-secondary;
 }
 
 .scenario-kind {
@@ -575,6 +584,12 @@ function formatTime(isoStr: string | null | undefined) {
     color: $color-primary;
     background: $color-primary-light;
     border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+
+  &.is-review {
+    color: #7c2d12;
+    background: rgba(124, 45, 18, 0.06);
+    border: 1px solid rgba(124, 45, 18, 0.25);
   }
 }
 

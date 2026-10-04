@@ -1,0 +1,96 @@
+{
+  "testedAt": "2026-10-04T00:14:27.533Z",
+  "db": "wanxiangqi_v6dev",
+  "operator": "content-build/v6",
+  "materials": [
+    {
+      "recordKey": "official:home",
+      "rawMaterialId": "1",
+      "sha256": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:portal",
+      "rawMaterialId": "2",
+      "sha256": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:newbie-guide",
+      "rawMaterialId": "3",
+      "sha256": "f7aa4aa541baa81068d789179094d0013035290e1fe1badb5e45887a85c41a90",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:news:18873181",
+      "rawMaterialId": "4",
+      "sha256": "ef3ef27aefa01f92a78cd0b3717176e7e4484e13405cf86252c7e0242ba8d564",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:cards:heroes",
+      "rawMaterialId": "5",
+      "sha256": "12cad65233786a5e4e9e81dbd05d5292d15798fc048c24397635b105a70be9b8",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:cards:effects",
+      "rawMaterialId": "6",
+      "sha256": "4f099087a1612e99341324489268d7fab3b9c89e01c84060f012d7d3a1829129",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:cards:equips",
+      "rawMaterialId": "7",
+      "sha256": "c4b72089a4fa0699cf9314e2358d41899fe9c32fcc5d726d4a0785240e31f980",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:cards:talents",
+      "rawMaterialId": "8",
+      "sha256": "58b417616945ac8ffd32acbcbb607adaace00d3ae657d467c6e44aba15880400",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    },
+    {
+      "recordKey": "official:cards:js",
+      "rawMaterialId": "9",
+      "sha256": "b002a32d6c8c3081986d66a59122f061b0e7311f33e70a1f00dd51af027fc26c",
+      "fetchedAt": "2026-10-04T00:14:28.036Z"
+    }
+  ],
+  "verification": {
+    "checked": 0,
+    "failures": [],
+    "details": {}
+  },
+  "version": {
+    "versionId": "v1.1.14",
+    "previousVersionId": null,
+    "markedCount": 0
+  },
+  "patchNote": {
+    "id": "pn-20260921-v1114",
+    "created": true
+  },
+  "created": {
+    "mechanics": 0,
+    "entities": 0,
+    "lineups": 0,
+    "lessons": 0,
+    "scenarios": 0
+  },
+  "skipped": {
+    "mechanics": 0,
+    "entities": 0,
+    "lineups": 0,
+    "lessons": 0,
+    "scenarios": 0
+  },
+  "referencesAdded": 0,
+  "conflictLog": [],
+  "draftLineups": [],
+  "publicRead": null,
+  "errors": [
+    "ENOENT: no such file or directory, open '/Users/lhw/code/wanxiangqi/backend/tools/content-build/oscard-heroes.json'"
+  ]
+}

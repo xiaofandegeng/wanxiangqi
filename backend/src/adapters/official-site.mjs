@@ -25,6 +25,9 @@ export const OFFICIAL_ADAPTER_METADATA = {
  * 抓取目标清单（record_key 即 raw_materials.record_key，稳定可追溯）。
  * news 目标为 2026-10-02 research/official-channel-probe 实测确认的官方资讯接口
  * （JSONP 响应，status=0）；id=18873181 为实测可见的版本更新公告编号。
+ * cards 五目标为 2026-10-03 M4 实测确认的官网卡牌图鉴数据接口
+ * （portal 页 cards.js 以 $.getJSON 拉取的四个官方 JSON + cards.js 本体，
+ *  内容为全部英雄/装备/效果/天赋牌的官方完整数据）。
  */
 export const OFFICIAL_CONTENT_TARGETS = [
   { recordKey: 'official:home', url: 'https://wxq.qq.com/', contentType: 'text/html' },
@@ -33,6 +36,31 @@ export const OFFICIAL_CONTENT_TARGETS = [
   {
     recordKey: 'official:news:18873181',
     url: 'https://apps.game.qq.com/wmp/v3.1/public/searchNews.php?p0=389&source=web_pc&id=18873181',
+    contentType: 'application/javascript'
+  },
+  {
+    recordKey: 'official:cards:heroes',
+    url: 'https://game.gtimg.cn/images/amside/ide_timer/589094_oscard_new_1.js',
+    contentType: 'application/json'
+  },
+  {
+    recordKey: 'official:cards:effects',
+    url: 'https://game.gtimg.cn/images/amside/ide_timer/589094_oscard_new_2.js',
+    contentType: 'application/json'
+  },
+  {
+    recordKey: 'official:cards:equips',
+    url: 'https://game.gtimg.cn/images/amside/ide_timer/589094_oscard_new_4.js',
+    contentType: 'application/json'
+  },
+  {
+    recordKey: 'official:cards:talents',
+    url: 'https://game.gtimg.cn/images/amside/ide_timer/589094_oscard_new_8.js',
+    contentType: 'application/json'
+  },
+  {
+    recordKey: 'official:cards:js',
+    url: 'https://wxq.qq.com/cp/a20260707sfgw/js/cards.js',
     contentType: 'application/javascript'
   }
 ]
