@@ -10,6 +10,9 @@
 // 方法：HEAD 优先（零正文传输）；非 2xx 或无图片 Content-Type 再 Range GET（bytes=0-0）确认；
 //       网络类错误重试 1 次。ok = 最终 2xx 且 Content-Type 为 image/*
 //       （防「200 返回 HTML 错误页」被误计为可用）。
+// 边界（勿扩大声明）：仅证明核查时点的链接响应可用与图片类型——不等同于逐张浏览器解码、
+//       图片内容正确性或内容哈希核验；CDN 后续换图（仍返回 image/*）无法识别。
+//       索引重新生成或 TeachingMedia 图片清单变化时需重跑/同步本工具。
 // 产物：docs/v6_artifacts/official-art-links-<ts>.json（失败逐条含实体归属；成功按域计数）。
 // 退出：任一失败 → 1（不凑数）。
 //
@@ -131,7 +134,7 @@ for (const r of results) {
 const report = {
   ranAt: startedAt,
   tool: 'tools/official-art-link-check.mjs',
-  method: 'HEAD 优先（零正文）；非 2xx 或非 image/* Content-Type 再 Range GET(bytes=0-0) 确认；网络错误重试 1 次；ok = 2xx ∧ image/*（防 HTML 错误页误计）',
+  method: 'HEAD 优先（零正文）；非 2xx 或非 image/* Content-Type 再 Range GET(bytes=0-0) 确认；网络错误重试 1 次；ok = 2xx ∧ image/*（防 HTML 错误页误计）。边界：仅证核查时点链接可用性与图片类型，不识别仍返回 image/* 的 CDN 换图，不等同逐张解码或内容正确性/哈希核验',
   sources: {
     index: { file: 'frontend/src/data/official-art.json', entities: Object.keys(art).length, uniqueUrls: indexUrls.size },
     guide: { file: 'frontend/src/components/TeachingMedia.vue（模板串，显式列出）', urls: GUIDE_URLS.length }
