@@ -1,5 +1,5 @@
 // 王者万象棋阵容研习站 · HTTP 层 (v6)
-// 自 tools/emulator-watcher/index.mjs 迁入 backend/src（v6 M1-2）：
+// 自旧工具层（v2–v5，已归档）迁入 backend/src（v6 M1-2）：
 // 1. createApiServer({ services, adminToken }) 注入式路由；demo 文件引擎已退役，
 //    services 为必填（正式模式 server.js 注入 PG 栈；测试注入隔离测试库栈）
 // 2. 管理写接口 Bearer 鉴权、CORS 白名单、默认 127.0.0.1（v2 F09 规范保留）
