@@ -3,17 +3,17 @@
 // 采用清爽、专业、客观的内容站风格：浅色背景、白色卡片、高对比度排版与中性边框
 
 // 背景色系 (专业轻量内容站浅色基调)
-$bg-primary: #f8fafc;
+$bg-primary: #f5f4f0;
 $bg-secondary: #ffffff;
 $bg-tertiary: #f1f5f9;
 $bg-card: #ffffff;
-$bg-card-hover: #f8fafc;
+$bg-card-hover: #f5f4f0;
 $bg-glass: rgba(255, 255, 255, 0.95);
 
 // 品牌核心强调色 (专业科技蓝、稳健绿、清晰琥珀金)
-$color-primary: #2563eb;
-$color-primary-light: #eff6ff;
-$color-primary-dark: #1d4ed8;
+$color-primary: #35635b;
+$color-primary-light: #edf3f0;
+$color-primary-dark: #254c45;
 
 $color-gold: #b45309;
 $color-gold-light: #fef3c7;
@@ -32,7 +32,7 @@ $color-warning: #d97706;
 $color-warning-light: #fffbeb;
 $color-danger: #dc2626;
 $color-danger-light: #fef2f2;
-$color-info: #2563eb;
+$color-info: #35635b;
 
 // 文本颜色 (深色高可读性规范排版)
 $text-primary: #0f172a;
@@ -55,8 +55,8 @@ $glow-cyan: none;
 // 常用圆角
 $radius-sm: 4px;
 $radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
+$radius-lg: 4px;
+$radius-xl: 6px;
 $radius-full: 9999px;
 
 // 字体规范

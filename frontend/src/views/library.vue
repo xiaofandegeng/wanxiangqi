@@ -4,7 +4,7 @@
       <h2 class="page-title">资料库</h2>
       <p class="page-desc">
         英雄、棋手、装备、效果牌、天赋、阵营与机制的统一资料检索。
-        每类实体一份档案、每条事实只维护一份，并标注适用版本与来源。
+        查看卡面、技能和效果，按分类找到你需要的卡牌。
       </p>
     </div>
 
@@ -37,7 +37,7 @@
           v-model="searchInput"
           class="search-input"
           type="search"
-          :placeholder="activeTab === 'mechanics' ? '搜索规则条目标题…' : '按名称 / slug 搜索…'"
+          :placeholder="activeTab === 'mechanics' ? '搜索规则条目标题…' : '搜索卡牌名称…'"
           @keyup.enter="applySearch"
         />
         <button class="search-btn" @click="applySearch">检索</button>
@@ -60,14 +60,13 @@
             :to="`/library/${activeTab}/${e.slug}`"
             class="entity-card"
           >
+            <GameArt :entity-id="e.slug" :name="e.displayName" variant="portrait" />
             <div class="entity-name">{{ e.displayName }}</div>
             <div class="entity-meta">
-              <span class="font-mono">{{ e.slug }}</span>
+
               <span v-if="e.gameVersion" class="version-chip font-mono">{{ e.gameVersion.versionId }}</span>
             </div>
-            <div v-if="factFields(e).length" class="entity-facts">
-              已登记字段：{{ factFields(e).join(' / ') }}
-            </div>
+
           </router-link>
         </div>
       </template>
@@ -96,6 +95,7 @@
 </template>
 
 <script setup lang="ts">
+import GameArt from "../components/GameArt.vue"
 import { ref, computed, watch } from 'vue'
 import {
   fetchCatalog,
@@ -129,12 +129,6 @@ const loadError = ref<string | null>(null)
 const activeKindLabel = computed(() =>
   TABS.find(t => t.key === activeTab.value)?.label || '')
 
-/** factsSummary.fields 形态未知（Record<string, unknown>），取字符串数组时逐项 String 化 */
-function factFields(e: CatalogEntry): string[] {
-  const fields = e.factsSummary?.fields
-  if (!Array.isArray(fields)) return []
-  return fields.map(String)
-}
 
 const kindCounts = ref<Record<string, number>>({})
 
@@ -337,7 +331,7 @@ loadTab()
 
 .entity-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 
   @media (max-width: 900px) {
@@ -345,7 +339,7 @@ loadTab()
   }
 
   @media (max-width: 560px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

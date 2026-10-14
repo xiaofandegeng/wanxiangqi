@@ -24,18 +24,20 @@
 
     <template v-else>
       <div class="entity-header-card">
+        <GameArt :entity-id="entity.slug" :name="entity.displayName" variant="card" />
         <div class="entity-title-wrap">
           <span class="kind-chip font-mono">{{ kindLabel(entity.kind) }}</span>
           <h2 class="entity-name">{{ entity.displayName }}</h2>
           <p class="entity-meta-row">
-            <span class="font-mono">{{ entity.slug }}</span>
-            <template v-if="entity.gameVersion"> · 适用版本 <span class="font-mono">{{ entity.gameVersion.versionId }}</span></template>
+
+            <template v-if="entity.gameVersion">适用版本 <span class="font-mono">{{ entity.gameVersion.versionId }}</span></template>
             <template v-if="entity.revision"> · 修订 r{{ entity.revision.no }}</template>
             <template v-if="entity.revision?.publishedAt"> · 发布于 {{ formatTime(entity.revision.publishedAt) }}</template>
           </p>
         </div>
       </div>
 
+      <TeachingMedia :entity-id="entity.slug" />
       <!-- 档案事实：结构化键值如实陈列；形态未知回退原始 JSON -->
       <div class="section-card">
         <h3 class="section-title">档案事实</h3>
@@ -47,7 +49,7 @@
                 <th>{{ row.key }}</th>
                 <td>
                   <span v-if="row.scalar !== null" class="fact-scalar">{{ row.scalar }}</span>
-                  <pre v-else class="json-block">{{ row.json }}</pre>
+                  <FactValue v-else :value="row.value" />
                 </td>
               </tr>
             </tbody>
@@ -71,6 +73,9 @@
 </template>
 
 <script setup lang="ts">
+import FactValue from "../components/FactValue.vue"
+import GameArt from "../components/GameArt.vue"
+import TeachingMedia from "../components/TeachingMedia.vue"
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchEntityDetail, type EntityDetail } from '../api'
@@ -112,12 +117,12 @@ watch(() => [route.params.kind, route.params.slug], () => {
 const factRows = computed(() => {
   const facts = entity.value?.facts
   if (!facts || typeof facts !== 'object') return []
-  return Object.entries(facts).map(([key, value]) => {
+  return Object.entries(facts).filter(([key]) => !["cardImage"].includes(key)).map(([key, value]) => {
     const isScalar = ['string', 'number', 'boolean'].includes(typeof value) || value === null
     return {
-      key,
+      key: ({ quality: "品阶", camp: "阵营", effectText: "卡牌效果", shopBuyCost: "购买费用", properties: "属性", baseProperties: "基础属性", awakening: "觉醒效果", awakeningText: "觉醒效果", howToGet: "获取途径", keywords: "关键词", recommendedEquipment: "推荐装备", stageNote: "阶段提示", lineupRoles: "阵容职责", officialBeginnerLineupCore: "入门阵容", engineNote: "触发机制", growthNote: "成长方式", substituteNote: "替补建议", transitionRole: "过渡职责", handoffNote: "交接方式", lateGameNote: "后期调整", equipmentNote: "装备建议" } as Record<string, string>)[key] || key,
       scalar: isScalar ? (value === null ? '—' : String(value)) : null,
-      json: isScalar ? null : JSON.stringify(value, null, 2)
+      value
     }
   })
 })

@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-02T08:30:47.502026+00:00",
+  "scope": "Public official website HTML and referenced JavaScript; no authenticated match request",
+  "files": [
+    {
+      "file": "wxq-official-home.html",
+      "bytes": 107484,
+      "sha256": "e3dcf4ba4bfd42e1aa7dd9978b3beb6bd60d7af566e68443dd7c9f9fa85f9ae4"
+    },
+    {
+      "file": "wxq-official-portal.html",
+      "bytes": 126338,
+      "sha256": "08c2f789ca1c88b20478e02881bde16e5a71a114f9d05fc066b7fe93d9ad0177"
+    },
+    {
+      "file": "wxq-comm.js",
+      "bytes": 12169,
+      "sha256": "5c7b560223686e775a82c460c1c57e3ea81f961b5d74ec0e6eb0eabd4e83fde0"
+    },
+    {
+      "file": "wxq-index.js",
+      "bytes": 10726,
+      "sha256": "6da4fe3a49076d8d4b6e114467bd2ca891c9aca9845d22c46bdb0ee8b9b5b004"
+    },
+    {
+      "file": "wxq-comm-pc.js",
+      "bytes": 41060,
+      "sha256": "6069bede9a42de7e9554bb7c3fbcf5260c45ba58bf1444d153c2170e48178d39"
+    },
+    {
+      "file": "wxq-launch-index.js",
+      "bytes": 56272,
+      "sha256": "25323bf98acd72750c2c7081857ec988329769582b9f76049e99ef5a0ebe834d"
+    },
+    {
+      "file": "wxq-camp-entry.html",
+      "bytes": 3688,
+      "sha256": "6306bcc4d5e1540fef0cdbcba4f87006dd21d75d747d5ce78bd38c3fcd22d6f5"
+    },
+    {
+      "file": "wxq-camp-redirect.js",
+      "bytes": 585306,
+      "sha256": "e013691f70023199fbc640370953a4f77c106072ecddd69c11b79efad4bb102a"
+    },
+    {
+      "file": "wxq-taptap-entry.html",
+      "bytes": 61981,
+      "sha256": "f0b419e73268c6d49cdb8e9f20a8d1266051a40083cd2c3ae7d2df40081ff7c0"
+    },
+    {
+      "file": "wxq-official-news.json",
+      "bytes": 3009,
+      "sha256": "6ca336648d8894274f7b6c4edb0c630559ac915a2f9065e6a4c5cc26093f6807"
+    }
+  ],
+  "verifiedNewsResponse": {
+    "status": 0,
+    "newsId": "18873181",
+    "title": "9月21日版本更新公告v1.1.14",
+    "author": "王者万象棋",
+    "created": "2026-09-20 19:02:12"
+  }
+}

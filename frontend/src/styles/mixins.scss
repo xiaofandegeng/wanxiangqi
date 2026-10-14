@@ -21,11 +21,9 @@
 // 玻璃拟态卡片质感
 @mixin glass-panel {
   background: $bg-card;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid $border-color;
   border-radius: $radius-lg;
-  box-shadow: $shadow-md;
+  box-shadow: none;
   transition: $transition-base;
 
   &:hover {

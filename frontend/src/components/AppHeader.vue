@@ -21,7 +21,7 @@
 
           <div class="api-status-badge" :class="{ 'is-connected': isBackendOnline }">
             <span class="status-dot"></span>
-            <span class="badge-text">{{ isBackendOnline ? 'API 已接通' : 'API 离线' }}</span>
+            <span class="badge-text">{{ isBackendOnline ? '内容服务正常' : '内容服务暂不可用' }}</span>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { fetchDataStatus } from '../api'
+import { fetchLearnPath } from '../api'
 import GlobalSearch from './GlobalSearch.vue'
 import { storageNotice } from '../composables/local-prefs'
 
@@ -64,7 +64,7 @@ const isBackendOnline = ref(false)
 
 onMounted(async () => {
   try {
-    const status = await fetchDataStatus()
+    const status = await fetchLearnPath()
     isBackendOnline.value = Boolean(status)
   } catch {
     isBackendOnline.value = false
@@ -253,4 +253,13 @@ onMounted(async () => {
     font-weight: 600;
   }
 }
+
+@media (min-width: 1000px) {
+ .header-container { display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: 24px; }
+ .header-main-row { grid-column: 1; }
+ .header-search-row { grid-column: 2; grid-row: 1; justify-content: center; padding: 0; }
+ .nav-links-bar { grid-column: 1 / -1; }
+}
+.brand-icon { background: #35635b; }
+.nav-item.is-active { background: #edf3f0; color: #35635b; }
 </style>

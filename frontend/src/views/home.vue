@@ -3,8 +3,8 @@
     <!-- 站点定位：首次访问突出“从零开始” -->
     <div class="hero-card">
       <div class="hero-main">
-        <div class="hero-badge">新手友好 · 内容逐项核实</div>
-        <h2 class="hero-title">从零开始，学会一套阵容并理解它为什么成立</h2>
+        <div class="hero-badge">王者万象棋 · 入门与阵容</div>
+        <h2 class="hero-title">认识卡牌，打好第一局</h2>
         <p class="hero-desc">
           这里是面向新手的王者万象棋阵容研习站：先用第一方资料讲清规则与术语，
           再带你打出第一套成型阵容，最后学会看版本环境变阵。
@@ -18,6 +18,10 @@
 
       <!-- 站点真实状态（来自 /api/v1/data-status，空态如实展示） -->
       <div class="hero-side">
+        <div class="home-heroes"><GameArt v-for="name in ['吕布', '安琪拉', '曹操']" :key="name" :name="name" variant="portrait" /></div>
+      </div>
+    </div>
+    <div class="home-status-strip">
         <div class="status-block">
           <span class="status-label">已核实游戏版本</span>
           <span class="status-val">{{ verifiedVersionText }}</span>
@@ -34,41 +38,40 @@
           <span class="status-label">数据源状态</span>
           <span class="status-val">{{ apiError ? 'API 暂不可达' : `${sources.length} 个已注册来源` }}</span>
         </div>
-      </div>
     </div>
 
     <!-- 站点公告：转型说明（对老访客如实交代，不装作无事发生） -->
-    <div class="notice-card">
+    <details class="notice-card"><summary>关于本站与旧功能归档</summary>
       <strong>站点已转型（2026-10-03）：</strong>
       原「赛事与玩家战绩数据站」功能（赛事收录 / 选手画像 / 对局流水 / 实时预测 / 个人战绩导入）已整体退役。
       现站点专注阵容研习与新手教学，教学与内容建设正在分阶段进行中。
-    </div>
+    </details>
 
     <!-- 四大内容区入口 -->
     <div class="section-grid">
       <router-link to="/learn" class="section-card">
-        <div class="section-icon">🎓</div>
+        <div class="section-icon">01</div>
         <h3 class="section-title">新手学堂</h3>
         <p class="section-desc">按阶段组织的课程路径：从认识界面、理解资源，到独立打出并复盘第一套阵容。</p>
         <span class="section-state">{{ learnStateText }}</span>
       </router-link>
 
       <router-link to="/lineups" class="section-card">
-        <div class="section-icon">⚔️</div>
+        <div class="section-icon">02</div>
         <h3 class="section-title">阵容库</h3>
         <p class="section-desc">阵容手册（定阵条件 / 阶段操作 / 站位变阵）挂接第三方来源公布的聚合统计，标注口径与窗口。</p>
         <span class="section-state">{{ lineupStateText }}</span>
       </router-link>
 
       <router-link to="/library" class="section-card">
-        <div class="section-icon">📚</div>
+        <div class="section-icon">03</div>
         <h3 class="section-title">资料库</h3>
         <p class="section-desc">英雄、棋手、装备、效果牌、天赋、阵营与机制的统一资料检索，每条事实只维护一份。</p>
         <span class="section-state">建设中</span>
       </router-link>
 
       <router-link to="/updates" class="section-card">
-        <div class="section-icon">📜</div>
+        <div class="section-icon">04</div>
         <h3 class="section-title">版本动态</h3>
         <p class="section-desc">官方版本调整，以及本站受影响的内容清单（哪些课程与手册需要重新核对）。</p>
         <span class="section-state">建设中</span>
@@ -84,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+import GameArt from "../components/GameArt.vue"
 import { ref, computed, onMounted } from 'vue'
 import {
   fetchDataStatus,
@@ -100,17 +104,19 @@ const sources = ref<DataSourceStatus[]>([])
 const apiError = ref<string | null>(null)
 
 const currentVersion = ref<string | null>(null)
+const contentFailed = ref(false)
 const lessonCount = ref<number | null>(null)
 const manualCount = ref<number | null>(null)
 
 // 已核实版本：取 status=CURRENT 的登记版本（版本登记以官方依据为唯一来源）。
 const verifiedVersionText = computed(() => currentVersion.value || '暂无（版本库建设中）')
 const contentCountText = computed(() => {
+  if (contentFailed.value) return '内容加载失败，请重试'
   if (lessonCount.value === null || manualCount.value === null) return '加载中…'
   return `课程 ${lessonCount.value} · 手册 ${manualCount.value}`
 })
 const learnStateText = computed(() => {
-  if (lessonCount.value === null) return '加载中…'
+  if (lessonCount.value === null) return contentFailed.value ? '课程暂不可用' : '加载中…'
   return lessonCount.value > 0 ? `已上线 ${lessonCount.value} 门课程` : '课程建设中（M3 上线首批课程）'
 })
 const lineupStateText = computed(() => {
@@ -120,6 +126,7 @@ const lineupStateText = computed(() => {
 
 async function loadStatus() {
   apiError.value = null
+  contentFailed.value = false
   try {
     const status = await fetchDataStatus()
     sources.value = status.sources
@@ -138,6 +145,8 @@ async function loadStatus() {
     const path = await fetchLearnPath()
     lessonCount.value = path.total
   } catch {
+    contentFailed.value = true
+    apiError.value = '课程服务不可用，请确认连接的是 v6 开发后端'
     lessonCount.value = null
   }
   try {
@@ -164,7 +173,8 @@ onMounted(loadStatus)
 .hero-card {
   @include glass-panel;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: center;
   gap: 24px;
   padding: 28px;
 
@@ -346,4 +356,17 @@ onMounted(loadStatus)
   border-radius: $radius-sm;
   cursor: pointer;
 }
+
+.hero-badge { display: inline-block; border: 0; padding: 0; background: none; font-size: 13px; }
+.hero-desc { max-width: 620px; font-size: 15px; }
+.home-status-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid $border-color; }
+.home-status-strip .status-block { background: none; border: 0; border-radius: 0; padding: 12px 16px; }
+.home-heroes { margin-bottom: 0; }
+.notice-card { order: 5; background: none; border: 0; border-top: 1px solid $border-color; }
+.notice-card summary { cursor: pointer; }
+.section-icon { font-size: 13px; color: $color-primary; }
+.section-title { font-size: 20px; }
+.section-desc { font-size: 14px; }
+@media (max-width: 900px) { .hero-card { grid-template-columns: minmax(0, 1fr) 250px; padding: 20px; } }
+@media (max-width: 600px) { .hero-card { grid-template-columns: 1fr; gap: 20px; } .hero-side { max-width: 300px; width: 100%; } .home-status-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

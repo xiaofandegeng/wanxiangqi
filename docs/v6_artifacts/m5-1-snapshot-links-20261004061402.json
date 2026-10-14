@@ -1,0 +1,216 @@
+{
+  "testedAt": "2026-10-04T06:14:02.921Z",
+  "db": "wanxiangqi_v6dev",
+  "operator": "map-structure-links/v6-m5-1",
+  "criterion": "手册 REQUIRED 组件英雄名 ⊆ 结构 core_heroes ∧ 结构 core_heroes ⊆ 手册全部组件英雄池，且在来源全部 ACTIVE 快照中唯一命中（与 M4-4 人工映射同一条判据，机械化重放）",
+  "results": [
+    {
+      "lineupId": "lu-sanfen-dengchang",
+      "displayName": "三分登场流",
+      "action": "skipped-exists",
+      "linkId": "1",
+      "sourceId": "src-hokace-wiki",
+      "structureKey": "hokace-card-21",
+      "structureName": "貂蝉 · 蔡文姬 · 曹操",
+      "requiredNames": [
+        "吕布",
+        "曹操",
+        "蔡文姬"
+      ],
+      "poolNames": [
+        "吕布",
+        "曹操",
+        "蔡文姬",
+        "小乔",
+        "赵云",
+        "貂蝉",
+        "周瑜",
+        "孙尚香",
+        "弈星",
+        "牛魔",
+        "甄姬",
+        "阿轲",
+        "太乙真人"
+      ],
+      "structureHeroes": [
+        "小乔",
+        "吕布",
+        "甄姬",
+        "曹操",
+        "貂蝉",
+        "蔡文姬"
+      ],
+      "activeSnapshotsChecked": 35,
+      "uniqueHit": true
+    },
+    {
+      "lineupId": "lu-riluohai-zhengbei",
+      "displayName": "日落海整备流",
+      "action": "skipped-exists",
+      "linkId": "2",
+      "sourceId": "src-hokace-wiki",
+      "structureKey": "hokace-card-11",
+      "structureName": "安琪拉 · 米莱狄 · 亚连",
+      "requiredNames": [
+        "安琪拉",
+        "雅典娜",
+        "朵莉亚",
+        "狂铁"
+      ],
+      "poolNames": [
+        "安琪拉",
+        "雅典娜",
+        "朵莉亚",
+        "狂铁",
+        "米莱狄",
+        "亚连",
+        "海诺",
+        "露娜",
+        "弈星",
+        "牛魔"
+      ],
+      "structureHeroes": [
+        "安琪拉",
+        "朵莉亚",
+        "雅典娜",
+        "狂铁",
+        "米莱狄",
+        "亚连",
+        "海诺"
+      ],
+      "activeSnapshotsChecked": 35,
+      "uniqueHit": true
+    },
+    {
+      "lineupId": "lu-dahe-tuteng",
+      "displayName": "大河图腾流",
+      "action": "skipped-exists",
+      "linkId": "3",
+      "sourceId": "src-hokace-wiki",
+      "structureKey": "hokace-card-5",
+      "structureName": "敖隐 · 东皇太一 · 虞姬",
+      "requiredNames": [
+        "敖隐",
+        "东皇太一",
+        "虞姬"
+      ],
+      "poolNames": [
+        "敖隐",
+        "东皇太一",
+        "虞姬",
+        "鬼谷子",
+        "少司缘",
+        "大司命",
+        "张良",
+        "云中君",
+        "瑶",
+        "太乙真人",
+        "牛魔",
+        "干将莫邪",
+        "弈星"
+      ],
+      "structureHeroes": [
+        "张良",
+        "虞姬",
+        "东皇太一",
+        "鬼谷子",
+        "大司命",
+        "敖隐",
+        "少司缘"
+      ],
+      "activeSnapshotsChecked": 35,
+      "uniqueHit": true
+    },
+    {
+      "lineupId": "lu-heluo-gubi",
+      "displayName": "河洛古币流",
+      "action": "skipped-exists",
+      "linkId": "4",
+      "sourceId": "src-hokace-wiki",
+      "structureKey": "hokace-card-26",
+      "structureName": "百里玄策 · 程咬金 · 李元芳",
+      "requiredNames": [
+        "百里玄策",
+        "程咬金",
+        "李元芳"
+      ],
+      "poolNames": [
+        "百里玄策",
+        "程咬金",
+        "李元芳",
+        "盾山",
+        "上官婉儿",
+        "钟馗",
+        "太乙真人",
+        "弈星",
+        "铠",
+        "武则天",
+        "李信",
+        "花木兰"
+      ],
+      "structureHeroes": [
+        "程咬金",
+        "李元芳",
+        "钟馗",
+        "太乙真人",
+        "百里玄策",
+        "盾山",
+        "上官婉儿"
+      ],
+      "activeSnapshotsChecked": 35,
+      "uniqueHit": true
+    },
+    {
+      "lineupId": "lu-hexin-guanzhu",
+      "displayName": "核心灌注流",
+      "action": "skipped-exists",
+      "linkId": "5",
+      "sourceId": "src-hokace-wiki",
+      "structureKey": "hokace-card-13",
+      "structureName": "司空震 · 海诺 · 亚瑟",
+      "requiredNames": [
+        "亚瑟",
+        "海诺",
+        "莱西奥",
+        "姬小满",
+        "姜子牙",
+        "司空震"
+      ],
+      "poolNames": [
+        "亚瑟",
+        "海诺",
+        "莱西奥",
+        "姬小满",
+        "姜子牙",
+        "司空震",
+        "狂铁",
+        "安琪拉",
+        "弈星",
+        "牛魔"
+      ],
+      "structureHeroes": [
+        "姜子牙",
+        "亚瑟",
+        "司空震",
+        "莱西奥",
+        "海诺",
+        "姬小满"
+      ],
+      "activeSnapshotsChecked": 35,
+      "uniqueHit": true
+    }
+  ],
+  "notDeclared": [
+    {
+      "lineupId": "lu-zhulu-zhanshupai",
+      "displayName": "逐鹿战术牌流",
+      "note": "语料未声明映射（M4-4 判据零命中：来源无唯一匹配结构）——如实不挂统计，页面呈现「暂无统计」"
+    }
+  ],
+  "errors": [],
+  "finalState": {
+    "declared": 5,
+    "dbLinks": 5,
+    "orphans": []
+  }
+}

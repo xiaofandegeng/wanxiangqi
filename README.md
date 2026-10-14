@@ -44,6 +44,10 @@ npm install && npm run dev
 cd ../frontend && npm install && npm run dev
 ```
 
+### 本机端口已有旧服务时
+
+后端使用开发库并设置 `PORT=8081`（其他 PG 配置同上）。前端在 `frontend/` 执行 `npm run dev:local`，打开 **http://127.0.0.1:5174**；该命令固定代理到 8081、IPv4 监听与严格端口检查，避免 `localhost` 的 IPv6 地址命中遗留前端。不要停止不明用途的旧服务。`/api/v1/learn` 应返回课程路径；只检查 `/data-status` 无法区分旧服务。
+
 ## 测试与验收
 
 ```bash

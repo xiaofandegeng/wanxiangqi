@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createApp } from 'vue'
 import AdminSources from '../src/views/admin-sources.vue'
+import { fetchSyncJobs, fetchEvidences, fetchRawMaterials } from '../src/api'
 
 const mocks = vi.hoisted(() => {
   class AdminTokenMissingError extends Error {
@@ -60,6 +61,7 @@ async function mountView(): Promise<HTMLElement> {
 }
 
 beforeEach(() => {
+  vi.clearAllMocks()
   mocks.tokenReady = false
   mocks.sources = []
   document.body.innerHTML = ''
@@ -70,7 +72,11 @@ describe('来源与素材管理台', () => {
     mocks.sources = [{ id: 'src-hokace-wiki', sourceId: 'src-hokace-wiki', name: 'hokace 阵容工作台', type: 'THIRD_PARTY', status: 'READY', lastAttemptAt: null, lastSuccessAt: null, lastError: null }]
     const host = await mountView()
     expect(host.textContent).toContain('未配置')
-    expect(host.textContent).toContain('需要管理凭证')
+    expect(host.textContent).toContain('管理功能尚未解锁')
+    expect(host.querySelector('input[type=file]')).toBeNull()
+    expect(fetchSyncJobs).not.toHaveBeenCalled()
+    expect(fetchEvidences).not.toHaveBeenCalled()
+    expect(fetchRawMaterials).not.toHaveBeenCalled()
     // 数据源状态是公开只读信息：无凭证也如实陈列
     expect(host.textContent).toContain('hokace 阵容工作台')
     expect(host.textContent).toContain('READY')
@@ -85,7 +91,8 @@ describe('来源与素材管理台', () => {
     expect((syncBtn as HTMLButtonElement).disabled).toBe(true)
   })
 
-  it('界面如实声明「上传不等于核验」语义', async () => {
+  it('有凭证时展示上传与核验管理功能', async () => {
+    mocks.tokenReady = true
     const host = await mountView()
     expect(host.textContent).toContain('上传不等于核验')
     expect(host.textContent).toContain('PENDING')

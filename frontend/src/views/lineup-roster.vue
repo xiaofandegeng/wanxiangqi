@@ -125,7 +125,7 @@
                 class="component-chip"
                 :class="{ 'is-required': c.necessity === 'REQUIRED' }"
               >
-                {{ c.displayName || c.entityId }}
+                <GameArt :entity-id="c.slug || c.entityId" :name="c.displayName || c.entityId" variant="thumb" />{{ c.displayName || c.entityId }}
                 <em class="comp-role">{{ roleLabel(c.role) }}</em>
               </span>
             </div>
@@ -193,6 +193,7 @@
 </template>
 
 <script setup lang="ts">
+import GameArt from "../components/GameArt.vue"
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { fetchLineups, type LineupManual } from '../api'
 import { isFavorited } from '../composables/local-prefs'

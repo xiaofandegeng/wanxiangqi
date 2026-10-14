@@ -61,42 +61,22 @@
 
       <!-- 构成清单：每张卡的角色与必需性（§5.5 结构化替补关系） -->
       <div class="section-card">
-        <h3 class="section-title">构成清单（角色与必需性）</h3>
-        <div v-if="manual.components.length" class="comp-table-wrap">
-          <table class="comp-table">
-            <thead>
-              <tr>
-                <th>实体</th>
-                <th>种类</th>
-                <th>阵容角色</th>
-                <th>必需性</th>
-                <th>替补关系</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="c in manual.components" :key="c.entityId + c.role">
-                <td>
-                  <router-link
-                    v-if="c.slug"
-                    :to="`/library/${kindSegment(c.kind)}/${c.slug}`"
-                    class="comp-entity"
-                  >{{ c.displayName || c.entityId }}</router-link>
-                  <span v-else>{{ c.displayName || c.entityId }}</span>
-                </td>
-                <td>{{ kindLabel(c.kind) }}</td>
-                <td>{{ roleLabel(c.role) }}</td>
-                <td>{{ necessityLabel(c.necessity) }}</td>
-                <td class="font-mono sub-text">{{ c.substituteFor || '—' }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <h3 class="section-title">上场阵容</h3>
+        <div v-if="manual.components.length" class="lineup-card-grid">
+          <router-link v-for="c in manual.components" :key="c.entityId + c.role" :to="c.slug ? `/library/${kindSegment(c.kind)}/${c.slug}` : '/library'" class="lineup-game-card">
+            <GameArt :entity-id="c.slug || c.entityId" :name="c.displayName || c.entityId" variant="portrait" />
+            <strong>{{ c.displayName || c.entityId }}</strong>
+            <span>{{ roleLabel(c.role) }} · {{ necessityLabel(c.necessity) }}</span>
+            <span v-if="c.substituteFor">替补：{{ manual.components.find(item => item.entityId === c.substituteFor)?.displayName || c.substituteFor }}</span>
+          </router-link>
         </div>
         <div v-else class="section-empty">构成清单未登记</div>
       </div>
 
+      <TeachingMedia :text="manual.displayName" />
       <!-- §5.1–5.6 手册章节（结构化 JSON 如实陈列；未知形态回退原始 JSON） -->
       <div class="section-card">
-        <h3 class="section-title">阵容手册正文（§5.1–5.6）</h3>
+        <h3 class="section-title">打法与过渡</h3>
         <div class="manual-sections">
           <section v-for="sec in renderedSections" :key="sec.key" class="manual-section">
             <h4 class="ms-title">{{ sec.title }}</h4>
@@ -239,6 +219,9 @@
 </template>
 
 <script setup lang="ts">
+import FactValue from "../components/FactValue.vue"
+import GameArt from "../components/GameArt.vue"
+import TeachingMedia from "../components/TeachingMedia.vue"
 // 内联小组件：结构化章节的如实陈列（未知结构回退原始 JSON，不编造字段语义）
 import { defineComponent, h, type PropType } from 'vue'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
@@ -249,8 +232,7 @@ import { isFavorited, toggleFavorite } from '../composables/local-prefs'
 const JsonBlock = defineComponent({
   props: { value: { type: null as unknown as PropType<unknown>, required: true } },
   setup(props) {
-    return () => h('pre', { class: 'json-block' },
-      typeof props.value === 'string' ? props.value : JSON.stringify(props.value, null, 2))
+    return () => h(FactValue, { value: props.value })
   }
 })
 
@@ -323,7 +305,7 @@ const PracticeCases = defineComponent({
   components: { JsonBlock },
   props: { value: { type: Object as PropType<Record<string, unknown>>, required: true } },
   setup(props) {
-    const KIND_LABELS: Record<string, string> = { LINEUP_SCENARIO: '阵容情境', REVIEW_CASE: '复盘案例' }
+    const KIND_LABELS: Record<string, string> = { LINEUP_SCENARIO: "阵容情境", REVIEW_CASE: "复盘案例" }
     const caseList = (list: unknown) => {
       if (!Array.isArray(list)) return h(JsonBlock, { value: list })
       if (!list.length) return h('p', { class: 'pc-empty' }, '未登记')
@@ -475,14 +457,7 @@ function necessityLabel(n: string | null | undefined): string {
   return n || '—'
 }
 
-const KIND_LABELS: Record<string, string> = {
-  HERO: '英雄', COMMANDER: '棋手', EQUIPMENT: '装备',
-  EFFECT_CARD: '效果牌', TALENT: '天赋', CAMP: '阵营'
-}
 
-function kindLabel(kind: string | null | undefined): string {
-  return (kind && KIND_LABELS[kind]) || kind || '—'
-}
 
 const KIND_SEGMENTS: Record<string, string> = {
   HERO: 'heroes', COMMANDER: 'commanders', EQUIPMENT: 'equipment',

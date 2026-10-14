@@ -78,6 +78,7 @@
         </ul>
       </div>
 
+      <TeachingMedia :lesson-slug="lesson.slug" :text="JSON.stringify(lesson.sections)" />
       <!-- 课程正文：结构化 sections 如实陈列；形态未知回退原始 JSON，不编造字段语义 -->
       <div class="section-card">
         <div class="content-head-row">
@@ -108,7 +109,7 @@
             <p v-if="layer === 'advanced' && sec.advanced" class="ls-advanced">
               <span class="adv-chip">进阶</span>{{ sec.advanced }}
             </p>
-            <pre v-if="sec.restJson" class="json-block">{{ sec.restJson }}</pre>
+            <FactValue v-if="sec.restJson" :value="JSON.parse(sec.restJson)" />
           </section>
         </div>
       </div>
@@ -186,6 +187,8 @@
 </template>
 
 <script setup lang="ts">
+import FactValue from "../components/FactValue.vue"
+import TeachingMedia from "../components/TeachingMedia.vue"
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchLessonDetail, type LessonDetail } from '../api'

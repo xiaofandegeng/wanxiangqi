@@ -9,7 +9,7 @@
     </div>
 
     <!-- 管理凭证 -->
-    <div class="panel-card">
+    <div id="admin-credentials" class="panel-card">
       <div class="panel-head">
         <h3 class="panel-title">管理凭证</h3>
         <span class="token-state" :class="{ 'is-set': tokenReady }">
@@ -86,6 +86,12 @@
       </p>
     </div>
 
+    <div v-if="!tokenReady" class="panel-card">
+      <h3 class="panel-title">管理功能尚未解锁</h3>
+      <p class="hint-text">请先在上方保存当前后端的 ADMIN_TOKEN，再查看同步任务、上传素材或核验原件。浏览课程、阵容和资料无需管理凭证。</p>
+      <a href="#admin-credentials" class="op-btn">配置管理凭证</a>
+    </div>
+    <template v-if="tokenReady">
     <!-- 同步任务台账 -->
     <div class="panel-card">
       <div class="panel-head">
@@ -294,6 +300,7 @@
         </table>
       </div>
     </div>
+    </template>
   </div>
 </template>
 
@@ -325,6 +332,9 @@ function clearToken() {
   syncJobs.value = []
   evidences.value = []
   rawMaterials.value = []
+  jobsError.value = null
+  evidenceError.value = null
+  rawError.value = null
 }
 
 // ---------------- 数据源状态（公开只读） ----------------
@@ -411,7 +421,7 @@ async function loadEvidences() {
     evidences.value = await fetchEvidences(evidenceFilter.value || undefined)
   } catch (err: any) {
     if (err instanceof AdminTokenMissingError || err?.status === 401) {
-      evidenceError.value = '需要管理凭证（在上方保存后再刷新）'
+      evidenceError.value = '凭证无效或已过期，请重新配置当前后端的 ADMIN_TOKEN'
     } else {
       evidenceError.value = err?.message || '未知错误'
     }
@@ -454,7 +464,7 @@ async function loadRawMaterials() {
     rawMaterials.value = await fetchRawMaterials({ limit: 20 })
   } catch (err: any) {
     if (err instanceof AdminTokenMissingError || err?.status === 401) {
-      rawError.value = '需要管理凭证（在上方保存后再刷新）'
+      rawError.value = '凭证无效或已过期，请重新配置当前后端的 ADMIN_TOKEN'
     } else {
       rawError.value = err?.message || '未知错误'
     }
@@ -480,7 +490,7 @@ async function loadJobs() {
     syncJobs.value = await fetchSyncJobs(20)
   } catch (err: any) {
     if (err instanceof AdminTokenMissingError || err?.status === 401) {
-      jobsError.value = '需要管理凭证（在上方保存后再刷新）'
+      jobsError.value = '凭证无效或已过期，请重新配置当前后端的 ADMIN_TOKEN'
     } else {
       jobsError.value = err?.message || '未知错误'
     }
@@ -489,7 +499,7 @@ async function loadJobs() {
 }
 
 async function loadAll() {
-  await Promise.all([loadStatus(), loadJobs(), loadEvidences(), loadRawMaterials()])
+  await Promise.all([loadStatus(), ...(tokenReady.value ? [loadJobs(), loadEvidences(), loadRawMaterials()] : [])])
 }
 
 function statusClass(status: string | null | undefined): string {
