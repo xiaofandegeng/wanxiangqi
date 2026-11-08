@@ -203,13 +203,14 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
       { nickname: '北念', commander: null },
       { nickname: '抖音小新游', commander: null },
       { nickname: '抖音妖柒', commander: '安琪拉' },
-      { nickname: '遗愿', commander: '诸葛亮' }
+      { nickname: '遗愿', commander: '白歌' }
     ]
     const resWithCmd = evaluate6PlayerMatchup(baseP, null, mockMatches)
     const yiyuanWithCmd = resWithCmd.players.find(p => p.nickname === '遗愿')!
-    expect(yiyuanWithCmd.commander).toBe('诸葛亮')
+    expect(yiyuanWithCmd.commander).toBe('白歌')
     expect(yiyuanWithCmd.commanderEvaluation?.tier).toBe('T1')
     expect(yiyuanWithCmd.commanderModifier).toBeGreaterThan(0)
+    expect(OFFICIAL_COMMANDERS.length).toBe(21)
   })
 })
 

@@ -174,145 +174,330 @@ export type BanImpactLevel = 'CRITICAL' | 'MODERATE' | 'IMMUNE' | 'BENEFITED'
 
 export interface CommanderMeta {
   name: string
+  aliases: string[]
   title: string
   tier: 'T0' | 'T1' | 'T2'
-  suitableBuilds: string[]
-  description: string
-  v191Bonus: number // 版本机制加成
-  synergyKeyword: string
+  mechanism: string // 棋手核心机制说明
+  v191Bonus: number // 版本机制强度增益
+  synergizedPlaystyles: string[] // 该棋手机制能显著强化的流派关键词（如 '蒙恬', '坦射', '机甲', '倒转', '养猪' 等）
 }
 
-/** 官方主流棋手库与当前版本机制强度定义 */
+/** 官方完整 21 位万象棋棋手库与当前版本机制定义 */
 export const OFFICIAL_COMMANDERS: readonly CommanderMeta[] = [
+  // --- T0 梯队 (当前 v1.9.1 版本三巨头) ---
   {
     name: '嬴律',
-    title: '并购红利 / 单核追三之王',
+    aliases: ['嬴政'],
+    title: '并购红利 / 单核追三特权',
     tier: 'T0',
-    suitableBuilds: ['逐鹿蒙恬', '稷下坦射', '坦射', '传统养猪', '日落海倒转'],
-    description: 'v1.9.1重磅加强：合成上限后每回合额外随机复制场上英雄，高阶单核追三星神速，大幅拔高阵容上限',
+    mechanism: '合成上限后每回合额外随机复制场上英雄，极大加速单核追三星，大幅拔高单核阵容上限',
     v191Bonus: 0.18,
-    synergyKeyword: '单核追三'
+    synergizedPlaystyles: ['逐鹿蒙恬', '稷下坦射', '坦射', '传统养猪', '日落海倒转', '蒙恬']
   },
   {
     name: '安琪拉',
+    aliases: [],
     title: '打扫战场 / 法爆狂潮',
     tier: 'T0',
-    suitableBuilds: ['雷霆战机', '雷霆机甲', '稷下雷霆', '法天象地', '日落海倒转'],
-    description: 'v1.9.1官方大加强：飞行器继承法攻提至125%、攻速30%，雷霆机甲与法术爆发阵容强度爆表',
+    mechanism: 'v1.9.1官方大加强：飞行器继承法攻提至125%、攻速30%，引爆法术爆发与机甲狂潮',
     v191Bonus: 0.16,
-    synergyKeyword: '法爆机甲'
+    synergizedPlaystyles: ['雷霆战机', '雷霆机甲', '稷下雷霆', '法天象地', '五法', '法系']
   },
   {
+    name: '玉环',
+    aliases: ['杨玉环'],
+    title: '霓裳羽衣 / 刷牌登顶第一',
+    tier: 'T0',
+    mechanism: '霓裳曲刷牌神技，每打出非觉醒牌触发连击增益，高分段登顶率榜首，单核快速成型',
+    v191Bonus: 0.16,
+    synergizedPlaystyles: ['日落海倒转', '日落海整备', '快攻', '核心C位', '倒转']
+  },
+
+  // --- T1 梯队 (强势热门与机制专精) ---
+  {
     name: '乔汐',
+    aliases: ['大乔'],
     title: '温柔呼唤 / 潮汐交响',
     tier: 'T1',
-    suitableBuilds: ['日落海倒转', '三分倒转', '法天象地', '倒转'],
-    description: 'v1.9.1转瞬抽取收窄至3~5阶高质量牌，潮汐交响初始4次，法系倒转与转瞬牌体系成型极快',
+    mechanism: 'v1.9.1转瞬抽取收窄至3~5阶高质牌，潮汐交响初始4次，法系倒转与转瞬快攻成型神速',
     v191Bonus: 0.12,
-    synergyKeyword: '倒转高阶'
+    synergizedPlaystyles: ['日落海倒转', '三分倒转', '倒转', '法天象地']
   },
   {
     name: '武凤',
+    aliases: ['武则天'],
     title: '偷取秘技 / 全能博弈',
     tier: 'T1',
-    suitableBuilds: ['全能', '稷下坦射', '逐鹿蒙恬', '传统养猪', '三分登场'],
-    description: '11月6日新棋手登场：偷取敌方秘技牌机制打破单棋手套路上限，博弈对抗性极强',
-    v191Bonus: 0.10,
-    synergyKeyword: '秘技对抗'
+    mechanism: '11月6日新棋手登场：偷取敌方秘技牌打破单套路上限，万鸟朝凤博弈对抗性极强',
+    v191Bonus: 0.11,
+    synergizedPlaystyles: ['全能', '对抗', '变阵', '逐鹿蒙恬', '三分登场']
   },
   {
-    name: '庄周',
+    name: '庄小鱼',
+    aliases: ['庄周'],
     title: '梦蝶逍遥 / 免控护体',
     tier: 'T1',
-    suitableBuilds: ['传统养猪', '稷下坦克', '稷下坦射', '养猪', '日落海'],
-    description: '全队免控与减伤坦度，极端克制控制爆发流派，是养猪与坦克核心的坚实后盾',
-    v191Bonus: 0.08,
-    synergyKeyword: '免控保核'
+    mechanism: '灵感馈赠升级获效果牌，梦境商店逆风翻盘，全队免控坦度极大保障养猪与坦克核心',
+    v191Bonus: 0.10,
+    synergizedPlaystyles: ['传统养猪', '稷下坦克', '养猪', '坦射', '肉装保核']
   },
   {
-    name: '诸葛亮',
-    title: '神机妙算 / 阵营增益',
+    name: '孙小宾',
+    aliases: ['孙膑'],
+    title: '时光倒流 / 牌序回溯',
     tier: 'T1',
-    suitableBuilds: ['三分登场', '三分倒转', '三分蜀国'],
-    description: '三分蜀国专属棋手，提供强大的阵营技能连环与治疗爆发协同',
-    v191Bonus: 0.12,
-    synergyKeyword: '三分增益'
+    mechanism: '时光倒流可回溯上一回合使用过的手牌，对牌序和高频过牌流派形成极致助力',
+    v191Bonus: 0.10,
+    synergizedPlaystyles: ['三分倒转', '高速过牌', '连击', '日落海倒转', '倒转']
   },
   {
-    name: '司马懿',
-    title: '暗影收割 / 爆发突刺',
+    name: '阿离',
+    aliases: ['公孙离'],
+    title: '红叶染锋 / 灵动连击',
     tier: 'T1',
-    suitableBuilds: ['刺客', '六影扶桑', '法天象地'],
-    description: '提供高额斩杀与爆发机动，专克无护盾脆皮后排阵容',
-    v191Bonus: 0.06,
-    synergyKeyword: '刺客斩杀'
+    mechanism: '红叶染锋等级保留机制，高机动位移与持续输出，强化敏捷射手与尧天机动体系',
+    v191Bonus: 0.09,
+    synergizedPlaystyles: ['射手', '尧天', '机动突进', '伞半月']
+  },
+  {
+    name: '白歌',
+    aliases: ['李白'],
+    title: '即兴创作 / 复制成星',
+    tier: 'T1',
+    mechanism: '每4次英雄合成获得即兴创作随机复制场上英雄，追求阵容星级质变与刺客高爆发',
+    v191Bonus: 0.09,
+    synergizedPlaystyles: ['刺客', '高密度合成', '星级追梦', '六影扶桑']
+  },
+  {
+    name: '马可',
+    aliases: ['马可波罗', '马可专精'],
+    title: '漫游疾射 / 灵动开团',
+    tier: 'T1',
+    mechanism: '高频真实伤害弹幕与游击位移，强化射手阵容开团火力与穿透输出',
+    v191Bonus: 0.09,
+    synergizedPlaystyles: ['稷下坦射', '大河开团射', '坦射', '射手']
+  },
+  {
+    name: '昭君',
+    aliases: ['王昭君'],
+    title: '寒霜转化 / 升阶继承',
+    tier: 'T1',
+    mechanism: '寒霜转化指定冻结英雄，战斗后高阶升阶并继承等级，利好高费卡提早成型',
+    v191Bonus: 0.09,
+    synergizedPlaystyles: ['高费卡', '法天象地', '大河开团射', '跳费']
+  },
+  {
+    name: '镜',
+    aliases: [],
+    title: '无穷镜像 / 镜像复刻',
+    tier: 'T1',
+    mechanism: '产出铜像自动复刻上一张英雄卡，万镜状态爆发，专精双核与刺客镜像复制',
+    v191Bonus: 0.09,
+    synergizedPlaystyles: ['刺客', '双核', '镜猪', '镜像复刻']
+  },
+
+  // --- T2 梯队 (稳健过渡与特色功能) ---
+  {
+    name: '明先生',
+    aliases: ['明世隐'],
+    title: '卦象变幻 / 丰节调控',
+    tier: 'T2',
+    mechanism: '在丰与节两类卦象间动态切换，灵活调控经济与卡牌熟悉度，适合慢速大核',
+    v191Bonus: 0.07,
+    synergizedPlaystyles: ['河洛木兰', '慢速大核', '长安九五', '养猪']
   },
   {
     name: '小妲己',
-    title: '金币收益 / 万金油保底',
+    aliases: ['妲己'],
+    title: '怦然心动 / 万能保底',
     tier: 'T2',
-    suitableBuilds: ['长安九五', '传统养猪', '长安倒转'],
-    description: '经典棋手，提供稳定的经济成长与利息收益，适合长安及慢速憋高阶阵容',
-    v191Bonus: 0.05,
-    synergyKeyword: '经济发育'
-  },
-  {
-    name: '鲁班七号',
-    title: '机关轰炸 / 射手火力',
-    tier: 'T2',
-    suitableBuilds: ['稷下坦射', '坦射', '雷霆机甲'],
-    description: '重装机关火力压制，强化物理射手阵容的持续输出与穿透',
-    v191Bonus: 0.08,
-    synergyKeyword: '射手轰炸'
-  },
-  {
-    name: '狄仁杰',
-    title: '令牌律法 / 破甲减防',
-    tier: 'T2',
-    suitableBuilds: ['长安九五', '稷下坦克', '坦射'],
-    description: '射手攻速与穿透增益，兼具一定控制效果',
+    mechanism: '每买4张牌赠送随机效果牌，操作简单无门槛，经济与战力平稳保底',
     v191Bonus: 0.07,
-    synergyKeyword: '破甲速攻'
+    synergizedPlaystyles: ['通用', '长安九五', '传统养猪', '逐鹿蒙恬']
   },
   {
-    name: '刘备',
-    title: '仁义之盾 / 蜀国卫戍',
+    name: '香香',
+    aliases: ['孙尚香'],
+    title: '武器协同 / 重炮轰炸',
     tier: 'T2',
-    suitableBuilds: ['三分登场', '三分蜀国'],
-    description: '为三分阵营提供护盾与保底血量加成',
-    v191Bonus: 0.08,
-    synergyKeyword: '三分卫戍'
+    mechanism: '战斗开局武器协同攻击，初始攻击力随低阶高等级英雄暴增，物理暴击压制',
+    v191Bonus: 0.07,
+    synergizedPlaystyles: ['三分登场', '暴击射手', '物理重炮']
   },
   {
-    name: '孙尚香',
-    title: '重炮轰鸣 / 物理暴击',
+    name: '瑶妹',
+    aliases: ['瑶'],
+    title: '小鹿庇护 / 稳健防守',
     tier: 'T2',
-    suitableBuilds: ['三分登场', '稷下坦射'],
-    description: '提供物理暴击与爆发射击加成',
+    mechanism: '开局为随机友方提供随棋手等级成长的护盾，小鹿属性成长，辅助保核防守',
     v191Bonus: 0.06,
-    synergyKeyword: '暴击重炮'
+    synergizedPlaystyles: ['防守保核', '辅助', '稳健过渡']
+  },
+  {
+    name: '班叔',
+    aliases: ['鲁班', '鲁班七号', '鲁班大师'],
+    title: '便携机关 / 阵地布防',
+    tier: 'T2',
+    mechanism: '随等级解锁热能陷阱（真伤眩晕）与电磁弹簧（弹至后排），擅长阵地防御',
+    v191Bonus: 0.06,
+    synergizedPlaystyles: ['稷下坦射', '机关布防', '防刺客']
+  },
+  {
+    name: '姜导',
+    aliases: ['姜子牙'],
+    title: '主角加冕 / 单核升级',
+    tier: 'T2',
+    mechanism: '主角加冕指定单核英雄，通过出牌快速为其提升等级与属性，极限养大哥',
+    v191Bonus: 0.06,
+    synergizedPlaystyles: ['单核', '封神单大哥', '逐鹿蒙恬']
+  },
+  {
+    name: '闹闹',
+    aliases: ['梦奇'],
+    title: '阵营抉择 / 定向锁定',
+    tier: 'T2',
+    mechanism: '阵营抉择锁定并稳定获取特定阵营卡牌，纯阵营构筑时过滤杂牌效率极高',
+    v191Bonus: 0.06,
+    synergizedPlaystyles: ['纯三分', '纯日落海', '纯河洛', '纯大河', '专精过滤']
+  },
+  {
+    name: '弈星',
+    aliases: [],
+    title: '棋盘演练 / 借力打力',
+    tier: 'T2',
+    mechanism: '弈局推演与棋盘封锁，大招期间可借力复制敌方高级英雄牌反制敌手',
+    v191Bonus: 0.06,
+    synergizedPlaystyles: ['战术博弈', '借力打力', '法系']
+  },
+  {
+    name: '常小娥',
+    aliases: ['嫦娥'],
+    title: '月影灵泉 / 法盾续航',
+    tier: 'T2',
+    mechanism: '提供月光护盾与灵力回复，大幅增强队伍在长线拉扯中的法术承伤与续航',
+    v191Bonus: 0.06,
+    synergizedPlaystyles: ['法系承伤', '长线拉扯', '法盾']
   }
 ]
 
+/** 查找或模糊解析棋手档案 */
+export function findCommanderMeta(rawName: string | null | undefined): CommanderMeta | undefined {
+  if (!rawName || !rawName.trim()) return undefined
+  const clean = rawName.trim()
+  return OFFICIAL_COMMANDERS.find(c =>
+    c.name === clean ||
+    c.aliases.includes(clean) ||
+    clean.includes(c.name) ||
+    c.aliases.some(a => clean.includes(a))
+  )
+}
+
+/** 选手出战阵容推断结构体 */
+export interface PlayerInferredLineup {
+  lineupName: string // 本场推断阵容名称
+  isFallback: boolean // 是否因 Ban 位受阻而被迫切换备选流派
+  primaryBuild: string // 选手平时最擅长的第一招牌流派
+  reason: string // 推断依据
+  bannedWarning?: string // 若第一流派被 Ban，给出告警提示
+}
+
+/** 核心推断逻辑：根据选手历史擅长流派 + 本场Ban位 + 所选棋手，推断本场选手的出战阵容 */
+export function inferPlayerLineup(
+  commonBuilds: string[] = [],
+  bannedFaction: string | null = null,
+  commanderName: string | null = null
+): PlayerInferredLineup {
+  // 1. 若选手没有历史流派样本，中性推断
+  if (!commonBuilds || commonBuilds.length === 0) {
+    const meta = findCommanderMeta(commanderName)
+    const fallbackName = meta ? `${meta.name}偏向构筑` : '多流派平衡'
+    return {
+      lineupName: fallbackName,
+      isFallback: false,
+      primaryBuild: '自由发挥',
+      reason: '选手战绩尚无固定流派样本，根据临场对局构建'
+    }
+  }
+
+  const primary = commonBuilds[0]
+
+  // 2. 检查选手的第 1 擅长流派是否受当前禁选 Ban 位封锁
+  if (bannedFaction && bannedFaction.trim()) {
+    const bf = bannedFaction.trim()
+    if (primary.includes(bf)) {
+      // 主力流派被 Ban，寻找未被 Ban 的次选擅长
+      const fallback = commonBuilds.find(b => !b.includes(bf))
+      if (fallback) {
+        return {
+          lineupName: fallback,
+          isFallback: true,
+          primaryBuild: primary,
+          reason: `主力擅长「${primary}」受「${bf}」禁选封锁，转用备选擅长「${fallback}」`,
+          bannedWarning: `主力「${primary}」受禁选封锁！`
+        }
+      } else {
+        return {
+          lineupName: `非${bf}过渡阵容`,
+          isFallback: true,
+          primaryBuild: primary,
+          reason: `选手擅长流派均受「${bf}」禁选影响，本场需被迫变阵`,
+          bannedWarning: `主力「${primary}」受禁选封锁！`
+        }
+      }
+    }
+  }
+
+  // 3. 第一擅长未被 Ban：优先按选手招牌擅长出战
+  // 若选手有多个擅长流派，且所选棋手对其中某个擅长有特异协同，则根据棋手选用该擅长
+  if (commanderName && commonBuilds.length > 1) {
+    const meta = findCommanderMeta(commanderName)
+    if (meta) {
+      const synergizedBuild = commonBuilds.find(b =>
+        (!bannedFaction || !b.includes(bannedFaction)) &&
+        meta.synergizedPlaystyles.some(sp => b.includes(sp) || sp.includes(b))
+      )
+      if (synergizedBuild && synergizedBuild !== primary) {
+        return {
+          lineupName: synergizedBuild,
+          isFallback: false,
+          primaryBuild: primary,
+          reason: `配合所选棋手「${meta.name}」机制特性，选手选用契合度更高的擅长流派「${synergizedBuild}」`
+        }
+      }
+    }
+  }
+
+  return {
+    lineupName: primary,
+    isFallback: false,
+    primaryBuild: primary,
+    reason: '选手个人历史招牌流派（擅长率最高）'
+  }
+}
+
 export interface CommanderEvaluation {
   commander: string
-  tier: string
+  tier: 'T0' | 'T1' | 'T2'
   levelLabel: string
   bonus: number
   synergyScore: number
   summary: string
-  synergyLevel: 'PERFECT' | 'GOOD' | 'NEUTRAL' | 'MISMATCH'
+  synergyLevel: 'PERFECT' | 'GOOD' | 'NEUTRAL'
+  inferredLineup: PlayerInferredLineup
 }
 
-/** 评估棋手机制、版本增益与选手主力流派的协同效果 */
+/** 评估棋手机制、版本增益与选手擅长流派的协同效果 */
 export function evaluateCommander(
   commanderName: string | null | undefined,
   commonBuilds: string[] = [],
-  version: string = CURRENT_LATEST_VERSION
+  version: string = CURRENT_LATEST_VERSION,
+  bannedFaction: string | null = null
 ): CommanderEvaluation | null {
   if (!commanderName || !commanderName.trim()) return null
   const clean = commanderName.trim()
-  const meta = OFFICIAL_COMMANDERS.find(c => c.name === clean || clean.includes(c.name))
+  const meta = findCommanderMeta(clean)
+  const inferred = inferPlayerLineup(commonBuilds, bannedFaction, commanderName)
+
   if (!meta) {
     return {
       commander: clean,
@@ -321,7 +506,8 @@ export function evaluateCommander(
       bonus: 0.04,
       synergyScore: 0,
       summary: `选用棋手「${clean}」，提供常规战术机制支持。`,
-      synergyLevel: 'NEUTRAL'
+      synergyLevel: 'NEUTRAL',
+      inferredLineup: inferred
     }
   }
 
@@ -329,40 +515,42 @@ export function evaluateCommander(
   const isLatest = version === 'v1.9.1'
   const versionBonus = isLatest ? meta.v191Bonus : 0.05
 
-  // 2. 选手阵容与棋手的协同加成
+  // 2. 结合选手根据擅长推断的出战阵容，计算棋手协同分
   let synergyLevel: CommanderEvaluation['synergyLevel'] = 'NEUTRAL'
   let synergyScore = 0
   let synergyNote = ''
 
-  const matchesBuild = commonBuilds.some(b =>
-    meta.suitableBuilds.some(sb => b.includes(sb) || sb.includes(b))
+  const targetLineup = inferred.lineupName
+  const matchesBuild = meta.synergizedPlaystyles.some(sp =>
+    targetLineup.includes(sp) || sp.includes(targetLineup)
   )
 
   if (matchesBuild) {
     synergyLevel = 'PERFECT'
     synergyScore = 0.14
-    synergyNote = `与选手主力流派高度契合（${meta.synergyKeyword}超强协同）`
-  } else if (meta.suitableBuilds.includes('全能')) {
+    synergyNote = `棋手特性与选手出战阵容「${targetLineup}」形成质变协同（${meta.mechanism}）`
+  } else if (meta.synergizedPlaystyles.includes('全能') || meta.synergizedPlaystyles.includes('通用')) {
     synergyLevel = 'GOOD'
     synergyScore = 0.08
-    synergyNote = '棋手机制通用全能，平稳增幅阵容战力'
+    synergyNote = '棋手机制通用全能，平稳增幅选手阵容发挥'
   } else if (commonBuilds.length > 0) {
     synergyLevel = 'NEUTRAL'
     synergyScore = 0.02
-    synergyNote = '棋手与选手主力构筑平稳互补'
+    synergyNote = `棋手为选手阵容「${targetLineup}」提供平稳机制补充`
   }
 
   const totalBonus = Number((versionBonus + synergyScore).toFixed(3))
-  const summary = `【${meta.name} (${meta.tier})】${meta.description}。${synergyNote}。`
+  const summary = `【${meta.name} (${meta.tier})】${meta.mechanism}。${synergyNote}。`
 
   return {
     commander: meta.name,
     tier: meta.tier,
-    levelLabel: meta.tier === 'T0' ? '版本 T0 强力棋手' : (meta.tier === 'T1' ? '强势热门棋手' : '常规棋手'),
+    levelLabel: meta.tier === 'T0' ? '版本 T0 强力棋手' : (meta.tier === 'T1' ? '强势热门棋手' : '常规实用棋手'),
     bonus: totalBonus,
     synergyScore,
     summary,
-    synergyLevel
+    synergyLevel,
+    inferredLineup: inferred
   }
 }
 
@@ -416,6 +604,7 @@ export interface SixPlayerMatchupResult {
     masterName: string
     commander: string | null
     commanderEvaluation: CommanderEvaluation | null
+    inferredLineup: PlayerInferredLineup
     baseScore: number
     h2hBonus: number
     banModifier: number
@@ -842,7 +1031,8 @@ export function evaluate6PlayerMatchup(
     const versionModifier = versionAdapt.bonus
 
     // 所选棋手机制强度与流派协同修正分
-    const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion)
+    const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion, bannedFaction)
+    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander)
     const commanderModifier = cmdEval ? cmdEval.bonus : 0
 
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
@@ -856,6 +1046,7 @@ export function evaluate6PlayerMatchup(
       masterName: p.masterName,
       commander: p.commander,
       commanderEvaluation: cmdEval,
+      inferredLineup: inferred,
       baseScore: Number(baseScore.toFixed(3)),
       h2hBonus: Number(h2hBonus.toFixed(3)),
       banModifier: Number(banModifier.toFixed(3)),

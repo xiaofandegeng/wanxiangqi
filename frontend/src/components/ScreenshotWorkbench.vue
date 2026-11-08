@@ -133,20 +133,34 @@
             </div>
           </div>
 
-          <!-- 2. 所选棋手 (Commander) 选择框 -->
+          <!-- 2. 所选棋手 (Commander) 选择框：纯棋手选择，共 21 位官方棋手，无虚构阵容后缀 -->
           <div class="seat-commander-row">
             <span class="cmd-icon" title="棋手">♟️</span>
             <select v-model="p.commander" class="seat-commander-select" aria-label="选择棋手">
               <option value="">未选棋手 / 未知</option>
               <option v-for="cmd in OFFICIAL_COMMANDERS" :key="cmd.name" :value="cmd.name">
-                {{ cmd.name }} · {{ cmd.tier }} ({{ cmd.synergyKeyword }})
+                {{ cmd.name }} ({{ cmd.tier }})
               </option>
             </select>
           </div>
 
-          <!-- 3. 选手+棋手协同度微标 -->
-          <div v-if="getSeatSynergy(p.nickname, p.commander)" class="seat-synergy-tag" :class="getSeatSynergy(p.nickname, p.commander)!.level">
-            {{ getSeatSynergy(p.nickname, p.commander)!.label }}
+          <!-- 3. 根据选手擅长推断的本场阵容与棋手协同（阵容由选手擅长决定） -->
+          <div v-if="p.nickname" class="seat-inferred-row">
+            <div class="inferred-lineup" :class="{ 'fallback-warning': getSeatInferredLineup(p.nickname, p.commander)?.isFallback }">
+              <span class="inferred-label">预期阵容：</span>
+              <strong class="inferred-name">{{ getSeatInferredLineup(p.nickname, p.commander)?.lineupName }}</strong>
+              <small v-if="getSeatInferredLineup(p.nickname, p.commander)?.isFallback" class="ban-alert-tag">
+                (主力受Ban变阵)
+              </small>
+            </div>
+            <div
+              v-if="p.commander && getSeatSynergy(p.nickname, p.commander)"
+              class="seat-synergy-tag"
+              :class="getSeatSynergy(p.nickname, p.commander)!.level"
+              :title="getSeatSynergy(p.nickname, p.commander)!.text"
+            >
+              {{ getSeatSynergy(p.nickname, p.commander)!.label }}
+            </div>
           </div>
         </div>
       </div>
@@ -199,6 +213,10 @@
             <img :src="getPlayerAvatar(topPick.nickname)" class="feature-avatar" alt="" />
             <div class="feature-info">
               <h4>{{ topPick.nickname }} <small v-if="topPick.masterName !== topPick.nickname">({{ topPick.masterName }})</small></h4>
+              <div v-if="topPick.inferredLineup" class="lineup-badge-line">
+                🎯 推断出战阵容：<strong>{{ topPick.inferredLineup.lineupName }}</strong>
+                <small class="lineup-origin">({{ topPick.inferredLineup.isFallback ? '主力受Ban变阵' : '选手擅长招牌' }})</small>
+              </div>
               <div v-if="topPick.commander" class="commander-badge-line">
                 ♟️ 所选棋手：<strong>{{ topPick.commander }}</strong>
                 <span class="cmd-pill" :class="topPick.commanderEvaluation?.tier.toLowerCase()">
@@ -241,6 +259,10 @@
             <img :src="getPlayerAvatar(secondPick.nickname)" class="feature-avatar" alt="" />
             <div class="feature-info">
               <h4>{{ secondPick.nickname }} <small v-if="secondPick.masterName !== secondPick.nickname">({{ secondPick.masterName }})</small></h4>
+              <div v-if="secondPick.inferredLineup" class="lineup-badge-line">
+                🎯 推断出战阵容：<strong>{{ secondPick.inferredLineup.lineupName }}</strong>
+                <small class="lineup-origin">({{ secondPick.inferredLineup.isFallback ? '主力受Ban变阵' : '选手擅长招牌' }})</small>
+              </div>
               <div v-if="secondPick.commander" class="commander-badge-line">
                 ♟️ 所选棋手：<strong>{{ secondPick.commander }}</strong>
                 <span class="cmd-pill" :class="secondPick.commanderEvaluation?.tier.toLowerCase()">
@@ -303,7 +325,10 @@
             <img :src="getPlayerAvatar(p.nickname)" class="bar-avatar" alt="" />
             <div class="bar-player-col">
               <span class="bar-name">{{ p.nickname }}</span>
-              <span v-if="p.commander" class="bar-cmd-badge">♟️ {{ p.commander }}</span>
+              <div class="bar-sub-info">
+                <span v-if="p.inferredLineup" class="bar-lineup-badge">🎯 {{ p.inferredLineup.lineupName }}</span>
+                <span v-if="p.commander" class="bar-cmd-badge">♟️ {{ p.commander }}</span>
+              </div>
             </div>
             <div class="bar-track">
               <div
@@ -538,6 +563,7 @@ import {
   GAME_VERSIONS,
   OFFICIAL_COMMANDERS,
   evaluateCommander,
+  inferPlayerLineup,
   type SixPlayerMatchupResult
 } from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
@@ -567,7 +593,7 @@ const starPlayers = [
 ]
 const quickBans = ['', '逐鹿', '三分', '日落海', '河洛', '稷下', '大河']
 
-// 选手历史招牌/常用棋手数据库映射
+// 选手历史招牌/常用棋手数据库映射（全面校准为官方 21 位万象棋正统棋手名）
 const SIGNATURE_COMMANDERS: Record<string, string> = {
   '梦飞': '嬴律',
   '梦飞大大': '嬴律',
@@ -577,11 +603,11 @@ const SIGNATURE_COMMANDERS: Record<string, string> = {
   '丰川祥子': '安琪拉',
   '新一': '嬴律',
   'QT新一': '嬴律',
-  '猪葛龟': '庄周',
-  '猪葛龟龟': '庄周',
-  '抖音猪葛龟龟': '庄周',
+  '猪葛龟': '庄小鱼',
+  '猪葛龟龟': '庄小鱼',
+  '抖音猪葛龟龟': '庄小鱼',
   '呆头鹅': '嬴律',
-  '遗愿': '诸葛亮',
+  '遗愿': '白歌',
   '世薄情': '小妲己',
   '沐汐': '乔汐',
   'EZ拉丁鱼': '乔汐',
@@ -594,15 +620,18 @@ const SIGNATURE_COMMANDERS: Record<string, string> = {
   '清辞': '安琪拉',
   '武汉 EG清辞': '安琪拉',
   'EG清辞': '安琪拉',
-  '泪花': '司马懿',
-  '抖音EG泪花': '司马懿',
-  '兰陵笑笑笑': '庄周',
-  '事后诸葛亮': '诸葛亮',
+  '泪花': '玉环',
+  '抖音EG泪花': '玉环',
+  '兰陵笑笑笑': '庄小鱼',
+  '事后诸葛亮': '白歌',
   '抖音搜索北念': '嬴律',
   '北念': '嬴律',
-  '皮皮鲨': '乔汐',
-  '抖音EGM皮皮鲨': '乔汐',
-  '阿文倒转王': '乔汐'
+  '皮皮鲨': '玉环',
+  '抖音EGM皮皮鲨': '玉环',
+  '阿文倒转王': '乔汐',
+  '星光柯基': '小妲己',
+  '喵喵虾条': '马可',
+  '萌岑': '昭君'
 }
 
 interface Candidate {id:string;nickname:string;similarity:number}
@@ -742,21 +771,34 @@ function selectCandidate(idx: number, cand: KnownPlayerItem) {
   activeDropdownSeat.value = null
 }
 
-// 选手+棋手协同度计算标签
-function getSeatSynergy(nickname: string, commander: string) {
-  if (!nickname || !commander) return null
+// 获取选手历史擅长流派列表（从 232 场赛果聚合中提取）
+function getPlayerBuilds(nickname: string): string[] {
+  if (!nickname) return []
   const master = getMasterPlayerName(nickname)
   const p = knownPlayersList.value.find(x => x.nickname === nickname || x.masterName === master)
-  const builds = p?.topBuild ? [p.topBuild] : []
-  const cmd = evaluateCommander(commander, builds, version.value || CURRENT_LATEST_VERSION)
+  return p?.topBuild ? [p.topBuild] : []
+}
+
+// 核心逻辑：根据选手个人擅长流派 + 本场Ban位 + 所选棋手，推断本场选手的出战阵容
+function getSeatInferredLineup(nickname: string, commander: string | null) {
+  if (!nickname) return null
+  const builds = getPlayerBuilds(nickname)
+  return inferPlayerLineup(builds, bannedFaction.value || null, commander)
+}
+
+// 选手+棋手协同度计算标签（基于选手推断阵容与棋手机制评估）
+function getSeatSynergy(nickname: string, commander: string) {
+  if (!nickname || !commander) return null
+  const builds = getPlayerBuilds(nickname)
+  const cmd = evaluateCommander(commander, builds, version.value || CURRENT_LATEST_VERSION, bannedFaction.value || null)
   if (!cmd) return null
   if (cmd.synergyLevel === 'PERFECT') {
-    return { level: 'perfect', label: `🔥 协同暴涨 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+    return { level: 'perfect', label: `🔥 协同暴涨 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
   }
   if (cmd.synergyLevel === 'GOOD') {
-    return { level: 'good', label: `✨ 契合良好 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+    return { level: 'good', label: `✨ 契合良好 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
   }
-  return { level: 'neutral', label: `平稳增幅 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+  return { level: 'neutral', label: `平稳增幅 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
 }
 
 // 极速模式：一键批量填入名单（支持模糊纠偏与招牌棋手自动匹配）
@@ -1387,6 +1429,44 @@ onUnmounted(() => {
         }
       }
 
+      .seat-inferred-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: #fff;
+        padding: 4px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba($border-subtle, 0.7);
+
+        .inferred-lineup {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          min-width: 0;
+          flex-wrap: wrap;
+
+          .inferred-label {
+            color: $text-secondary;
+            font-size: 10px;
+          }
+
+          .inferred-name {
+            color: $color-primary;
+            font-weight: 700;
+          }
+
+          .ban-alert-tag {
+            font-size: 9.5px;
+            color: $color-danger;
+            background: rgba($color-danger, 0.1);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+          }
+        }
+      }
+
       .seat-synergy-tag {
         font-size: 10px;
         font-weight: 700;
@@ -1623,6 +1703,25 @@ onUnmounted(() => {
           }
         }
 
+        .lineup-badge-line {
+          font-size: 12px;
+          color: $text-primary;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin-bottom: 3px;
+
+          strong {
+            color: $color-primary;
+            font-weight: 700;
+          }
+
+          .lineup-origin {
+            font-size: 10px;
+            color: $text-secondary;
+          }
+        }
+
         .commander-badge-line {
           display: flex;
           align-items: center;
@@ -1793,8 +1892,8 @@ onUnmounted(() => {
       .bar-player-col {
         display: flex;
         flex-direction: column;
-        min-width: 90px;
-        max-width: 120px;
+        min-width: 100px;
+        max-width: 140px;
 
         .bar-name {
           font-size: 13px;
@@ -1805,11 +1904,22 @@ onUnmounted(() => {
           text-overflow: ellipsis;
         }
 
-        .bar-cmd-badge {
-          font-size: 10.5px;
-          font-weight: 600;
-          color: $color-primary;
-          opacity: 0.9;
+        .bar-sub-info {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+
+          .bar-lineup-badge {
+            color: $text-secondary;
+            white-space: nowrap;
+          }
+
+          .bar-cmd-badge {
+            color: $color-primary;
+            font-weight: 600;
+            white-space: nowrap;
+          }
         }
       }
 
