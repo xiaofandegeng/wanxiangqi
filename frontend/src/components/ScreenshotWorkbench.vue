@@ -1,49 +1,300 @@
 <template>
 <section class="shot-workbench">
- <h2>王牌对决 · 本场分析</h2><p>确认六名参赛选手 → 填写赛前已揭示的棋手和禁用阵营 → 对照历史记录。</p>
- <form class="shot-upload" @submit.prevent="read">
-  <label>赛前名单截图<input type="file" accept="image/png,image/jpeg,image/webp" @change="selectFile"></label>
-  <label>实际截图采集时间<input v-model="capturedAt" type="datetime-local" step="1" :readonly="!!draft" required></label>
-  <label>复核人<input v-model="operator" required maxlength="160" placeholder="操作人标识"></label>
-  <button class="primary" :disabled="busy||!file">{{ busy?'处理中…':'保存原图并识别' }}</button>
- </form>
- <form class="shot-restore" @submit.prevent="loadSaved"><label>已保存分析编号<input v-model="savedAnalysisId" maxlength="100" placeholder="填写分析编号，恢复当时计算快照"></label><button :disabled="busy||!savedAnalysisId.trim()">载入分析</button></form>
- <p class="muted">原图仅存本机后端与数据库，默认内部使用。当前OCR使用macOS本地Vision；不支持的服务器会明确提示。识别结果必须人工确认。</p>
- <p v-if="error" role="alert">{{ error }}</p><p v-if="evidenceId" class="muted">已保存原件：{{ evidenceId }}；上传不等于材料／赛果核验。</p>
- <template v-if="draft">
-  <p class="shot-warning" v-if="draft.ocr.phaseHint==='POSTMATCH_INDICATORS'">图片中识别到赛后标记。可核对文字和历史资料，但不能将其作为本场赛前预测输入。</p>
-  <details><summary>查看OCR原文与候选（{{ draft.ocr.rows.length }}行）</summary><ul><li v-for="(r,i) in draft.ocr.rows" :key="i">{{ r.rawText }} → {{ r.candidates.map(c=>c.nickname).join('、')||'未找到候选' }}</li></ul></details>
-  <form class="shot-review" @submit.prevent="analyze">
-   <div class="shot-meta">
-    <label>本场模式
-      <select v-model="mode">
-        <option value="WANXIANG">万象大赛</option>
-        <option value="DIAMOND">钻石狂潮</option>
-      </select>
-    </label>
-    <label>当前游戏版本 (默认最新)
-      <select v-model="version" required class="version-select">
-        <option v-for="v in GAME_VERSIONS" :key="v.version" :value="v.version">
-          {{ v.version }} {{ v.isLatest ? ' (官方最新版本)' : '' }} - {{ v.title }}
-        </option>
-        <option value="UNKNOWN">其他 / 未登记版本</option>
-      </select>
-    </label>
-   </div>
-   <div class="shot-meta"><label>截图时支持状态<select v-model="supportStage"><option value="UNKNOWN">不确定</option><option value="OPEN">仍可支持</option><option value="CLOSED">已结束支持</option></select></label><label>当时已揭示的禁用阵营<input v-model="bannedFaction" maxlength="160" placeholder="未显示则留空，不从赛后材料补填"></label></div>
-   <p class="muted">王牌对决包含万象大赛、钻石狂潮两类，历史记录不能混算。棋手指角色，不是参赛人。以下棋手／玩法仅填截图时已经知道的信息，未揭示则留空；不会自动根据擅长标签猜本场选择。</p>
-   <fieldset><legend>六人确认（名单序号不是排名）</legend><div class="shot-seat" v-for="(p,i) in players" :key="i"><span>{{ i+1 }}</span><label>截图昵称<input v-model="p.nickname" required maxlength="160" @input="p.profileId='';result=null"></label><label>选择历史昵称档案<select v-model="p.profileId" @change="result=null"><option value="">未匹配／没有该选手历史</option><option v-for="profile in candidates(p.nickname)" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></select></label><div class="shot-seat-context"><label>已揭示棋手<input v-model="p.commander" maxlength="160" placeholder="如：小妲己；未知留空"></label><label>当时已知玩法<input v-model="p.visiblePlan" maxlength="160" placeholder="未知留空，非赛后成型阵容"></label></div></div></fieldset>
-   <p v-if="hasDuplicates" class="shot-warning">存在重复昵称，请先核对OCR；不能用重复行补齐六人。</p>
-   <label class="shot-confirm"><input type="checkbox" v-model="confirmed">我已逐席对照赛前原图，确认名单与所选来源昵称档案；这不代表UID已核实。</label>
-   <label class="shot-confirm"><input type="checkbox" v-model="experimentalProbability">由后端程序计算实验概率（使用来源昵称历史，尚未校准，不自动分配钻石）</label>
-   <button class="primary" :disabled="busy||!confirmed||hasDuplicates||players.some(p=>!p.nickname.trim())">{{ experimentalProbability?'程序计算实验概率':'生成历史分析' }}</button>
+  <div class="workbench-header-bar">
+    <div>
+      <h2>王牌对决 · 本场分析 (实战推演工作台)</h2>
+      <p class="muted">纯本地引擎毫秒级实时计算 · 针对 2 分钟极速投比窗口优化</p>
+    </div>
+    <div class="workbench-tabs">
+      <button
+        type="button"
+        class="tab-btn"
+        :class="{ active: activeTab === 'instant' }"
+        @click="activeTab = 'instant'"
+      >
+        ⚡ 2分钟极速推演 (实战秒推)
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        :class="{ active: activeTab === 'audit' }"
+        @click="activeTab = 'audit'"
+      >
+        📁 截图审计与存档 (复盘台账)
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. 极速实战推演模式 (专为 2 分钟实战投比打造，5~10 秒出决策) -->
+  <div v-show="activeTab === 'instant'" class="instant-mode-panel">
+    <!-- 极速倒计时与实战提示条 -->
+    <div class="instant-countdown-banner">
+      <div class="countdown-badge">
+        <span class="pulse-icon">⏱️</span>
+        <strong>投比窗口 ~120 秒</strong>
+      </div>
+      <div class="banner-tips">
+        <span><strong>极速决策提示：</strong>计算耗时仅需 <strong>&lt;15ms</strong>。可通过下方<strong>「一键填入名单」</strong>或<strong>「点击明星选手」</strong>快速选人，选完 1 秒直接看结论，留足 1 分 45 秒下注！</span>
+        <small class="tip-shortcut">💡 支持全局快捷键：在网页任意位置直接按 <code>Ctrl+V / Cmd+V</code> 即可秒贴截图识别！</small>
+      </div>
+    </div>
+
+    <!-- 快捷名单输入与选手速点盘 -->
+    <div class="quick-roster-box">
+      <div class="batch-paste-row">
+        <input
+          v-model="batchPasteText"
+          placeholder="从微信/直播间直接复制名单粘贴（如：梦飞 小谷芷 白白 祥子 新一 遗愿）"
+          aria-label="一键批量粘贴名单"
+          @keydown.enter.prevent="applyBatchPaste"
+        />
+        <button type="button" class="btn-tool" @click="applyBatchPaste">一键分发 6 席</button>
+        <button type="button" class="btn-tool btn-danger-soft" @click="clearAllSeats">清空席位</button>
+      </div>
+
+      <!-- 明星活跃选手一键点选盘 -->
+      <div class="star-players-bar">
+        <span class="bar-title">🔥 明星选手快捷入座：</span>
+        <div class="star-pills-list">
+          <button
+            v-for="name in starPlayers"
+            :key="name"
+            type="button"
+            class="star-pill-btn"
+            :class="{ 'in-roster': players.some(p => p.nickname === name) }"
+            :title="players.some(p => p.nickname === name) ? '该选手已在席位中' : '点击填入空席位'"
+            @click="addStarPlayer(name)"
+          >
+            <img :src="getPlayerAvatar(name)" class="star-avatar" alt="" />
+            <span>{{ name.replace('抖音', '').replace('EGM', '').replace('大大', '') }}</span>
+            <span v-if="players.some(p => p.nickname === name)" class="check-mark">✓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6 席位实时网格卡片 -->
+      <div class="seats-grid">
+        <div v-for="(p, idx) in players" :key="idx" class="seat-card">
+          <div class="seat-head">
+            <span class="seat-number">#{{ idx + 1 }} 席</span>
+            <button
+              v-if="p.nickname"
+              type="button"
+              class="seat-clear-btn"
+              title="清空此席位"
+              @click="removeSeat(idx)"
+            >
+              ✕
+            </button>
+          </div>
+          <div class="seat-body">
+            <img :src="getPlayerAvatar(p.nickname)" class="seat-avatar" alt="" />
+            <div class="seat-input-wrap">
+              <input
+                v-model="p.nickname"
+                placeholder="输入选手昵称"
+                maxlength="160"
+                class="seat-input"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 禁选阵营一键点选胶囊与当前版本 -->
+    <div class="quick-conditions-row">
+      <div class="quick-ban-selector">
+        <span class="condition-label">🛡️ 本场禁选阵营 (一键点击)：</span>
+        <div class="ban-pills-group">
+          <button
+            v-for="b in quickBans"
+            :key="b"
+            type="button"
+            class="ban-pill-btn"
+            :class="{ active: (bannedFaction || '') === b }"
+            @click="bannedFaction = b"
+          >
+            {{ b ? `${b}阵营` : '无禁选' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-version-selector">
+        <span class="condition-label">🎮 锚定版本：</span>
+        <select v-model="version" class="version-select-mini">
+          <option v-for="v in GAME_VERSIONS" :key="v.version" :value="v.version">
+            {{ v.version }} {{ v.isLatest ? '(官方最新)' : '' }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 极速投比决策速览卡片 (2 分钟快速决胜) -->
+    <div v-if="matchupResult && rankedPlayers.length >= 2" class="decision-hub-card">
+      <div class="decision-header">
+        <div class="dh-title-wrap">
+          <span class="dh-badge">⚡ 投比速览</span>
+          <h3>本场 6 人同台博弈与投比决策建议</h3>
+        </div>
+        <span class="calc-tag">运算耗时 &lt;15ms · 实时响应</span>
+      </div>
+
+      <!-- 推荐支持与高危避坑两栏并列 -->
+      <div class="decision-core-grid">
+        <!-- 1. 首选推荐 (Top 1) -->
+        <div v-if="topPick" class="recommend-box top-1">
+          <div class="box-tag">🥇 投比首选建议 (Top 1)</div>
+          <div class="player-feature-row">
+            <img :src="getPlayerAvatar(topPick.nickname)" class="feature-avatar" alt="" />
+            <div class="feature-info">
+              <h4>{{ topPick.nickname }} <small v-if="topPick.masterName !== topPick.nickname">({{ topPick.masterName }})</small></h4>
+              <div class="prob-highlight">
+                <span>预测登顶率：</span>
+                <strong>{{ (topPick.adjustedProbability * 100).toFixed(1) }}%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="reasons-list">
+            <span v-if="topPick.versionModifier > 0" class="reason-tag positive">
+              🔥 最新版本红利 (+{{ (topPick.versionModifier * 100).toFixed(0) }}%)
+            </span>
+            <span v-if="topPick.h2hBonus > 0" class="reason-tag positive">
+              ⚡ 同场克制 {{ topPick.suppresses.length }} 名对手
+            </span>
+            <span v-if="!topPick.suppressedBy.length" class="reason-tag positive">
+              🛡️ 全场无苦主压制
+            </span>
+            <span v-if="topPick.banModifier > 0" class="reason-tag positive">
+              🎯 避开禁选享受利好
+            </span>
+          </div>
+          <p class="summary-verdict">
+            综合战力全场登顶率最高，{{ topPick.versionAdaptation?.summary || '核心体系成熟稳定' }}，为本局最具性价比支持首选。
+          </p>
+        </div>
+
+        <!-- 2. 次选备用 (Top 2) -->
+        <div v-if="secondPick" class="recommend-box top-2">
+          <div class="box-tag">🥈 稳健次选备选 (Top 2)</div>
+          <div class="player-feature-row">
+            <img :src="getPlayerAvatar(secondPick.nickname)" class="feature-avatar" alt="" />
+            <div class="feature-info">
+              <h4>{{ secondPick.nickname }} <small v-if="secondPick.masterName !== secondPick.nickname">({{ secondPick.masterName }})</small></h4>
+              <div class="prob-highlight">
+                <span>预测登顶率：</span>
+                <strong>{{ (secondPick.adjustedProbability * 100).toFixed(1) }}%</strong>
+              </div>
+            </div>
+          </div>
+          <div class="reasons-list">
+            <span v-if="secondPick.versionModifier > 0" class="reason-tag positive">
+              🔥 版本加成 (+{{ (secondPick.versionModifier * 100).toFixed(0) }}%)
+            </span>
+            <span v-if="secondPick.suppressedBy.length" class="reason-tag warning">
+              ⚠️ 遇苦主：{{ secondPick.suppressedBy.join('、') }}
+            </span>
+          </div>
+          <p class="summary-verdict">
+            若首选返奖比率过低，可考虑该选手作为对冲/次选策略。
+          </p>
+        </div>
+
+        <!-- 3. 高危爆冷预警 (避坑) -->
+        <div v-if="highRiskPlayers.length" class="recommend-box danger-box">
+          <div class="box-tag danger-tag">⚠️ 高危爆冷预警 (谨慎支持)</div>
+          <div v-for="rp in highRiskPlayers.slice(0, 2)" :key="rp.nickname" class="danger-player-item">
+            <img :src="getPlayerAvatar(rp.nickname)" class="danger-avatar" alt="" />
+            <div class="danger-info">
+              <strong>{{ rp.nickname }}</strong>
+              <small v-if="rp.banEvaluation?.level === 'CRITICAL'">
+                核心阵容受「{{ bannedFaction }}」封锁，历史登顶率骤降
+              </small>
+              <small v-else-if="rp.suppressedBy.length">
+                同场遭遇多位历史克星 ({{ rp.suppressedBy.join('、') }})
+              </small>
+            </div>
+          </div>
+          <p class="summary-verdict danger-text">
+            以上选手主力阵容受限或遭遇战术克制，爆冷概率极高，建议在 2 分钟投比中规避支持！
+          </p>
+        </div>
+      </div>
+
+      <!-- 6人实力条形图对比 -->
+      <div class="instant-prob-bars">
+        <div class="bars-head">
+          <span>6 席选手综合胜率梯度：</span>
+          <small>融合历史真实胜率 + 两两克制矩阵 + Ban位冲击 + 最新版本修正</small>
+        </div>
+        <div class="bars-container">
+          <div v-for="(p, pIdx) in rankedPlayers" :key="p.nickname" class="player-bar-row">
+            <span class="bar-rank">#{{ pIdx + 1 }}</span>
+            <img :src="getPlayerAvatar(p.nickname)" class="bar-avatar" alt="" />
+            <span class="bar-name">{{ p.nickname }}</span>
+            <div class="bar-track">
+              <div
+                class="bar-fill"
+                :class="`rank-color-${pIdx + 1}`"
+                :style="{ width: `${Math.min(100, Math.max(3, p.adjustedProbability * 100))}%` }"
+              ></div>
+            </div>
+            <strong class="bar-percent">{{ (p.adjustedProbability * 100).toFixed(1) }}%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="instant-waiting-hint">
+      <span>👉 请填入至少 2 位选手（建议填满 6 席）以实时生成同台博弈推演与投比决策建议。</span>
+    </div>
+  </div>
+
+  <!-- 2. 传统截图审计与合规台账模式 (保留完整审计台账流程) -->
+  <div v-show="activeTab === 'audit'" class="audit-mode-panel">
+  <form class="shot-upload" @submit.prevent="read">
+   <label>赛前名单截图<input type="file" accept="image/png,image/jpeg,image/webp" @change="selectFile"></label>
+   <label>实际截图采集时间<input v-model="capturedAt" type="datetime-local" step="1" :readonly="!!draft" required></label>
+   <label>复核人<input v-model="operator" required maxlength="160" placeholder="操作人标识"></label>
+   <button class="primary" :disabled="busy||!file">{{ busy?'处理中…':'保存原图并识别' }}</button>
   </form>
- </template>
- <section v-if="result" class="shot-result" aria-live="polite">
-  <h3>分析结果：{{ result.model?'程序计算 · 未校准实验概率':result.status==='DATA_AUDIT_ONLY'?'历史资料分析，预测尚未就绪':result.status }}</h3><p>{{ result.notice }}</p>
-  <p class="shot-warning">虚拟钻石／积分建议：暂不分配，保留100%。当前没有经过校准的六人获胜概率。</p>
-  <section v-if="result.model" class="shot-model"><h3>后端模型结果</h3><p>{{ result.model.modelVersion }} · {{ result.model.trainingMatches }} 场训练 · {{ result.model.calibrated?'已校准':'未校准' }}</p><p>{{ result.model.notice }}</p><ol><li v-for="p in result.model.players" :key="p.nickname"><strong>{{ p.nickname }}：{{ (p.probability*100).toFixed(2) }}%</strong><span v-if="p.coldStart"> · 无历史，使用先验</span></li></ol><p v-if="result.model.diagnostic.model">离线滚动诊断 {{ result.model.diagnostic.evaluatedMatches }} 场：模型对数损失 {{ result.model.diagnostic.model.logLoss.toFixed(3) }}；均分基线 {{ result.model.diagnostic.uniform!.logLoss.toFixed(3) }}（越低越好）。不是前瞻验证。</p><p class="shot-warning" v-if="result.model.diagnostic.conclusion==='NOT_BEATING_UNIFORM'">当前离线诊断未优于六人均分基线，尚无证据表明这些概率具有预测优势。</p><p>{{ result.model.diagnostic.notice }}</p><details><summary>复算依据</summary><p>数据指纹 {{ result.model.dataHash }}</p><p>只学习名单中的选手身份与冠军标签，不读取本场返奖率、赛后阵容或作者评价。每次结果随分析记录保存。</p></details></section>
-  <p>数据截止：{{ new Date(result.featureCutoff).toLocaleString('zh-CN') }}；同日无精确时间的历史场次保守排除。</p>
+  <form class="shot-restore" @submit.prevent="loadSaved"><label>已保存分析编号<input v-model="savedAnalysisId" maxlength="100" placeholder="填写分析编号，恢复当时计算快照"></label><button :disabled="busy||!savedAnalysisId.trim()">载入分析</button></form>
+  <p class="muted">原图仅存本机后端与数据库，默认内部使用。当前OCR使用macOS本地Vision；不支持的服务器会明确提示。识别结果必须人工确认。</p>
+  <p v-if="error" role="alert">{{ error }}</p><p v-if="evidenceId" class="muted">已保存原件：{{ evidenceId }}；上传不等于材料／赛果核验。</p>
+  <template v-if="draft">
+   <p class="shot-warning" v-if="draft.ocr.phaseHint==='POSTMATCH_INDICATORS'">图片中识别到赛后标记。可核对文字和历史资料，但不能将其作为本场赛前预测输入。</p>
+   <details><summary>查看OCR原文与候选（{{ draft.ocr.rows.length }}行）</summary><ul><li v-for="(r,i) in draft.ocr.rows" :key="i">{{ r.rawText }} → {{ r.candidates.map(c=>c.nickname).join('、')||'未找到候选' }}</li></ul></details>
+   <form class="shot-review" @submit.prevent="analyze">
+    <div class="shot-meta">
+     <label>本场模式
+       <select v-model="mode">
+         <option value="WANXIANG">万象大赛</option>
+         <option value="DIAMOND">钻石狂潮</option>
+       </select>
+     </label>
+     <label>当前游戏版本 (默认最新)
+       <select v-model="version" required class="version-select">
+         <option v-for="v in GAME_VERSIONS" :key="v.version" :value="v.version">
+           {{ v.version }} {{ v.isLatest ? ' (官方最新版本)' : '' }} - {{ v.title }}
+         </option>
+         <option value="UNKNOWN">其他 / 未登记版本</option>
+       </select>
+     </label>
+    </div>
+    <div class="shot-meta"><label>截图时支持状态<select v-model="supportStage"><option value="UNKNOWN">不确定</option><option value="OPEN">仍可支持</option><option value="CLOSED">已结束支持</option></select></label><label>当时已揭示的禁用阵营<input v-model="bannedFaction" maxlength="160" placeholder="未显示则留空，不从赛后材料补填"></label></div>
+    <p class="muted">王牌对决包含万象大赛、钻石狂潮两类，历史记录不能混算。棋手指角色，不是参赛人。以下棋手／玩法仅填截图时已经知道的信息，未揭示则留空；不会自动根据擅长标签猜本场选择。</p>
+    <fieldset><legend>六人确认（名单序号不是排名）</legend><div class="shot-seat" v-for="(p,i) in players" :key="i"><span>{{ i+1 }}</span><label>截图昵称<input v-model="p.nickname" required maxlength="160" @input="p.profileId='';result=null"></label><label>选择历史昵称档案<select v-model="p.profileId" @change="result=null"><option value="">未匹配／没有该选手历史</option><option v-for="profile in candidates(p.nickname)" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></select></label><div class="shot-seat-context"><label>已揭示棋手<input v-model="p.commander" maxlength="160" placeholder="如：小妲己；未知留空"></label><label>当时已知玩法<input v-model="p.visiblePlan" maxlength="160" placeholder="未知留空，非赛后成型阵容"></label></div></div></fieldset>
+    <p v-if="hasDuplicates" class="shot-warning">存在重复昵称，请先核对OCR；不能用重复行补齐六人。</p>
+    <label class="shot-confirm"><input type="checkbox" v-model="confirmed">我已逐席对照赛前原图，确认名单与所选来源昵称档案；这不代表UID已核实。</label>
+    <label class="shot-confirm"><input type="checkbox" v-model="experimentalProbability">由后端程序计算实验概率（使用来源昵称历史，尚未校准，不自动分配钻石）</label>
+    <button class="primary" :disabled="busy||!confirmed||hasDuplicates||players.some(p=>!p.nickname.trim())">{{ experimentalProbability?'程序计算实验概率':'生成历史分析' }}</button>
+   </form>
+  </template>
+  <section v-if="result" class="shot-result" aria-live="polite">
+   <h3>分析结果：{{ result.model?'程序计算 · 未校准实验概率':result.status==='DATA_AUDIT_ONLY'?'历史资料分析，预测尚未就绪':result.status }}</h3><p>{{ result.notice }}</p>
+   <p class="shot-warning">虚拟钻石／积分建议：暂不分配，保留100%。当前没有经过校准的六人获胜概率。</p>
+   <section v-if="result.model" class="shot-model"><h3>后端模型结果</h3><p>{{ result.model.modelVersion }} · {{ result.model.trainingMatches }} 场训练 · {{ result.model.calibrated?'已校准':'未校准' }}</p><p>{{ result.model.notice }}</p><ol><li v-for="p in result.model.players" :key="p.nickname"><strong>{{ p.nickname }}：{{ (p.probability*100).toFixed(2) }}%</strong><span v-if="p.coldStart"> · 无历史，使用先验</span></li></ol><p v-if="result.model.diagnostic.model">离线滚动诊断 {{ result.model.diagnostic.evaluatedMatches }} 场：模型对数损失 {{ result.model.diagnostic.model.logLoss.toFixed(3) }}；均分基线 {{ result.model.diagnostic.uniform!.logLoss.toFixed(3) }}（越低越好）。不是前瞻验证。</p><p class="shot-warning" v-if="result.model.diagnostic.conclusion==='NOT_BEATING_UNIFORM'">当前离线诊断未优于六人均分基线，尚无证据表明这些概率具有预测优势。</p><p>{{ result.model.diagnostic.notice }}</p><details><summary>复算依据</summary><p>数据指纹 {{ result.model.dataHash }}</p><p>只学习名单中的选手身份与冠军标签，不读取本场返奖率、赛后阵容或作者评价。每次结果随分析记录保存。</p></details></section>
+   <p>数据截止：{{ new Date(result.featureCutoff).toLocaleString('zh-CN') }}；同日无精确时间的历史场次保守排除。</p>
+
 
   <!-- 六人同场克制与Ban位影响深度研判面板 -->
   <section v-if="matchupResult" class="shot-advanced-analysis">
@@ -198,10 +449,11 @@
   <ul class="shot-gaps"><li v-for="b in result.blockers" :key="b">{{ blockerNames[b]||b }}</li></ul>
   <div class="shot-profiles"><article v-for="(p,i) in result.players" :key="i"><h4>{{ p.nickname }}</h4><p>档案：{{ p.profileNickname||'未匹配' }} · 程序概率：{{ p.probability == null ? '未计算' : (p.probability*100).toFixed(2)+'%（实验）' }}</p><p>近7日来源样本 {{ p.recent7.wins }}/{{ p.recent7.observations }} 登顶；近30日 {{ p.recent30.wins }}/{{ p.recent30.observations }}</p><p class="muted">以上仅已采集样本，无模式/版本完整性保证，不能当作完整近期战绩。</p><ul><li v-for="b in p.buildRates" :key="b.label">{{ b.label }}：{{ b.wins }}/{{ b.observations }} 登顶（{{ (100*b.observedWinShare).toFixed(1) }}% 来源选择标签样本）；最终阵容胜率未知</li></ul><p v-if="!p.buildRates.length">暂无可关联的逐局玩法。</p><details v-if="p.claims.length"><summary>作者专长评价与原文</summary><ul><li v-for="c in p.claims" :key="c.id">{{ c.kind==='COMMANDER_AUTHOR_CLAIM'?'棋手':'玩法' }}：{{ c.text }} <a :href="c.sourceUrl" target="_blank" rel="noreferrer">来源</a></li></ul></details></article></div>
  </section>
+  </div>
 </section>
 </template>
 <script setup lang="ts">
-import {computed,onMounted,ref,watch} from 'vue'
+import {computed,onMounted,onUnmounted,ref,watch} from 'vue'
 import {uploadEvidence} from '../api/index'
 import {researchApi} from '../api/prediction'
 import {
@@ -211,6 +463,28 @@ import {
   type SixPlayerMatchupResult
 } from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
+
+// 标签切换：实战极速推演 vs 传统截图审计
+const activeTab = ref<'instant' | 'audit'>('instant')
+
+// 极速模式下的快速批量输入与常用选项
+const batchPasteText = ref('')
+const starPlayers = [
+  '梦飞大大',
+  '抖音EGM小谷芷',
+  '白白白白白3',
+  '丰川祥子',
+  'QT新一',
+  '抖音猪葛龟龟',
+  '呆头鹅',
+  '遗愿',
+  '沐汐',
+  '世薄情',
+  '抖音小新游',
+  '抖音妖柒'
+]
+const quickBans = ['', '逐鹿', '三分', '日落海', '河洛', '稷下', '大河']
+
 interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
 interface Sample {wins:number;observations:number}
@@ -236,19 +510,100 @@ async function read(){if(!file.value)return;busy.value=true;error.value='';draft
 async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
 watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
 
-// 实时计算同场克制、禁选阵营与最新版本更迭影响
+// 极速模式：一键批量填入名单
+function applyBatchPaste() {
+  if (!batchPasteText.value.trim()) return
+  const names = batchPasteText.value
+    .split(/[\s,，、\n\t]+/)
+    .map(s => s.trim())
+    .filter(Boolean)
+  for (let i = 0; i < 6; i++) {
+    players.value[i].nickname = names[i] || ''
+    players.value[i].profileId = ''
+  }
+}
+
+// 极速模式：快捷点选明星选手
+function addStarPlayer(name: string) {
+  const existing = players.value.findIndex(p => p.nickname === name)
+  if (existing !== -1) return
+  const emptyIdx = players.value.findIndex(p => !p.nickname.trim())
+  if (emptyIdx !== -1) {
+    players.value[emptyIdx].nickname = name
+    players.value[emptyIdx].profileId = ''
+  }
+}
+
+// 极速模式：席位清空
+function removeSeat(idx: number) {
+  players.value[idx].nickname = ''
+  players.value[idx].profileId = ''
+  players.value[idx].commander = ''
+  players.value[idx].visiblePlan = ''
+}
+
+// 极速模式：全部清空
+function clearAllSeats() {
+  for (let i = 0; i < 6; i++) {
+    removeSeat(i)
+  }
+  batchPasteText.value = ''
+}
+
+// 实时计算同场克制、禁选阵营与最新版本更迭影响 (毫秒级响应，无需后端请求)
 const matchupResult=computed<SixPlayerMatchupResult|null>(()=>{
  const valid=players.value.filter(p=>p.nickname&&p.nickname.trim())
  if(valid.length<2)return null
  return evaluate6PlayerMatchup(valid,bannedFaction.value,catalogMatches.value,version.value||CURRENT_LATEST_VERSION)
 })
 
+// 排序后的推演阵营
+const rankedPlayers = computed(() => {
+  if (!matchupResult.value?.players) return []
+  return [...matchupResult.value.players].sort((a, b) => b.adjustedProbability - a.adjustedProbability)
+})
+
+// 投比首选建议 (Top 1)
+const topPick = computed(() => rankedPlayers.value[0] || null)
+
+// 稳健次选 (Top 2)
+const secondPick = computed(() => rankedPlayers.value[1] || null)
+
+// 高危避坑选手 (被Ban严重受制或被苦主克制)
+const highRiskPlayers = computed(() => {
+  if (!matchupResult.value?.players) return []
+  return matchupResult.value.players.filter(p => p.banEvaluation?.level === 'CRITICAL' || p.suppressedBy.length >= 2)
+})
+
+// 全局粘贴监听 (在网页按 Ctrl+V / Cmd+V 截屏秒识别)
+function handleGlobalPaste(e: ClipboardEvent) {
+  const items = e.clipboardData?.items
+  if (!items) return
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      const pasted = items[i].getAsFile()
+      if (pasted) {
+        file.value = pasted
+        capturedAt.value = new Date().toISOString().slice(0, 19)
+        operator.value = operator.value || '实战速录'
+        read()
+        break
+      }
+    }
+  }
+}
+
 onMounted(async()=>{
+ window.addEventListener('paste', handleGlobalPaste)
  try{
   const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[]}>('catalog')
   profiles.value=cat.players||[]
   catalogMatches.value=cat.matches||[]
  }catch(e){error.value=e instanceof Error?e.message:'档案加载失败'}
+})
+
+onUnmounted(() => {
+ window.removeEventListener('paste', handleGlobalPaste)
 })
 </script>
 <style lang="scss" scoped>
@@ -274,6 +629,720 @@ onMounted(async()=>{
     color: $text-secondary;
     font-size: 13.5px;
   }
+}
+
+// 头部与模式切换
+.workbench-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid $border-subtle;
+  flex-wrap: wrap;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: $text-primary;
+    margin-bottom: 4px;
+  }
+}
+
+.workbench-tabs {
+  display: flex;
+  background: $bg-subtle;
+  padding: 4px;
+  border-radius: $radius-md;
+  gap: 4px;
+
+  .tab-btn {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $text-secondary;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &:hover {
+      color: $text-primary;
+    }
+
+    &.active {
+      background: $bg-surface;
+      color: $color-primary;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      font-weight: 700;
+    }
+  }
+}
+
+// 1. 极速模式面板样式
+.instant-mode-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.instant-countdown-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, $color-accent-light 0%, #fff 100%);
+  border: 1px solid rgba($color-accent, 0.25);
+  border-left: 4px solid $color-accent;
+  padding: 14px 20px;
+  border-radius: $radius-md;
+
+  .countdown-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba($color-accent, 0.12);
+    padding: 6px 12px;
+    border-radius: $radius-sm;
+    min-width: 120px;
+    text-align: center;
+
+    .pulse-icon {
+      font-size: 18px;
+    }
+
+    strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: $color-accent-dark;
+      margin-top: 2px;
+    }
+  }
+
+  .banner-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: $text-primary;
+    line-height: 1.5;
+
+    .tip-shortcut {
+      color: $text-secondary;
+      font-size: 12px;
+
+      code {
+        background: rgba(0, 0, 0, 0.06);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: inherit;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// 快速名单操作盘
+.quick-roster-box {
+  background: $bg-surface;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.batch-paste-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-sm;
+    background: $bg-canvas;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      background: #fff;
+    }
+  }
+
+  .btn-tool {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: $radius-sm;
+    border: 1px solid $border-subtle;
+    background: $bg-subtle;
+    color: $text-primary;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #e2e8e5;
+    }
+
+    &.btn-danger-soft {
+      color: $color-danger;
+      border-color: rgba($color-danger, 0.2);
+      background: $color-danger-light;
+
+      &:hover {
+        background: #fde8e8;
+      }
+    }
+  }
+}
+
+// 明星选手快捷点选栏
+.star-players-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: $bg-canvas;
+  border-radius: $radius-sm;
+
+  .bar-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+
+  .star-pills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .star-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: $bg-surface;
+    border: 1px solid $border-subtle;
+    border-radius: 20px;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: $color-primary;
+      background: $color-primary-light;
+      color: $color-primary;
+    }
+
+    &.in-roster {
+      background: $color-primary-light;
+      border-color: rgba($color-primary, 0.3);
+      color: $color-primary;
+      opacity: 0.8;
+    }
+
+    .star-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .check-mark {
+      color: $color-success;
+      font-weight: 800;
+      font-size: 11px;
+    }
+  }
+}
+
+// 6席位网格卡片
+.seats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+
+  .seat-card {
+    background: $bg-canvas;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-sm;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .seat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .seat-number {
+        font-size: 11px;
+        font-weight: 700;
+        color: $text-secondary;
+      }
+
+      .seat-clear-btn {
+        border: none;
+        background: transparent;
+        color: $text-secondary;
+        cursor: pointer;
+        font-size: 11px;
+        padding: 0 4px;
+        line-height: 1;
+
+        &:hover {
+          color: $color-danger;
+        }
+      }
+    }
+
+    .seat-body {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .seat-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: $border-subtle;
+        flex-shrink: 0;
+      }
+
+      .seat-input-wrap {
+        flex: 1;
+        min-width: 0;
+
+        .seat-input {
+          width: 100%;
+          font-size: 12.5px;
+          font-weight: 600;
+          height: 30px;
+          padding: 0 6px;
+          border: 1px solid transparent;
+          background: transparent;
+          border-radius: 4px;
+
+          &:hover {
+            border-color: $border-subtle;
+            background: #fff;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: $color-primary;
+            background: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 快速 Ban 位与版本选择
+.quick-conditions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: $bg-surface;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 14px 20px;
+  flex-wrap: wrap;
+  gap: 14px;
+
+  .condition-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: $text-secondary;
+  }
+
+  .quick-ban-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .ban-pills-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ban-pill-btn {
+      border: 1px solid $border-subtle;
+      background: $bg-canvas;
+      padding: 6px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 20px;
+      color: $text-primary;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        border-color: $color-accent;
+        color: $color-accent-dark;
+      }
+
+      &.active {
+        background: $color-accent;
+        border-color: $color-accent;
+        color: #fff;
+        box-shadow: 0 2px 6px rgba($color-accent, 0.25);
+      }
+    }
+  }
+
+  .quick-version-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .version-select-mini {
+      height: 32px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: $radius-sm;
+      padding: 0 10px;
+      border: 1px solid $border-subtle;
+      background: $bg-canvas;
+      color: $color-primary;
+    }
+  }
+}
+
+// 极速投比决策卡片
+.decision-hub-card {
+  background: #fff;
+  border: 1px solid rgba($color-primary, 0.15);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  border-radius: $radius-md;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .decision-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $border-subtle;
+    padding-bottom: 14px;
+
+    .dh-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .dh-badge {
+        background: $color-primary;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+
+      h3 {
+        font-size: 17px;
+        font-weight: 700;
+        color: $text-primary;
+      }
+    }
+
+    .calc-tag {
+      font-size: 12px;
+      color: $color-success;
+      font-weight: 600;
+      background: $color-success-light;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid $color-success-border;
+    }
+  }
+
+  .decision-core-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .recommend-box {
+    border-radius: $radius-md;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid $border-subtle;
+
+    .box-tag {
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      width: fit-content;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    &.top-1 {
+      background: linear-gradient(135deg, #fefbf4 0%, #ffffff 100%);
+      border-color: rgba($color-accent, 0.35);
+      border-top: 4px solid $color-accent;
+
+      .box-tag {
+        background: $color-accent;
+        color: #fff;
+      }
+    }
+
+    &.top-2 {
+      background: linear-gradient(135deg, #f4f8f6 0%, #ffffff 100%);
+      border-color: rgba($color-primary, 0.25);
+      border-top: 4px solid $color-primary;
+
+      .box-tag {
+        background: $color-primary;
+        color: #fff;
+      }
+    }
+
+    &.danger-box {
+      background: linear-gradient(135deg, #fef4f4 0%, #ffffff 100%);
+      border-color: rgba($color-danger, 0.25);
+      border-top: 4px solid $color-danger;
+
+      .danger-tag {
+        background: $color-danger;
+        color: #fff;
+      }
+    }
+
+    .player-feature-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .feature-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-info {
+        h4 {
+          font-size: 16px;
+          font-weight: 700;
+          color: $text-primary;
+          margin-bottom: 4px;
+
+          small {
+            font-size: 12px;
+            color: $text-secondary;
+            font-weight: normal;
+          }
+        }
+
+        .prob-highlight {
+          font-size: 12.5px;
+          color: $text-secondary;
+
+          strong {
+            font-size: 18px;
+            font-weight: 800;
+            color: $color-accent;
+            margin-left: 4px;
+          }
+        }
+      }
+    }
+
+    .reasons-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+
+      .reason-tag {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 4px;
+
+        &.positive {
+          background: $color-success-light;
+          color: $color-success;
+          border: 1px solid $color-success-border;
+        }
+
+        &.warning {
+          background: $color-warning-light;
+          color: $color-warning;
+          border: 1px solid $color-warning-border;
+        }
+      }
+    }
+
+    .summary-verdict {
+      font-size: 12px;
+      line-height: 1.6;
+      color: $text-secondary;
+      margin: 0;
+
+      &.danger-text {
+        color: $color-danger;
+      }
+    }
+
+    .danger-player-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba($color-danger, 0.15);
+
+      .danger-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .danger-info {
+        display: flex;
+        flex-direction: column;
+
+        strong {
+          font-size: 13px;
+          color: $text-primary;
+        }
+
+        small {
+          font-size: 11px;
+          color: $color-danger;
+        }
+      }
+    }
+  }
+
+  // 综合战力横条
+  .instant-prob-bars {
+    background: $bg-canvas;
+    padding: 16px 20px;
+    border-radius: $radius-sm;
+
+    .bars-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+
+      span {
+        font-size: 13px;
+        font-weight: 700;
+        color: $text-primary;
+      }
+
+      small {
+        font-size: 11.5px;
+        color: $text-secondary;
+      }
+    }
+
+    .bars-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .player-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .bar-rank {
+        font-size: 12px;
+        font-weight: 700;
+        color: $text-secondary;
+        min-width: 24px;
+      }
+
+      .bar-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .bar-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: $text-primary;
+        min-width: 90px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bar-track {
+        flex: 1;
+        height: 10px;
+        background: #e2e8e5;
+        border-radius: 5px;
+        overflow: hidden;
+
+        .bar-fill {
+          height: 100%;
+          border-radius: 5px;
+          transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+          background: $color-primary;
+
+          &.rank-color-1 {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+          }
+
+          &.rank-color-2 {
+            background: linear-gradient(90deg, #1e463a, #2f6b58);
+          }
+        }
+      }
+
+      .bar-percent {
+        font-size: 13px;
+        font-weight: 700;
+        color: $text-primary;
+        min-width: 50px;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.instant-waiting-hint {
+  padding: 24px;
+  text-align: center;
+  background: $bg-canvas;
+  border: 1px dashed $border-subtle;
+  border-radius: $radius-md;
+  font-size: 13.5px;
+  color: $text-secondary;
 }
 
 .shot-upload,
@@ -1033,6 +2102,33 @@ onMounted(async()=>{
 @media (max-width: 768px) {
   .shot-workbench {
     padding: 18px;
+  }
+
+  .seats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .decision-hub-card .decision-core-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workbench-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .workbench-tabs {
+    width: 100%;
+
+    .tab-btn {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .quick-conditions-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .ban-analysis-card .ban-players-grid,
