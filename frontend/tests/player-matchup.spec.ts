@@ -4,10 +4,37 @@ import {
   getBuildFaction,
   buildPlayerMatchupProfiles,
   evaluateBanImpact,
-  evaluate6PlayerMatchup
+  evaluate6PlayerMatchup,
+  CURRENT_LATEST_VERSION,
+  getVersionByDate,
+  evaluateVersionLineupAdaptation
 } from '../src/utils/player-matchup'
 
-describe('选手同场克制与Ban位影响分析引擎 (player-matchup)', () => {
+describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-matchup)', () => {
+  it('官方版本历日对应与最新版本能够正确识别', () => {
+    expect(CURRENT_LATEST_VERSION).toBe('v1.9.1')
+    expect(getVersionByDate('2026-11-07').version).toBe('v1.9.1')
+    expect(getVersionByDate('2026-11-07').isLatest).toBe(true)
+    expect(getVersionByDate('2026-10-31').version).toBe('v1.8.1')
+    expect(getVersionByDate('2026-10-25').version).toBe('v1.7.1')
+    expect(getVersionByDate('2026-10-18').version).toBe('v1.6.1')
+  })
+
+  it('最新版本 v1.9.1 能够识别阵容红利与机制加强', () => {
+    const zhuluAdapt = evaluateVersionLineupAdaptation(['逐鹿蒙恬'], 'v1.9.1')
+    expect(zhuluAdapt.fitLevel).toBe('BUFFED')
+    expect(zhuluAdapt.bonus).toBeGreaterThan(0)
+    expect(zhuluAdapt.summary).toContain('嬴律')
+
+    const leitingAdapt = evaluateVersionLineupAdaptation(['雷霆战机'], 'v1.9.1')
+    expect(leitingAdapt.fitLevel).toBe('BUFFED')
+    expect(leitingAdapt.bonus).toBeGreaterThan(0)
+    expect(leitingAdapt.summary).toContain('安琪拉')
+
+    const sanfenAdapt = evaluateVersionLineupAdaptation(['三分登场'], 'v1.9.1')
+    expect(sanfenAdapt.fitLevel).toBe('BUFFED')
+    expect(sanfenAdapt.bonus).toBeGreaterThan(0)
+  })
   it('阵容与核心阵营能够正确识别', () => {
     expect(getBuildFaction('逐鹿蒙恬')).toBe('逐鹿')
     expect(getBuildFaction('逐鹿刺')).toBe('逐鹿')

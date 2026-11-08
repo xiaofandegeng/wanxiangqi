@@ -14,7 +14,22 @@
   <p class="shot-warning" v-if="draft.ocr.phaseHint==='POSTMATCH_INDICATORS'">图片中识别到赛后标记。可核对文字和历史资料，但不能将其作为本场赛前预测输入。</p>
   <details><summary>查看OCR原文与候选（{{ draft.ocr.rows.length }}行）</summary><ul><li v-for="(r,i) in draft.ocr.rows" :key="i">{{ r.rawText }} → {{ r.candidates.map(c=>c.nickname).join('、')||'未找到候选' }}</li></ul></details>
   <form class="shot-review" @submit.prevent="analyze">
-   <div class="shot-meta"><label>本场模式<select v-model="mode"><option value="WANXIANG">万象大赛</option><option value="DIAMOND">钻石狂潮</option></select></label><label>当前游戏版本<input v-model="version" required placeholder="实际版本；未显示可填 UNKNOWN"></label></div>
+   <div class="shot-meta">
+    <label>本场模式
+      <select v-model="mode">
+        <option value="WANXIANG">万象大赛</option>
+        <option value="DIAMOND">钻石狂潮</option>
+      </select>
+    </label>
+    <label>当前游戏版本 (默认最新)
+      <select v-model="version" required class="version-select">
+        <option v-for="v in GAME_VERSIONS" :key="v.version" :value="v.version">
+          {{ v.version }} {{ v.isLatest ? ' (官方最新版本)' : '' }} - {{ v.title }}
+        </option>
+        <option value="UNKNOWN">其他 / 未登记版本</option>
+      </select>
+    </label>
+   </div>
    <div class="shot-meta"><label>截图时支持状态<select v-model="supportStage"><option value="UNKNOWN">不确定</option><option value="OPEN">仍可支持</option><option value="CLOSED">已结束支持</option></select></label><label>当时已揭示的禁用阵营<input v-model="bannedFaction" maxlength="160" placeholder="未显示则留空，不从赛后材料补填"></label></div>
    <p class="muted">王牌对决包含万象大赛、钻石狂潮两类，历史记录不能混算。棋手指角色，不是参赛人。以下棋手／玩法仅填截图时已经知道的信息，未揭示则留空；不会自动根据擅长标签猜本场选择。</p>
    <fieldset><legend>六人确认（名单序号不是排名）</legend><div class="shot-seat" v-for="(p,i) in players" :key="i"><span>{{ i+1 }}</span><label>截图昵称<input v-model="p.nickname" required maxlength="160" @input="p.profileId='';result=null"></label><label>选择历史昵称档案<select v-model="p.profileId" @change="result=null"><option value="">未匹配／没有该选手历史</option><option v-for="profile in candidates(p.nickname)" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></select></label><div class="shot-seat-context"><label>已揭示棋手<input v-model="p.commander" maxlength="160" placeholder="如：小妲己；未知留空"></label><label>当时已知玩法<input v-model="p.visiblePlan" maxlength="160" placeholder="未知留空，非赛后成型阵容"></label></div></div></fieldset>
@@ -34,10 +49,50 @@
   <section v-if="matchupResult" class="shot-advanced-analysis">
     <div class="analysis-header-row">
       <div>
-        <h3>六人同场博弈与禁选研判（克制链 + Ban位冲击）</h3>
-        <p class="muted">根据 26 个比赛日历史真实同场交锋记录与阵营依赖度，实时测算克制网络与禁选冲击。</p>
+        <h3>六人同场博弈与版本更迭研判（版本导向 + 克制链 + Ban位冲击）</h3>
+        <p class="muted">根据官方最新版本【{{ matchupResult.versionMeta.version }}】环境与 26 个比赛日历史真实同场交锋记录实时测算。</p>
       </div>
       <span class="ban-tag" v-if="bannedFaction">当前禁用：{{ bannedFaction }}</span>
+    </div>
+
+    <!-- 0. 官方最新游戏版本与阵容更迭影响研判 -->
+    <div class="version-analysis-card">
+      <div class="version-header-row">
+        <div class="version-title-wrap">
+          <span class="version-badge" :class="{ 'latest': matchupResult.versionMeta.isLatest }">
+            {{ matchupResult.versionMeta.isLatest ? '🎯 官方最新版本' : '📜 历史回测版本' }} · {{ matchupResult.versionMeta.version }}
+          </span>
+          <span class="version-date">生效日期：{{ matchupResult.versionMeta.effectiveDate }}</span>
+        </div>
+        <p class="version-summary-note">{{ matchupResult.versionMeta.summary }}</p>
+      </div>
+
+      <div class="version-impact-box">
+        <div class="impact-title">📌 本版本核心机制变动与阵容更迭导向：</div>
+        <ul class="version-changes-list">
+          <li v-for="(change, cIdx) in matchupResult.versionMeta.keyChanges" :key="cIdx">
+            {{ change }}
+          </li>
+        </ul>
+        <div class="version-lineup-note">
+          <strong>💡 阵容生态影响：</strong>{{ matchupResult.versionMeta.lineupImpact }}
+        </div>
+      </div>
+
+      <!-- 6 位选手在新版本下的阵容契合度分析 -->
+      <div class="player-version-grid">
+        <div v-for="p in matchupResult.players" :key="p.nickname" class="player-version-item" :class="p.versionAdaptation.fitLevel.toLowerCase()">
+          <div class="item-head">
+            <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-mini" alt="" />
+            <span class="player-name">{{ p.nickname }}</span>
+            <span class="version-fit-badge" :class="p.versionAdaptation.fitLevel.toLowerCase()">
+              {{ p.versionAdaptation.fitLabel }}
+              <small v-if="p.versionModifier !== 0">({{ p.versionModifier > 0 ? '+' : '' }}{{ (p.versionModifier * 100).toFixed(0) }}%)</small>
+            </span>
+          </div>
+          <p class="item-desc">{{ p.versionAdaptation.summary }}</p>
+        </div>
+      </div>
     </div>
 
     <!-- 1. 阵营禁用冲击剖析 -->
@@ -112,7 +167,7 @@
 
     <!-- 3. 综合博弈校正战力与胜率 -->
     <div class="adjusted-probability-box">
-      <h4>🎯 综合博弈胜率推演（融合基础胜率 + 克制加成 + Ban位修正）</h4>
+      <h4>🎯 综合博弈胜率推演（融合基础实力 + 克制加成 + Ban位修正 + 最新版本适配）</h4>
       <div class="prob-bars-list">
         <div v-for="p in matchupResult.players" :key="p.nickname" class="prob-row">
           <div class="row-info">
@@ -124,6 +179,9 @@
               </span>
               <span v-if="p.banModifier !== 0" class="mod-pill" :class="{ positive: p.banModifier > 0, negative: p.banModifier < 0 }">
                 Ban位 {{ p.banModifier > 0 ? '+' : '' }}{{ p.banModifier }}
+              </span>
+              <span v-if="p.versionModifier !== 0" class="mod-pill" :class="{ positive: p.versionModifier > 0, negative: p.versionModifier < 0 }">
+                版本 {{ p.versionModifier > 0 ? '+' : '' }}{{ (p.versionModifier * 100).toFixed(0) }}%
               </span>
             </div>
             <strong class="prob-val">{{ (p.adjustedProbability * 100).toFixed(1) }}%</strong>
@@ -146,7 +204,12 @@
 import {computed,onMounted,ref,watch} from 'vue'
 import {uploadEvidence} from '../api/index'
 import {researchApi} from '../api/prediction'
-import {evaluate6PlayerMatchup, type SixPlayerMatchupResult} from '../utils/player-matchup'
+import {
+  evaluate6PlayerMatchup,
+  CURRENT_LATEST_VERSION,
+  GAME_VERSIONS,
+  type SixPlayerMatchupResult
+} from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
 interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
@@ -155,7 +218,7 @@ interface AceContext {notice:string;bannedFaction:string|null;rules:{perPlayerSu
 interface WinnerModel {modelVersion:string;trainingMatches:number;calibrated:boolean;notice:string;dataHash:string;players:{nickname:string;probability:number;coldStart:boolean}[];diagnostic:{conclusion?:string;evaluatedMatches:number;model:null|{logLoss:number};uniform:null|{logLoss:number};notice:string}}
 interface Result {model?:WinnerModel|null;aceContext?:AceContext;status:string;notice:string;featureCutoff:string;blockers:string[];players:{probability?:number|null;nickname:string;profileNickname:string|null;recent7:Sample;recent30:Sample;buildRates:{label:string;wins:number;observations:number;observedWinShare:number}[];claims:{id:string;kind:string;text:string;sourceUrl:string}[]}[]}
 const capturedAt=ref('')
-const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false),mode=ref('WANXIANG'),version=ref('')
+const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false),mode=ref('WANXIANG'),version=ref(CURRENT_LATEST_VERSION)
 const savedAnalysisId=ref('')
 const catalogMatches=ref<any[]>([])
 async function loadSaved(){busy.value=true;error.value='';result.value=null;draft.value=null;confirmed.value=false;try{result.value=await researchApi<Result>(`screenshot-analyses/${encodeURIComponent(savedAnalysisId.value.trim())}`)}catch(e){error.value=e instanceof Error?e.message:'读取失败'}finally{busy.value=false}}
@@ -173,11 +236,11 @@ async function read(){if(!file.value)return;busy.value=true;error.value='';draft
 async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
 watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
 
-// 实时计算同场克制与禁选阵营影响
+// 实时计算同场克制、禁选阵营与最新版本更迭影响
 const matchupResult=computed<SixPlayerMatchupResult|null>(()=>{
  const valid=players.value.filter(p=>p.nickname&&p.nickname.trim())
  if(valid.length<2)return null
- return evaluate6PlayerMatchup(valid,bannedFaction.value,catalogMatches.value)
+ return evaluate6PlayerMatchup(valid,bannedFaction.value,catalogMatches.value,version.value||CURRENT_LATEST_VERSION)
 })
 
 onMounted(async()=>{
@@ -426,6 +489,158 @@ onMounted(async()=>{
     border-radius: 9999px;
     font-size: 13px;
     font-weight: 700;
+  }
+}
+
+.version-select {
+  font-weight: 600;
+  color: $color-primary;
+}
+
+.version-analysis-card {
+  margin-bottom: 24px;
+  background: $bg-canvas;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 16px 20px;
+
+  .version-header-row {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border-subtle;
+
+    .version-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: $color-primary-light;
+      color: $color-primary;
+
+      &.latest {
+        background: rgba($color-success, 0.15);
+        color: $color-success;
+        border: 1px solid rgba($color-success, 0.3);
+      }
+    }
+
+    .version-date {
+      font-size: 12px;
+      color: $text-muted;
+    }
+
+    .version-summary-note {
+      font-size: 13px;
+      color: $text-secondary;
+      margin: 4px 0 0;
+      line-height: 1.5;
+    }
+  }
+
+  .version-impact-box {
+    background: $bg-subtle;
+    border-radius: $radius-sm;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+
+    .impact-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 8px;
+    }
+
+    .version-changes-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 12.5px;
+      color: $text-secondary;
+      line-height: 1.6;
+
+      li {
+        margin-bottom: 3px;
+      }
+    }
+
+    .version-lineup-note {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed $border-subtle;
+      font-size: 12.5px;
+      color: $text-primary;
+      line-height: 1.5;
+
+      strong {
+        color: $color-accent;
+      }
+    }
+  }
+
+  .player-version-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .player-version-item {
+    background: $bg-subtle;
+    border-radius: $radius-sm;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+
+    &.buffed {
+      border-color: rgba($color-success, 0.3);
+      background: rgba($color-success, 0.04);
+    }
+
+    .item-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+
+      .player-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: $text-primary;
+      }
+
+      .version-fit-badge {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 1px 7px;
+        border-radius: 4px;
+        background: $border-subtle;
+        color: $text-secondary;
+
+        &.buffed {
+          background: rgba($color-success, 0.15);
+          color: $color-success;
+        }
+
+        &.outdated {
+          background: rgba($color-danger, 0.15);
+          color: $color-danger;
+        }
+      }
+    }
+
+    .item-desc {
+      margin: 0;
+      font-size: 11.5px;
+      color: $text-secondary;
+      line-height: 1.45;
+    }
   }
 }
 
@@ -821,6 +1036,7 @@ onMounted(async()=>{
   }
 
   .ban-analysis-card .ban-players-grid,
+  .version-analysis-card .player-version-grid,
   .h2h-analysis-card .cross-matchups-list,
   .h2h-analysis-card .player-nemesis-grid {
     grid-template-columns: 1fr;

@@ -1,9 +1,11 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {buildAceContext} from '../src/prediction/ace-context.mjs'
-const request={mode:'WANXIANG',version:'v1.8.1',players:Array.from({length:6},(_,i)=>({nickname:`TEST-${i}`,commander:i<2?'小妲己':'',visiblePlan:i<2?'河洛木兰':'',returnMultiplier:i===0?'5.6':''})),aceContext:{supportStage:'OPEN',bannedFaction:'日落海',grossReturnConfirmed:true}}
+import {buildAceContext, LATEST_GAME_VERSION, ACE_RULE_SOURCES} from '../src/prediction/ace-context.mjs'
+const request={mode:'WANXIANG',version:'v1.9.1',players:Array.from({length:6},(_,i)=>({nickname:`TEST-${i}`,commander:i<2?'小妲己':'',visiblePlan:i<2?'河洛木兰':'',returnMultiplier:i===0?'5.6':''})),aceContext:{supportStage:'OPEN',bannedFaction:'日落海',grossReturnConfirmed:true}}
 test('王牌对决上下文区分真人、棋手、玩法及报价，保本阈值不是获胜概率',()=>{
- const r=buildAceContext(request,'2026-10-31T00:00:00Z');assert.equal(r.event,'ACE_DUEL');assert.equal(r.ruleset,'WANXIANG');assert.equal(r.rules.perPlayerSupportCap,10000)
+ const r=buildAceContext(request,'2026-11-06T00:00:00Z');assert.equal(r.event,'ACE_DUEL');assert.equal(r.ruleset,'WANXIANG');assert.equal(r.rules.perPlayerSupportCap,10000)
+ assert.equal(LATEST_GAME_VERSION,'v1.9.1')
+ assert.equal(ACE_RULE_SOURCES.length,3)
  assert.equal(r.players[0].commander,'小妲己');assert.equal(r.players[0].breakEvenProbability,1/5.6);assert.equal(r.players[0].probability,undefined)
  assert.equal(r.players[2].commander,null);assert.equal(r.players[2].returnMultiplier,null);assert.deepEqual(r.sharedPlans[0].seats,[1,2]);assert.equal(r.bannedFaction,'日落海')
  assert.ok(r.warnings.includes('MISSING_RETURN_QUOTES'))

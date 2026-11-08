@@ -56,6 +56,19 @@
             </div>
           </div>
 
+          <!-- 官方最新版本动态与赛前推演导向 -->
+          <div class="version-status-banner">
+            <div class="banner-badge">
+              <span class="badge-pill">官方最新版本</span>
+              <strong>{{ CURRENT_LATEST_VERSION }}</strong>
+            </div>
+            <div class="banner-content">
+              <h4>11月5日官方不停机更新已生效 · 赛前推演全面适配最新版本</h4>
+              <p>棋手「嬴律」并购红利每回合额外复制场上英雄（单核追三上限暴涨），「安琪拉」打扫战场飞行器法攻提至 125%/攻速 30%（雷霆机甲爆发增强），「乔汐」温柔呼唤升至 3~5 阶转瞬牌，新棋手「武凤」偷秘技上线。当前王牌对决所有赛前预测均默认锚定 <strong>{{ CURRENT_LATEST_VERSION }}</strong> 最新版本进行博弈研判与阵容加成修正。</p>
+            </div>
+            <router-link to="/research/predict" class="banner-action-btn">进入赛前推演 →</router-link>
+          </div>
+
           <!-- 王牌对决登顶排行榜 TOP 8 -->
           <section v-if="topWinners.length" class="leaderboard-section">
             <div class="section-title-row">
@@ -162,6 +175,9 @@
               <header>
                 <div class="match-title-row">
                   <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场</h2>
+                  <span class="match-version-pill" :class="{ 'latest': getVersionByDate(m.day).isLatest }">
+                    {{ getVersionByDate(m.day).version }}{{ getVersionByDate(m.day).isLatest ? ' (最新)' : '' }}
+                  </span>
                   <span v-if="m.ban" class="ban-tag">Ban：{{ m.ban }}</span>
                 </div>
                 <span class="verified-tag">{{ m.matchType === 'winner_snapshot' ? '胜者公报 · 一图流已核验' : '已核验 · 6席位转写' }}</span>
@@ -448,6 +464,20 @@
                               该选手多阵营构筑均衡，对单一阵营禁用具有极强抗性，赛前选阵容错率高。
                             </p>
                           </div>
+
+                          <!-- 最新游戏版本阵容适配度提示 -->
+                          <div class="version-fit-box" v-if="getPlayerMatchup(p.nickname)?.versionAdaptation">
+                            <div class="fit-header">
+                              <span class="fit-title">🎮 最新版本 ({{ CURRENT_LATEST_VERSION }}) 适配度：</span>
+                              <span class="fit-tag" :class="getPlayerMatchup(p.nickname)!.versionAdaptation!.fitLevel.toLowerCase()">
+                                {{ getPlayerMatchup(p.nickname)!.versionAdaptation!.fitLabel }}
+                                <small v-if="getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus !== 0">
+                                  ({{ getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus > 0 ? '+' : '' }}{{ (getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus * 100).toFixed(0) }}%)
+                                </small>
+                              </span>
+                            </div>
+                            <p class="fit-desc">{{ getPlayerMatchup(p.nickname)!.versionAdaptation!.summary }}</p>
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -486,7 +516,9 @@ import {
 } from '../utils/player-grouping'
 import {
   buildPlayerMatchupProfiles,
-  type PlayerMatchupProfile
+  type PlayerMatchupProfile,
+  getVersionByDate,
+  CURRENT_LATEST_VERSION
 } from '../utils/player-matchup'
 
 interface CatalogMatchSeat {
@@ -1778,7 +1810,135 @@ button,
           color: $text-secondary;
         }
       }
+
+      .version-fit-box {
+        margin-top: 10px;
+        padding: 10px 12px;
+        background: rgba($color-primary, 0.04);
+        border: 1px solid rgba($color-primary, 0.15);
+        border-radius: $radius-sm;
+
+        .fit-header {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 4px;
+
+          .fit-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: $text-primary;
+          }
+
+          .fit-tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: $border-subtle;
+            color: $text-secondary;
+
+            &.buffed {
+              background: rgba($color-success, 0.15);
+              color: $color-success;
+            }
+
+            &.outdated {
+              background: rgba($color-danger, 0.15);
+              color: $color-danger;
+            }
+          }
+        }
+
+        .fit-desc {
+          margin: 0;
+          font-size: 11.5px;
+          color: $text-secondary;
+          line-height: 1.45;
+        }
+      }
     }
+  }
+}
+
+.version-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 24px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, rgba($color-primary, 0.06), rgba($color-success, 0.06));
+  border: 1px solid rgba($color-primary, 0.2);
+  border-radius: $radius-md;
+
+  .banner-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 8px 10px;
+    background: $bg-surface;
+    border-radius: $radius-sm;
+    box-shadow: $shadow-sm;
+
+    .badge-pill {
+      font-size: 10px;
+      font-weight: 700;
+      color: $color-success;
+      letter-spacing: 0.5px;
+    }
+
+    strong {
+      font-size: 17px;
+      font-weight: 800;
+      color: $color-primary;
+    }
+  }
+
+  .banner-content {
+    flex: 1;
+
+    h4 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: $text-primary;
+    }
+
+    p {
+      margin: 0;
+      font-size: 12.5px;
+      color: $text-secondary;
+      line-height: 1.5;
+
+      strong {
+        color: $color-primary;
+      }
+    }
+  }
+
+  .banner-action-btn {
+    @include button-primary;
+    padding: 6px 14px;
+    font-size: 12px;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+}
+
+.match-version-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: $border-subtle;
+  color: $text-secondary;
+
+  &.latest {
+    background: rgba($color-success, 0.12);
+    color: $color-success;
+    border: 1px solid rgba($color-success, 0.3);
   }
 }
 

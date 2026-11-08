@@ -1,10 +1,89 @@
 import {fail} from './domain.mjs'
+
+export const LATEST_GAME_VERSION = 'v1.9.1'
+
 // Rules are pinned to checked official releases, never extrapolated to unknown versions.
 export const ACE_RULE_SOURCES = [
  {title:'10月15日官方公告 v1.6.1',url:'https://www.taptap.cn/moment/859509109601339933?group_id=399839'},
  {title:'10月29日官方公告 v1.8.1',url:'https://www.taptap.cn/moment/864558229898660127'},
+ {title:'11月5日官方公告 v1.9.1',url:'https://www.taptap.cn/moment/868153400588669502'},
 ]
-const caps={'v1.5.1':{cap:50000,since:'2026-10-08T08:00:00+08:00'},'v1.6.1':{cap:10000,since:'2026-10-15T08:00:00+08:00'},'v1.7.1':{cap:10000,since:'2026-10-22T08:00:00+08:00'},'v1.8.1':{cap:10000,since:'2026-10-29T08:00:00+08:00'}}
+
+export const GAME_VERSIONS_TIMELINE = [
+ {
+  version: 'v1.9.1',
+  effectiveDate: '2026-11-05',
+  isLatest: true,
+  perPlayerSupportCap: 10000,
+  title: '11月5日不停机更新 (v1.9.1 - 当前官方最新版本)',
+  keyFeatures: [
+   '新棋手「武凤」11月6日登场（为我所用偷取对手秘技牌机制）',
+   '棋手「嬴律」并购红利重磅强化：合成上限后每回合额外随机获得1张场上英雄复制（极大加速高阶单核追三星）',
+   '棋手「乔汐」温柔呼唤抽取范围收窄为3~5阶转瞬牌；潮汐交响初始触发次数升至4次(+20等级)',
+   '棋手「安琪拉」打扫战场飞行器继承法攻提至125%、攻速提至30%（雷霆战机法爆体系大火）',
+   '天赋「乘胜追击」优化为回合开始拿战术，胜利拿高阶战术'
+  ],
+  lineupImpact: '高阶高费单核流派（逐鹿蒙恬、日落海倒转、长城高费）受嬴律复制机制利好上限激增；雷霆战机机甲流派大幅增强；乔汐转瞬3-5阶快攻爆发更快；三分领袖持续受益。'
+ },
+ {
+  version: 'v1.8.1',
+  effectiveDate: '2026-10-29',
+  isLatest: false,
+  perPlayerSupportCap: 10000,
+  title: '10月29日不停机更新 (v1.8.1)',
+  keyFeatures: [
+   '乔汐潮汐交响重做、阿离红叶染锋等级保留、孙尚香炮击手感优化',
+   '新增天赋「帝临」（嬴政+武则天）、「勇冠三军」（马超全队法爆）、「孙尚香·强化」',
+   '天赋「三分领袖」治疗效果由30%大幅提升至40%'
+  ],
+  lineupImpact: '三分阵营全面崛起，「三分登场」、「三分倒转」与「养猪三分」胜率飙升，成为主流赛场核心体系。'
+ },
+ {
+  version: 'v1.7.1',
+  effectiveDate: '2026-10-22',
+  isLatest: false,
+  perPlayerSupportCap: 10000,
+  title: '10月22日平衡更新 (v1.7.1)',
+  keyFeatures: [
+   '安琪拉、班叔、昭君、马可技能数值平衡',
+   '天赋限制性进化、光棱塔机制优化'
+  ],
+  lineupImpact: '机关与长城过渡增强，法系阵容梯度分化。'
+ },
+ {
+  version: 'v1.6.1',
+  effectiveDate: '2026-10-15',
+  isLatest: false,
+  perPlayerSupportCap: 10000,
+  title: '10月15日规则与平衡更新 (v1.6.1)',
+  keyFeatures: [
+   '王牌对决支持上限调整为10000钻石',
+   '王牌对决改为门槛随机6人选拔机制',
+   '蒙犽弹道优化'
+  ],
+  lineupImpact: '王牌赛事生态重构，选手支持上限下调至1万。'
+ },
+ {
+  version: 'v1.5.1',
+  effectiveDate: '2026-10-08',
+  isLatest: false,
+  perPlayerSupportCap: 50000,
+  title: '10月8日版本更迭 (v1.5.1)',
+  keyFeatures: [
+   '明先生微调、蔡文姬毒奶削弱',
+   '王牌对决早期每人支持上限50000钻石'
+  ],
+  lineupImpact: '早期纯续航养猪体系受到抑制。'
+ }
+]
+
+const caps={
+ 'v1.5.1':{cap:50000,since:'2026-10-08T08:00:00+08:00'},
+ 'v1.6.1':{cap:10000,since:'2026-10-15T08:00:00+08:00'},
+ 'v1.7.1':{cap:10000,since:'2026-10-22T08:00:00+08:00'},
+ 'v1.8.1':{cap:10000,since:'2026-10-29T08:00:00+08:00'},
+ 'v1.9.1':{cap:10000,since:'2026-11-05T08:00:00+08:00'}
+}
 const optionalText=(value,label)=>{if(value==null||value==='')return null;if(typeof value!=='string'||value.length>160)throw fail(`${label}格式错误`,'INVALID_ACE_CONTEXT');return value.trim()||null}
 export function buildAceContext(input,cutoff){
  const c=input.aceContext||{}

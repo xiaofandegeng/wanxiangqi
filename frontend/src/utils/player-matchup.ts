@@ -1,5 +1,172 @@
-// 王牌对决选手同场克制关系 (Head-to-Head) 与禁用阵营 (Ban) 影响分析引擎
+// 王牌对决选手同场克制关系 (Head-to-Head)、禁用阵营 (Ban) 与最新游戏版本更迭 (Version Meta) 综合博弈分析引擎
 import { getMasterPlayerName } from './player-grouping'
+
+export const CURRENT_LATEST_VERSION = 'v1.9.1'
+
+export interface GameVersionMeta {
+  version: string
+  effectiveDate: string
+  isLatest: boolean
+  title: string
+  summary: string
+  keyChanges: string[]
+  lineupImpact: string
+  buffedBuilds: string[]
+  nerfedBuilds: string[]
+}
+
+export const GAME_VERSIONS: GameVersionMeta[] = [
+  {
+    version: 'v1.9.1',
+    effectiveDate: '2026-11-05',
+    isLatest: true,
+    title: 'v1.9.1 (11月5日 - 官方当前最新版本)',
+    summary: '新棋手武凤登场，嬴律复制英雄机制颠覆单核追三，乔汐转瞬3-5阶与潮汐4次大强化，安琪拉法攻125%飞跃',
+    keyChanges: [
+      '新棋手「武凤」（11/06）：偷取敌方秘技牌机制打破单棋手套路上限',
+      '棋手「嬴律」并购红利：合成上限后每回合额外随机获得1张场上英雄复制（极大加速高阶单核追三星）',
+      '棋手「乔汐」温柔呼唤：抽取范围收窄为3~5阶转瞬牌；潮汐交响初始触发提升至4次(+20等级)',
+      '棋手「安琪拉」打扫战场：飞行器继承法攻提至125%、攻速提至30%（雷霆战机法爆体系大火）',
+      '天赋「乘胜追击」优化为回合开始拿战术，胜利拿高阶战术'
+    ],
+    lineupImpact: '高阶单核追三（逐鹿蒙恬、日落海倒转、长城高费）受嬴律复制机制利好上限激增；雷霆战机与法爆机甲大幅增强；乔汐转瞬中高阶快攻成型更快；三分领袖持续受益。',
+    buffedBuilds: ['逐鹿蒙恬', '日落海倒转', '雷霆战机', '三分登场', '三分倒转'],
+    nerfedBuilds: []
+  },
+  {
+    version: 'v1.8.1',
+    effectiveDate: '2026-10-29',
+    isLatest: false,
+    title: 'v1.8.1 (10月29日更新)',
+    summary: '三分领袖治疗30%升至40%引爆三分潮，乔汐重做，阿离/孙尚香手感优化，新增帝临/勇冠三军',
+    keyChanges: [
+      '天赋「三分领袖」治疗由30%大幅提升至40%（三分体系大爆发）',
+      '新增天赋「帝临」（嬴政+武则天）、「勇冠三军」（马超全队法爆）',
+      '乔汐潮汐交响重做、阿离红叶染锋等级保留、孙尚香炮击手感优化'
+    ],
+    lineupImpact: '三分阵营全面崛起，「三分登场」、「三分倒转」与「养猪三分」胜率飙升，成为主流赛场核心体系。',
+    buffedBuilds: ['三分登场', '三分倒转', '传统养猪'],
+    nerfedBuilds: []
+  },
+  {
+    version: 'v1.7.1',
+    effectiveDate: '2026-10-22',
+    isLatest: false,
+    title: 'v1.7.1 (10月22日更新)',
+    summary: '安琪拉、班叔、昭君、马可数值调整，限制性进化/光棱塔优化',
+    keyChanges: [
+      '安琪拉、班叔、昭君、马可技能数值平衡',
+      '天赋限制性进化、光棱塔机制优化'
+    ],
+    lineupImpact: '机关与长城过渡增强，法系阵容梯度分化。',
+    buffedBuilds: ['河洛木兰'],
+    nerfedBuilds: []
+  },
+  {
+    version: 'v1.6.1',
+    effectiveDate: '2026-10-15',
+    isLatest: false,
+    title: 'v1.6.1 (10月15日更新)',
+    summary: '王牌对决选人改为门槛随机6人，支持上限由5万降为1万钻石，蒙犽优化',
+    keyChanges: [
+      '王牌对决支持上限调整为10000钻石',
+      '王牌对决改为门槛随机6人选拔机制',
+      '蒙犽弹道优化'
+    ],
+    lineupImpact: '王牌赛事规则重构，支持上限规范化。',
+    buffedBuilds: [],
+    nerfedBuilds: []
+  },
+  {
+    version: 'v1.5.1',
+    effectiveDate: '2026-10-08',
+    isLatest: false,
+    title: 'v1.5.1 (10月8日版本更迭)',
+    summary: '明先生微调、蔡文姬毒奶削弱，早期支持上限5万',
+    keyChanges: [
+      '明先生微调、蔡文姬毒奶削弱',
+      '王牌对决早期每人支持上限50000钻石'
+    ],
+    lineupImpact: '早期纯续航养猪体系受到抑制。',
+    buffedBuilds: [],
+    nerfedBuilds: ['传统养猪']
+  }
+]
+
+export function getVersionByDate(dateStr: string): GameVersionMeta {
+  if (!dateStr) return GAME_VERSIONS[0]
+  const clean = dateStr.slice(0, 10)
+  for (const v of GAME_VERSIONS) {
+    if (clean >= v.effectiveDate) {
+      return v
+    }
+  }
+  return GAME_VERSIONS[GAME_VERSIONS.length - 1]
+}
+
+export interface VersionLineupAdaptation {
+  version: string
+  isLatest: boolean
+  fitLevel: 'BUFFED' | 'STABLE' | 'OUTDATED'
+  fitLabel: string
+  summary: string
+  bonus: number // 战力增益 (-0.1 ~ +0.15)
+  details: string[]
+}
+
+export function evaluateVersionLineupAdaptation(
+  playerCommonBuilds: string[],
+  targetVersion: string = CURRENT_LATEST_VERSION
+): VersionLineupAdaptation {
+  const ver = GAME_VERSIONS.find(v => v.version === targetVersion) || GAME_VERSIONS[0]
+  const buildsStr = playerCommonBuilds.join(' ')
+  
+  let fitLevel: 'BUFFED' | 'STABLE' | 'OUTDATED' = 'STABLE'
+  let bonus = 0
+  const details: string[] = []
+
+  if (ver.version === 'v1.9.1') {
+    if (buildsStr.includes('逐鹿') || buildsStr.includes('蒙恬')) {
+      fitLevel = 'BUFFED'
+      bonus += 0.08
+      details.push('嬴律「并购红利」额外复制场上英雄，逐鹿蒙恬追三星上限质变')
+    }
+    if (buildsStr.includes('雷霆') || buildsStr.includes('战机')) {
+      fitLevel = 'BUFFED'
+      bonus += 0.09
+      details.push('安琪拉飞行器法攻继承提升至125%、攻速30%，雷霆机甲爆发大幅增强')
+    }
+    if (buildsStr.includes('日落海') || buildsStr.includes('倒转')) {
+      fitLevel = 'BUFFED'
+      bonus += 0.06
+      details.push('倒转追梦体系受嬴律复制机制利好，成型速度大幅提升')
+    }
+    if (buildsStr.includes('三分')) {
+      fitLevel = 'BUFFED'
+      bonus += 0.05
+      details.push('持续享受 v1.8.1「三分领袖」40% 治疗加成，赛场高胜率常客')
+    }
+  } else if (ver.version < 'v1.8.1' && buildsStr.includes('三分')) {
+    fitLevel = 'OUTDATED'
+    bonus -= 0.05
+    details.push('该历史版本尚未实装三分领袖 40% 治疗加成，阵容强度受限')
+  }
+
+  const fitLabel = fitLevel === 'BUFFED' ? '版本红利' : (fitLevel === 'OUTDATED' ? '版本滞后' : '版本平稳')
+  const summary = details.length
+    ? details.join('；')
+    : `在 ${ver.version} 版本下阵容环境平稳，无剧烈版本震荡`
+
+  return {
+    version: ver.version,
+    isLatest: ver.isLatest,
+    fitLevel,
+    fitLabel,
+    summary,
+    bonus: Number(bonus.toFixed(3)),
+    details
+  }
+}
 
 export type FactionType = '三分' | '逐鹿' | '日落海' | '河洛' | '大河' | '通用/其他'
 
@@ -39,6 +206,8 @@ export interface PlayerMatchupProfile {
   masterName: string
   totalMatches: number
   totalWins: number
+  commonBuilds: string[]
+  versionAdaptation?: VersionLineupAdaptation
   factionDistribution: Record<FactionType, { matches: number; wins: number }>
   factions: FactionBreakdown[]
   h2h: HeadToHeadRecord[]
@@ -54,9 +223,11 @@ export interface SixPlayerMatchupResult {
     baseScore: number
     h2hBonus: number
     banModifier: number
+    versionModifier: number
     finalScore: number
     adjustedProbability: number
     banEvaluation: BanImpactEvaluation | null
+    versionAdaptation: VersionLineupAdaptation
     suppressedBy: string[] // 被本场哪些选手历史压制
     suppresses: string[] // 本场克制哪些选手
   }[]
@@ -68,6 +239,14 @@ export interface SixPlayerMatchupResult {
     encounters: number
     description: string
   }[]
+  targetVersion: string
+  versionMeta: GameVersionMeta
+  versionSummary: {
+    version: string
+    isLatest: boolean
+    summaryText: string
+    buffedPlayers: string[]
+  }
   banSummary: {
     bannedFaction: string | null
     criticalPlayers: string[]
@@ -119,6 +298,7 @@ export function buildPlayerMatchupProfiles(
           '通用/其他': { matches: 0, wins: 0 }
         },
         factions: [],
+        commonBuilds: [],
         h2h: [],
         nemeses: [],
         victims: [],
@@ -131,6 +311,7 @@ export function buildPlayerMatchupProfiles(
 
   // 内部交锋记账表：`${pA}|||${pB}`
   const h2hMatrix = new Map<string, { encounters: number; aWins: number; bWins: number; neither: number }>()
+  const buildCounts = new Map<string, Map<string, number>>()
 
   for (const m of matches) {
     if (!m.seats || !Array.isArray(m.seats) || m.seats.length === 0) continue
@@ -153,6 +334,15 @@ export function buildPlayerMatchupProfiles(
 
       profile.factionDistribution[faction].matches++
       if (isWinner) profile.factionDistribution[faction].wins++
+
+      if (seat.build && typeof seat.build === 'string' && seat.build.trim()) {
+        let bmap = buildCounts.get(name)
+        if (!bmap) {
+          bmap = new Map<string, number>()
+          buildCounts.set(name, bmap)
+        }
+        bmap.set(seat.build.trim(), (bmap.get(seat.build.trim()) || 0) + 1)
+      }
 
       activeParticipants.push({ name, faction, isWinner })
     }
@@ -231,6 +421,18 @@ export function buildPlayerMatchupProfiles(
     profile.victims = h2hList.filter(x => x.wins > x.losses).sort((a, b) => (b.wins - b.losses) - (a.wins - a.losses))
     // 最频繁相遇对手
     profile.topRivals = h2hList.slice(0, 5)
+
+    // 常用阵容与版本适应度
+    const bmap = buildCounts.get(profile.playerName)
+    if (bmap) {
+      profile.commonBuilds = [...bmap.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(x => x[0])
+        .slice(0, 3)
+    } else {
+      profile.commonBuilds = []
+    }
+    profile.versionAdaptation = evaluateVersionLineupAdaptation(profile.commonBuilds, CURRENT_LATEST_VERSION)
   }
 
   return profileMap
@@ -340,12 +542,13 @@ export function evaluateBanImpact(
 
 /**
  * 六人同场推演算法：
- * 综合选手基础战力 + 本场交手克制奖励/减免 + Ban位惩罚/增益，输出校正概率与博弈情报
+ * 综合选手基础战力 + 本场交手克制奖励/减免 + Ban位惩罚/增益 + 官方最新版本更迭适配度，输出校正概率与博弈情报
  */
 export function evaluate6PlayerMatchup(
   participants: { nickname: string; profileId?: string | null }[],
   bannedFaction?: string | null,
-  allMatches: any[] = []
+  allMatches: any[] = [],
+  targetVersion: string = CURRENT_LATEST_VERSION
 ): SixPlayerMatchupResult {
   const profileMap = buildPlayerMatchupProfiles(allMatches, true)
 
@@ -412,9 +615,10 @@ export function evaluate6PlayerMatchup(
     }
   }
 
-  // 3. 计算 Ban 位评估与综合得分
+  // 3. 计算 Ban 位评估、版本更迭影响与综合得分
   const criticalPlayers: string[] = []
   const benefitedPlayers: string[] = []
+  const buffedPlayers: string[] = []
 
   const preliminary = roster.map(p => {
     const prof = p.profile
@@ -432,10 +636,18 @@ export function evaluate6PlayerMatchup(
     const banEval = evaluateBanImpact(prof, bannedFaction, allMatches)
     const banModifier = banEval ? banEval.scoreModifier : 0
 
+    // 最新游戏版本阵容适应度修正分
+    const versionAdapt = evaluateVersionLineupAdaptation(
+      prof?.commonBuilds || [],
+      targetVersion
+    )
+    const versionModifier = versionAdapt.bonus
+
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
     if (banEval?.level === 'BENEFITED') benefitedPlayers.push(p.masterName)
+    if (versionAdapt.fitLevel === 'BUFFED') buffedPlayers.push(p.masterName)
 
-    const finalScore = baseScore + h2hBonus + banModifier
+    const finalScore = baseScore + h2hBonus + banModifier + versionModifier
 
     return {
       nickname: p.nickname,
@@ -443,9 +655,11 @@ export function evaluate6PlayerMatchup(
       baseScore: Number(baseScore.toFixed(3)),
       h2hBonus: Number(h2hBonus.toFixed(3)),
       banModifier: Number(banModifier.toFixed(3)),
+      versionModifier: Number(versionModifier.toFixed(3)),
       finalScore: Number(finalScore.toFixed(3)),
       adjustedProbability: 0,
       banEvaluation: banEval,
+      versionAdaptation: versionAdapt,
       suppressedBy: suppressedByMap.get(p.masterName) || [],
       suppresses: suppressesMap.get(p.masterName) || []
     }
@@ -473,9 +687,26 @@ export function evaluate6PlayerMatchup(
     }
   }
 
+  // 6. 版本更迭综合研判文案
+  const verMeta = GAME_VERSIONS.find(v => v.version === targetVersion) || GAME_VERSIONS[0]
+  let versionSummaryText = `当前推演基于官方最新版本【${verMeta.version}】（${verMeta.effectiveDate}生效）。`
+  if (buffedPlayers.length > 0) {
+    versionSummaryText += `选手【${buffedPlayers.join('、')}】的主力体系受到当前版本机制（嬴律复制/安琪拉法爆/三分增益）利好支持。`
+  } else {
+    versionSummaryText += `场上 6 位选手主力体系在当前版本表现平稳。`
+  }
+
   return {
     players: preliminary,
     crossMatchups,
+    targetVersion,
+    versionMeta: verMeta,
+    versionSummary: {
+      version: targetVersion,
+      isLatest: verMeta.isLatest,
+      summaryText: versionSummaryText,
+      buffedPlayers
+    },
     banSummary: {
       bannedFaction: bannedFaction || null,
       criticalPlayers,
