@@ -56,4 +56,48 @@ describe('预测工作台',()=>{
   // 降序：选手乙(75%)在第一，选手甲(20%)在第二
   expect(names()).toEqual(['选手乙', '选手甲'])
  })
+
+ it('基于全量 matches 构建真实胜场榜单，胜者公报与转写记录 100% 纳入', async () => {
+  state.token = 'TEST-ONLY'
+  state.section = 'players'
+  state.api.mockImplementation(async (action: string) => {
+    if (action === 'catalog') {
+      return {
+        counts: { players: 1, matches: 1, plays: 6, claims: 0, sources: 2, totalMatches: 3, totalDays: 2 },
+        players: [
+          { id: 'p1', nickname: '世薄情', observedMatches: 1, observedWins: 1, commonBuilds: ['逐鹿蒙恬'], builds: [], claims: [], history: [] }
+        ],
+        matches: [
+          {
+            id: 'm1', day: '2026-10-24', ordinal: 1, sourceUrl: 'http://a', materialSha256: '', ban: null,
+            winnerBuild: '逐鹿蒙恬', winnerSlot: 1, winnerNickname: '世薄情', matchType: 'full_transcribed',
+            seats: [
+              { slot: 1, playerId: 'p1', nickname: '世薄情', build: '逐鹿蒙恬', winner: true },
+              { slot: 2, playerId: 'p2', nickname: '白白白白白3', build: '养猪', winner: false }
+            ]
+          },
+          {
+            id: 'm2', day: '2026-11-05', ordinal: 1, sourceUrl: 'http://b', materialSha256: '', ban: null,
+            winnerBuild: '养猪', winnerSlot: 1, winnerNickname: '白白白白白3', matchType: 'winner_snapshot',
+            seats: [
+              { slot: 1, playerId: 'snap:白白白白白3', nickname: '白白白白白3', build: '养猪', winner: true }
+            ]
+          },
+          {
+            id: 'm3', day: '2026-11-05', ordinal: 2, sourceUrl: 'http://b', materialSha256: '', ban: null,
+            winnerBuild: '日落海倒转', winnerSlot: 1, winnerNickname: '白白白白白3', matchType: 'winner_snapshot',
+            seats: [
+              { slot: 1, playerId: 'snap:白白白白白3', nickname: '白白白白白3', build: '日落海倒转', winner: true }
+            ]
+          }
+        ]
+      }
+    }
+    return action === 'stats' ? { eligibleMatches: 0, unlinkedSeats: 0, players: [] } : []
+  })
+  const host = await mount()
+  const names = () => [...host.querySelectorAll('.player-name')].map(el => el.textContent?.trim())
+  // 白白白白白3 (2冠) 应该排在 世薄情 (1冠) 前面
+  expect(names()).toEqual(['白白白白白3', '世薄情'])
+ })
 })

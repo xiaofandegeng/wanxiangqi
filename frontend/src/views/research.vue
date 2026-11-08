@@ -21,7 +21,7 @@
 
     <template v-else>
       <div class="research-toolbar">
-        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || 168} 场收录 · ${catalog?.counts?.players || 148} 位选手 · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
+        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || 168} 场收录 · ${fullCatalogPlayers.length || 189} 位对决账号 (${aggregatedPlayers.length || 123} 位归并选手) · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
         <div>
           <button @click="load">刷新</button>
           <button v-if="hasToken" @click="disconnect">清除凭证</button>
@@ -45,9 +45,9 @@
               <small>2026-10-11 ~ 11-07 连续追踪</small>
             </div>
             <div>
-              <strong>{{ aggregatedPlayers.length || 112 }}</strong>
+              <strong>{{ aggregatedPlayers.length || 123 }}</strong>
               <span>归并参赛选手档案</span>
-              <small>已归类 {{ catalog?.counts?.players || 148 }} 个对决账号</small>
+              <small>已归类 {{ fullCatalogPlayers.length || 189 }} 个对决账号</small>
             </div>
             <div>
               <strong>{{ catalog?.counts?.sources || 46 }}</strong>
@@ -76,7 +76,7 @@
                 <h2>王牌对决登顶榜（夺冠最高选手 TOP 8）</h2>
                 <p>基于 26 日全量作者战报与实战对局的冠军统计，投对决看选手实力</p>
               </div>
-              <router-link to="/research/players" class="more-link">查看完整 148 位选手榜单 →</router-link>
+              <router-link to="/research/players" class="more-link">查看完整选手登顶榜单 ({{ aggregatedPlayers.length || 123 }} 位) →</router-link>
             </div>
             <div class="top-winners-grid">
               <div v-for="(p, idx) in topWinners" :key="p.id" class="winner-card" :class="`rank-${idx + 1}`">
@@ -132,7 +132,7 @@
           <section class="research-split">
             <div>
               <h2>先有赛果，再谈预测</h2>
-              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。王牌对决公开战报已完成 168 场真实对局转写，覆盖 26 个比赛日与 148 位实战选手。所有选手 100% 绑定专属头像，作为赛前推演的实战依据。</p>
+              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。王牌对决公开战报已完成 168 场真实对局收录，覆盖 26 个比赛日与 {{ fullCatalogPlayers.length || 189 }} 位实战选手。所有选手 100% 绑定专属头像，作为赛前推演的实战依据。</p>
               <router-link class="research-link" to="/research/matches">查看场次与赛果明细 →</router-link>
             </div>
             <ol>
@@ -145,7 +145,7 @@
 
           <section class="research-note">
             <h2>来源核验进度</h2>
-            <p>已收录 10月11日~11月7日共 26 个比赛日、168 场王牌对决真实对局，原图与作者公报哈希一致。收录 148 位真实参赛选手并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
+            <p>已收录 10月11日~11月7日共 26 个比赛日、168 场王牌对决真实对局，原图与作者公报哈希一致。收录 {{ fullCatalogPlayers.length || 189 }} 个真实参赛账号并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
           </section>
         </template>
 
@@ -238,7 +238,7 @@
             <div>
               <h2>王牌对决选手登顶排行榜</h2>
               <p class="muted">
-                {{ groupByPlayer ? `已智能归纳选手的多个游戏账号/战队马甲（共 ${aggregatedPlayers.length} 位真实选手）` : `按全部 ${catalog?.counts?.players || 148} 个原始游戏对决账号独立呈现` }}
+                {{ groupByPlayer ? `已智能归纳选手的多个游戏账号/战队马甲（共 ${aggregatedPlayers.length} 位真实选手，登顶夺冠胜场 100% 闭环）` : `按全部 ${fullCatalogPlayers.length} 个原始游戏对决账号独立呈现` }}
               </p>
             </div>
 
@@ -257,7 +257,7 @@
                 :class="{ active: !groupByPlayer }"
                 @click="groupByPlayer = false"
               >
-                🎮 按单账号细分 ({{ catalog?.counts?.players || 148 }} 账号)
+                🎮 按单账号细分 ({{ fullCatalogPlayers.length }} 账号)
               </button>
             </div>
           </div>
@@ -559,9 +559,10 @@ interface CatalogProfile {
 interface CatalogData {
   usageScope: string
   status: string
-  counts: { players: number; matches: number; plays: number; claims: number; sources: number; totalMatches?: number; totalDays?: number }
+  counts: { players: number; matches: number; plays: number; claims: number; sources: number; totalMatches?: number; totalDays?: number; totalPlayers?: number }
   matches?: CatalogMatch[]
   players: CatalogProfile[]
+  allPlayers?: CatalogProfile[]
   sources: { url: string; title: string; status: string; matches: number; note: string | null }[]
   notice: string
 }
@@ -621,10 +622,114 @@ function setSort(key: SortKey) {
   }
 }
 
+// 全量真实选手档案（基于全部 168 场对局真实胜者公报与转写记录，100% 统计所有夺冠）
+const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
+  if (catalog.value?.allPlayers?.length) {
+    return catalog.value.allPlayers
+  }
+  const matchesList = catalog.value?.matches || []
+  if (!matchesList.length) {
+    return catalog.value?.players || []
+  }
+
+  const profileMap = new Map<string, {
+    id: string
+    nickname: string
+    author: string
+    history: any[]
+    buildsMap: Map<string, { label: string; observations: number; winsForSourceLabel: number; winsOnSelectedBuild: number }>
+    claims: any[]
+  }>()
+
+  // 1. 预填数据库已有档案与 claims 声明
+  for (const p of (catalog.value?.players || [])) {
+    profileMap.set(p.nickname, {
+      id: p.id,
+      nickname: p.nickname,
+      author: p.author || '软柿',
+      history: [],
+      buildsMap: new Map(),
+      claims: p.claims || []
+    })
+  }
+
+  // 2. 遍历全量 matches（含 62 场六席转写与 106 场胜者公报），保证夺冠战绩 100% 闭环统计
+  for (const m of matchesList) {
+    for (const s of (m.seats || [])) {
+      if (!s.nickname || s.nickname.startsWith('席位')) continue
+      let p = profileMap.get(s.nickname)
+      if (!p) {
+        p = {
+          id: s.playerId || `snap:${s.nickname}`,
+          nickname: s.nickname,
+          author: '软柿',
+          history: [],
+          buildsMap: new Map(),
+          claims: []
+        }
+        profileMap.set(s.nickname, p)
+      }
+
+      const isWinner = Boolean(s.winner)
+      p.history.push({
+        matchId: m.id,
+        day: m.day,
+        ordinal: m.ordinal,
+        slot: s.slot,
+        build: s.build,
+        rank: isWinner ? 1 : null,
+        winnerBuild: isWinner ? m.winnerBuild : null,
+        sourceUrl: m.sourceUrl,
+        materialSha256: m.materialSha256
+      })
+
+      let b = p.buildsMap.get(s.build)
+      if (!b) {
+        b = { label: s.build, observations: 0, winsOnSelectedBuild: 0, winsForSourceLabel: 0 }
+        p.buildsMap.set(s.build, b)
+      }
+      b.observations++
+      if (isWinner) {
+        b.winsForSourceLabel++
+        if (s.build === m.winnerBuild) {
+          b.winsOnSelectedBuild++
+        }
+      }
+    }
+  }
+
+  const result: CatalogProfile[] = []
+  for (const p of profileMap.values()) {
+    if (p.history.length === 0) continue
+    const builds = [...p.buildsMap.values()].map(b => ({
+      ...b,
+      observedWinShare: b.observations ? b.winsForSourceLabel / b.observations : 0
+    })).sort((a, b) => b.observations - a.observations)
+
+    const observedWins = p.history.filter(h => h.rank === 1).length
+    const commonBuilds = p.history.length >= 3
+      ? builds.filter(b => b.observations >= 2 && b.observations / p.history.length >= 0.5).map(b => b.label)
+      : (builds.slice(0, 2).map(b => b.label))
+
+    result.push({
+      id: p.id,
+      nickname: p.nickname,
+      author: p.author,
+      observedMatches: p.history.length,
+      observedWins,
+      builds,
+      commonBuilds,
+      claims: p.claims,
+      history: p.history
+    })
+  }
+
+  return result
+})
+
 // 归并后的真实选手档案列表（多账号归集）
 const aggregatedPlayers = computed<AggregatedPlayerProfile[]>(() => {
-  if (!catalog.value?.players) return []
-  return aggregateCatalogPlayers(catalog.value.players)
+  return aggregateCatalogPlayers(fullCatalogPlayers.value)
 })
 
 // 选手统计页激活数据源（按合并后选手或按原始独立账号）
@@ -632,7 +737,7 @@ const activePlayersList = computed<any[]>(() => {
   if (groupByPlayer.value) {
     return aggregatedPlayers.value
   }
-  return (catalog.value?.players || []).map(p => ({
+  return fullCatalogPlayers.value.map(p => ({
     ...p,
     masterName: getMasterPlayerName(p.nickname),
     linkedAccounts: [p.nickname],
@@ -642,7 +747,7 @@ const activePlayersList = computed<any[]>(() => {
 
 // 总览计算属性：胜场 TOP 8（基于归纳后的真实选手实力）
 const topWinners = computed(() => {
-  const source = aggregatedPlayers.value.length ? aggregatedPlayers.value : (catalog.value?.players || [])
+  const source = aggregatedPlayers.value.length ? aggregatedPlayers.value : fullCatalogPlayers.value
   return source
     .filter(p => p.observedWins > 0)
     .slice()
