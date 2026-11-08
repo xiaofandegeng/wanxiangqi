@@ -85,3 +85,62 @@ console.table(Object.entries(banStats).sort((a, b) => b[1] - a[1]).map(([ban, cn
   占比: `${(cnt / matches.length * 100).toFixed(1)}%`
 })))
 
+// 5. 全时期（25个比赛日）来源胜者图谱统计
+const allSourceWinners = {}
+const dailyWinnerMap = {}
+
+for (const s of catalog.sources) {
+  const match = s.title.match(/恭喜胜者老师[🎉\s]*([\s\S]*?)(?:#|祝大家|今晚|继续|下在做了|前面两局|这两天|刚图片|明天|发烧|其他几个|$)/)
+  if (match) {
+    const raw = match[1]
+    const atMatches = [...raw.matchAll(/@([^@\n#]+?)(?=\s*@|\s*#|\s*$)/g)]
+    let dateMatch = s.title.match(/10\d{2}|11\d{2}/)
+    let dateStr = dateMatch ? `2026-${dateMatch[0].slice(0, 2)}-${dateMatch[0].slice(2)}` : null
+    if (!dateStr && s.url.includes('7696131162137218304')) {
+      dateStr = '2026-10-13' // 1013上
+    } else if (!dateStr && s.url.includes('7697138941836758312')) {
+      dateStr = '2026-10-15' // 1015
+    } else if (!dateStr) {
+      dateStr = '未标注日期'
+    }
+
+    const stopWords = ['描述不出来', '追赶进度中', '拼命赶赶赶', '月末有点太忙了', '这几天生活里', '身体有点不舒服', '下半的下饭局', '小妲己无法无天', '猪葛龟龟老师直接', '不好意思周末', '碎碎圆圆好像', '不知道究竟是', '睡觉！', '昨天这几把', '今天这前四场', '航迹云老师', '久等了', '感冒一直没好', '新一老师11冠', '益笙菌老师', '这后四场都', '马可王朝了', '刚图片有错', '下明天发', '下可能得', '继续看', '下在做了', '前面两局']
+    const names = atMatches
+      .map(m => {
+        let n = m[1].replace(/（[^）]*）|\([^)]*\)|【[^】]*】/g, '').trim()
+        for (const sw of stopWords) {
+          const idx = n.indexOf(sw)
+          if (idx !== -1) n = n.slice(0, idx).trim()
+        }
+        return n.replace(/[,，。！!、\s]+$/, '').trim()
+      })
+      .filter(Boolean)
+
+    if (!dailyWinnerMap[dateStr]) dailyWinnerMap[dateStr] = []
+    dailyWinnerMap[dateStr].push(...names)
+
+    for (const name of names) {
+      allSourceWinners[name] = (allSourceWinners[name] || 0) + 1
+    }
+  }
+}
+
+console.log('\n--- 5. 跨周期（10-11至11-06）全量来源胜者榜 Top 20 ---')
+const topSourceWinners = Object.entries(allSourceWinners)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 20)
+
+console.table(topSourceWinners.map(([name, wins]) => ({
+  '选手或主播': name,
+  '来源记载夺冠次数': wins
+})))
+
+console.log('\n--- 6. 历日战绩覆盖总览（共25个比赛日） ---')
+const allDays = Array.from(new Set([...Object.keys(dayStats), ...Object.keys(dailyWinnerMap)])).sort()
+console.table(allDays.map(d => ({
+  比赛日期: d,
+  六席对局转写: dayStats[d] ? `${dayStats[d]} 场完整` : '待导入原图',
+  原帖来源胜者: (dailyWinnerMap[d] || []).length ? dailyWinnerMap[d].slice(0, 4).join(', ') + (dailyWinnerMap[d].length > 4 ? ' 等' : '') : '待补录'
+})))
+
+
