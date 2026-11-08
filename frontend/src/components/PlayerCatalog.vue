@@ -10,7 +10,13 @@
    <p v-if="!filtered.length">没有符合条件的档案。</p>
    <div class="profiles">
     <article v-for="p in filtered" :key="p.id">
-     <h3>{{ p.nickname }}</h3><p class="muted">来源内昵称 · UID 未确认 · {{ p.observedMatches }} 次观察 / {{ p.observedWins }} 次来源记载获胜</p>
+     <div class="profile-header">
+      <img :src="getPlayerAvatar(p.nickname)" :alt="p.nickname" class="player-avatar" />
+      <div class="profile-header-text">
+       <h3>{{ p.nickname }}</h3>
+       <p class="muted">来源内昵称 · UID 未确认 · {{ p.observedMatches }} 次观察 / {{ p.observedWins }} 次来源记载获胜</p>
+      </div>
+     </div>
      <dl><dt>样本内重复玩法</dt><dd>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : '样本不足或无明显重复' }}</dd><dt>已证实擅长阵容</dt><dd>尚无充分逐局统计证明</dd></dl>
      <p class="muted">重复玩法门槛：至少 3 次观察，某标签出现至少 2 次且占一半；仅描述此样本，不代表长期习惯或同版本强度。</p>
      <p class="muted">下列比例仅为来源所列选择标签的样本登顶次数／观察次数，不是本场预测概率或最终阵容胜率。</p>
@@ -26,6 +32,7 @@
 <script setup lang="ts">
 import {computed,onMounted,ref} from 'vue'
 import {researchApi} from '../api/prediction'
+import {getPlayerAvatar} from '../utils/player-avatar'
 interface Claim {id:string;kind:string;text:string;sourceUrl:string;windowStart:string;windowEnd:string;aggregate:null|{winsReported:number;top3Reported:number;appearancesReported:number;averageRankReported:number;averageCompatibleWithIntegerRanksAt2Decimals:boolean}}
 interface Profile {id:string;nickname:string;observedMatches:number;observedWins:number;commonBuilds:string[];builds:{label:string;observations:number;winsForSourceLabel:number}[];claims:Claim[];history:{matchId:string;day:string;ordinal:number;build:string;rank:number|null;winnerBuild:string|null;sourceUrl:string}[]}
 interface Catalog {notice:string;counts:{matches:number;plays:number;players:number;claims:number};players:Profile[];sources:{url:string;title:string;status:string;matches:number;note:string|null}[]}
@@ -111,10 +118,37 @@ onMounted(load)
     padding: 24px;
     overflow-wrap: anywhere;
 
-    h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: $text-primary;
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+
+      .player-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        background-color: $bg-subtle;
+      }
+
+      .profile-header-text {
+        min-width: 0;
+        flex: 1;
+
+        h3 {
+          font-size: 18px;
+          font-weight: 700;
+          color: $text-primary;
+          margin: 0;
+        }
+
+        .muted {
+          margin: 4px 0 0;
+        }
+      }
     }
   }
 

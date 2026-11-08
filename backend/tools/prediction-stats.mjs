@@ -84,3 +84,4 @@ console.table(Object.entries(banStats).sort((a, b) => b[1] - a[1]).map(([ban, cn
   禁用场次: cnt,
   占比: `${(cnt / matches.length * 100).toFixed(1)}%`
 })))
+

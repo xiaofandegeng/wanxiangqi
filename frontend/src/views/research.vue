@@ -16,12 +16,12 @@
    <template v-else-if="section==='matches'">
     <div class="research-filters"><select v-model="mode" aria-label="模式"><option value="">全部模式</option><option value="WANXIANG">万象大赛</option><option value="DIAMOND">钻石狂潮</option></select><input v-model="query" placeholder="按选手、来源或版本搜索" aria-label="筛选场次"></div>
     <p v-if="!filteredMatches.length" class="research-empty">暂无符合条件的场次。收到最新数据后，从「数据录入」建立完整赛果。</p>
-    <article v-for="m in filteredMatches" :key="m.id" class="research-match"><header><h2>{{ modeName(m.mode) }} · {{ formatTime(m.playedAt) }}</h2><span>{{ m.status==='VERIFIED'?'已核验':m.status==='PENDING'?'待核验':'已隔离' }}</span></header><p class="muted">{{ m.version }} · {{ m.platform }} / {{ m.region }} · {{ m.sourceKey }}</p><div class="research-table"><table><thead><tr><th>名次</th><th>选手</th><th>UID</th></tr></thead><tbody><tr v-for="s in m.seats" :key="s.rank"><td>{{ s.rank }}</td><td>{{ s.nickname }}</td><td>{{ s.uid || '未确认，不跨场合并' }}</td></tr></tbody></table></div><p class="muted">原件 {{ m.evidenceId }} · {{ m.evidenceLocator }}</p><form v-if="m.status!=='QUARANTINED'" class="verify-row" @submit.prevent="verify(m.id)"><input v-model="operator" placeholder="核验人" aria-label="核验人" required><button v-if="m.status==='PENDING'" :disabled="busy">已对照原件，确认六席正确</button><button type="button" :disabled="busy" @click="quarantine(m.id)">隔离错误场次</button></form></article>
+    <article v-for="m in filteredMatches" :key="m.id" class="research-match"><header><h2>{{ modeName(m.mode) }} · {{ formatTime(m.playedAt) }}</h2><span>{{ m.status==='VERIFIED'?'已核验':m.status==='PENDING'?'待核验':'已隔离' }}</span></header><p class="muted">{{ m.version }} · {{ m.platform }} / {{ m.region }} · {{ m.sourceKey }}</p><div class="research-table"><table><thead><tr><th>名次</th><th>选手</th><th>UID</th></tr></thead><tbody><tr v-for="s in m.seats" :key="s.rank"><td>{{ s.rank }}</td><td class="player-cell"><img :src="getPlayerAvatar(s.nickname)" class="player-inline-avatar" alt="" /><span>{{ s.nickname }}</span></td><td>{{ s.uid || '未确认，不跨场合并' }}</td></tr></tbody></table></div><p class="muted">原件 {{ m.evidenceId }} · {{ m.evidenceLocator }}</p><form v-if="m.status!=='QUARANTINED'" class="verify-row" @submit.prevent="verify(m.id)"><input v-model="operator" placeholder="核验人" aria-label="核验人" required><button v-if="m.status==='PENDING'" :disabled="busy">已对照原件，确认六席正确</button><button type="button" :disabled="busy" @click="quarantine(m.id)">隔离错误场次</button></form></article>
    </template>
    <template v-else-if="section==='players'">
     <p class="research-note">模式、版本、平台、区服与UID分开统计；只展示仍有有效原件的已核验记录。同名不自动合并。</p>
     <p v-if="!stats.players.length" class="research-empty">暂无可统计选手。待完整赛果核验、稳定UID确认后自动汇总。</p>
-    <div v-else class="research-table"><table><thead><tr><th>选手 / UID</th><th>模式 / 版本</th><th>平台 / 区服</th><th>场数</th><th>登顶</th><th>前三</th><th>平均名次</th></tr></thead><tbody><tr v-for="p in stats.players" :key="p.key+p.mode+p.version"><td>{{ p.nickname }}<small>{{ p.uid }}</small></td><td>{{ modeName(p.mode) }}<small>{{ p.version }}</small></td><td>{{ p.platform }} / {{ p.region }}</td><td>{{ p.matches }}</td><td>{{ p.wins }}（{{ percent(p.winRate) }}）</td><td>{{ p.top3 }}（{{ percent(p.top3Rate) }}）</td><td>{{ p.avgRank.toFixed(2) }}</td></tr></tbody></table></div>
+    <div v-else class="research-table"><table><thead><tr><th>选手 / UID</th><th>模式 / 版本</th><th>平台 / 区服</th><th>场数</th><th>登顶</th><th>前三</th><th>平均名次</th></tr></thead><tbody><tr v-for="p in stats.players" :key="p.key+p.mode+p.version"><td class="player-cell"><img :src="getPlayerAvatar(p.nickname)" class="player-inline-avatar" alt="" /><div class="player-inline-meta"><span>{{ p.nickname }}</span><small>{{ p.uid || '未确认UID' }}</small></div></td><td>{{ modeName(p.mode) }}<small>{{ p.version }}</small></td><td>{{ p.platform }} / {{ p.region }}</td><td>{{ p.matches }}</td><td>{{ p.wins }}（{{ percent(p.winRate) }}）</td><td>{{ p.top3 }}（{{ percent(p.top3Rate) }}）</td><td>{{ p.avgRank.toFixed(2) }}</td></tr></tbody></table></div>
    </template>
    <template v-else-if="section==='predict'">
     <ScreenshotWorkbench />
@@ -44,6 +44,7 @@ import ObservationInbox from '../components/ObservationInbox.vue'
 import {computed,watch,ref} from 'vue'
 import {useRoute} from 'vue-router'
 import {researchApi,localResearch,getAdminToken,setAdminToken,type ResearchMatch,type Stats} from '../api/prediction'
+import {getPlayerAvatar} from '../utils/player-avatar'
 const route=useRoute()
 const section=computed(()=>String(route.meta.researchSection||'overview'))
 const titles:Record<string,string>={overview:'王牌对决研究工作台',matches:'场次与赛果',players:'选手统计',predict:'赛前研究',import:'数据录入',sources:'来源资料',roster:'选手玩法档案'}
@@ -349,6 +350,26 @@ button,
     font-size: 11px;
     font-family: $font-mono;
     margin-top: 2px;
+  }
+
+  .player-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .player-inline-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      background-color: $bg-subtle;
+    }
+
+    .player-inline-meta {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 
