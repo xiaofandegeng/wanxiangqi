@@ -1,6 +1,6 @@
 @use './variables.scss' as *;
 
-// 常用 Flex 布局混入
+// 常用 Flex / Grid 布局
 @mixin flex-center {
   display: flex;
   align-items: center;
@@ -18,32 +18,134 @@
   flex-direction: column;
 }
 
-// 玻璃拟态卡片质感
+// 现代优雅卡片质感 (Surface Card)
 @mixin glass-panel {
-  background: $bg-card;
-  border: 1px solid $border-color;
+  background: $bg-surface;
+  border: 1px solid $border-subtle;
   border-radius: $radius-lg;
-  box-shadow: none;
+  box-shadow: $shadow-xs;
   transition: $transition-base;
 
   &:hover {
-    border-color: $border-color-hover;
-    background: $bg-card-hover;
+    border-color: $border-hover;
+    box-shadow: $shadow-sm;
   }
 }
 
-// 金色渐变文字
-@mixin text-gold-gradient {
-  background: linear-gradient(135deg, $color-gold-light 0%, $color-gold 50%, $color-gold-dark 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+// 基础按钮混入
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: $transition-base;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
-// 能量青蓝渐变文字
-@mixin text-cyan-gradient {
-  background: linear-gradient(135deg, $color-cyan-light 0%, $color-cyan 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+// 主操作按钮
+@mixin button-primary {
+  @include button-base;
+  background-color: $color-primary;
+  color: $text-inverse;
+  border-color: $color-primary;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+    border-color: $color-primary-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-primary-active;
+    border-color: $color-primary-active;
+    transform: translateY(1px);
+  }
+}
+
+// 次级/轮廓按钮
+@mixin button-secondary {
+  @include button-base;
+  background-color: $bg-surface;
+  color: $text-primary;
+  border-color: $border-color;
+
+  &:hover:not(:disabled) {
+    background-color: $bg-subtle;
+    border-color: $border-hover;
+    color: $color-primary;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+// 胶囊状态标签 (Pill Badge)
+@mixin status-badge($bg, $color, $border: transparent) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: $radius-full;
+  background-color: $bg;
+  color: $color;
+  border: 1px solid $border;
+  line-height: 1.4;
+}
+
+// 表单输入框基础
+@mixin input-base {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: $text-primary;
+  background-color: $bg-surface;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  box-shadow: $shadow-xs;
+  transition: $transition-base;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
+
+  &:hover {
+    border-color: $border-hover;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba(30, 70, 58, 0.12);
+  }
+
+  &:disabled, &[readonly] {
+    background-color: $bg-subtle;
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
 }
 
 // 单行文本省略
