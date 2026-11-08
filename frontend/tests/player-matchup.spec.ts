@@ -7,7 +7,9 @@ import {
   evaluate6PlayerMatchup,
   CURRENT_LATEST_VERSION,
   getVersionByDate,
-  evaluateVersionLineupAdaptation
+  evaluateVersionLineupAdaptation,
+  evaluateCommander,
+  OFFICIAL_COMMANDERS
 } from '../src/utils/player-matchup'
 
 describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-matchup)', () => {
@@ -178,6 +180,36 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(result.crossMatchups.length).toBeGreaterThan(0)
     expect(result.banSummary.bannedFaction).toBe('逐鹿')
     expect(result.banSummary.summaryText).toContain('逐鹿')
+  })
+
+  it('结合棋手进行预测：识别T0棋手机制加成与选手阵容协同', () => {
+    // 1. 嬴律 + 逐鹿蒙恬/坦射 -> 享有版本T0与单核追三超强协同
+    const yinglvEval = evaluateCommander('嬴律', ['逐鹿蒙恬'], CURRENT_LATEST_VERSION)
+    expect(yinglvEval).toBeDefined()
+    expect(yinglvEval?.tier).toBe('T0')
+    expect(yinglvEval?.synergyLevel).toBe('PERFECT')
+    expect(yinglvEval?.bonus).toBeGreaterThan(0.2) // 版本 0.18 + 协同 0.14
+
+    // 2. 安琪拉 + 雷霆战机 -> 享有法爆机甲协同
+    const angelaEval = evaluateCommander('安琪拉', ['雷霆战机'], CURRENT_LATEST_VERSION)
+    expect(angelaEval).toBeDefined()
+    expect(angelaEval?.tier).toBe('T0')
+    expect(angelaEval?.synergyLevel).toBe('PERFECT')
+
+    // 3. 参与推演：选手配置棋手后获得显著概率提升
+    const baseP = [
+      { nickname: '世薄情', commander: '小妲己' },
+      { nickname: 'EZ拉丁鱼丶沐汐', commander: '乔汐' },
+      { nickname: '北念', commander: null },
+      { nickname: '抖音小新游', commander: null },
+      { nickname: '抖音妖柒', commander: '安琪拉' },
+      { nickname: '遗愿', commander: '诸葛亮' }
+    ]
+    const resWithCmd = evaluate6PlayerMatchup(baseP, null, mockMatches)
+    const yiyuanWithCmd = resWithCmd.players.find(p => p.nickname === '遗愿')!
+    expect(yiyuanWithCmd.commander).toBe('诸葛亮')
+    expect(yiyuanWithCmd.commanderEvaluation?.tier).toBe('T1')
+    expect(yiyuanWithCmd.commanderModifier).toBeGreaterThan(0)
   })
 })
 

@@ -172,6 +172,200 @@ export type FactionType = '三分' | '逐鹿' | '日落海' | '河洛' | '大河
 
 export type BanImpactLevel = 'CRITICAL' | 'MODERATE' | 'IMMUNE' | 'BENEFITED'
 
+export interface CommanderMeta {
+  name: string
+  title: string
+  tier: 'T0' | 'T1' | 'T2'
+  suitableBuilds: string[]
+  description: string
+  v191Bonus: number // 版本机制加成
+  synergyKeyword: string
+}
+
+/** 官方主流棋手库与当前版本机制强度定义 */
+export const OFFICIAL_COMMANDERS: readonly CommanderMeta[] = [
+  {
+    name: '嬴律',
+    title: '并购红利 / 单核追三之王',
+    tier: 'T0',
+    suitableBuilds: ['逐鹿蒙恬', '稷下坦射', '坦射', '传统养猪', '日落海倒转'],
+    description: 'v1.9.1重磅加强：合成上限后每回合额外随机复制场上英雄，高阶单核追三星神速，大幅拔高阵容上限',
+    v191Bonus: 0.18,
+    synergyKeyword: '单核追三'
+  },
+  {
+    name: '安琪拉',
+    title: '打扫战场 / 法爆狂潮',
+    tier: 'T0',
+    suitableBuilds: ['雷霆战机', '雷霆机甲', '稷下雷霆', '法天象地', '日落海倒转'],
+    description: 'v1.9.1官方大加强：飞行器继承法攻提至125%、攻速30%，雷霆机甲与法术爆发阵容强度爆表',
+    v191Bonus: 0.16,
+    synergyKeyword: '法爆机甲'
+  },
+  {
+    name: '乔汐',
+    title: '温柔呼唤 / 潮汐交响',
+    tier: 'T1',
+    suitableBuilds: ['日落海倒转', '三分倒转', '法天象地', '倒转'],
+    description: 'v1.9.1转瞬抽取收窄至3~5阶高质量牌，潮汐交响初始4次，法系倒转与转瞬牌体系成型极快',
+    v191Bonus: 0.12,
+    synergyKeyword: '倒转高阶'
+  },
+  {
+    name: '武凤',
+    title: '偷取秘技 / 全能博弈',
+    tier: 'T1',
+    suitableBuilds: ['全能', '稷下坦射', '逐鹿蒙恬', '传统养猪', '三分登场'],
+    description: '11月6日新棋手登场：偷取敌方秘技牌机制打破单棋手套路上限，博弈对抗性极强',
+    v191Bonus: 0.10,
+    synergyKeyword: '秘技对抗'
+  },
+  {
+    name: '庄周',
+    title: '梦蝶逍遥 / 免控护体',
+    tier: 'T1',
+    suitableBuilds: ['传统养猪', '稷下坦克', '稷下坦射', '养猪', '日落海'],
+    description: '全队免控与减伤坦度，极端克制控制爆发流派，是养猪与坦克核心的坚实后盾',
+    v191Bonus: 0.08,
+    synergyKeyword: '免控保核'
+  },
+  {
+    name: '诸葛亮',
+    title: '神机妙算 / 阵营增益',
+    tier: 'T1',
+    suitableBuilds: ['三分登场', '三分倒转', '三分蜀国'],
+    description: '三分蜀国专属棋手，提供强大的阵营技能连环与治疗爆发协同',
+    v191Bonus: 0.12,
+    synergyKeyword: '三分增益'
+  },
+  {
+    name: '司马懿',
+    title: '暗影收割 / 爆发突刺',
+    tier: 'T1',
+    suitableBuilds: ['刺客', '六影扶桑', '法天象地'],
+    description: '提供高额斩杀与爆发机动，专克无护盾脆皮后排阵容',
+    v191Bonus: 0.06,
+    synergyKeyword: '刺客斩杀'
+  },
+  {
+    name: '小妲己',
+    title: '金币收益 / 万金油保底',
+    tier: 'T2',
+    suitableBuilds: ['长安九五', '传统养猪', '长安倒转'],
+    description: '经典棋手，提供稳定的经济成长与利息收益，适合长安及慢速憋高阶阵容',
+    v191Bonus: 0.05,
+    synergyKeyword: '经济发育'
+  },
+  {
+    name: '鲁班七号',
+    title: '机关轰炸 / 射手火力',
+    tier: 'T2',
+    suitableBuilds: ['稷下坦射', '坦射', '雷霆机甲'],
+    description: '重装机关火力压制，强化物理射手阵容的持续输出与穿透',
+    v191Bonus: 0.08,
+    synergyKeyword: '射手轰炸'
+  },
+  {
+    name: '狄仁杰',
+    title: '令牌律法 / 破甲减防',
+    tier: 'T2',
+    suitableBuilds: ['长安九五', '稷下坦克', '坦射'],
+    description: '射手攻速与穿透增益，兼具一定控制效果',
+    v191Bonus: 0.07,
+    synergyKeyword: '破甲速攻'
+  },
+  {
+    name: '刘备',
+    title: '仁义之盾 / 蜀国卫戍',
+    tier: 'T2',
+    suitableBuilds: ['三分登场', '三分蜀国'],
+    description: '为三分阵营提供护盾与保底血量加成',
+    v191Bonus: 0.08,
+    synergyKeyword: '三分卫戍'
+  },
+  {
+    name: '孙尚香',
+    title: '重炮轰鸣 / 物理暴击',
+    tier: 'T2',
+    suitableBuilds: ['三分登场', '稷下坦射'],
+    description: '提供物理暴击与爆发射击加成',
+    v191Bonus: 0.06,
+    synergyKeyword: '暴击重炮'
+  }
+]
+
+export interface CommanderEvaluation {
+  commander: string
+  tier: string
+  levelLabel: string
+  bonus: number
+  synergyScore: number
+  summary: string
+  synergyLevel: 'PERFECT' | 'GOOD' | 'NEUTRAL' | 'MISMATCH'
+}
+
+/** 评估棋手机制、版本增益与选手主力流派的协同效果 */
+export function evaluateCommander(
+  commanderName: string | null | undefined,
+  commonBuilds: string[] = [],
+  version: string = CURRENT_LATEST_VERSION
+): CommanderEvaluation | null {
+  if (!commanderName || !commanderName.trim()) return null
+  const clean = commanderName.trim()
+  const meta = OFFICIAL_COMMANDERS.find(c => c.name === clean || clean.includes(c.name))
+  if (!meta) {
+    return {
+      commander: clean,
+      tier: 'T2',
+      levelLabel: '自定义棋手',
+      bonus: 0.04,
+      synergyScore: 0,
+      summary: `选用棋手「${clean}」，提供常规战术机制支持。`,
+      synergyLevel: 'NEUTRAL'
+    }
+  }
+
+  // 1. 版本机制加成
+  const isLatest = version === 'v1.9.1'
+  const versionBonus = isLatest ? meta.v191Bonus : 0.05
+
+  // 2. 选手阵容与棋手的协同加成
+  let synergyLevel: CommanderEvaluation['synergyLevel'] = 'NEUTRAL'
+  let synergyScore = 0
+  let synergyNote = ''
+
+  const matchesBuild = commonBuilds.some(b =>
+    meta.suitableBuilds.some(sb => b.includes(sb) || sb.includes(b))
+  )
+
+  if (matchesBuild) {
+    synergyLevel = 'PERFECT'
+    synergyScore = 0.14
+    synergyNote = `与选手主力流派高度契合（${meta.synergyKeyword}超强协同）`
+  } else if (meta.suitableBuilds.includes('全能')) {
+    synergyLevel = 'GOOD'
+    synergyScore = 0.08
+    synergyNote = '棋手机制通用全能，平稳增幅阵容战力'
+  } else if (commonBuilds.length > 0) {
+    synergyLevel = 'NEUTRAL'
+    synergyScore = 0.02
+    synergyNote = '棋手与选手主力构筑平稳互补'
+  }
+
+  const totalBonus = Number((versionBonus + synergyScore).toFixed(3))
+  const summary = `【${meta.name} (${meta.tier})】${meta.description}。${synergyNote}。`
+
+  return {
+    commander: meta.name,
+    tier: meta.tier,
+    levelLabel: meta.tier === 'T0' ? '版本 T0 强力棋手' : (meta.tier === 'T1' ? '强势热门棋手' : '常规棋手'),
+    bonus: totalBonus,
+    synergyScore,
+    summary,
+    synergyLevel
+  }
+}
+
 export interface FactionBreakdown {
   faction: FactionType
   matches: number
@@ -220,10 +414,13 @@ export interface SixPlayerMatchupResult {
   players: {
     nickname: string
     masterName: string
+    commander: string | null
+    commanderEvaluation: CommanderEvaluation | null
     baseScore: number
     h2hBonus: number
     banModifier: number
     versionModifier: number
+    commanderModifier: number
     finalScore: number
     adjustedProbability: number
     banEvaluation: BanImpactEvaluation | null
@@ -542,10 +739,10 @@ export function evaluateBanImpact(
 
 /**
  * 六人同场推演算法：
- * 综合选手基础战力 + 本场交手克制奖励/减免 + Ban位惩罚/增益 + 官方最新版本更迭适配度，输出校正概率与博弈情报
+ * 综合选手基础战力 + 本场交手克制奖励/减免 + Ban位惩罚/增益 + 所选棋手协同机制 + 官方最新版本更迭适配度，输出校正概率与博弈情报
  */
 export function evaluate6PlayerMatchup(
-  participants: { nickname: string; profileId?: string | null }[],
+  participants: { nickname: string; profileId?: string | null; commander?: string | null }[],
   bannedFaction?: string | null,
   allMatches: any[] = [],
   targetVersion: string = CURRENT_LATEST_VERSION
@@ -559,13 +756,14 @@ export function evaluate6PlayerMatchup(
     return exps.map(x => (sum > 0 ? x / sum : 1 / scores.length))
   }
 
-  // 1. 获取每位选手的 masterName 与 profile
+  // 1. 获取每位选手的 masterName 与 profile、所选棋手
   const roster = participants.map(p => {
     const master = getMasterPlayerName(p.nickname)
     const prof = profileMap.get(master) || profileMap.get(p.nickname)
     return {
       nickname: p.nickname,
       masterName: master,
+      commander: p.commander || null,
       profile: prof
     }
   })
@@ -615,7 +813,7 @@ export function evaluate6PlayerMatchup(
     }
   }
 
-  // 3. 计算 Ban 位评估、版本更迭影响与综合得分
+  // 3. 计算 Ban 位评估、棋手协同增益、版本更迭影响与综合得分
   const criticalPlayers: string[] = []
   const benefitedPlayers: string[] = []
   const buffedPlayers: string[] = []
@@ -643,19 +841,26 @@ export function evaluate6PlayerMatchup(
     )
     const versionModifier = versionAdapt.bonus
 
+    // 所选棋手机制强度与流派协同修正分
+    const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion)
+    const commanderModifier = cmdEval ? cmdEval.bonus : 0
+
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
     if (banEval?.level === 'BENEFITED') benefitedPlayers.push(p.masterName)
     if (versionAdapt.fitLevel === 'BUFFED') buffedPlayers.push(p.masterName)
 
-    const finalScore = baseScore + h2hBonus + banModifier + versionModifier
+    const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier
 
     return {
       nickname: p.nickname,
       masterName: p.masterName,
+      commander: p.commander,
+      commanderEvaluation: cmdEval,
       baseScore: Number(baseScore.toFixed(3)),
       h2hBonus: Number(h2hBonus.toFixed(3)),
       banModifier: Number(banModifier.toFixed(3)),
       versionModifier: Number(versionModifier.toFixed(3)),
+      commanderModifier: Number(commanderModifier.toFixed(3)),
       finalScore: Number(finalScore.toFixed(3)),
       adjustedProbability: 0,
       banEvaluation: banEval,

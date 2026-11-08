@@ -44,13 +44,14 @@
       <div class="batch-paste-row">
         <input
           v-model="batchPasteText"
-          placeholder="从微信/直播间直接复制名单粘贴（如：梦飞 小谷芷 白白 祥子 新一 遗愿）"
+          placeholder="从微信/直播间直接复制名单（如：小谷芷 诸葛亮 北念 梦飞 祥子 白白，自动模糊补全）"
           aria-label="一键批量粘贴名单"
           @keydown.enter.prevent="applyBatchPaste"
         />
         <button type="button" class="btn-tool" @click="applyBatchPaste">一键分发 6 席</button>
         <button type="button" class="btn-tool btn-danger-soft" @click="clearAllSeats">清空席位</button>
       </div>
+      <p v-if="batchFeedback" class="batch-feedback-pill">{{ batchFeedback }}</p>
 
       <!-- 明星活跃选手一键点选盘 -->
       <div class="star-players-bar">
@@ -62,7 +63,7 @@
             type="button"
             class="star-pill-btn"
             :class="{ 'in-roster': players.some(p => p.nickname === name) }"
-            :title="players.some(p => p.nickname === name) ? '该选手已在席位中' : '点击填入空席位'"
+            :title="players.some(p => p.nickname === name) ? '该选手已在席位中' : '点击填入空席位并自动匹配招牌棋手'"
             @click="addStarPlayer(name)"
           >
             <img :src="getPlayerAvatar(name)" class="star-avatar" alt="" />
@@ -72,13 +73,16 @@
         </div>
       </div>
 
-      <!-- 6 席位实时网格卡片 -->
+      <!-- 6 席位实时网格卡片 (双核预测：选手 ID + 棋手) -->
       <div class="seats-grid">
         <div v-for="(p, idx) in players" :key="idx" class="seat-card">
           <div class="seat-head">
             <span class="seat-number">#{{ idx + 1 }} 席</span>
+            <span v-if="p.nickname && getMasterPlayerName(p.nickname) !== p.nickname" class="master-pill">
+              {{ getMasterPlayerName(p.nickname) }}
+            </span>
             <button
-              v-if="p.nickname"
+              v-if="p.nickname || p.commander"
               type="button"
               class="seat-clear-btn"
               title="清空此席位"
@@ -87,16 +91,62 @@
               ✕
             </button>
           </div>
-          <div class="seat-body">
+
+          <!-- 1. 选手 ID 输入与模糊联想 -->
+          <div class="seat-player-row">
             <img :src="getPlayerAvatar(p.nickname)" class="seat-avatar" alt="" />
             <div class="seat-input-wrap">
               <input
                 v-model="p.nickname"
-                placeholder="输入选手昵称"
+                placeholder="输入/搜选手 (如诸葛/北念/白白)"
                 maxlength="160"
                 class="seat-input"
+                @focus="activeDropdownSeat = idx"
+                @input="activeDropdownSeat = idx"
               />
+
+              <!-- 模糊联想悬浮下拉列表 -->
+              <div
+                v-if="activeDropdownSeat === idx && getSeatSuggestions(p.nickname).length"
+                class="autocomplete-dropdown"
+              >
+                <div class="dropdown-header">匹配历史战绩选手（点击直接填入）：</div>
+                <div
+                  v-for="cand in getSeatSuggestions(p.nickname)"
+                  :key="cand.nickname"
+                  class="dropdown-item"
+                  @mousedown.prevent="selectCandidate(idx, cand)"
+                >
+                  <img :src="getPlayerAvatar(cand.nickname)" class="cand-avatar" alt="" />
+                  <div class="cand-meta">
+                    <div class="cand-name-row">
+                      <strong class="cand-name">{{ cand.nickname }}</strong>
+                      <span v-if="cand.masterName !== cand.nickname" class="cand-master">({{ cand.masterName }})</span>
+                    </div>
+                    <small class="cand-stats">
+                      {{ cand.wins }} 冠 · 常用：{{ cand.topBuild || '多流派' }}
+                      <span v-if="cand.signatureCommander" class="cand-cmd-tag">· 招牌棋手: {{ cand.signatureCommander }}</span>
+                    </small>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <!-- 2. 所选棋手 (Commander) 选择框 -->
+          <div class="seat-commander-row">
+            <span class="cmd-icon" title="棋手">♟️</span>
+            <select v-model="p.commander" class="seat-commander-select" aria-label="选择棋手">
+              <option value="">未选棋手 / 未知</option>
+              <option v-for="cmd in OFFICIAL_COMMANDERS" :key="cmd.name" :value="cmd.name">
+                {{ cmd.name }} · {{ cmd.tier }} ({{ cmd.synergyKeyword }})
+              </option>
+            </select>
+          </div>
+
+          <!-- 3. 选手+棋手协同度微标 -->
+          <div v-if="getSeatSynergy(p.nickname, p.commander)" class="seat-synergy-tag" :class="getSeatSynergy(p.nickname, p.commander)!.level">
+            {{ getSeatSynergy(p.nickname, p.commander)!.label }}
           </div>
         </div>
       </div>
@@ -135,7 +185,7 @@
       <div class="decision-header">
         <div class="dh-title-wrap">
           <span class="dh-badge">⚡ 投比速览</span>
-          <h3>本场 6 人同台博弈与投比决策建议</h3>
+          <h3>本场 6 人同台博弈与投比决策建议（双核：选手 + 棋手）</h3>
         </div>
         <span class="calc-tag">运算耗时 &lt;15ms · 实时响应</span>
       </div>
@@ -149,6 +199,12 @@
             <img :src="getPlayerAvatar(topPick.nickname)" class="feature-avatar" alt="" />
             <div class="feature-info">
               <h4>{{ topPick.nickname }} <small v-if="topPick.masterName !== topPick.nickname">({{ topPick.masterName }})</small></h4>
+              <div v-if="topPick.commander" class="commander-badge-line">
+                ♟️ 所选棋手：<strong>{{ topPick.commander }}</strong>
+                <span class="cmd-pill" :class="topPick.commanderEvaluation?.tier.toLowerCase()">
+                  {{ topPick.commanderEvaluation?.levelLabel }}
+                </span>
+              </div>
               <div class="prob-highlight">
                 <span>预测登顶率：</span>
                 <strong>{{ (topPick.adjustedProbability * 100).toFixed(1) }}%</strong>
@@ -156,8 +212,11 @@
             </div>
           </div>
           <div class="reasons-list">
+            <span v-if="topPick.commanderModifier > 0" class="reason-tag positive">
+              ♟️ 棋手协同 (+{{ (topPick.commanderModifier * 100).toFixed(0) }}%)
+            </span>
             <span v-if="topPick.versionModifier > 0" class="reason-tag positive">
-              🔥 最新版本红利 (+{{ (topPick.versionModifier * 100).toFixed(0) }}%)
+              🔥 版本红利 (+{{ (topPick.versionModifier * 100).toFixed(0) }}%)
             </span>
             <span v-if="topPick.h2hBonus > 0" class="reason-tag positive">
               ⚡ 同场克制 {{ topPick.suppresses.length }} 名对手
@@ -170,7 +229,8 @@
             </span>
           </div>
           <p class="summary-verdict">
-            综合战力全场登顶率最高，{{ topPick.versionAdaptation?.summary || '核心体系成熟稳定' }}，为本局最具性价比支持首选。
+            {{ topPick.commander ? `结合棋手【${topPick.commander}】：${topPick.commanderEvaluation?.summary || ''}。` : '' }}
+            综合战力登顶率全场最高，为本局最具性价比支持首选。
           </p>
         </div>
 
@@ -181,6 +241,12 @@
             <img :src="getPlayerAvatar(secondPick.nickname)" class="feature-avatar" alt="" />
             <div class="feature-info">
               <h4>{{ secondPick.nickname }} <small v-if="secondPick.masterName !== secondPick.nickname">({{ secondPick.masterName }})</small></h4>
+              <div v-if="secondPick.commander" class="commander-badge-line">
+                ♟️ 所选棋手：<strong>{{ secondPick.commander }}</strong>
+                <span class="cmd-pill" :class="secondPick.commanderEvaluation?.tier.toLowerCase()">
+                  {{ secondPick.commanderEvaluation?.levelLabel }}
+                </span>
+              </div>
               <div class="prob-highlight">
                 <span>预测登顶率：</span>
                 <strong>{{ (secondPick.adjustedProbability * 100).toFixed(1) }}%</strong>
@@ -188,6 +254,9 @@
             </div>
           </div>
           <div class="reasons-list">
+            <span v-if="secondPick.commanderModifier > 0" class="reason-tag positive">
+              ♟️ 棋手协同 (+{{ (secondPick.commanderModifier * 100).toFixed(0) }}%)
+            </span>
             <span v-if="secondPick.versionModifier > 0" class="reason-tag positive">
               🔥 版本加成 (+{{ (secondPick.versionModifier * 100).toFixed(0) }}%)
             </span>
@@ -196,6 +265,7 @@
             </span>
           </div>
           <p class="summary-verdict">
+            {{ secondPick.commander ? `棋手【${secondPick.commander}】配置平稳。` : '' }}
             若首选返奖比率过低，可考虑该选手作为对冲/次选策略。
           </p>
         </div>
@@ -206,7 +276,7 @@
           <div v-for="rp in highRiskPlayers.slice(0, 2)" :key="rp.nickname" class="danger-player-item">
             <img :src="getPlayerAvatar(rp.nickname)" class="danger-avatar" alt="" />
             <div class="danger-info">
-              <strong>{{ rp.nickname }}</strong>
+              <strong>{{ rp.nickname }} <small v-if="rp.commander">· 棋手: {{ rp.commander }}</small></strong>
               <small v-if="rp.banEvaluation?.level === 'CRITICAL'">
                 核心阵容受「{{ bannedFaction }}」封锁，历史登顶率骤降
               </small>
@@ -216,7 +286,7 @@
             </div>
           </div>
           <p class="summary-verdict danger-text">
-            以上选手主力阵容受限或遭遇战术克制，爆冷概率极高，建议在 2 分钟投比中规避支持！
+            以上选手主力阵容受限、棋手未形成协同或遭遇死敌克制，爆冷概率极高，建议在 2 分钟投比中规避支持！
           </p>
         </div>
       </div>
@@ -225,13 +295,16 @@
       <div class="instant-prob-bars">
         <div class="bars-head">
           <span>6 席选手综合胜率梯度：</span>
-          <small>融合历史真实胜率 + 两两克制矩阵 + Ban位冲击 + 最新版本修正</small>
+          <small>融合历史真实胜率 + 所选棋手协同 + 两两克制矩阵 + Ban位冲击 + 最新版本修正</small>
         </div>
         <div class="bars-container">
           <div v-for="(p, pIdx) in rankedPlayers" :key="p.nickname" class="player-bar-row">
             <span class="bar-rank">#{{ pIdx + 1 }}</span>
             <img :src="getPlayerAvatar(p.nickname)" class="bar-avatar" alt="" />
-            <span class="bar-name">{{ p.nickname }}</span>
+            <div class="bar-player-col">
+              <span class="bar-name">{{ p.nickname }}</span>
+              <span v-if="p.commander" class="bar-cmd-badge">♟️ {{ p.commander }}</span>
+            </div>
             <div class="bar-track">
               <div
                 class="bar-fill"
@@ -425,6 +498,9 @@
             <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-mini" alt="" />
             <span class="name">{{ p.nickname }}</span>
             <div class="modifiers-pills">
+              <span v-if="p.commanderModifier && p.commanderModifier !== 0" class="mod-pill" :class="{ positive: p.commanderModifier > 0, negative: p.commanderModifier < 0 }">
+                棋手 {{ p.commanderModifier > 0 ? '+' : '' }}{{ (p.commanderModifier * 100).toFixed(0) }}%
+              </span>
               <span v-if="p.h2hBonus !== 0" class="mod-pill" :class="{ positive: p.h2hBonus > 0, negative: p.h2hBonus < 0 }">
                 克制 {{ p.h2hBonus > 0 ? '+' : '' }}{{ p.h2hBonus }}
               </span>
@@ -460,15 +536,21 @@ import {
   evaluate6PlayerMatchup,
   CURRENT_LATEST_VERSION,
   GAME_VERSIONS,
+  OFFICIAL_COMMANDERS,
+  evaluateCommander,
   type SixPlayerMatchupResult
 } from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
+import {getMasterPlayerName} from '../utils/player-grouping'
 
 // 标签切换：实战极速推演 vs 传统截图审计
 const activeTab = ref<'instant' | 'audit'>('instant')
 
 // 极速模式下的快速批量输入与常用选项
 const batchPasteText = ref('')
+const batchFeedback = ref('')
+const activeDropdownSeat = ref<number | null>(null)
+
 const starPlayers = [
   '梦飞大大',
   '抖音EGM小谷芷',
@@ -484,6 +566,44 @@ const starPlayers = [
   '抖音妖柒'
 ]
 const quickBans = ['', '逐鹿', '三分', '日落海', '河洛', '稷下', '大河']
+
+// 选手历史招牌/常用棋手数据库映射
+const SIGNATURE_COMMANDERS: Record<string, string> = {
+  '梦飞': '嬴律',
+  '梦飞大大': '嬴律',
+  '小谷芷': '嬴律',
+  '抖音EGM小谷芷': '嬴律',
+  '白白白白白3': '嬴律',
+  '丰川祥子': '安琪拉',
+  '新一': '嬴律',
+  'QT新一': '嬴律',
+  '猪葛龟': '庄周',
+  '猪葛龟龟': '庄周',
+  '抖音猪葛龟龟': '庄周',
+  '呆头鹅': '嬴律',
+  '遗愿': '诸葛亮',
+  '世薄情': '小妲己',
+  '沐汐': '乔汐',
+  'EZ拉丁鱼': '乔汐',
+  '小新游': '乔汐',
+  '抖音小新游': '乔汐',
+  '妖柒': '安琪拉',
+  '抖音妖柒': '安琪拉',
+  '晓枫': '嬴律',
+  'RW侠.晓枫': '嬴律',
+  '清辞': '安琪拉',
+  '武汉 EG清辞': '安琪拉',
+  'EG清辞': '安琪拉',
+  '泪花': '司马懿',
+  '抖音EG泪花': '司马懿',
+  '兰陵笑笑笑': '庄周',
+  '事后诸葛亮': '诸葛亮',
+  '抖音搜索北念': '嬴律',
+  '北念': '嬴律',
+  '皮皮鲨': '乔汐',
+  '抖音EGM皮皮鲨': '乔汐',
+  '阿文倒转王': '乔汐'
+}
 
 interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
@@ -506,20 +626,173 @@ const hasDuplicates=computed(()=>{const names=players.value.map(p=>p.nickname.no
 function candidates(name:string){const ids=new Set(draft.value?.ocr.rows.find(r=>r.rawText===name)?.candidates.map(c=>c.id)||[]);const q=normalize(name);return profiles.value.filter(p=>!q||normalize(p.nickname).includes(q)||q.includes(normalize(p.nickname))||ids.has(p.id))}
 function selectFile(event:Event){file.value=(event.target as HTMLInputElement).files?.[0]||null;draft.value=null;result.value=null;evidenceId.value='';confirmed.value=false}
 async function read(){if(!file.value)return;busy.value=true;error.value='';draft.value=null;result.value=null;confirmed.value=false
- try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
+ try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:SIGNATURE_COMMANDERS[draft.value?.ocr.rows[i]?.rawText||'']||'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
 async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
 watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
 
-// 极速模式：一键批量填入名单
+export interface KnownPlayerItem {
+  nickname: string
+  masterName: string
+  wins: number
+  matches: number
+  topBuild: string
+  signatureCommander: string
+}
+
+// 基于全量真实赛果构建的可检索选手知识库 (190 账号)
+const knownPlayersList = computed<KnownPlayerItem[]>(() => {
+  const map = new Map<string, { nickname: string; masterName: string; wins: number; matches: number; builds: Record<string, number> }>()
+
+  // 1. 从 profiles 预初始化
+  for (const p of profiles.value) {
+    if (!p.nickname) continue
+    const master = getMasterPlayerName(p.nickname)
+    map.set(p.nickname, {
+      nickname: p.nickname,
+      masterName: master,
+      wins: 0,
+      matches: 0,
+      builds: {}
+    })
+  }
+
+  // 2. 遍历全量 matches 统计胜场与常用阵容
+  for (const m of catalogMatches.value) {
+    for (const s of (m.seats || [])) {
+      if (!s.nickname || s.nickname.startsWith('席位')) continue
+      let item = map.get(s.nickname)
+      if (!item) {
+        item = {
+          nickname: s.nickname,
+          masterName: getMasterPlayerName(s.nickname),
+          wins: 0,
+          matches: 0,
+          builds: {}
+        }
+        map.set(s.nickname, item)
+      }
+      item.matches++
+      if (s.winner) item.wins++
+      if (s.build) {
+        item.builds[s.build] = (item.builds[s.build] || 0) + 1
+      }
+    }
+  }
+
+  const result: KnownPlayerItem[] = []
+  for (const item of map.values()) {
+    const topBuild = Object.entries(item.builds).sort((a, b) => b[1] - a[1])[0]?.[0] || ''
+    const sigCmd = SIGNATURE_COMMANDERS[item.nickname] || SIGNATURE_COMMANDERS[item.masterName] || ''
+    result.push({
+      nickname: item.nickname,
+      masterName: item.masterName,
+      wins: item.wins,
+      matches: item.matches,
+      topBuild,
+      signatureCommander: sigCmd
+    })
+  }
+
+  return result.sort((a, b) => b.wins - a.wins || b.matches - a.matches)
+})
+
+// 模糊查找匹配选手（支持纯小名、去平台前缀、首字母或模糊包含）
+function resolveFuzzyPlayer(token: string): KnownPlayerItem | null {
+  const q = token.trim().toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '')
+  if (!q) return null
+
+  // 1. 精确匹配
+  const exact = knownPlayersList.value.find(p => p.nickname.toLowerCase() === q)
+  if (exact) return exact
+
+  // 2. 去除前缀匹配
+  const candidates = knownPlayersList.value.filter(p => {
+    const nick = p.nickname.toLowerCase()
+    const master = p.masterName.toLowerCase()
+    const stripped = nick.replace(/^(抖音|快手|b站|斗鱼|虎牙|egm|eg|ez|qt|rw侠\.?)/i, '')
+    return nick.includes(q) || master.includes(q) || stripped.includes(q) || q.includes(master) || q.includes(stripped)
+  })
+
+  return candidates[0] || null
+}
+
+// 席位输入框的下拉联想匹配列表
+function getSeatSuggestions(query: string): KnownPlayerItem[] {
+  const q = (query || '').trim().toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '')
+  if (!q) {
+    return knownPlayersList.value.slice(0, 6)
+  }
+  return knownPlayersList.value
+    .filter(p => {
+      const nick = p.nickname.toLowerCase()
+      const master = p.masterName.toLowerCase()
+      const stripped = nick.replace(/^(抖音|快手|b站|斗鱼|虎牙|egm|eg|ez|qt|rw侠\.?)/i, '')
+      return nick.includes(q) || master.includes(q) || stripped.includes(q)
+    })
+    .slice(0, 8)
+}
+
+// 点击下拉候选直接填入
+function selectCandidate(idx: number, cand: KnownPlayerItem) {
+  players.value[idx].nickname = cand.nickname
+  players.value[idx].profileId = ''
+  if (!players.value[idx].commander && cand.signatureCommander) {
+    players.value[idx].commander = cand.signatureCommander
+  }
+  activeDropdownSeat.value = null
+}
+
+// 选手+棋手协同度计算标签
+function getSeatSynergy(nickname: string, commander: string) {
+  if (!nickname || !commander) return null
+  const master = getMasterPlayerName(nickname)
+  const p = knownPlayersList.value.find(x => x.nickname === nickname || x.masterName === master)
+  const builds = p?.topBuild ? [p.topBuild] : []
+  const cmd = evaluateCommander(commander, builds, version.value || CURRENT_LATEST_VERSION)
+  if (!cmd) return null
+  if (cmd.synergyLevel === 'PERFECT') {
+    return { level: 'perfect', label: `🔥 协同暴涨 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+  }
+  if (cmd.synergyLevel === 'GOOD') {
+    return { level: 'good', label: `✨ 契合良好 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+  }
+  return { level: 'neutral', label: `平稳增幅 (+${(cmd.bonus * 100).toFixed(0)}%)` }
+}
+
+// 极速模式：一键批量填入名单（支持模糊纠偏与招牌棋手自动匹配）
 function applyBatchPaste() {
   if (!batchPasteText.value.trim()) return
-  const names = batchPasteText.value
+  const tokens = batchPasteText.value
     .split(/[\s,，、\n\t]+/)
     .map(s => s.trim())
     .filter(Boolean)
+
+  const matchedSummaries: string[] = []
+
   for (let i = 0; i < 6; i++) {
-    players.value[i].nickname = names[i] || ''
-    players.value[i].profileId = ''
+    const token = tokens[i]
+    if (!token) {
+      removeSeat(i)
+      continue
+    }
+    const matched = resolveFuzzyPlayer(token)
+    if (matched) {
+      players.value[i].nickname = matched.nickname
+      players.value[i].profileId = ''
+      if (!players.value[i].commander && matched.signatureCommander) {
+        players.value[i].commander = matched.signatureCommander
+      }
+      matchedSummaries.push(`${token} → ${matched.nickname}`)
+    } else {
+      players.value[i].nickname = token
+      players.value[i].profileId = ''
+    }
+  }
+
+  if (matchedSummaries.length > 0) {
+    batchFeedback.value = `✨ 已智能识别入座：${matchedSummaries.slice(0, 3).join('，')}${matchedSummaries.length > 3 ? '等' : ''}`
+  } else {
+    batchFeedback.value = `已分发名单至 6 席位。`
   }
 }
 
@@ -531,6 +804,9 @@ function addStarPlayer(name: string) {
   if (emptyIdx !== -1) {
     players.value[emptyIdx].nickname = name
     players.value[emptyIdx].profileId = ''
+    if (!players.value[emptyIdx].commander && SIGNATURE_COMMANDERS[name]) {
+      players.value[emptyIdx].commander = SIGNATURE_COMMANDERS[name]
+    }
   }
 }
 
@@ -548,13 +824,19 @@ function clearAllSeats() {
     removeSeat(i)
   }
   batchPasteText.value = ''
+  batchFeedback.value = ''
 }
 
-// 实时计算同场克制、禁选阵营与最新版本更迭影响 (毫秒级响应，无需后端请求)
+// 实时计算同场克制、禁选阵营与所选棋手影响 (双核：选手+棋手毫秒级响应)
 const matchupResult=computed<SixPlayerMatchupResult|null>(()=>{
  const valid=players.value.filter(p=>p.nickname&&p.nickname.trim())
  if(valid.length<2)return null
- return evaluate6PlayerMatchup(valid,bannedFaction.value,catalogMatches.value,version.value||CURRENT_LATEST_VERSION)
+ return evaluate6PlayerMatchup(
+   valid.map(p=>({nickname:p.nickname,commander:p.commander||null})),
+   bannedFaction.value,
+   catalogMatches.value,
+   version.value||CURRENT_LATEST_VERSION
+ )
 })
 
 // 排序后的推演阵营
@@ -593,8 +875,17 @@ function handleGlobalPaste(e: ClipboardEvent) {
   }
 }
 
+// 全局点击监听（关闭联想下拉）
+function handleDocumentClick(e: MouseEvent) {
+  const target = e.target as HTMLElement
+  if (!target.closest('.seat-player-row')) {
+    activeDropdownSeat.value = null
+  }
+}
+
 onMounted(async()=>{
  window.addEventListener('paste', handleGlobalPaste)
+ document.addEventListener('click', handleDocumentClick)
  try{
   const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[]}>('catalog')
   profiles.value=cat.players||[]
@@ -604,6 +895,7 @@ onMounted(async()=>{
 
 onUnmounted(() => {
  window.removeEventListener('paste', handleGlobalPaste)
+ document.removeEventListener('click', handleDocumentClick)
 })
 </script>
 <style lang="scss" scoped>
@@ -776,6 +1068,18 @@ onUnmounted(() => {
     }
   }
 
+  .batch-feedback-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: $color-primary;
+    background: $color-primary-light;
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba($color-primary, 0.25);
+    white-space: nowrap;
+    animation: fadeIn 0.2s ease-in;
+  }
+
   .btn-tool {
     height: 40px;
     padding: 0 16px;
@@ -884,16 +1188,37 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    position: relative;
 
     .seat-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
 
+      .seat-head-left {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+      }
+
       .seat-number {
         font-size: 11px;
         font-weight: 700;
         color: $text-secondary;
+      }
+
+      .master-pill {
+        font-size: 10px;
+        font-weight: 600;
+        color: $color-primary;
+        background: rgba($color-primary, 0.1);
+        padding: 1px 4px;
+        border-radius: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70px;
       }
 
       .seat-clear-btn {
@@ -913,12 +1238,19 @@ onUnmounted(() => {
 
     .seat-body {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
+
+      .seat-player-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+      }
 
       .seat-avatar {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         object-fit: cover;
         background: $border-subtle;
@@ -928,27 +1260,156 @@ onUnmounted(() => {
       .seat-input-wrap {
         flex: 1;
         min-width: 0;
+        position: relative;
 
         .seat-input {
           width: 100%;
-          font-size: 12.5px;
+          font-size: 12px;
           font-weight: 600;
-          height: 30px;
+          height: 28px;
           padding: 0 6px;
-          border: 1px solid transparent;
-          background: transparent;
+          border: 1px solid $border-subtle;
+          background: #fff;
           border-radius: 4px;
-
-          &:hover {
-            border-color: $border-subtle;
-            background: #fff;
-          }
 
           &:focus {
             outline: none;
             border-color: $color-primary;
-            background: #fff;
+            box-shadow: 0 0 0 2px rgba($color-primary, 0.12);
           }
+        }
+
+        .autocomplete-dropdown {
+          position: absolute;
+          top: calc(100% + 4px);
+          left: 0;
+          width: 220px;
+          max-height: 250px;
+          overflow-y: auto;
+          background: #ffffff;
+          border: 1px solid $border-subtle;
+          border-radius: 6px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          z-index: 100;
+          padding: 4px;
+
+          .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.12s ease;
+
+            &:hover {
+              background: $bg-subtle;
+            }
+
+            .cand-avatar {
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              object-fit: cover;
+              flex-shrink: 0;
+            }
+
+            .cand-meta {
+              display: flex;
+              flex-direction: column;
+              min-width: 0;
+              flex: 1;
+
+              .cand-name-row {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                .cand-name {
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: $text-primary;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+
+                .cand-master {
+                  font-size: 10px;
+                  color: $text-secondary;
+                }
+              }
+
+              .cand-stats {
+                font-size: 10.5px;
+                color: $text-secondary;
+                line-height: 1.3;
+
+                .cand-cmd-tag {
+                  color: $color-primary;
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .seat-commander-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+
+        .cmd-icon {
+          font-size: 11px;
+          flex-shrink: 0;
+          opacity: 0.8;
+        }
+
+        .seat-commander-select {
+          flex: 1;
+          height: 24px;
+          font-size: 11px;
+          font-weight: 600;
+          padding: 0 4px;
+          border: 1px solid $border-subtle;
+          border-radius: 4px;
+          background: #fff;
+          color: $text-primary;
+          cursor: pointer;
+          min-width: 0;
+
+          &:focus {
+            outline: none;
+            border-color: $color-primary;
+          }
+        }
+      }
+
+      .seat-synergy-tag {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 3px;
+        text-align: center;
+        white-space: nowrap;
+
+        &.perfect {
+          background: #fef3c7;
+          color: #b45309;
+          border: 1px solid #fde68a;
+        }
+
+        &.good {
+          background: $color-primary-light;
+          color: $color-primary;
+          border: 1px solid rgba($color-primary, 0.2);
+        }
+
+        &.neutral {
+          background: $bg-subtle;
+          color: $text-secondary;
         }
       }
     }
@@ -1162,6 +1623,44 @@ onUnmounted(() => {
           }
         }
 
+        .commander-badge-line {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11.5px;
+          color: $text-secondary;
+          margin-bottom: 4px;
+
+          strong {
+            color: $color-primary;
+            font-weight: 700;
+          }
+
+          .cmd-pill {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
+
+            &.t0 {
+              background: #fef3c7;
+              color: #b45309;
+              border: 1px solid #fde68a;
+            }
+
+            &.t1 {
+              background: $color-primary-light;
+              color: $color-primary;
+              border: 1px solid rgba($color-primary, 0.25);
+            }
+
+            &.t2 {
+              background: $bg-subtle;
+              color: $text-secondary;
+            }
+          }
+        }
+
         .prob-highlight {
           font-size: 12.5px;
           color: $text-secondary;
@@ -1291,14 +1790,27 @@ onUnmounted(() => {
         object-fit: cover;
       }
 
-      .bar-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: $text-primary;
+      .bar-player-col {
+        display: flex;
+        flex-direction: column;
         min-width: 90px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        max-width: 120px;
+
+        .bar-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: $text-primary;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .bar-cmd-badge {
+          font-size: 10.5px;
+          font-weight: 600;
+          color: $color-primary;
+          opacity: 0.9;
+        }
       }
 
       .bar-track {
