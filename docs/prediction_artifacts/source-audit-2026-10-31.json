@@ -1,0 +1,69 @@
+{
+  "checkedDate": "2026-10-31",
+  "source": "https://qjsxd.icu/wangpai.html",
+  "readEndpoint": "https://qjsxd.icu/api/wangpai",
+  "method": "两次只读GET；仅保存字段、计数与完整性摘要；未保存或导入逐场个人记录",
+  "wanxiang": {
+    "matches": 247,
+    "earliest": "2026-09-18",
+    "latest": "2026-10-18",
+    "rowsPerMatch": {
+      "1": 247
+    },
+    "rankDistribution": {
+      "1": 247
+    },
+    "duplicateDateSessionGroups": 0,
+    "usableForSixSeatPredictionEvaluation": false
+  },
+  "diamond": {
+    "matches": 20,
+    "earliest": "2026-10-01",
+    "latest": "2026-10-05",
+    "rowsPerMatch": {
+      "6": 20
+    },
+    "rankDistribution": {
+      "1": 20,
+      "2": 20,
+      "3": 20,
+      "4": 20,
+      "5": 20,
+      "6": 20
+    },
+    "duplicateDateSessionGroups": 0,
+    "usableForWanxiangPredictionEvaluation": false
+  },
+  "fields": {
+    "match": [
+      "id",
+      "createdAt",
+      "date",
+      "session",
+      "rows"
+    ],
+    "wanxiangRow": [
+      "rank",
+      "player",
+      "lord",
+      "lineup"
+    ],
+    "diamondRow": [
+      "rank",
+      "player",
+      "pack",
+      "spent",
+      "brought"
+    ]
+  },
+  "limitations": [
+    "无原始截图交叉核验",
+    "缺少经确认的UID与平台身份",
+    "无持续更新承诺",
+    "无授权导出或再发布确认",
+    "赛后棋手/阵容不得作为赛前预测特征",
+    "players数组是独立维护记录，不能当作参赛选手总数"
+  ],
+  "contact": "https://qjsxd.icu/community-contact.html",
+  "businessWrites": false
+}

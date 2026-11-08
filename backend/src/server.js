@@ -16,9 +16,12 @@ async function bootstrap() {
   loadEnvFile()
   const env = getEnv()
   assertFormalEnv(env)
+  if (env.pg.database === 'wanxiangqi' && process.env.WXQ_ALLOW_BUSINESS_MIGRATIONS !== '1') {
+    throw new Error('拒绝连接业务库启动并自动迁移。开发请使用 npm run dev:prediction；业务操作须明确授权并设置 WXQ_ALLOW_BUSINESS_MIGRATIONS=1。')
+  }
 
   console.log('========================================================')
-  console.log('王者万象棋阵容研习站 - 正式模式后端服务 (PostgreSQL 唯一权威)')
+  console.log('王牌对决研究工作台 - PostgreSQL 后端 (PostgreSQL 唯一权威)')
   console.log(`- 数据库: ${env.pg.host}:${env.pg.port}/${env.pg.database} (user: ${env.pg.user})`)
 
   // 1. 连接权威库（formal 下失败即退出，不降级）
@@ -57,6 +60,11 @@ async function bootstrap() {
 
   // 4. HTTP（注入 services 与显式 adminToken）
   const server = createApiServer({ services, adminToken: env.adminToken })
+  server.once('error', async err => {
+    console.error(`[Server] 监听失败 ${env.host}:${env.port}：${err.code === 'EADDRINUSE' ? '端口已占用，请在原终端停止旧开发服务后重试' : err.message}`)
+    await pool.end().catch(() => {})
+    process.exit(1)
+  })
   server.listen(env.port, env.host, () => {
     console.log(`- 业务服务监听于: http://${env.host}:${env.port}`)
     console.log('- 管理鉴权已生效: Authorization: Bearer <ADMIN_TOKEN>（显式注入，无默认值）')

@@ -1,0 +1,72 @@
+[
+  {
+    "width": 360,
+    "path": "/",
+    "alert": null,
+    "heading": "王牌对决研究工作台",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "path": "/research/matches",
+    "alert": null,
+    "heading": "场次与赛果",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "path": "/research/players",
+    "alert": null,
+    "heading": "选手统计",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "path": "/research/predict",
+    "alert": null,
+    "heading": "赛前研究",
+    "overflow": 0
+  },
+  {
+    "width": 360,
+    "path": "/research/import",
+    "alert": null,
+    "heading": "数据录入",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "path": "/",
+    "alert": null,
+    "heading": "王牌对决研究工作台",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "path": "/research/matches",
+    "alert": null,
+    "heading": "场次与赛果",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "path": "/research/players",
+    "alert": null,
+    "heading": "选手统计",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "path": "/research/predict",
+    "alert": null,
+    "heading": "赛前研究",
+    "overflow": 0
+  },
+  {
+    "width": 1440,
+    "path": "/research/import",
+    "alert": null,
+    "heading": "数据录入",
+    "overflow": 0
+  }
+]

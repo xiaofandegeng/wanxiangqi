@@ -1,0 +1,1496 @@
+{
+  "id": "b707760a-11cf-443b-9fcf-079f89a3088b",
+  "model": {
+    "status": "EXPERIMENTAL_SOURCE_MODEL",
+    "modelVersion": "source-roster-luce-l2-v1",
+    "config": {
+      "lambda": 2,
+      "iterations": 400,
+      "tolerance": 1e-8
+    },
+    "computedBy": "BACKEND_DETERMINISTIC_PROGRAM",
+    "calibrated": false,
+    "cutoff": "2026-10-31T08:03:53.993Z",
+    "trainingMatches": 54,
+    "trainingMatchIds": [
+      "ruanshi:2026-10-23:1",
+      "ruanshi:2026-10-23:2",
+      "ruanshi:2026-10-23:3",
+      "ruanshi:2026-10-23:4",
+      "ruanshi:2026-10-23:5",
+      "ruanshi:2026-10-23:6",
+      "ruanshi:2026-10-23:7",
+      "ruanshi:2026-10-23:8",
+      "ruanshi:2026-10-24:1",
+      "ruanshi:2026-10-24:2",
+      "ruanshi:2026-10-24:3",
+      "ruanshi:2026-10-24:4",
+      "ruanshi:2026-10-24:6",
+      "ruanshi:2026-10-24:7",
+      "ruanshi:2026-10-24:8",
+      "ruanshi:2026-10-25:1",
+      "ruanshi:2026-10-25:2",
+      "ruanshi:2026-10-25:3",
+      "ruanshi:2026-10-25:4",
+      "ruanshi:2026-10-25:5",
+      "ruanshi:2026-10-25:6",
+      "ruanshi:2026-10-25:7",
+      "ruanshi:2026-10-25:8",
+      "ruanshi:2026-10-26:1",
+      "ruanshi:2026-10-26:2",
+      "ruanshi:2026-10-26:3",
+      "ruanshi:2026-10-26:4",
+      "ruanshi:2026-10-26:5",
+      "ruanshi:2026-10-26:6",
+      "ruanshi:2026-10-26:7",
+      "ruanshi:2026-10-26:8",
+      "ruanshi:2026-10-27:1",
+      "ruanshi:2026-10-27:2",
+      "ruanshi:2026-10-27:3",
+      "ruanshi:2026-10-27:4",
+      "ruanshi:2026-10-27:5",
+      "ruanshi:2026-10-27:6",
+      "ruanshi:2026-10-27:7",
+      "ruanshi:2026-10-27:8",
+      "ruanshi:2026-10-28:1",
+      "ruanshi:2026-10-28:3",
+      "ruanshi:2026-10-28:4",
+      "ruanshi:2026-10-28:5",
+      "ruanshi:2026-10-28:6",
+      "ruanshi:2026-10-28:7",
+      "ruanshi:2026-10-28:8",
+      "ruanshi:2026-10-29:1",
+      "ruanshi:2026-10-29:2",
+      "ruanshi:2026-10-29:3",
+      "ruanshi:2026-10-29:4",
+      "ruanshi:2026-10-29:5",
+      "ruanshi:2026-10-29:6",
+      "ruanshi:2026-10-29:7",
+      "ruanshi:2026-10-29:8"
+    ],
+    "dataHash": "678850da82c3ce51808acdd9f1152e2d7bcaf024b98ab9990c9c7110b3e9b292",
+    "parameters": {
+      "0263a0ce069f199def54a436a26ef3327259b0b3aefd537588b7a551c44a0344": 0.12141009785743744,
+      "02f58c153d203c0b2326f0d5299f9976fb865c4c00f697599ff2b91f2796db30": -0.07729803046519212,
+      "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac": 0.10413000731454192,
+      "05f64e0cdcbbe6e218b637187480f3f0cf7371e872eb709340a8483f4653ade7": 0.2374513076666925,
+      "077e5693f8d2b11f599ee3aeeffbe60a008afc93c128cc572e17231817efc477": -0.08949940544532105,
+      "078d572ea2ec14d34e910c46384c48ed8034b29a6a6ef2192ee964094ad8ef8f": 0.37740073452221673,
+      "09ded9424f36d9112d60ce19985229f22fb7173fedb30392f157f1151b752e96": -0.07972678010581284,
+      "0c44bb2c97bb6a88c14c9c6b1732aa7d24fe91e6b1488f2bc316c12f06b9bc42": -0.13858354213470664,
+      "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572": -0.23937937473780765,
+      "1298683e94f04171d082a62419bd2431a8f0c0e3caba816f798bf2e03c1b6824": -0.39001259201924193,
+      "14441e4152fa9a79c206733182bfedcf4844d462fcd3dea5842f566956ad32d8": -0.08754414527545858,
+      "1a5f3534d7370388a9671d628954ff98918069e6a96e27fa3cbc68dfb671cbb1": -0.07729803046519212,
+      "1bf2a4802ae62cccdff2fce68f11b4ab7c216fe69b3736b432143b8fed80cb15": -0.07156281095868569,
+      "1e857c9cb41ccc987280d1366e9e1064d3abd7e6140d5622a42aadd260dc95e9": -0.0638678121202979,
+      "1ef901c2974a8643c640d17255462054cabfc09c931643c8e7710d3573dc914b": -0.1365464981530879,
+      "202643f34880e0a52ea691760348add26a6f50b8405b46310019a32aaef0f32a": 0.2847553994869612,
+      "21f0a2ffc1f160add37d90554e179f0fb9e46b5ad9849cc12ec21b8c57b64c63": -0.07963248961929739,
+      "2303537844ea92d718bb365fc8e5f1595b6a3f5f6e1aafaef2dfa93921a18439": -0.38202058977336234,
+      "232ab180a996140cd5457bf5bfe21e07a9d8ea781e9f4686b59efc9c4b20815a": -0.14617401202765593,
+      "236b96acfedd652d13c84b5047ac3d0bf7bd2cbc93cb5c664dd0e3f9f49ef79f": -0.21750935524950715,
+      "28f9b9fc50c6f2d453d809fd845ca79eeacacddb35f8a1445d4becd6d4a7a360": -0.07508503512735237,
+      "293002ae6d1a454d3cf23e03b1f0b6d8e47959743108387b8cd873c24b2b4c3c": -0.07830798270195859,
+      "2e0fc155561d0a8899e4693a3d0a85773afa849b76c512343499a89b94b677cf": 0.30891961848531435,
+      "3536d2d89bee906db2f1c652a36c340262ed53c34c1f9b7dac7723193873a8aa": -0.06756387952293649,
+      "371ffd5b07f60d22ff087d4ca3e0ea4e855b01e930a02b5e7b988cc343c82439": -0.13661320479786415,
+      "37a86f6a1b0a5c01dfb03e1b8601e3380243891ea5767787a974ca641177a336": -0.07115359581555791,
+      "3a8480356f619b0332b3a1fa9aeba5e23e8ea3b0510554fa229b14eb2cd08bbf": 0.430785487622033,
+      "3af746315613972435b29e2efb4af1502b19a99d28dfa10525f7267cc1c1d10c": 0.07049730808392195,
+      "3d746a80dda5892c0f2445f71cbba679ad79eca06c193f6c79a214c9d7f09c9d": -0.22239954979149174,
+      "3eeac87ca6fc6ed84af9140562bd64096450144190e7db93fd309584d2329860": 0.14650809614752297,
+      "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a": -0.00408245326870061,
+      "4268fd7a62387808c4212478a86d4182ec6bd5457541ccd3b174e6b497b3fda0": -0.1311894686619117,
+      "43c1609af411d3d7901a4370b74d384a5e08a49c3e143b0dbbdd54f748c59984": -0.2669836321168608,
+      "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983": -0.3031805224917907,
+      "47ffb1ee773720d47e284da2a377f0d282268795423c47602ea3ed403ed1ada0": -0.15441799739178433,
+      "49106debe935ac91daac5888ac2b486fee061ae87892f09816f2ce2127115729": 0.30251949606563355,
+      "4c4a0b16b70efb04b7353059b2773581dd45ff496e302097c2c83d344530663b": -0.06605711448998518,
+      "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353": -0.15282552625478812,
+      "57611acac955b458689027cf88a69d8b07abb618d24b3f4ba23c398cc6709ee9": 0.41552011758730295,
+      "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd": -0.37332695595148435,
+      "5910e75c95e2109fefabff4c465680ddc9d0bdc6ae822df4a689d049c79eef81": -0.4040265630116509,
+      "5ae1490b35689b759228851c9a30581489e3e2e3899c2c722cfe170af6645e2d": 0.26101735622143274,
+      "5ae3d421fafc86f61c43256644d477e2b114068ae8bed25cfccd42f4daace425": 0.30299636424358184,
+      "5ba50168f8791c04a05ba55e14665d227f1d8083596c6bf390ade6c1b1cfa51b": 0.22219762617731442,
+      "5cde41a0c3078caea9f4874d52e1aa4bbd0ac1c93f7fcc60fd7bae51f9feae90": -0.07156281095868569,
+      "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949": 0.01919200392193928,
+      "5f87c545673690ed930301a134d52ec4defbb28b76826e1de9c6da59677aab80": -0.1572461625048602,
+      "608b90204c455bc1629121112e4c8b611ac6279bdda68aeeefde8b32b9203c4e": -0.009697302218503253,
+      "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521": 0.11473979107331647,
+      "61a0b9336a5192e3d23e6f87fc616e1d24d77fdb07f2f2c65dc0ae723de184d2": -0.14399762109735692,
+      "62569da0e4daaacbc7d27cf6ff30895d456b5aa36de3df99879f3f2c19c90cbb": -0.07279028372146766,
+      "643c3854b9e36e028880b426b51894a882e4c0160e6f5a6f68a1560393b373ef": -0.08248380343718816,
+      "64aa6e3e065b5329a9302e879c8e53231f553c3394edd7b83e72997f9007a95a": -0.08673399900514929,
+      "65aa8b820701571ce3f5900dbf89364a056c77eaa562c503b90a881d2f2e0f8b": -0.0779976083191557,
+      "65d5c6805a356e115535ea9b03e7890bddc3769157611d836ad9774baa19ded7": 0.5875219072268065,
+      "685f324697cf5b8094a45fb48d40e8cad8e6c7d171a52dfe9ab6f1047526a2df": -0.07360466556461388,
+      "68816318494a6ec857b44ee974825c7e7ce3b124e95306ad7c9a15277e611efc": -0.08794003289875649,
+      "6da6f379d9f0034f7fdb13623a4610cfe8cd2f7848cbfee086af87d93e39b9f9": -0.06581401806688365,
+      "6f078460b9c10abe5ac78ceb6a4492c2650a93858845217db41c3c7ea1e41678": -0.3287720103958904,
+      "7361f35500e23f78757073c0a7d4eff415ad735b479471fae74edbfb5b8e9a2f": -0.07830798270195859,
+      "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75": -0.2781419621719111,
+      "767173e754d1b23e2e96624c7ce647a3af5eeaeb05272961c4141e61296d147d": -0.06901283094914751,
+      "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad": -0.24020265797098045,
+      "7a81302235596d3ebcbad1465e41bd39fa200fd56b1cb136ce63d341734a4791": 0.3798986229973168,
+      "7ae9049fa59f4447babca6c6d1b0235f4ded3b4c02a231e4e6f130a0b49a229e": -0.13288526686322957,
+      "7e62eec386b859fbc1e5b25ea9d72ca0c9fb5b6ecd17dc863662a812c09583b7": -0.06756387952293649,
+      "8094e2b07d85492fc45576bad59869f07988311a802211292c0092a7fc88d95e": -0.06330845228965343,
+      "85831e2ee44a34751535990688e4ee1bc2eff5984d0075074e0f83368648de6c": -0.259159209428534,
+      "87a4f22961d64f79acfcf249d30bca39ecdf4f81758b8d858c806c62432007e2": -0.2797860787892899,
+      "899876688614bc6bf4ebe1e484224af6d802989ed1b58a20fbf639139204b5fc": 0.6995157035973678,
+      "8a568a56343348ce6d29353fb499b30927814638dd9c4977d0c24f86207fa23d": 0.4079113814423116,
+      "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5": -0.003582775467239309,
+      "9330c5bb044dea5da9e112f1d20da8861713542fe9624efc67132cd0838f52b6": 0.1268833537516664,
+      "93e858da1e9c601ccce13b982aa173604c436700861622fbbe29f07766acdccb": 0.38193658130670394,
+      "94885f9043854455fa531e32692779a782f13d65c88b8583919a0c3d1e35a57d": 0.3955983723868344,
+      "954fcb91a97ac0ca14da1b7b07f2d75101c531e551514b08dfda95628190598b": 0.38371666483037586,
+      "95999118e366169324c450cf0ca7d117e5a819b0e12526aad2dd807fa271e780": -0.08949940544532105,
+      "973b42e87250b685ee87ce41eb9e50127ec558263871b76327c5c224ccfebfcf": -0.08589337104088735,
+      "9847e6f4aa8bf79c9b3b8c22249045f52559c5849b50c442745e0a0396855da5": 0.07544288396240724,
+      "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24": 0.6037159830945655,
+      "9a21cd7d1571d72ca1d3abeb6cce54a46068ac89c3d26548503ea493c7bedaf1": -0.2181552852785411,
+      "9af90e45c92e27ec12c4c747337bf3d21957952329534c460a8c42b9bc812ab4": 0.37705569149950496,
+      "9eb901cf6c8dd04b09fb7d312cf2eef208cf82f30e8d10bae8afb66e6903d80a": -0.07279028372146766,
+      "a1b5bdedb47eb3f60f02df680c3749fdf1fa11bf2462b98766e511fad4189aaf": 0.7653678851064074,
+      "a6b1eb18a330ed74caab56c01b3f518073e939349c9fef7e06f8fc7136ab0b9d": -0.08343950753188517,
+      "ac90e543e31b1fbf0d8ff128b6ebd01e3e0d0a76319d4ad8d971cfaa92059b5b": -0.07544537503756171,
+      "b7b5ba9d06e3db08e50cc404cf7e04354e0471dd3f8211c44b9997b63571ea8a": -0.24766634641158133,
+      "bb492ebc3ed1fc79b18163a42235efc7d57b7ed5b0bb6792d75d9666d0e66e34": -0.07279028372146766,
+      "bd8dbf54bd1d5b52efe52193620f2acc288b8100bc0f860e2f462f643d3f7f2f": 0.06620947880480348,
+      "bde17b060eb659a89f41d26845e7d1583affd7d2a709c430e5689772cd7cb1d1": -0.2142971174918902,
+      "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702": 0.21056467272554086,
+      "c1136644b7296c468179efea69162f77e857f2f4f6a1182101924f97f66b9d12": 0.42418435391113063,
+      "c265f861084235873437e96f60494b61796f8a1391f8fba2d90e302a58577497": -0.14875673662547662,
+      "cb2443047e855877b49d4291af665ae56e201866d85cb3f0e462fd48d7f51bd1": -0.06532147417935684,
+      "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b": -0.28379735313674687,
+      "cc2876f8c4b9334da2e6bcad74d699d428566edae5f6f19df5ab2b5806945537": -0.14460011519680252,
+      "cf491d94b5d30d92d2e1b5c78e5cb12ac959ce3823ed0d5c16a413ced94ff7cc": -0.08343950753188517,
+      "d27a61de66d60148843408a6fbabd09382275f4c1bd672fe5ebf67264e49e029": -0.14283180069197196,
+      "d58f848f87313302a7fc28ca63e07c020b2abf79559faaf18e57b8017f1e2877": -0.08179783380607426,
+      "d5ab2839394bed3274cf1ebcb9c6fcb8655bfd9d3892dfe9d152130b126ff78e": 0.1616747857089249,
+      "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222": -0.02938655916671736,
+      "d772000712822bfb9e7bf1db4b8de71a4797f64c454ebc09f40b1ff8c47afa14": 0.3651432100030197,
+      "d8864eabd8a94148d13705df8a719547826e171c2878f707cc21445e61f63178": -0.0623842029027331,
+      "d8b04ecc799d9c1c9a8d491e3e79ca21d0177d8f89c3b5145c2f33a10835153d": -0.06532147417935684,
+      "dd0f6748cc532f7afe9b20c14dbf5c9e02cdc84aca395a94d788af610eaf946a": -0.07115359581555791,
+      "e1b2c50f95938c914d9f6e3985ea2f420b982c0b4cc949bf5d7e7e5f726a2215": -0.07830798270195859,
+      "e30ab1371d074278095c5a95454986558e6b6e8a86b8165c871a8466cc9b6b06": -0.07787231997579884,
+      "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795": 0.5314231131454528,
+      "ece2cdf96442a552b24e79e12b33938379b1767603b7f790f1f316260682b5c5": -0.2546816883629494,
+      "f06ce68f4f4b85949c35a303eebc036a7e0690d49209a622763dfd24342a213a": -0.14414212216143168,
+      "f0b6c4e19231c7b8f9096e62a83baf4815d97464056d3d4a3b250d921dc23368": -0.15131355895244802,
+      "f1118901a358b7555de035b630f1d1f25ce93730dde441e337fc4ac8c9d8555c": -0.07475519468400908,
+      "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee": 0.19505161263163132,
+      "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454": -0.015063338880231805,
+      "f55dff2cdfd80be0c53146b22cfc2d081ac71eeb538df43bd7a8f8842ba67945": -0.08343950753188517,
+      "f5f84d843d398396e0b7fd0c88f94838c026c36a29cdda982a67f7921936ab21": -0.066755416158709,
+      "f69e24684dcd3ab85d2125d2c6c98a7fe39635f549f7aba8856db607f5bd8e5d": -0.18751128924069355,
+      "f830f7a0131663e692ea9cf9ee01a901779413c841ae087a5a3e4e0732646265": 0.19936501335455703,
+      "f8a7bb15e5a49499d2f670573d7e8958c6ae47a55be200c87f8db7b2988d5715": 0.07578651369533372,
+      "f8be3b53abb0947df93d54a8aaa06ab9d8288d16d7277e58518432a7d6f77db7": -0.374957002782703,
+      "f9edcd0add0af4baa741e3e901bfde618d86ec5f12913edfcaad8def58759767": -0.08083991077646792,
+      "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712": 0.0464897201196764,
+      "fb24b783397f47229f610fda9a376b939d89b6c1c62a71f5f5a27994eb374a6d": 0.05474641187882558,
+      "fe16f025f0d8cbdff574c8108d075ee0cd6fb0865c43c0d297f33a4ff0ee2451": 0.2076225957543779
+    },
+    "iterations": 69,
+    "players": [
+      {
+        "profileId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+        "nickname": "抖音QT新一",
+        "probability": 0.13914570448099156,
+        "coldStart": false
+      },
+      {
+        "profileId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+        "nickname": "世薄情",
+        "probability": 0.29650471696860414,
+        "coldStart": false
+      },
+      {
+        "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+        "nickname": "娇弱的佩奇",
+        "probability": 0.15742679945782737,
+        "coldStart": false
+      },
+      {
+        "profileId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+        "nickname": "blibli喵喵虾条",
+        "probability": 0.1596978839805848,
+        "coldStart": false
+      },
+      {
+        "profileId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+        "nickname": "抖音清晨",
+        "probability": 0.1275035855389782,
+        "coldStart": false
+      },
+      {
+        "profileId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+        "nickname": "b站QT逆光",
+        "probability": 0.11972130957301406,
+        "coldStart": false
+      }
+    ],
+    "diagnostic": {
+      "kind": "RETROSPECTIVE_DAY_SPLIT_NOT_AVAILABILITY_REPLAY",
+      "evaluatedMatches": 46,
+      "model": {
+        "logLoss": 1.8107775932785215,
+        "brier": 0.8411273113276871,
+        "top1Credit": 0.12318840579710144
+      },
+      "uniform": {
+        "logLoss": 1.7917594692280547,
+        "brier": 0.8333333333333334,
+        "top1Credit": 0.16666666666666677
+      },
+      "rows": [
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:1",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.9074396153179127,
+            "brier": 0.8753926678282068,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:2",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.7544752992129666,
+            "brier": 0.8209111993207536,
+            "top1Credit": 0.3333333333333333
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:3",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.8430837283195407,
+            "brier": 0.8552205514543417,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:4",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.8177442627776856,
+            "brier": 0.842102673809259,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:6",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.8430837283195407,
+            "brier": 0.8552205514543416,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:7",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.9190961944860514,
+            "brier": 0.878398360366929,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-24",
+          "matchId": "ruanshi:2026-10-24:8",
+          "trainingMatches": 8,
+          "model": {
+            "logLoss": 1.8177442627776856,
+            "brier": 0.842102673809259,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:1",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.9117394662801699,
+            "brier": 0.8759323067050375,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:2",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.7993006436372525,
+            "brier": 0.8428122339098763,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:3",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.8481950787195451,
+            "brier": 0.8520397947583597,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:4",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.8435546512217282,
+            "brier": 0.8555448459620093,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:5",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.5740645266383486,
+            "brier": 0.7578218676993914,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:6",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.7551688219384864,
+            "brier": 0.8211426526546081,
+            "top1Credit": 0.3333333333333333
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:7",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.8570143844469986,
+            "brier": 0.8550894092224081,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-25",
+          "matchId": "ruanshi:2026-10-25:8",
+          "trainingMatches": 15,
+          "model": {
+            "logLoss": 1.925413958359889,
+            "brier": 0.8803560257570954,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:1",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.8285107015931703,
+            "brier": 0.846082215341656,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:2",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.8952615254956273,
+            "brier": 0.866827165189047,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:3",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.7616885273344518,
+            "brier": 0.8260662694464419,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:4",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.891671475761996,
+            "brier": 0.8718900543824215,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:5",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.8794308747816906,
+            "brier": 0.8628904225288773,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:6",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.8386453847568482,
+            "brier": 0.8528309800255433,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:7",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.5124930292820291,
+            "brier": 0.7323345827042396,
+            "top1Credit": 1
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-26",
+          "matchId": "ruanshi:2026-10-26:8",
+          "trainingMatches": 23,
+          "model": {
+            "logLoss": 1.8661849054640427,
+            "brier": 0.8582498067181286,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:1",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.9437308500809194,
+            "brier": 0.888864549917868,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:2",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.932750281445813,
+            "brier": 0.8829653148379292,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:3",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.7683046404742595,
+            "brier": 0.8270016332060053,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:4",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.4707769825228918,
+            "brier": 0.7164350271983861,
+            "top1Credit": 1
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:5",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.7781189923899878,
+            "brier": 0.8298086592235808,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:6",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.9036823937751457,
+            "brier": 0.8700263337806533,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:7",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.3823127239384971,
+            "brier": 0.6791272247531126,
+            "top1Credit": 1
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-27",
+          "matchId": "ruanshi:2026-10-27:8",
+          "trainingMatches": 31,
+          "model": {
+            "logLoss": 1.9135219828844405,
+            "brier": 0.885177553672195,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:1",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.8802496301944804,
+            "brier": 0.862442743216772,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:3",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.8323588037907566,
+            "brier": 0.8518994357276699,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:4",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.9717454095877038,
+            "brier": 0.8912032439428571,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:5",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.8042279071444938,
+            "brier": 0.8382381758882895,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:6",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.7902584954713414,
+            "brier": 0.8377968616280286,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:7",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 1.81358398907325,
+            "brier": 0.8673165833568371,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333334,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-28",
+          "matchId": "ruanshi:2026-10-28:8",
+          "trainingMatches": 39,
+          "model": {
+            "logLoss": 2.000156621178009,
+            "brier": 0.8987903109663286,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:1",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.8305915024842054,
+            "brier": 0.8494195513568141,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:2",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 2.014305502239759,
+            "brier": 0.9041173294333467,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:3",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.85858759642323,
+            "brier": 0.8572492874142691,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:4",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.7187739281074124,
+            "brier": 0.8087113879734297,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:5",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.6398944926131707,
+            "brier": 0.7812381728778973,
+            "top1Credit": 1
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:6",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.8963464580700873,
+            "brier": 0.8721761194325959,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:7",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.5666270140720004,
+            "brier": 0.7538513527077969,
+            "top1Credit": 1
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        },
+        {
+          "day": "2026-10-29",
+          "matchId": "ruanshi:2026-10-29:8",
+          "trainingMatches": 46,
+          "model": {
+            "logLoss": 1.6938580459264785,
+            "brier": 0.8107401575127002,
+            "top1Credit": 0
+          },
+          "uniform": {
+            "logLoss": 1.791759469228055,
+            "brier": 0.8333333333333335,
+            "top1Credit": 0.16666666666666666
+          }
+        }
+      ],
+      "notice": "按比赛日仅以前日赛果训练；材料为事后采集，不证明历史当时已可获得，也不是独立校准集。并列最高按1/并列人数计命中，避免作者把冠军排第一导致虚假准确率。"
+    },
+    "notice": "仅来源昵称的实验模型，模式/版本/账号归属未完整核实；未知选手使用零强度先验。只学习同场冠军标签，不使用席位编号、赛后阵容、作者评价或返奖率；未校准，不用于自动分配钻石。"
+  },
+  "aceContext": {
+    "event": "ACE_DUEL",
+    "ruleset": "WANXIANG",
+    "supportStage": "OPEN",
+    "observedAt": "2026-10-31T08:03:53.993Z",
+    "bannedFaction": null,
+    "players": [
+      {
+        "seat": 1,
+        "nickname": "抖音QT新一",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 2.5,
+        "breakEvenProbability": 0.4,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      },
+      {
+        "seat": 2,
+        "nickname": "世薄情",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 3.3,
+        "breakEvenProbability": 0.30303030303030304,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      },
+      {
+        "seat": 3,
+        "nickname": "娇弱的佩奇",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 10.5,
+        "breakEvenProbability": 0.09523809523809523,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      },
+      {
+        "seat": 4,
+        "nickname": "blibli喵喵虾条",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 10.8,
+        "breakEvenProbability": 0.09259259259259259,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      },
+      {
+        "seat": 5,
+        "nickname": "抖音清晨",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 12.3,
+        "breakEvenProbability": 0.08130081300813008,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      },
+      {
+        "seat": 6,
+        "nickname": "b站QT逆光",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 9.7,
+        "breakEvenProbability": 0.10309278350515465,
+        "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+        "commanderEffect": "NOT_SCORED"
+      }
+    ],
+    "rules": {
+      "version": "UNKNOWN_SCREENSHOT_NOT_SHOWN",
+      "perPlayerSupportCap": null,
+      "capBasis": "UNKNOWN_VERSION",
+      "sources": [
+        {
+          "title": "10月15日官方公告 v1.6.1",
+          "url": "https://www.taptap.cn/moment/859509109601339933?group_id=399839"
+        },
+        {
+          "title": "10月29日官方公告 v1.8.1",
+          "url": "https://www.taptap.cn/moment/864558229898660127"
+        }
+      ]
+    },
+    "sharedPlans": [],
+    "warnings": [
+      "UNKNOWN_RULE_VERSION"
+    ],
+    "notice": "选手是参赛账号，棋手是游戏角色，阵容是局内构筑。返奖率不是胜率；保本概率仅按含本金返奖倍数求倒数，不代表实际获胜概率或支持建议。未知棋手、禁用与玩法不推断。"
+  },
+  "status": "EXPERIMENTAL_PROBABILITIES",
+  "phase": "PREMATCH",
+  "featureCutoff": "2026-10-31T08:03:53.993Z",
+  "calibrated": false,
+  "players": [
+    {
+      "nickname": "抖音QT新一",
+      "profileId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+      "profileNickname": "抖音QT新一",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 2,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "recent30": {
+        "observations": 2,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "sourceSample": {
+        "observations": 2,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "buildRates": [
+        {
+          "label": "三分登场",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "逐鹿蒙恬",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [],
+      "probability": 0.13914570448099156
+    },
+    {
+      "nickname": "世薄情",
+      "profileId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+      "profileNickname": "世薄情",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 6,
+        "wins": 3,
+        "observedWinShare": 0.5
+      },
+      "recent30": {
+        "observations": 7,
+        "wins": 3,
+        "observedWinShare": 0.42857142857142855
+      },
+      "sourceSample": {
+        "observations": 7,
+        "wins": 3,
+        "observedWinShare": 0.42857142857142855
+      },
+      "buildRates": [
+        {
+          "label": "河洛木兰",
+          "observations": 1,
+          "wins": 1,
+          "observedWinShare": 1,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "逐鹿蒙恬",
+          "observations": 4,
+          "wins": 2,
+          "observedWinShare": 0.5,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "三分倒转",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "河洛没有木兰",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [
+        {
+          "id": "ruanshi:1029:claim:37",
+          "kind": "BUILD_AUTHOR_CLAIM",
+          "text": "之前也用明先生玩过河洛；本次再次用明先生获胜",
+          "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+          "materialSha256": "c6dfc41749413d16bfdfa66f88af15f479789f44bde8c88234410e0d629e09f3",
+          "windowStart": "2026-10-29",
+          "windowEnd": "2026-10-29",
+          "aggregate": null
+        },
+        {
+          "id": "ruanshi:week4:9",
+          "kind": "COMMANDER_AUTHOR_CLAIM",
+          "text": "小妲己",
+          "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+          "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+          "windowStart": "2026-10-22",
+          "windowEnd": "2026-10-28",
+          "aggregate": {
+            "uid": null,
+            "nicknameRaw": "世薄情",
+            "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+            "top3Reported": 4,
+            "winsReported": 2,
+            "appearancesReported": 7,
+            "averageRankReported": 3,
+            "expertCommanderClaimRaw": "小妲己",
+            "averageCompatibleWithIntegerRanksAt2Decimals": true
+          }
+        }
+      ],
+      "probability": 0.29650471696860414
+    },
+    {
+      "nickname": "娇弱的佩奇",
+      "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+      "profileNickname": "娇弱的佩奇",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "recent30": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "sourceSample": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "buildRates": [
+        {
+          "label": "大河龙蛇",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "河洛木兰",
+          "observations": 3,
+          "wins": 1,
+          "observedWinShare": 0.3333333333333333,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "大河开团射",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "乔汐速6司空震",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [
+        {
+          "id": "ruanshi:week4:10",
+          "kind": "COMMANDER_AUTHOR_CLAIM",
+          "text": "庄小鱼",
+          "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+          "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+          "windowStart": "2026-10-22",
+          "windowEnd": "2026-10-28",
+          "aggregate": {
+            "uid": null,
+            "nicknameRaw": "娇弱的佩奇",
+            "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+            "top3Reported": 4,
+            "winsReported": 1,
+            "appearancesReported": 6,
+            "averageRankReported": 3,
+            "expertCommanderClaimRaw": "庄小鱼",
+            "averageCompatibleWithIntegerRanksAt2Decimals": true
+          }
+        }
+      ],
+      "probability": 0.15742679945782737
+    },
+    {
+      "nickname": "blibli喵喵虾条",
+      "profileId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+      "profileNickname": "BLIBLI喵喵虾条",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "recent30": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "sourceSample": {
+        "observations": 6,
+        "wins": 1,
+        "observedWinShare": 0.16666666666666666
+      },
+      "buildRates": [
+        {
+          "label": "日落海整备",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "三分登场",
+          "observations": 1,
+          "wins": 1,
+          "observedWinShare": 1,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "传统养猪",
+          "observations": 2,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "河洛李白",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "三分倒转",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [
+        {
+          "id": "ruanshi:week4:6",
+          "kind": "COMMANDER_AUTHOR_CLAIM",
+          "text": "马可、闹闹",
+          "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+          "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+          "windowStart": "2026-10-22",
+          "windowEnd": "2026-10-28",
+          "aggregate": {
+            "uid": null,
+            "nicknameRaw": "BLIBLI喵喵虾条",
+            "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+            "top3Reported": 4,
+            "winsReported": 1,
+            "appearancesReported": 6,
+            "averageRankReported": 2.67,
+            "expertCommanderClaimRaw": "马可、闹闹",
+            "averageCompatibleWithIntegerRanksAt2Decimals": true
+          }
+        }
+      ],
+      "probability": 0.1596978839805848
+    },
+    {
+      "nickname": "抖音清晨",
+      "profileId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+      "profileNickname": "抖音清晨",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 4,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "recent30": {
+        "observations": 4,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "sourceSample": {
+        "observations": 4,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "buildRates": [
+        {
+          "label": "镜猪转吕布",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "大河龙蛇",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "河洛木兰",
+          "observations": 2,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [],
+      "probability": 0.1275035855389782
+    },
+    {
+      "nickname": "b站QT逆光",
+      "profileId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+      "profileNickname": "B站QT逆光",
+      "identityStatus": "SOURCE_NICKNAME_ONLY",
+      "recent7": {
+        "observations": 4,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "recent30": {
+        "observations": 5,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "sourceSample": {
+        "observations": 5,
+        "wins": 0,
+        "observedWinShare": 0
+      },
+      "buildRates": [
+        {
+          "label": "雷霆战机",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "日落海倒转",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "三分登场",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "传统养猪",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        },
+        {
+          "label": "三分倒转",
+          "observations": 1,
+          "wins": 0,
+          "observedWinShare": 0,
+          "finalBuildWinRate": null,
+          "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+        }
+      ],
+      "claims": [],
+      "probability": 0.11972130957301406
+    }
+  ],
+  "blockers": [
+    "UNCALIBRATED_MODEL",
+    "UNCONFIRMED_HISTORICAL_IDENTITIES",
+    "UNKNOWN_HISTORICAL_MODE_VERSION",
+    "UNVERIFIED_SOURCE_RESULTS",
+    "INCOMPLETE_SOURCE_COVERAGE"
+  ],
+  "coverage": {
+    "players": 129,
+    "matches": 54,
+    "plays": 324,
+    "claims": 38,
+    "sources": 35,
+    "transcribedSources": 12
+  },
+  "allocation": {
+    "status": "ABSTAIN",
+    "unit": "VIRTUAL_GAME_POINTS_ONLY",
+    "reserveRatio": 1,
+    "players": [
+      {
+        "nickname": "抖音QT新一",
+        "ratio": 0
+      },
+      {
+        "nickname": "世薄情",
+        "ratio": 0
+      },
+      {
+        "nickname": "娇弱的佩奇",
+        "ratio": 0
+      },
+      {
+        "nickname": "blibli喵喵虾条",
+        "ratio": 0
+      },
+      {
+        "nickname": "抖音清晨",
+        "ratio": 0
+      },
+      {
+        "nickname": "b站QT逆光",
+        "ratio": 0
+      }
+    ],
+    "reason": "身份、历史模式版本、赛果核验和时间回测校准尚未完成，不从未经校准的比例生成投比。"
+  },
+  "notice": "概率由后端同场冠军模型计算，属于未校准实验估计；来源样本、模式版本与账号身份仍有缺口，不生成自动投比。"
+}

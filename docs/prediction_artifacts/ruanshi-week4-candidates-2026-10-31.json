@@ -1,0 +1,36 @@
+{
+  "status": "PENDING_TRANSCRIPTION_REVIEW",
+  "kind": "THIRD_PARTY_AGGREGATE_NOT_MATCHES",
+  "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+  "authorDouyinId": "76823812617",
+  "declaredWindow": "10.22–10.28",
+  "postPublishedAtVisible": "2026-10-30 00:55:05（网页显示，未单独核实时区）",
+  "screenshot": "docs/prediction_artifacts/v7-browser/source-weekly-players.png",
+  "screenshotSha256": "2857c4d6858e23407a9862fbdae2af4cda9de15b6a03fbe4d2270ce31c626476",
+  "method": "人工抽取第二张图前两行；非整表、非逐局；未进业务统计",
+  "rows": [
+    {
+      "nicknameRaw": "抖音梦飞",
+      "wins": 2,
+      "top3": 5,
+      "appearances": 5,
+      "reportedAverageRank": 2.0,
+      "uid": null
+    },
+    {
+      "nicknameRaw": "抖音流儿",
+      "wins": 3,
+      "top3": 4,
+      "appearances": 5,
+      "reportedAverageRank": 2.4,
+      "uid": null
+    }
+  ],
+  "limitations": [
+    "待二次核对原图昵称和数值",
+    "没有逐场对手/名次/精确时间",
+    "未确认UID、平台、区服",
+    "与同窗口逐场数据禁止重复计入分母",
+    "不能还原为5场原始赛果"
+  ]
+}

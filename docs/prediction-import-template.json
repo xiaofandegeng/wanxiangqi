@@ -1,0 +1,42 @@
+{
+  "sourceKey": "",
+  "mode": "WANXIANG",
+  "playedAt": "",
+  "platform": "",
+  "region": "",
+  "version": "",
+  "evidenceId": "",
+  "evidenceLocator": "",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "",
+      "uid": null
+    },
+    {
+      "rank": 2,
+      "nickname": "",
+      "uid": null
+    },
+    {
+      "rank": 3,
+      "nickname": "",
+      "uid": null
+    },
+    {
+      "rank": 4,
+      "nickname": "",
+      "uid": null
+    },
+    {
+      "rank": 5,
+      "nickname": "",
+      "uid": null
+    },
+    {
+      "rank": 6,
+      "nickname": "",
+      "uid": null
+    }
+  ]
+}

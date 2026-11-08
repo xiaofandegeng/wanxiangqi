@@ -1,6 +1,4 @@
-// 王者万象棋阵容研习站 - 路由表 (v6 §3 信息架构)
-// 公开主导航固定为：首页 / 新手学堂 / 阵容库 / 资料库 / 版本动态（管理端不进新手主导航）。
-// 旧赛事/选手/预测路由不再注册，统一落入 catch-all（not-found 视图给出退役说明）。
+// 王牌对决研究台 · 路由配置
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -9,84 +7,56 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/home.vue'),
-      meta: { title: '首页 - 王者万象棋阵容研习站' }
+      component: () => import('../views/research.vue'),
+      meta: { title: '总览 - 王牌对决研究台', researchSection: 'overview' }
     },
     {
-      path: '/learn',
-      name: 'learn',
-      component: () => import('../views/learn.vue'),
-      meta: { title: '新手学堂 - 王者万象棋阵容研习站' }
+      path: '/research/roster',
+      name: 'research-roster',
+      component: () => import('../views/research.vue'),
+      meta: { title: '选手玩法档案 - 王牌对决研究台', researchSection: 'roster' }
     },
     {
-      path: '/learn/:slug',
-      name: 'lesson',
-      component: () => import('../views/lesson.vue'),
-      meta: { title: '课程 - 王者万象棋阵容研习站' }
+      path: '/research/sources',
+      name: 'research-sources',
+      component: () => import('../views/research.vue'),
+      meta: { title: '来源资料 - 王牌对决研究台', researchSection: 'sources' }
     },
     {
-      path: '/lineups',
-      name: 'lineup-roster',
-      component: () => import('../views/lineup-roster.vue'),
-      meta: { title: '阵容库 - 王者万象棋阵容研习站' }
+      path: '/research/matches',
+      name: 'research-matches',
+      component: () => import('../views/research.vue'),
+      meta: { title: '场次赛果 - 王牌对决研究台', researchSection: 'matches' }
     },
     {
-      path: '/lineups/:id',
-      name: 'lineup-detail',
-      component: () => import('../views/lineup-detail.vue'),
-      meta: { title: '阵容详情 - 王者万象棋阵容研习站' }
+      path: '/research/players',
+      name: 'research-players',
+      component: () => import('../views/research.vue'),
+      meta: { title: '选手统计 - 王牌对决研究台', researchSection: 'players' }
     },
     {
-      path: '/library',
-      name: 'library',
-      component: () => import('../views/library.vue'),
-      meta: { title: '资料库 - 王者万象棋阵容研习站' }
+      path: '/research/predict',
+      name: 'research-predict',
+      component: () => import('../views/research.vue'),
+      meta: { title: '赛前研究 - 王牌对决研究台', researchSection: 'predict' }
     },
     {
-      // 规则条目详情（静态段优先于 /library/:kind/:slug 的动态匹配；
-      // 全站搜索的「规则」结果链接到唯一详情）
-      path: '/library/mechanics/:slug',
-      name: 'mechanic',
-      component: () => import('../views/mechanic-detail.vue'),
-      meta: { title: '规则条目 - 王者万象棋阵容研习站' }
-    },
-    {
-      path: '/library/:kind/:slug',
-      name: 'entity',
-      component: () => import('../views/entity.vue'),
-      meta: { title: '资料详情 - 王者万象棋阵容研习站' }
-    },
-    {
-      path: '/updates',
-      name: 'updates',
-      component: () => import('../views/updates.vue'),
-      meta: { title: '版本动态 - 王者万象棋阵容研习站' }
-    },
-    {
-      path: '/updates/:slug',
-      name: 'update-detail',
-      component: () => import('../views/update-detail.vue'),
-      meta: { title: '版本详情 - 王者万象棋阵容研习站' }
-    },
-    {
-      path: '/admin/content',
-      name: 'admin-content',
-      component: () => import('../views/admin-content.vue'),
-      meta: { title: '内容管理 - 王者万象棋阵容研习站' }
+      path: '/research/import',
+      name: 'research-import',
+      component: () => import('../views/research.vue'),
+      meta: { title: '数据录入 - 王牌对决研究台', researchSection: 'import' }
     },
     {
       path: '/admin/sources',
       name: 'admin-sources',
       component: () => import('../views/admin-sources.vue'),
-      meta: { title: '来源与同步 - 王者万象棋阵容研习站' }
+      meta: { title: '原件与来源 - 王牌对决研究台' }
     },
     {
-      // 兜底：旧 v2–v5 路由（赛事/选手/流水/预测/旧管理页）在此给出退役说明；
-      // 其余未知路径如实 404。不注册旧路由本身 —— 退役即删除，不是隐藏。
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/not-found.vue'),
-      meta: { title: '页面不存在 - 王者万象棋阵容研习站' }
+      meta: { title: '页面不存在 - 王牌对决研究台' }
     }
   ]
 })

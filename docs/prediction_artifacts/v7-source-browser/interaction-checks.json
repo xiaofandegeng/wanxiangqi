@@ -1,0 +1,18 @@
+{
+  "environment": "wanxiangqi_observations_ui_test",
+  "data": "FIXTURE ONLY, not real matches",
+  "checks": {
+    "rosterSave": true,
+    "rosterReview": true,
+    "aggregateSave": true,
+    "aggregateReview": true,
+    "aggregateDisplayedWinRate": "40.0% = 2/5",
+    "quarantineRoster": true,
+    "statsAfterRefreshStillEmpty": true
+  },
+  "viewport": [
+    360,
+    1440
+  ],
+  "originalUploadInBrowser": false
+}

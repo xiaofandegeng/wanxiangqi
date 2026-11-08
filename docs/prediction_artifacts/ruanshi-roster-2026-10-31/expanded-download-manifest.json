@@ -1,0 +1,219 @@
+[
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-01.webp",
+    "sha256": "74b58bc74e8187bb574cc1098a118d5873f950bcecb4446196e4ac7eda975d76",
+    "sourceUrl": "https://www.douyin.com/note/7700066684308098339",
+    "imageOrdinal": 1,
+    "bytes": 300556
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-02.webp",
+    "sha256": "4a55b3df3f54de0e0d3d756e937cd0bf3c5d78901a66f709a3219717456e71a9",
+    "sourceUrl": "https://www.douyin.com/note/7700066684308098339",
+    "imageOrdinal": 2,
+    "bytes": 304488
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-03.webp",
+    "sha256": "7c64ba4b885c028b3bcc098d1046c75eb441c0ed5e628822dd15974e691c8d72",
+    "sourceUrl": "https://www.douyin.com/note/7700066684308098339",
+    "imageOrdinal": 3,
+    "bytes": 291862
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-04.webp",
+    "sha256": "afbaecbe7726987aafa837f6719d3286aa67cbe46f67b0a3934e7dddd912c2ef",
+    "sourceUrl": "https://www.douyin.com/note/7700066684308098339",
+    "imageOrdinal": 4,
+    "bytes": 297662
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-01.webp",
+    "sha256": "dbf4fc0e58fc2cebf90382e303dcba6f54c9f28c26685a620a29a38d7ab4c15d",
+    "sourceUrl": "https://www.douyin.com/note/7699843298281803008",
+    "imageOrdinal": 1,
+    "bytes": 304916
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-02.webp",
+    "sha256": "ee265b40733e71e7aa95eecb2121fd271c69ab6601f67d94500e15627fa4ccbf",
+    "sourceUrl": "https://www.douyin.com/note/7699843298281803008",
+    "imageOrdinal": 2,
+    "bytes": 286970
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-03.webp",
+    "sha256": "f92adad4392a368089431c72cc9e38eccd1e0bf8205e55b81c0d74fc1bed0e03",
+    "sourceUrl": "https://www.douyin.com/note/7699843298281803008",
+    "imageOrdinal": 3,
+    "bytes": 304030
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-04.webp",
+    "sha256": "e32955c667e23c0baf6535f117a0a93da334d1334ce10649be9c6f2c9bc2648f",
+    "sourceUrl": "https://www.douyin.com/note/7699843298281803008",
+    "imageOrdinal": 4,
+    "bytes": 301410
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-01.webp",
+    "sha256": "440eb9a2fc9b90d7feada207b10c199e6359730482b99d853e906124f276a9c8",
+    "sourceUrl": "https://www.douyin.com/note/7700603884468751616",
+    "imageOrdinal": 1,
+    "bytes": 279964
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-02.webp",
+    "sha256": "dd7c74539764148c4679465ef1a8755d047595555e7cb17956b1956dccac12cd",
+    "sourceUrl": "https://www.douyin.com/note/7700603884468751616",
+    "imageOrdinal": 2,
+    "bytes": 294582
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-03.webp",
+    "sha256": "14f8b5d7a0aa9f587d5ac8b324baeb5b2c6080514d087e92695ed70aaf822f62",
+    "sourceUrl": "https://www.douyin.com/note/7700603884468751616",
+    "imageOrdinal": 3,
+    "bytes": 290688
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-01.webp",
+    "sha256": "fd6f5918fbe15b5d0219ea66f70466a6e4c270793ad9960eb48a0e7946e3bb04",
+    "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+    "imageOrdinal": 1,
+    "bytes": 289006
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-02.webp",
+    "sha256": "34e9ffb67de69dffc43b0847787ad5bc52d83cb069356921a349a859d0513ee0",
+    "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+    "imageOrdinal": 2,
+    "bytes": 283954
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-03.webp",
+    "sha256": "776eaeeb6d980a3b7508b29c0e322aff66b365426e59fbac9289026acc8c0632",
+    "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+    "imageOrdinal": 3,
+    "bytes": 285862
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-04.webp",
+    "sha256": "a140038935141edccc3a634cac708b9e259e1d41bc65b650ec94dcb3da2f01ed",
+    "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+    "imageOrdinal": 4,
+    "bytes": 285262
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-01.webp",
+    "sha256": "f6521f47f64b5fb04f8498268c68e1024b69af3ce6284f9c9b3e6a17505deaf2",
+    "sourceUrl": "https://www.douyin.com/note/7700832645353196815",
+    "imageOrdinal": 1,
+    "bytes": 282956
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-02.webp",
+    "sha256": "3c3371dd38b9e06a9c85908ac53d06d9fb8675dbeb886e07911eb49118e7e4c4",
+    "sourceUrl": "https://www.douyin.com/note/7700832645353196815",
+    "imageOrdinal": 2,
+    "bytes": 286712
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-03.webp",
+    "sha256": "1ca1469b06cf83060751bb3cb4267209391b83c6f8ff2171453fd5adee902be7",
+    "sourceUrl": "https://www.douyin.com/note/7700832645353196815",
+    "imageOrdinal": 3,
+    "bytes": 287832
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-04.webp",
+    "sha256": "2e80e31e36afc2b786a098507e00e2c791f897598c5cb01f5e46e0a3143897aa",
+    "sourceUrl": "https://www.douyin.com/note/7700832645353196815",
+    "imageOrdinal": 4,
+    "bytes": 285372
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-01.webp",
+    "sha256": "27f2db06a466053b93d79d0a92a77906010411289b4bd8481b60232ed91226ee",
+    "sourceUrl": "https://www.douyin.com/note/7700648428581178659",
+    "imageOrdinal": 1,
+    "bytes": 281376
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-02.webp",
+    "sha256": "9bb991388086bc172542038f4f1b2c01c14eb80b8e3722dbb2e94922922bdf46",
+    "sourceUrl": "https://www.douyin.com/note/7700648428581178659",
+    "imageOrdinal": 2,
+    "bytes": 298798
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-03.webp",
+    "sha256": "c26215037675debeeb2c6c6555bf6471b586c973c3fa52eb1c3b990d318e1fc1",
+    "sourceUrl": "https://www.douyin.com/note/7700648428581178659",
+    "imageOrdinal": 3,
+    "bytes": 287672
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-04.webp",
+    "sha256": "506eef8cf487b0f53c78d322db1a86b63bad8268ec298f7864dd858ec43e5cac",
+    "sourceUrl": "https://www.douyin.com/note/7700648428581178659",
+    "imageOrdinal": 4,
+    "bytes": 282228
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-01.webp",
+    "sha256": "3ee0558b35c7a32dd08be03d8ea5cf1f628ba39d6728181158b4e5853d91e063",
+    "sourceUrl": "https://www.douyin.com/note/7701377701794808549",
+    "imageOrdinal": 1,
+    "bytes": 311948
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-02.webp",
+    "sha256": "b2041afcc4e79a95cf65ed013f2d7ee715096cc65b8f7ebcd2fb3dcd7bcfebc1",
+    "sourceUrl": "https://www.douyin.com/note/7701377701794808549",
+    "imageOrdinal": 2,
+    "bytes": 313188
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-03.webp",
+    "sha256": "c88fa751622833132a7843188e56a7a8d55db4f05f3aedd458ef4030be7d45e8",
+    "sourceUrl": "https://www.douyin.com/note/7701377701794808549",
+    "imageOrdinal": 3,
+    "bytes": 319604
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-01.webp",
+    "sha256": "cdee1dbc8d882ab92226d6962982cc0ae13c7a6396f9c689a00f52e5eb805fae",
+    "sourceUrl": "https://www.douyin.com/note/7701018878507495272",
+    "imageOrdinal": 1,
+    "bytes": 290828
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-02.webp",
+    "sha256": "46c1e25f7a45266a58c25675e84e894be2167790f812daa861822c771b4b2b83",
+    "sourceUrl": "https://www.douyin.com/note/7701018878507495272",
+    "imageOrdinal": 2,
+    "bytes": 284600
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-03.webp",
+    "sha256": "26c2021aa8d7aa3b8ef7acdfe3e13f337868eb3a06030a1496e35b45fc3c0009",
+    "sourceUrl": "https://www.douyin.com/note/7701018878507495272",
+    "imageOrdinal": 3,
+    "bytes": 282314
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-04.webp",
+    "sha256": "977393d1d60cd0c33d08bd7b023fd70e462e8f1f03b373e1e0895f9bf9145058",
+    "sourceUrl": "https://www.douyin.com/note/7701018878507495272",
+    "imageOrdinal": 4,
+    "bytes": 284438
+  },
+  {
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-05.webp",
+    "sha256": "159a4a332a5eb361b717c74585af6e9b53c72856cb99fce9a69f25d4245284de",
+    "sourceUrl": "https://www.douyin.com/note/7701018878507495272",
+    "imageOrdinal": 5,
+    "bytes": 320654
+  }
+]

@@ -1,27 +1,26 @@
-// v6 M1-5 · 路由表验收：新信息架构（§3）注册齐全；旧 v2–v5 路由不再注册，
-// 统一落入 catch-all（not-found 视图负责退役说明），退役 = 删除而非隐藏。
-
+// 王牌对决研究台 · 路由表验收
 // @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest'
 import router from '../src/router'
 
-const NEW_ROUTES: Array<[string, string]> = [
+const ACTIVE_ROUTES: Array<[string, string]> = [
   ['/', 'home'],
-  ['/learn', 'learn'],
-  ['/learn/first-lesson', 'lesson'],
-  ['/lineups', 'lineup-roster'],
-  ['/lineups/lm-example', 'lineup-detail'],
-  ['/library', 'library'],
-  ['/library/hero/example-hero', 'entity'],
-  ['/library/mechanics/example-mechanic', 'mechanic'],
-  ['/updates', 'updates'],
-  ['/updates/v260924', 'update-detail'],
-  ['/admin/content', 'admin-content'],
+  ['/research/roster', 'research-roster'],
+  ['/research/sources', 'research-sources'],
+  ['/research/matches', 'research-matches'],
+  ['/research/players', 'research-players'],
+  ['/research/predict', 'research-predict'],
+  ['/research/import', 'research-import'],
   ['/admin/sources', 'admin-sources']
 ]
 
-// 旧产品路由：不得再注册为具名路由（落入 not-found 兜底）
+// 旧路由不再注册，统一落入 not-found 兜底
 const RETIRED_PATHS = [
+  '/learn',
+  '/lineups',
+  '/library',
+  '/updates',
+  '/admin/content',
   '/events/ev-1',
   '/players/pl-1',
   '/roster',
@@ -32,8 +31,8 @@ const RETIRED_PATHS = [
   '/models/backtest'
 ]
 
-describe('v6 路由表（新信息架构）', () => {
-  it.each(NEW_ROUTES)('%s 解析到 %s', (path, name) => {
+describe('王牌对决研究台路由表', () => {
+  it.each(ACTIVE_ROUTES)('%s 解析到 %s', (path, name) => {
     const resolved = router.resolve(path)
     expect(resolved.name).toBe(name)
     expect(resolved.matched.length).toBeGreaterThan(0)
@@ -48,10 +47,10 @@ describe('v6 路由表（新信息架构）', () => {
     expect(router.resolve('/definitely/not/a/route').name).toBe('not-found')
   })
 
-  it('路由标题统一使用阵容研习站品牌', () => {
+  it('路由标题统一使用王牌对决研究台品牌', () => {
     for (const record of router.getRoutes()) {
       if (record.meta?.title) {
-        expect(String(record.meta.title)).toContain('阵容研习站')
+        expect(String(record.meta.title)).toMatch(/王牌对决研究台/)
       }
     }
   })

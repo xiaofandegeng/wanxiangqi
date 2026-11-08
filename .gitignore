@@ -46,3 +46,6 @@ docs/v4_artifacts/browser-acceptance-*/*.png
 !docs/v4_artifacts/browser-acceptance-*/normal__home__desktop.png
 !docs/v4_artifacts/browser-acceptance-*/stale__lineups__desktop.png
 !docs/v4_artifacts/browser-acceptance-*/fail__home__desktop.png
+
+# 本机预测开发凭证
+backend/.env.prediction.local

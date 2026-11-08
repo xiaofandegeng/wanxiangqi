@@ -1,75 +1,88 @@
-# 王者万象棋 · 阵容研习站
+# 王者万象棋 · 王牌对决研究台
 
-《王者万象棋》新手教学与阵容分析站：**阵容手册 + 阶段化课程 + 资料库 + 来源统计快照**。
-不收录真实玩家个人战绩，不做赛事/预测/赔率（该产品方向已于 v6 转型终止，见
-`docs/archive/legacy-v2-v5/INDEX.md`）。
+v7：已将主线从教学站重构为真实赛果整理、选手统计与赛前研究。当前可录入完整六席、核验、隔离错误记录和复算统计；概率模型未完成回测校准，旧平均名次计算器已撤下页面。没有真实材料时保持空态，不恢复旧隔离数据，不承诺实时或预测效果。
 
-- **新手学堂** `/learn`：A–F 六阶段课程路径（11 门，含进阶课），先修依赖、学习目标、情境练习
-- **阵容手册库** `/lineups`：每套阵容一份手册（定阵条件→开局→过渡→稳血→成型→技能链→站位→变阵→复盘）；
-  第三方来源（hokace.wiki）公布的聚合统计经**人工判据映射**后作为参考子对象：热度/表现分列、
-  分离排序、无混合指数；版本一致性未经核实时只称「最新可用快照（适用 X 版本）」
-- **资料库** `/library`：英雄/棋手/装备/效果牌/天赋稳定词条（525 实体，版本化事实，官方来源核查）
-- **版本动态** `/updates`：官方更新公告与待复核内容追踪
-- **管理端** `/admin/content`、`/admin/sources`：内容生命周期（草稿→审核→发布→回滚→退役）、
-  来源同步台账、快照映射工作台（`ADMIN_TOKEN` 鉴权）
+## 启动开发环境
 
-## 技术栈与结构
+需要 Node.js 22.12+、PostgreSQL 14+。后端、前端分别执行 `npm ci` 安装锁定依赖。
 
-```
-frontend/   Vue 3 + TypeScript + Vite + Pinia（公开面 + 管理面）
-backend/    Node 22 + PostgreSQL（唯一权威存储，无 ORM，版本化迁移）
-  src/migrations/        0001..0009（内容模型 0006–0009；业务库执行需授权，见 M5-1 方案）
-  src/repositories/      PgRepository（快照/来源/台账）+ ContentRepository（内容模型）
-  src/services/          content / sync / imports（素材）/ evidence-core
-  src/adapters/          hokace.mjs（阵容快照）· official-site.mjs（官网内容存证）
-  tests/acceptance/      隔离 *_test 库验收套件（业务库零接触，pg-test.mjs 强制后缀校验）
-database/   仅 README（schema 说明；v1 静态 DDL 已归档）
-tools/      browser-acceptance/（零安装 CDP 走查）· emulator-watcher（退役）· content-build/
-docs/       现行文档（v6 任务书/执行清单/对照表/迁移方案/实施报告）+ v6_artifacts 验收产物
-```
-
-## 快速开始
+首次创建独立开发库（已存在则跳过；不要使用旧业务库）。已运行旧版本的后端需停止并重新用下方命令启动，使独立开发库应用新增迁移：
 
 ```bash
-# 1) PostgreSQL（14+），开发库一键构建（迁移 + 官方来源抓取 + 全量内容发布 + hokace 同步）
+createdb wanxiangqi_prediction_dev
+```
+
+终端一：
+
+```bash
+cd /Users/lhw/code/wanxiangqi/backend
+npm run dev:prediction
+```
+
+该命令固定连接 `wanxiangqi_prediction_dev`、监听 `127.0.0.1:8082`，首次生成持久本地凭证 `backend/.env.prediction.local`（已gitignore）。不要提交或向他人发送该文件。在本机打开文件，将 ADMIN_TOKEN 的值填入工作台。若8082被旧后端占用，先由原终端停止该后端，不盲目杀进程或换用业务库。`server.js` 默认拒绝业务库自动迁移；仅在明确授权后才可另设业务迁移开关。
+
+终端二：
+
+```bash
+cd /Users/lhw/code/wanxiangqi/frontend
+npm run dev:local
+```
+
+访问 **http://127.0.0.1:5174**，固定代理到8082，避免localhost与IPv4指向不同旧服务。启动时只迁移独立开发库，不抓取第三方赛果，也不自动导入测试样本。
+
+## 工作台
+
+- `/`：数据总览与当前采集边界。
+- `/research/matches`：完整六席赛果、待核验→已核验、错误隔离。
+- `/research/players`：UID+平台+区服识别选手，模式与游戏版本分别统计；缺UID记录不跨场合并。
+- `/research/roster`：数据库选手玩法档案，按来源内原样昵称检索；逐局阵容频次、获胜阵容、作者专长评价分开显示，附来源与覆盖台账。
+- `/research/predict`：赛前截图上传、本地OCR候选、人工六席确认、近7/30日来源样本和玩法标签登顶比例、数据缺口检查、不可变分析快照。macOS需Swift/Vision；暂不生成校准概率或虚拟投比。原有名次基线保留在高级研究折叠区，不用于分配。
+- `/research/sources`：名单与冠军、真人选手周期汇总两类资料独立登记/复核/隔离；不生成缺失排名，不计入逐场统计和模型。支持未知版本/平台/UID留空，来源链接不由服务器抓取。
+- `/research/import`：单场手填与JSON入口（256KB上限）。同来源键相同内容幂等，不同内容拒绝覆盖；同模式/平台/区服/时间重复场次拒绝。
+- `/admin/sources`：原件上传、材料核验和来源台账。先核验原件，再核验场次。误录场次隔离后，以新修订来源键重新录入，不覆盖旧审计数据。
+
+所有 `/api/v1/admin/prediction/*` 接口均需管理凭证；选手数据不在匿名API公开。INTERNAL_ONLY与PUBLIC原件都只能经鉴权进入本工作台；PUBLIC不代表本版本已开放个人信息展示。
+
+v6 课程、阵容手册及图鉴已作为冗余代码全面删除，系统专注于王牌对决研究台。新增0010创建prediction_matches/prediction_runs，0011创建独立prediction_observations，0012创建独立来源、原图、昵称档案、场次、玩法与专长声明六张表。
+
+## 已采集的选手玩法资料
+
+2026-10-31 已在本机 `wanxiangqi_prediction_dev` 入库：129个来源内昵称档案、10月23–29日54场/324席位、38条作者评价、55份原图。本轮新增31场；12/35篇来源已转写。10月24日第5场与28日第2场当前缺图。来源转写不等于完整排名核验，昵称不等于已确认真人。逐场冠军、获胜阵容、全部昵称索引见[数据库扩充记录](docs/v7选手玩法数据库与扩充记录_2026-10-31.md)。
+
+启动新版后端和前端，进入「玩法档案」。在其他机器初始化或补充本地资料包后，可重复执行（相同内容幂等、冲突不覆盖）：
+
+```bash
+cd /Users/lhw/code/wanxiangqi/backend
+node tools/import-prediction-catalog.mjs
+```
+
+工具固定默认预测开发库，只接受该库或 `wanxiangqi_*_test`；拒绝业务库。原件 SHA-256 先校验、导入整体事务提交，原图正文保存为数据库 BYTEA。详见[数据库交付说明](docs/v7选手玩法数据库与扩充记录_2026-10-31.md)。
+
+## 截图预测目标
+
+用户确认输入赛前六人名单、建议仅涉及游戏虚拟钻石/积分。截图流程已实现；尚缺历史覆盖、账号/版本/赛果核验、概率校准、返奖倍率和预算确认及正式分配算法。当前结果只显示来源样本分析和暂不分配，不等于预测产品完成。详见[目标与实施状态](docs/v7截图预测目标与实施状态_2026-10-31.md)。0013新增截图草稿/分析两表和历史可见时刻，重启专用开发入口会应用迁移。
+
+## 数据准备与限制
+
+请提供实际比赛时间（含时区）、模式、版本、平台区服、六名选手最终名次、原件编号与定位。无法确认的UID留空，不能凭同名合并。只有冠军或汇总表的材料不能走完整赛果导入；有完整名单与冠军或明确分母的汇总可在「来源资料」单独登记，不猜测其余排名。JSON字段参考[空白模板](docs/prediction-import-template.json)，填完再粘贴到录入页。
+
+第三方候选与执行次序见[预测重启工作流](docs/王牌对决预测重启工作流_2026-10-31.md)，本轮工程与来源核验见[v7实施说明](docs/v7预测工作台重构实施说明_2026-10-31.md)。作者汇总与逐场原始赛果分开，未获得的完整记录不以历史旧库或fixtures填补。
+
+当前未实现：第三方视频自动提取、完整历史赛果接入、经独立时间回测证明的模型、可靠实时同步、公开预测发布。研究运行保存发生时可见的已核验记录；未来做历史回测需区分回溯重建与当时线上可用数据。
+
+## 验证
+
+```bash
 cd backend
-createdb wanxiangqi_v6dev
-node tools/content-build/build-v6-content.mjs --db wanxiangqi_v6dev
-
-# 2) 后端（默认 127.0.0.1:8080；.env 参考 .env.example，ADMIN_TOKEN 必填）
-cp .env.example .env   # 填 PGDATABASE=wanxiangqi_v6dev 与随机 ADMIN_TOKEN
-npm install && npm run dev
-
-# 3) 前端（Vite dev，代理 /api → 后端；WXQ_API_TARGET 可覆盖）
-cd ../frontend && npm install && npm run dev
+npm test
+# PG链路需本地PostgreSQL，仅在 *_test 隔离库运行；联网测试默认跳过。
+cd ../frontend
+npm test
+npm run build
 ```
 
-### 本机端口已有旧服务时
+技术栈：Vue 3 / TypeScript / Vite，Node.js / PostgreSQL。业务库切换不在本轮授权范围。
 
-后端使用开发库并设置 `PORT=8081`（其他 PG 配置同上）。前端在 `frontend/` 执行 `npm run dev:local`，打开 **http://127.0.0.1:5174**；该命令固定代理到 8081、IPv4 监听与严格端口检查，避免 `localhost` 的 IPv6 地址命中遗留前端。不要停止不明用途的旧服务。`/api/v1/learn` 应返回课程路径；只检查 `/data-status` 无法区分旧服务。
+玩法理解与本场上下文口径见 [王牌对决玩法核查与重构修正](docs/王牌对决玩法核查与重构修正_2026-10-31.md)。
 
-## 测试与验收
-
-```bash
-cd backend  && npm test          # node:test 验收套件（需本地 PG；自动创建 *_test 隔离库）
-cd frontend && npm test          # vitest（52 用例）
-cd frontend && npm run build     # vue-tsc + vite build
-node tools/browser-acceptance/m4-5-stats-states.mjs   # 浏览器走查示例（真实栈 + CDP）
-```
-
-红线（延续 v3/v4/v6）：展示的每个数字可追溯；来源未给的字段如实为 null；上传≠核验；
-同步失败保留上次快照并明确状态；统计不由本站生成、不跨来源平均；测试零接触业务库。
-
-## 业务库迁移
-
-业务库 `wanxiangqi`（旧赛事/玩家模型 0001–0005）向 v6 的归档迁移**方案就绪、未执行**——
-需明确授权后按 `docs/v6业务库归档迁移方案_M5-1.md` 执行（备份→隔离演练→计数/FK/哈希记录→迁移→可回滚）。
-在此之前，v6 代码只连接开发库 `wanxiangqi_v6dev` 与 `*_test` 库。
-
-## 文档
-
-- 任务依据（唯一）：`docs/王者万象棋项目转型任务书_v6_阵容分析与新手教学_2026-10-03.md`
-- 进度清单（唯一）：`docs/v6执行清单.md`
-- 旧功能删除与数据归档对照：`docs/v6旧功能删除与数据归档对照表.md`
-- 实施报告：`docs/v6实施报告.md`
-- 历史档案（已退役，不得继续执行）：`docs/archive/legacy-v2-v5/INDEX.md`
+后端程序实验概率已接入：上传并确认六人后勾选程序计算，或用分析编号恢复快照。当前54场的离线诊断暂未优于均分基线，不自动分配钻石。详见[程序概率模型说明](docs/v7程序概率模型_2026-10-31.md)。

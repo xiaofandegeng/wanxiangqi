@@ -1,0 +1,22 @@
+{
+  "status": "PASSED_LOCAL_ARTIFACT_CHECKS",
+  "checkedAtDate": "2026-10-31",
+  "matches": 8,
+  "seats": 48,
+  "weeklyRows": 34,
+  "rawNicknameIndexCount": 63,
+  "evidenceFiles": 9,
+  "averageRankWarnings": 7,
+  "checks": [
+    "九份原图SHA-256与清单一致",
+    "八场各六席且仅来源胜者有第一名，其余名次null",
+    "周报登顶<=前三<=场次",
+    "不合并疑似昵称、不累计跨窗口分母",
+    "所有观察仅本地研究，未导入数据库"
+  ],
+  "boundaries": [
+    "人工图像转写不等于独立赛果核验",
+    "未逐张映射英雄卡面",
+    "未证明个人常用或擅长阵容"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "database": "wanxiangqi_prediction_dev",
+  "checkedAt": "2026-10-31T06:56:33.678Z",
+  "expectedMatches": 54,
+  "actualMatches": 54,
+  "allPayloadHashesMatch": true,
+  "materials": 55,
+  "allMaterialHashesMatch": true,
+  "bytes": 16424916,
+  "plays": 324,
+  "transcribed": 12,
+  "full_rank_matches": 0
+}

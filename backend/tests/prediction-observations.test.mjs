@@ -1,0 +1,10 @@
+import {test} from 'node:test'
+import assert from 'node:assert/strict'
+import {normalizeObservation} from '../src/prediction/observations.mjs'
+const common=()=>({kind:'ROSTER_WINNER',sourceKey:'TEST:source',sourceName:'TEST ONLY',sourceUrl:'https://example.com/source',windowStart:'2026-01-01',windowEnd:'2026-01-01',mode:'WANXIANG',evidenceId:'TEST-EV',evidenceLocator:'FIXTURE ONLY',winnerSlot:1,participants:Array.from({length:6},(_,i)=>({nickname:'TEST'+i,uid:null}))})
+const aggregate=()=>({...common(),kind:'PLAYER_AGGREGATE',rows:[{nickname:'TEST',appearances:5,wins:2,top3:5,avgRank:2}]})
+test('六人名单仅记录冠军，不生成其他五人排名；未知版本/平台/UID保留空',()=>{const data=normalizeObservation(common());assert.equal(data.winnerSlot,1);assert.equal(data.version,null);assert.equal(data.participants[0].uid,null);assert.ok(data.participants.every(p=>!('rank' in p)))})
+test('拒绝不完整名单、重复匿名身份、越界冠军以及伪装排名',()=>{for(const change of [r=>r.participants.pop(),r=>r.participants[1].nickname='TEST0',r=>r.winnerSlot=0,r=>r.winnerSlot=7,r=>r.participants[0].rank=1]){const r=common();change(r);assert.throws(()=>normalizeObservation(r),{status:422})}})
+test('相同昵称有不同UID可以保留，但不允许同UID重复',()=>{const r=common();r.participants[0]={nickname:'SAME',uid:'1'};r.participants[1]={nickname:'SAME',uid:'2'};assert.equal(normalizeObservation(r).participants.length,6);r.participants[1].uid='1';assert.throws(()=>normalizeObservation(r))})
+test('周期汇总只接受整数分母，不倒推局数，校验平均排名可实现范围',()=>{assert.equal(normalizeObservation(aggregate()).rows[0].avgRank,2);for(const change of [r=>r.rows[0].appearances=0,r=>r.rows[0].wins=6,r=>r.rows[0].wins=1.1,r=>r.rows[0].top3=1,r=>r.rows[0].avgRank=5]){const r=aggregate();change(r);assert.throws(()=>normalizeObservation(r),{status:422})};const r=aggregate();delete r.rows[0].avgRank;assert.equal(normalizeObservation(r).rows[0].avgRank,null)})
+test('校验有效日历、窗口和普通来源链接；拒绝脚本和带凭证URL',()=>{for(const change of [r=>r.windowStart='2026-02-30',r=>r.windowEnd='2025-01-01',r=>r.windowEnd='2099-01-01',r=>r.sourceUrl='javascript:alert(1)',r=>r.sourceUrl='https://user:password@example.com']){const r=common();change(r);assert.throws(()=>normalizeObservation(r),{status:422})}})

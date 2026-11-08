@@ -6,8 +6,8 @@
     </main>
     <footer class="app-footer">
       <div class="footer-container">
-        <p class="footer-copy">王者万象棋 · 阵容研习站</p>
-        <p class="footer-note">教学内容以第一方资料核实为准 · 阵容统计如实标注来源与窗口 · 不虚构规则与数值</p>
+        <p class="footer-copy">王牌对决研究台</p>
+        <p class="footer-note">来源样本与已核验赛果分别呈现 · 返奖率不是胜率 · 概率模型尚未校准</p>
       </div>
     </footer>
   </div>

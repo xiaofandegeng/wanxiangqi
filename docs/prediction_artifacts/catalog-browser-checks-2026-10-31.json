@@ -1,0 +1,37 @@
+{
+  "status": "PASSED",
+  "database": "wanxiangqi_prediction_dev",
+  "mock": false,
+  "route": "/research/roster",
+  "counts": {
+    "matches": 23,
+    "plays": 138,
+    "profiles": 92,
+    "claims": 38
+  },
+  "search": "世薄情",
+  "visibleHistory": [
+    "2026-10-29:7",
+    "2026-10-28:3",
+    "2026-10-27:2"
+  ],
+  "assertions": [
+    "选择标签与获胜标签分列",
+    "样本重复玩法逐鹿蒙恬×2",
+    "周报小妲己评价独立显示",
+    "完整排名赛果0与来源记录23明确区分"
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1300,
+      "horizontalOverflow": 0
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "horizontalOverflow": 0
+    }
+  ],
+  "temporaryServersStopped": true
+}

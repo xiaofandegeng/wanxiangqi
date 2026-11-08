@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "collectedOn": "2026-10-31",
+  "sourceAuthor": "抖音软柿🌈【万象棋】",
+  "authorDouyinId": "76823812617",
+  "status": "LOCAL_RESEARCH_TRANSCRIPTION_NOT_IMPORTED",
+  "identityRule": "仅原样昵称索引；无UID不合并；名单序号不是排名",
+  "matches": [
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 1,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "日落海",
+      "winnerNicknameRaw": "小琳谷芷",
+      "winnerBuildLabelRaw": "雷霆战机",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-01.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "小琳谷芷",
+          "uid": null,
+          "selectedBuildLabelRaw": "雷霆战机",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "B站QT小优律",
+          "uid": null,
+          "selectedBuildLabelRaw": "牺牲李信",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "娇弱的佩奇",
+          "uid": null,
+          "selectedBuildLabelRaw": "大河龙蛇",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "丰川祥子",
+          "uid": null,
+          "selectedBuildLabelRaw": "逐鹿蒙恬",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "抖音EGM李由多",
+          "uid": null,
+          "selectedBuildLabelRaw": "曜转吕布",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "抖音QT新一",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 2,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "大河",
+      "winnerNicknameRaw": "DY道无涯",
+      "winnerBuildLabelRaw": "日落海倒转",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-02.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "DY道无涯",
+          "uid": null,
+          "selectedBuildLabelRaw": "日落海倒转",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "I蟲丶初心",
+          "uid": null,
+          "selectedBuildLabelRaw": "逐鹿蒙恬",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "遗愿",
+          "uid": null,
+          "selectedBuildLabelRaw": "河洛木兰",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "墨宝",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分倒转",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "小天使翼",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪转吕布",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "抖音湛蓝",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 3,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "逐鹿",
+      "winnerNicknameRaw": "EZ小超",
+      "winnerBuildLabelRaw": "三分登场",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-03.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "EZ小超",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "抖音群星李由多",
+          "uid": null,
+          "selectedBuildLabelRaw": "坐火箭露娜",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "BLIBLI喵喵虾条",
+          "uid": null,
+          "selectedBuildLabelRaw": "日落海整备",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "胖狗王",
+          "uid": null,
+          "selectedBuildLabelRaw": "河洛木兰",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "抖音瑞梨",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分倒转",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "抖音刺痛",
+          "uid": null,
+          "selectedBuildLabelRaw": "传统养猪",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 4,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "大河",
+      "winnerNicknameRaw": "EGM皮皮鲨",
+      "winnerBuildLabelRaw": "日落海倒转",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-04.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "EGM皮皮鲨",
+          "uid": null,
+          "selectedBuildLabelRaw": "日落海倒转",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "QT电竞披萨鱼",
+          "uid": null,
+          "selectedBuildLabelRaw": "猪镜转李信",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "胜天半子嘉誉",
+          "uid": null,
+          "selectedBuildLabelRaw": "牺牲李信",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "BILI星光柯基",
+          "uid": null,
+          "selectedBuildLabelRaw": "逐鹿蒙恬",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "EGM抖音画笔",
+          "uid": null,
+          "selectedBuildLabelRaw": "半月",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "抖音DY小凌",
+          "uid": null,
+          "selectedBuildLabelRaw": "日落海倒转",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 5,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "日落海",
+      "winnerNicknameRaw": "EGM I 无量怜苓",
+      "winnerBuildLabelRaw": "毒奶",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-05.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "EGM I 无量怜苓",
+          "uid": null,
+          "selectedBuildLabelRaw": "毒奶",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "抖音EZ姚半仙",
+          "uid": null,
+          "selectedBuildLabelRaw": "伞沈梦溪",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "抖音呆头鹅",
+          "uid": null,
+          "selectedBuildLabelRaw": "雷霆战机",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "EZ抖音沐汐",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场姜子牙",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "斗鱼奇谋",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场混沌裂隙",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "冷酷心机小猫",
+          "uid": null,
+          "selectedBuildLabelRaw": "雷霆战机",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 6,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "河洛",
+      "winnerNicknameRaw": "EZ丶7D",
+      "winnerBuildLabelRaw": "三分倒转",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-06.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "EZ丶7D",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分倒转",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "抖音EG反骨",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "抖音梦飞冻冻",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "喵帕斯",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪转吕布",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "抖音EZ张嘉豪",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "B站万象棋小祥",
+          "uid": null,
+          "selectedBuildLabelRaw": "伞半月",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 7,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "逐鹿",
+      "winnerNicknameRaw": "世薄情",
+      "winnerBuildLabelRaw": "河洛木兰",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-07.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "世薄情",
+          "uid": null,
+          "selectedBuildLabelRaw": "河洛木兰",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "马克之母挽星",
+          "uid": null,
+          "selectedBuildLabelRaw": "传统养猪",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "YK丶",
+          "uid": null,
+          "selectedBuildLabelRaw": "河洛木兰",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "抖音EG许诺1",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪转吕布",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "EZ灬欧洲鱼",
+          "uid": null,
+          "selectedBuildLabelRaw": "牺牲李信",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "I蟲丶沐小呆",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分登场",
+          "finishRank": null
+        }
+      ]
+    },
+    {
+      "sourceDateLabel": "1029",
+      "dateInterpreted": "2026-10-29",
+      "ordinal": 8,
+      "exactPlayedAt": null,
+      "bannedFactionRaw": "河洛",
+      "winnerNicknameRaw": "抖音EZ羡鱼儿",
+      "winnerBuildLabelRaw": "传统养猪",
+      "evidenceFile": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-08.webp",
+      "seats": [
+        {
+          "sourceListPosition": 1,
+          "nicknameRaw": "抖音EZ羡鱼儿",
+          "uid": null,
+          "selectedBuildLabelRaw": "传统养猪",
+          "finishRank": 1
+        },
+        {
+          "sourceListPosition": 2,
+          "nicknameRaw": "抖音猪葛龟龟",
+          "uid": null,
+          "selectedBuildLabelRaw": "日落海倒转",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 3,
+          "nicknameRaw": "抖音清晨",
+          "uid": null,
+          "selectedBuildLabelRaw": "镜猪转吕布",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 4,
+          "nicknameRaw": "抖音搜索北念",
+          "uid": null,
+          "selectedBuildLabelRaw": "雷霆战机",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 5,
+          "nicknameRaw": "抖音EGM小谷芷",
+          "uid": null,
+          "selectedBuildLabelRaw": "雷霆战机",
+          "finishRank": null
+        },
+        {
+          "sourceListPosition": 6,
+          "nicknameRaw": "EZ天誉",
+          "uid": null,
+          "selectedBuildLabelRaw": "三分倒转",
+          "finishRank": null
+        }
+      ]
+    }
+  ],
+  "weeklyWindow": [
+    "2026-10-22",
+    "2026-10-28"
+  ],
+  "weeklyRows": [
+    {
+      "nicknameRaw": "抖音梦飞",
+      "uid": null,
+      "expertCommanderClaimRaw": "看谁上号",
+      "winsReported": 2,
+      "top3Reported": 5,
+      "appearancesReported": 5,
+      "averageRankReported": 2.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音流儿",
+      "uid": null,
+      "expertCommanderClaimRaw": "白歌",
+      "winsReported": 3,
+      "top3Reported": 4,
+      "appearancesReported": 5,
+      "averageRankReported": 2.4,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音搜索北念",
+      "uid": null,
+      "expertCommanderClaimRaw": "班叔",
+      "winsReported": 2,
+      "top3Reported": 4,
+      "appearancesReported": 5,
+      "averageRankReported": 2.4,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音小新游",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可",
+      "winsReported": 3,
+      "top3Reported": 4,
+      "appearancesReported": 6,
+      "averageRankReported": 2.5,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "EZ沐汐",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 5,
+      "averageRankReported": 2.6,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "BLIBLI喵喵虾条",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可、闹闹",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 6,
+      "averageRankReported": 2.67,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音EZ张嘉豪",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环、马可",
+      "winsReported": 2,
+      "top3Reported": 3,
+      "appearancesReported": 5,
+      "averageRankReported": 2.8,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音EGM小谷芷",
+      "uid": null,
+      "expertCommanderClaimRaw": "小妲己",
+      "winsReported": 2,
+      "top3Reported": 5,
+      "appearancesReported": 7,
+      "averageRankReported": 2.86,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "世薄情",
+      "uid": null,
+      "expertCommanderClaimRaw": "小妲己",
+      "winsReported": 2,
+      "top3Reported": 4,
+      "appearancesReported": 7,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "娇弱的佩奇",
+      "uid": null,
+      "expertCommanderClaimRaw": "庄小鱼",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 6,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "武汉EG碎碎圆圆",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环、马可",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 6,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音EGM皮皮鲨",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环",
+      "winsReported": 2,
+      "top3Reported": 3,
+      "appearancesReported": 6,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音猪葛龟龟",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 7,
+      "averageRankReported": 3.14,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "BILI星光柯基",
+      "uid": null,
+      "expertCommanderClaimRaw": "小妲己",
+      "winsReported": 1,
+      "top3Reported": 3,
+      "appearancesReported": 6,
+      "averageRankReported": 3.33,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "遗愿",
+      "uid": null,
+      "expertCommanderClaimRaw": "孙小宾、庄小鱼",
+      "winsReported": 1,
+      "top3Reported": 3,
+      "appearancesReported": 6,
+      "averageRankReported": 3.33,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "丰川祥子",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 7,
+      "averageRankReported": 3.43,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音妖柒",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可、小妲己",
+      "winsReported": 1,
+      "top3Reported": 3,
+      "appearancesReported": 6,
+      "averageRankReported": 3.5,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音姚半仙",
+      "uid": null,
+      "expertCommanderClaimRaw": "阿离",
+      "winsReported": 1,
+      "top3Reported": 4,
+      "appearancesReported": 6,
+      "averageRankReported": 3.5,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "胜天半子嘉誉",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环、马可",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 6,
+      "averageRankReported": 3.67,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音群星李由多",
+      "uid": null,
+      "expertCommanderClaimRaw": "安琪拉",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 5,
+      "averageRankReported": 3.8,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音湛蓝",
+      "uid": null,
+      "expertCommanderClaimRaw": "白歌",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 6,
+      "averageRankReported": 4.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音龙傲天",
+      "uid": null,
+      "expertCommanderClaimRaw": "白歌",
+      "winsReported": 1,
+      "top3Reported": 1,
+      "appearancesReported": 6,
+      "averageRankReported": 3.6,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音路边1条（梦飞团队）",
+      "uid": null,
+      "expertCommanderClaimRaw": "镜",
+      "winsReported": 2,
+      "top3Reported": 2,
+      "appearancesReported": 4,
+      "averageRankReported": 3.8,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "B站QT小优律",
+      "uid": null,
+      "expertCommanderClaimRaw": "冷门棋手",
+      "winsReported": 1,
+      "top3Reported": 3,
+      "appearancesReported": 4,
+      "averageRankReported": 3.86,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音梦飞1",
+      "uid": null,
+      "expertCommanderClaimRaw": "看谁上号",
+      "winsReported": 2,
+      "top3Reported": 2,
+      "appearancesReported": 4,
+      "averageRankReported": 4.33,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "YK丶",
+      "uid": null,
+      "expertCommanderClaimRaw": "庄小鱼、明先生",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 4,
+      "averageRankReported": 4.33,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "白白白白白3",
+      "uid": null,
+      "expertCommanderClaimRaw": "孙小宾",
+      "winsReported": 1,
+      "top3Reported": 1,
+      "appearancesReported": 4,
+      "averageRankReported": 4.4,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音QT萌岑",
+      "uid": null,
+      "expertCommanderClaimRaw": "昭君",
+      "winsReported": 1,
+      "top3Reported": 1,
+      "appearancesReported": 4,
+      "averageRankReported": 4.6,
+      "averageCompatibleWithIntegerRanksAt2Decimals": false,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "风华绝代小樾",
+      "uid": null,
+      "expertCommanderClaimRaw": "突然都会了",
+      "winsReported": 3,
+      "top3Reported": 3,
+      "appearancesReported": 3,
+      "averageRankReported": 1.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "B站万象棋小祥",
+      "uid": null,
+      "expertCommanderClaimRaw": "玉环、阿离",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 3,
+      "averageRankReported": 2.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "QT电竞披萨鱼",
+      "uid": null,
+      "expertCommanderClaimRaw": "看谁上号",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 3,
+      "averageRankReported": 2.67,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "I蟲丶初心",
+      "uid": null,
+      "expertCommanderClaimRaw": "看谁上号",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 3,
+      "averageRankReported": 2.67,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "抖音EG万象棋",
+      "uid": null,
+      "expertCommanderClaimRaw": "看谁上号",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 3,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "nicknameRaw": "EZ灬欧洲鱼",
+      "uid": null,
+      "expertCommanderClaimRaw": "马可",
+      "winsReported": 1,
+      "top3Reported": 2,
+      "appearancesReported": 3,
+      "averageRankReported": 3.0,
+      "averageCompatibleWithIntegerRanksAt2Decimals": true,
+      "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED"
+    }
+  ],
+  "authorClaims": [
+    {
+      "nicknameRaw": "抖音EG反骨",
+      "claim": "马可专精",
+      "type": "COMMANDER_SPECIALTY_AUTHOR_CLAIM",
+      "imageOrdinal": 6
+    },
+    {
+      "nicknameRaw": "EZ丶7D",
+      "claim": "孙小宾专精",
+      "type": "COMMANDER_SPECIALTY_AUTHOR_CLAIM",
+      "imageOrdinal": 6
+    },
+    {
+      "nicknameRaw": "EZ小超",
+      "claim": "白歌主播",
+      "type": "COMMANDER_ASSOCIATION_AUTHOR_CLAIM",
+      "imageOrdinal": 3
+    },
+    {
+      "nicknameRaw": "世薄情",
+      "claim": "之前也用明先生玩过河洛；本次再次用明先生获胜",
+      "type": "BUILD_HISTORY_AUTHOR_CLAIM_NOT_COUNTABLE_MATCH",
+      "imageOrdinal": 7
+    }
+  ],
+  "unconfirmedAliasGroups": [
+    [
+      "小琳谷芷",
+      "抖音EGM小谷芷"
+    ],
+    [
+      "EGM皮皮鲨",
+      "抖音EGM皮皮鲨"
+    ],
+    [
+      "EZ抖音沐汐",
+      "EZ沐汐"
+    ],
+    [
+      "抖音EZ姚半仙",
+      "抖音姚半仙"
+    ],
+    [
+      "抖音EGM李由多",
+      "抖音群星李由多"
+    ],
+    [
+      "抖音梦飞冻冻",
+      "抖音梦飞",
+      "抖音梦飞1"
+    ]
+  ],
+  "commonBuilds": [],
+  "provenExpertBuilds": [],
+  "limitations": [
+    "单日逐局样本不足以判定个人常用/擅长阵容",
+    "周报擅长棋手不是擅长阵容",
+    "周报均排存在无法由其场次和整数名次复算的行；如实保留待核查",
+    "原图英雄卡面未完成全部名称核对，保留原图而不猜测补齐",
+    "来源日期1029不等于精确开赛时间；版本、区服、UID未确认",
+    "未写数据库、未对外发布、未作为预测训练数据",
+    "周报34行均为登顶数大于零的账号；不宣称完整参赛选手池"
+  ],
+  "evidence": [
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-01.webp",
+      "sha256": "41a714040c1089a4a4ea2d2c4ceced67cdf04d9e7c364aae7738b09e28a4446b",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 1
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-02.webp",
+      "sha256": "fa22d20b81aca0cf112c2d6a4e51241b1d3ffe81eb03e8c647e18e6ea6fee407",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 2
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-03.webp",
+      "sha256": "3ad3ce246017a78735995e882819b00e7826ed1ae33d9bd86355ad027f3ba7ea",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 3
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-04.webp",
+      "sha256": "6a8255eaa1e89e24e951c8c8c642733e0650603547a0aa38466b6a6005318f76",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 4
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-05.webp",
+      "sha256": "d3285bb6768c2011eaa57b6f2e11e84f796fa79ee239036a6dd1ada9009459f3",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 5
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-06.webp",
+      "sha256": "b4c3bb08f329f8c4349faebc5183a9382d13235cf951d633280afe8df8073c82",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 6
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-07.webp",
+      "sha256": "c6dfc41749413d16bfdfa66f88af15f479789f44bde8c88234410e0d629e09f3",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 7
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-08.webp",
+      "sha256": "44cde017e74e83fb56a30d26aca14284c45103cde34192963dce02ae15404475",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "imageOrdinal": 8
+    },
+    {
+      "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/week4-players.webp",
+      "sha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+      "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+      "imageOrdinal": 2
+    }
+  ]
+}

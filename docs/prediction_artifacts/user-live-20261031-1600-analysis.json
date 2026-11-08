@@ -1,0 +1,650 @@
+{
+  "eventTimeUserClaim": "2026-10-31T16:00:00+08:00",
+  "supportCountdownAtImage": "02:18",
+  "scope": "INTERNAL_ONLY",
+  "timeBasis": "画像拍摄精确时刻未核实，featureCutoff为接收测试时刻；不是当前仍可支持的证明",
+  "snapshotObservations": {
+    "rankPoints": [
+      14290,
+      12474,
+      12223,
+      11869,
+      10931,
+      10586
+    ],
+    "supportCounts": [
+      1478,
+      1082,
+      687,
+      655,
+      644,
+      670
+    ],
+    "alreadySupported": [
+      0,
+      2000,
+      0,
+      0,
+      0,
+      0
+    ],
+    "displayedWinReturn": [
+      0,
+      6600,
+      0,
+      0,
+      0,
+      0
+    ],
+    "accountBalanceDisplay": "91.2万；不视为用户授权预算"
+  },
+  "input": {
+    "phase": "PREMATCH",
+    "identityConfirmed": true,
+    "operator": "ASSISTANT_VISUAL_REVIEW_USER_SCREENSHOT",
+    "mode": "WANXIANG",
+    "version": "UNKNOWN_SCREENSHOT_NOT_SHOWN",
+    "aceContext": {
+      "supportStage": "OPEN",
+      "bannedFaction": null,
+      "grossReturnConfirmed": true
+    },
+    "players": [
+      {
+        "nickname": "抖音QT新一",
+        "profileId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 2.5
+      },
+      {
+        "nickname": "世薄情",
+        "profileId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 3.3
+      },
+      {
+        "nickname": "娇弱的佩奇",
+        "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 10.5
+      },
+      {
+        "nickname": "blibli喵喵虾条",
+        "profileId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 10.8
+      },
+      {
+        "nickname": "抖音清晨",
+        "profileId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 12.3
+      },
+      {
+        "nickname": "b站QT逆光",
+        "profileId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+        "commander": null,
+        "visiblePlan": null,
+        "returnMultiplier": 9.7
+      }
+    ]
+  },
+  "result": {
+    "id": "f19e7954-e91f-49ac-a181-ceea9c1654e5",
+    "aceContext": {
+      "event": "ACE_DUEL",
+      "ruleset": "WANXIANG",
+      "supportStage": "OPEN",
+      "observedAt": "2026-10-31T08:03:53.993Z",
+      "bannedFaction": null,
+      "players": [
+        {
+          "seat": 1,
+          "nickname": "抖音QT新一",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 2.5,
+          "breakEvenProbability": 0.4,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        },
+        {
+          "seat": 2,
+          "nickname": "世薄情",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 3.3,
+          "breakEvenProbability": 0.30303030303030304,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        },
+        {
+          "seat": 3,
+          "nickname": "娇弱的佩奇",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 10.5,
+          "breakEvenProbability": 0.09523809523809523,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        },
+        {
+          "seat": 4,
+          "nickname": "blibli喵喵虾条",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 10.8,
+          "breakEvenProbability": 0.09259259259259259,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        },
+        {
+          "seat": 5,
+          "nickname": "抖音清晨",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 12.3,
+          "breakEvenProbability": 0.08130081300813008,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        },
+        {
+          "seat": 6,
+          "nickname": "b站QT逆光",
+          "commander": null,
+          "visiblePlan": null,
+          "returnMultiplier": 9.7,
+          "breakEvenProbability": 0.10309278350515465,
+          "quoteBasis": "USER_CONFIRMED_AT_SCREENSHOT",
+          "commanderEffect": "NOT_SCORED"
+        }
+      ],
+      "rules": {
+        "version": "UNKNOWN_SCREENSHOT_NOT_SHOWN",
+        "perPlayerSupportCap": null,
+        "capBasis": "UNKNOWN_VERSION",
+        "sources": [
+          {
+            "title": "10月15日官方公告 v1.6.1",
+            "url": "https://www.taptap.cn/moment/859509109601339933?group_id=399839"
+          },
+          {
+            "title": "10月29日官方公告 v1.8.1",
+            "url": "https://www.taptap.cn/moment/864558229898660127"
+          }
+        ]
+      },
+      "sharedPlans": [],
+      "warnings": [
+        "UNKNOWN_RULE_VERSION"
+      ],
+      "notice": "选手是参赛账号，棋手是游戏角色，阵容是局内构筑。返奖率不是胜率；保本概率仅按含本金返奖倍数求倒数，不代表实际获胜概率或支持建议。未知棋手、禁用与玩法不推断。"
+    },
+    "status": "DATA_AUDIT_ONLY",
+    "phase": "PREMATCH",
+    "featureCutoff": "2026-10-31T08:03:53.993Z",
+    "calibrated": false,
+    "players": [
+      {
+        "nickname": "抖音QT新一",
+        "profileId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+        "profileNickname": "抖音QT新一",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 2,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "recent30": {
+          "observations": 2,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "sourceSample": {
+          "observations": 2,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "buildRates": [
+          {
+            "label": "三分登场",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "逐鹿蒙恬",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [],
+        "probability": null
+      },
+      {
+        "nickname": "世薄情",
+        "profileId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+        "profileNickname": "世薄情",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 6,
+          "wins": 3,
+          "observedWinShare": 0.5
+        },
+        "recent30": {
+          "observations": 7,
+          "wins": 3,
+          "observedWinShare": 0.42857142857142855
+        },
+        "sourceSample": {
+          "observations": 7,
+          "wins": 3,
+          "observedWinShare": 0.42857142857142855
+        },
+        "buildRates": [
+          {
+            "label": "河洛木兰",
+            "observations": 1,
+            "wins": 1,
+            "observedWinShare": 1,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "逐鹿蒙恬",
+            "observations": 4,
+            "wins": 2,
+            "observedWinShare": 0.5,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "三分倒转",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "河洛没有木兰",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [
+          {
+            "id": "ruanshi:1029:claim:37",
+            "kind": "BUILD_AUTHOR_CLAIM",
+            "text": "之前也用明先生玩过河洛；本次再次用明先生获胜",
+            "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+            "materialSha256": "c6dfc41749413d16bfdfa66f88af15f479789f44bde8c88234410e0d629e09f3",
+            "windowStart": "2026-10-29",
+            "windowEnd": "2026-10-29",
+            "aggregate": null
+          },
+          {
+            "id": "ruanshi:week4:9",
+            "kind": "COMMANDER_AUTHOR_CLAIM",
+            "text": "小妲己",
+            "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+            "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+            "windowStart": "2026-10-22",
+            "windowEnd": "2026-10-28",
+            "aggregate": {
+              "uid": null,
+              "nicknameRaw": "世薄情",
+              "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+              "top3Reported": 4,
+              "winsReported": 2,
+              "appearancesReported": 7,
+              "averageRankReported": 3,
+              "expertCommanderClaimRaw": "小妲己",
+              "averageCompatibleWithIntegerRanksAt2Decimals": true
+            }
+          }
+        ],
+        "probability": null
+      },
+      {
+        "nickname": "娇弱的佩奇",
+        "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+        "profileNickname": "娇弱的佩奇",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "recent30": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "sourceSample": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "buildRates": [
+          {
+            "label": "大河龙蛇",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "河洛木兰",
+            "observations": 3,
+            "wins": 1,
+            "observedWinShare": 0.3333333333333333,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "大河开团射",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "乔汐速6司空震",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [
+          {
+            "id": "ruanshi:week4:10",
+            "kind": "COMMANDER_AUTHOR_CLAIM",
+            "text": "庄小鱼",
+            "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+            "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+            "windowStart": "2026-10-22",
+            "windowEnd": "2026-10-28",
+            "aggregate": {
+              "uid": null,
+              "nicknameRaw": "娇弱的佩奇",
+              "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+              "top3Reported": 4,
+              "winsReported": 1,
+              "appearancesReported": 6,
+              "averageRankReported": 3,
+              "expertCommanderClaimRaw": "庄小鱼",
+              "averageCompatibleWithIntegerRanksAt2Decimals": true
+            }
+          }
+        ],
+        "probability": null
+      },
+      {
+        "nickname": "blibli喵喵虾条",
+        "profileId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+        "profileNickname": "BLIBLI喵喵虾条",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "recent30": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "sourceSample": {
+          "observations": 6,
+          "wins": 1,
+          "observedWinShare": 0.16666666666666666
+        },
+        "buildRates": [
+          {
+            "label": "日落海整备",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "三分登场",
+            "observations": 1,
+            "wins": 1,
+            "observedWinShare": 1,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "传统养猪",
+            "observations": 2,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "河洛李白",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "三分倒转",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [
+          {
+            "id": "ruanshi:week4:6",
+            "kind": "COMMANDER_AUTHOR_CLAIM",
+            "text": "马可、闹闹",
+            "sourceUrl": "https://www.douyin.com/note/7702134290347265295",
+            "materialSha256": "f869928489bb64ee09c21634a9b84b1e4854c2b62d10e4731e1c1a92956768b2",
+            "windowStart": "2026-10-22",
+            "windowEnd": "2026-10-28",
+            "aggregate": {
+              "uid": null,
+              "nicknameRaw": "BLIBLI喵喵虾条",
+              "reviewStatus": "TRANSCRIBED_SOURCE_CLAIM_NOT_INDEPENDENTLY_VERIFIED",
+              "top3Reported": 4,
+              "winsReported": 1,
+              "appearancesReported": 6,
+              "averageRankReported": 2.67,
+              "expertCommanderClaimRaw": "马可、闹闹",
+              "averageCompatibleWithIntegerRanksAt2Decimals": true
+            }
+          }
+        ],
+        "probability": null
+      },
+      {
+        "nickname": "抖音清晨",
+        "profileId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+        "profileNickname": "抖音清晨",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 4,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "recent30": {
+          "observations": 4,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "sourceSample": {
+          "observations": 4,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "buildRates": [
+          {
+            "label": "镜猪转吕布",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "大河龙蛇",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "河洛木兰",
+            "observations": 2,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [],
+        "probability": null
+      },
+      {
+        "nickname": "b站QT逆光",
+        "profileId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+        "profileNickname": "B站QT逆光",
+        "identityStatus": "SOURCE_NICKNAME_ONLY",
+        "recent7": {
+          "observations": 4,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "recent30": {
+          "observations": 5,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "sourceSample": {
+          "observations": 5,
+          "wins": 0,
+          "observedWinShare": 0
+        },
+        "buildRates": [
+          {
+            "label": "雷霆战机",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "日落海倒转",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "三分登场",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "传统养猪",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          },
+          {
+            "label": "三分倒转",
+            "observations": 1,
+            "wins": 0,
+            "observedWinShare": 0,
+            "finalBuildWinRate": null,
+            "notice": "仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率"
+          }
+        ],
+        "claims": [],
+        "probability": null
+      }
+    ],
+    "blockers": [
+      "UNCALIBRATED_MODEL",
+      "UNCONFIRMED_HISTORICAL_IDENTITIES",
+      "UNKNOWN_HISTORICAL_MODE_VERSION",
+      "UNVERIFIED_SOURCE_RESULTS",
+      "INCOMPLETE_SOURCE_COVERAGE"
+    ],
+    "coverage": {
+      "players": 129,
+      "matches": 54,
+      "plays": 324,
+      "claims": 38,
+      "sources": 35,
+      "transcribedSources": 12
+    },
+    "allocation": {
+      "status": "ABSTAIN",
+      "unit": "VIRTUAL_GAME_POINTS_ONLY",
+      "reserveRatio": 1,
+      "players": [
+        {
+          "nickname": "抖音QT新一",
+          "ratio": 0
+        },
+        {
+          "nickname": "世薄情",
+          "ratio": 0
+        },
+        {
+          "nickname": "娇弱的佩奇",
+          "ratio": 0
+        },
+        {
+          "nickname": "blibli喵喵虾条",
+          "ratio": 0
+        },
+        {
+          "nickname": "抖音清晨",
+          "ratio": 0
+        },
+        {
+          "nickname": "b站QT逆光",
+          "ratio": 0
+        }
+      ],
+      "reason": "身份、历史模式版本、赛果核验和时间回测校准尚未完成，不从未经校准的比例生成投比。"
+    },
+    "notice": "当前显示第三方来源样本统计，不是六人同场的获胜概率。玩家选择需人工确认；仅使用截图时已知的棋手、禁用和玩法，赛后成型阵容不倒填；返奖率与获胜概率分别记录。"
+  }
+}
