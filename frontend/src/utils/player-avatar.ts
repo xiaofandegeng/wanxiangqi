@@ -1,6 +1,11 @@
 // 选手个人头像映射与生成机制（以选手为唯一实体）
 
 export const KNOWN_PLAYERS: readonly string[] = [
+  '77',
+  '冻冻',
+  '所谓Y',
+  '天誉',
+  '沐小呆',
   'YK丶',
   'WE葫芦呼噜',
   'QT鱼沐汐0丶7版',

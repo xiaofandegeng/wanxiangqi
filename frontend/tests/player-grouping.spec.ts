@@ -24,27 +24,37 @@ describe('选手多账号归并体系 (player-grouping)', () => {
     expect(getMasterPlayerName('欧洲鱼')).toBe('沐汐')
     expect(getMasterPlayerName('拉丁鱼')).toBe('沐汐')
 
-    // 梦飞团队
+    // 梦飞与冻冻、77 严格独立，车队打手号不混同
     expect(getMasterPlayerName('抖音梦飞')).toBe('梦飞')
-    expect(getMasterPlayerName('抖音梦飞11')).toBe('梦飞')
-    expect(getMasterPlayerName('抖音梦飞22')).toBe('梦飞')
     expect(getMasterPlayerName('梦飞大大')).toBe('梦飞')
+    expect(getMasterPlayerName('抖音梦飞冻冻')).toBe('冻冻')
+    expect(getMasterPlayerName('抖音梦飞77')).toBe('77')
+    expect(getMasterPlayerName('儒雅随和的77')).toBe('77')
+    expect(getMasterPlayerName('抖音梦飞11')).toBe('抖音梦飞11')
 
-    // 沐小朵
+    // 沐小朵与沐小呆严格拆分
     expect(getMasterPlayerName('I蟲丶沐小朵')).toBe('沐小朵')
     expect(getMasterPlayerName('华创-沐小朵')).toBe('沐小朵')
-    expect(getMasterPlayerName('I蟲丶沐小呆')).toBe('沐小朵')
+    expect(getMasterPlayerName('I蟲丶沐小呆')).toBe('沐小呆')
 
     // 诸葛龟 / 猪葛龟
     expect(getMasterPlayerName('I蟲抖音诸葛龟')).toBe('猪葛龟')
     expect(getMasterPlayerName('I蟲抖音猪葛龟龟')).toBe('猪葛龟')
     expect(getMasterPlayerName('抖音猪葛龟龟')).toBe('猪葛龟')
 
-    // 清辞
+    // 清辞严格绑定清辞本人，战队公共名不越界混入
     expect(getMasterPlayerName('EG清辞')).toBe('清辞')
     expect(getMasterPlayerName('DYEG清辞')).toBe('清辞')
     expect(getMasterPlayerName('武汉 EG清辞')).toBe('清辞')
-    expect(getMasterPlayerName('武汉EG')).toBe('清辞')
+    expect(getMasterPlayerName('武汉EG')).toBe('武汉EG')
+
+    // 天眷与天誉严格拆分
+    expect(getMasterPlayerName('EZ天眷')).toBe('天眷')
+    expect(getMasterPlayerName('EZ天誉')).toBe('天誉')
+
+    // 所演与所谓Y严格拆分
+    expect(getMasterPlayerName('抖音所演')).toBe('所演')
+    expect(getMasterPlayerName('抖音所谓Y')).toBe('所谓Y')
 
     // 7D
     expect(getMasterPlayerName('EZ丶7D')).toBe('7D')
@@ -102,6 +112,27 @@ describe('选手多账号归并体系 (player-grouping)', () => {
     expect(boqing.observedMatches).toBe(7)
     expect(boqing.observedWins).toBe(3)
     expect(boqing.linkedAccounts).toEqual(['世薄情'])
+  })
+
+  it('铁律防护：任何选手合并分组的别名绝不允许在同一场比赛中同时登场', async () => {
+    // 读取 catalog 真实 62 场比赛
+    const fs = await import('fs')
+    const path = await import('path')
+    const catalogPath = path.resolve(__dirname, '../../backend/data/prediction-catalog/ruanshi.json')
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'))
+    
+    for (const group of MASTER_PLAYER_GROUPS) {
+      if (group.aliases.length <= 1) continue
+      for (const m of catalog.matches) {
+        const nicknames = m.seats.map((s: any) => s.nickname)
+        const matched = group.aliases.filter(alias => nicknames.includes(alias))
+        // 同一场 6 席对局中决不允许出现同一个主选手的两个别名（同场必为不同真人）
+        expect(
+          matched.length,
+          `主选手 [${group.masterName}] 的多个别名 (${matched.join(' 与 ')}) 在场次 ${m.day} 第${m.ordinal}场 (${m.key}) 同时出战！必须拆分为不同独立选手！`
+        ).toBeLessThanOrEqual(1)
+      }
+    }
   })
 })
 
