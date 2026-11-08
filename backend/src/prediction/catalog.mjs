@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
+import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
 export const playerHandle=(author,nickname)=>catalogHash([author,nickname])
 const str=(x,max=300)=>typeof x==='string'&&x.trim()&&x.length<=max
@@ -55,10 +56,12 @@ export class CatalogService {
   if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,build:r.build_label,winner:Boolean(r.winner)})
  }
- for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot)}
- const matches=[...matchMap.values()].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
+ for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
+ const transcribedMatches=[...matchMap.values()]
+ const snapshotMatches=buildHistoricalSnapshotMatches()
+ const matches=[...transcribedMatches,...snapshotMatches].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
  const profiles=players.rows.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
- return {usageScope:'INTERNAL_ONLY',status:'TRANSCRIBED_NOT_VERIFIED_MATCHES',contributesToModel:false,contributesToVerifiedModel:false,availableForExperimentalModel:true,counts:{players:profiles.length,matches:new Set(plays.rows.map(x=>x.match_id)).size,plays:plays.rowCount,claims:claims.rowCount,sources:sources.rowCount},matches,players:profiles,sources:sources.rows,notice:'昵称检索档案，未确认UID；频次仅限已采集标签，跨版本未知；专长为来源作者评价。不计入已核验完整赛果或正式模型；可显式启用未校准的来源实验概率。'}
+ return {usageScope:'INTERNAL_ONLY',status:'TRANSCRIBED_NOT_VERIFIED_MATCHES',contributesToModel:false,contributesToVerifiedModel:false,availableForExperimentalModel:true,counts:{players:profiles.length,matches:new Set(plays.rows.map(x=>x.match_id)).size,totalMatches:matches.length,totalDays:new Set(matches.map(m=>m.day)).size,plays:plays.rowCount,claims:claims.rowCount,sources:sources.rowCount},matches,players:profiles,sources:sources.rows,notice:'昵称检索档案，未确认UID；频次仅限已采集标签，跨版本未知；专长为来源作者评价。不计入已核验完整赛果或正式模型；可显式启用未校准的来源实验概率。'}
  }catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
  }
 }

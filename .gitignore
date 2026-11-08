@@ -33,3 +33,4 @@ dist-ssr
 # 本机预测开发凭证
 backend/.env.prediction.local
 .vitest/
+.gstack/

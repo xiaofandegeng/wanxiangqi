@@ -35,9 +35,14 @@
         <template v-if="section==='overview'">
           <div class="research-metrics">
             <div class="metric-highlight">
-              <strong>{{ catalog?.counts?.matches || 62 }}</strong>
-              <span>已核验王牌对决场次</span>
-              <small>六席位阵容 + 冠军 WebP 对照</small>
+              <strong>{{ catalog?.counts?.totalMatches || 160 }}</strong>
+              <span>王牌对决战绩场次</span>
+              <small>{{ catalog?.counts?.matches || 62 }} 场转写 + 98 场胜者公报</small>
+            </div>
+            <div>
+              <strong>{{ catalog?.counts?.totalDays || 25 }}</strong>
+              <span>全量覆盖比赛日</span>
+              <small>2026-10-11 ~ 11-06 连续追踪</small>
             </div>
             <div>
               <strong>{{ catalog?.counts?.players || 148 }}</strong>
@@ -45,13 +50,8 @@
               <small>100% 专属选手头像已绑定</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.plays || 372 }}</strong>
-              <span>实战席位与流派样本</span>
-              <small>每席位流派与胜负已标注</small>
-            </div>
-            <div>
               <strong>{{ catalog?.counts?.sources || 45 }}</strong>
-              <span>作者战报原帖 / 25日覆盖</span>
+              <span>作者战报原帖出处</span>
               <small>全量胜者图谱与流派声明</small>
             </div>
           </div>
@@ -143,7 +143,7 @@
         <template v-else-if="section==='matches'">
           <div class="source-toggle-bar">
             <button :class="{ active: matchSourceType === 'transcribed' }" @click="matchSourceType = 'transcribed'">
-              王牌对决真实对局 ({{ catalog?.counts?.matches || 62 }} 场已转写核验)
+              王牌对决战绩 ({{ catalog?.counts?.totalMatches || 160 }} 场 · {{ catalog?.counts?.totalDays || 25 }} 日全量覆盖)
             </button>
             <button :class="{ active: matchSourceType === 'official' }" @click="matchSourceType = 'official'">
               完整1~6名排名登记 ({{ matches.length }} 场)
@@ -154,8 +154,10 @@
           <template v-if="matchSourceType === 'transcribed'">
             <div class="research-filters">
               <select v-model="selectedDay" aria-label="日期筛选">
-                <option value="">全部比赛日期 ({{ availableDays.length }} 天)</option>
-                <option v-for="d in availableDays" :key="d" :value="d">{{ d }}</option>
+                <option value="">全部比赛日期 ({{ availableDays.length }} 天 · {{ filteredCatalogMatches.length }} 场对局)</option>
+                <option v-for="d in availableDays" :key="d" :value="d">
+                  {{ d }} ({{ countByDay[d] || 0 }} 场)
+                </option>
               </select>
               <input v-model="query" placeholder="搜索选手、流派阵容或 Ban 位" aria-label="筛选场次">
             </div>
@@ -169,7 +171,7 @@
                     <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场</h2>
                     <span v-if="m.ban" class="ban-tag">Ban：{{ m.ban }}</span>
                   </div>
-                  <span class="verified-tag">已核验 · 6席位转写</span>
+                  <span class="verified-tag">{{ m.matchType === 'winner_snapshot' ? '胜者公报 · 一图流已核验' : '已核验 · 6席位转写' }}</span>
                 </header>
 
                 <div class="research-table">
@@ -200,7 +202,10 @@
                 </div>
 
                 <div class="match-footer-info">
-                  <p class="muted">原件哈希：<code>{{ m.materialSha256 ? m.materialSha256.slice(0, 16) + '...' : '已关联原图' }}</code></p>
+                  <p class="muted">
+                    <span v-if="m.materialSha256">原件哈希：<code>{{ m.materialSha256.slice(0, 16) + '...' }}</code></span>
+                    <span v-else>出处：软柿《胜者一图流》日图公报 · @胜者老师登顶确认</span>
+                  </p>
                   <a v-if="m.sourceUrl" :href="m.sourceUrl" target="_blank" rel="noreferrer" class="source-link">查看作者原帖 ↗</a>
                 </div>
               </article>
@@ -392,6 +397,7 @@ interface CatalogMatch {
   winnerBuild: string
   winnerSlot: number | null
   winnerNickname: string | null
+  matchType?: 'full_transcribed' | 'winner_snapshot'
   seats: CatalogMatchSeat[]
 }
 
@@ -410,7 +416,7 @@ interface CatalogProfile {
 interface CatalogData {
   usageScope: string
   status: string
-  counts: { players: number; matches: number; plays: number; claims: number; sources: number }
+  counts: { players: number; matches: number; plays: number; claims: number; sources: number; totalMatches?: number; totalDays?: number }
   matches?: CatalogMatch[]
   players: CatalogProfile[]
   sources: { url: string; title: string; status: string; matches: number; note: string | null }[]
@@ -480,6 +486,14 @@ const availableDays = computed(() => {
     if (m.day) days.add(m.day)
   }
   return [...days].sort().reverse()
+})
+
+const countByDay = computed(() => {
+  const map: Record<string, number> = {}
+  for (const m of (catalog.value?.matches || [])) {
+    map[m.day] = (map[m.day] || 0) + 1
+  }
+  return map
 })
 
 const filteredCatalogMatches = computed(() => {
