@@ -37,7 +37,10 @@ interface Claim {id:string;kind:string;text:string;sourceUrl:string;windowStart:
 interface Profile {id:string;nickname:string;observedMatches:number;observedWins:number;commonBuilds:string[];builds:{label:string;observations:number;winsForSourceLabel:number}[];claims:Claim[];history:{matchId:string;day:string;ordinal:number;build:string;rank:number|null;winnerBuild:string|null;sourceUrl:string}[]}
 interface Catalog {notice:string;counts:{matches:number;plays:number;players:number;claims:number};players:Profile[];sources:{url:string;title:string;status:string;matches:number;note:string|null}[]}
 const catalog=ref<Catalog|null>(null),error=ref(''),query=ref('')
-const filtered=computed(()=>catalog.value?.players.filter(p=>[p.nickname,...p.builds.map(b=>b.label),...p.claims.map(c=>c.text)].join(' ').toLowerCase().includes(query.value.trim().toLowerCase()))||[])
+const filtered=computed(()=>{
+  const list = catalog.value?.players.filter(p=>[p.nickname,...p.builds.map(b=>b.label),...p.claims.map(c=>c.text)].join(' ').toLowerCase().includes(query.value.trim().toLowerCase()))||[]
+  return list.slice().sort((a, b) => b.observedWins - a.observedWins || b.observedMatches - a.observedMatches)
+})
 async function load(){error.value='';catalog.value=null;try{catalog.value=await researchApi<Catalog>('catalog')}catch(e){error.value=e instanceof Error?e.message:'资料库加载失败'}}
 onMounted(load)
 </script>
