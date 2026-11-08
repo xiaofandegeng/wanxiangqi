@@ -45,9 +45,9 @@
               <small>2026-10-11 ~ 11-06 连续追踪</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.players || 148 }}</strong>
-              <span>参赛对决选手档案</span>
-              <small>100% 专属选手头像已绑定</small>
+              <strong>{{ aggregatedPlayers.length || 112 }}</strong>
+              <span>归并参赛选手档案</span>
+              <small>已归类 {{ catalog?.counts?.players || 148 }} 个对决账号</small>
             </div>
             <div>
               <strong>{{ catalog?.counts?.sources || 45 }}</strong>
@@ -70,7 +70,10 @@
                 <div class="winner-rank-badge">#{{ idx + 1 }}</div>
                 <img :src="getPlayerAvatar(p.nickname)" class="winner-card-avatar" :alt="p.nickname" />
                 <div class="winner-card-body">
-                  <h3>{{ p.nickname }}</h3>
+                  <div class="winner-name-row">
+                    <h3>{{ p.nickname }}</h3>
+                    <span v-if="p.linkedAccounts && p.linkedAccounts.length > 1" class="multi-tag-badge">{{ p.linkedAccounts.length }}号合并</span>
+                  </div>
                   <div class="winner-stats-line">
                     <span class="wins-badge">🏆 {{ p.observedWins }} 冠</span>
                     <span class="matches-count">{{ p.observedMatches }} 战 · 登顶率 {{ percent(p.observedWins / p.observedMatches) }}</span>
@@ -179,7 +182,18 @@
                       <td>第 {{ s.slot }} 席</td>
                       <td class="player-cell">
                         <img :src="getPlayerAvatar(s.nickname)" class="player-inline-avatar" alt="" />
-                        <span class="player-name">{{ s.nickname }}</span>
+                        <div class="player-inline-meta">
+                          <div class="player-name-row">
+                            <span class="player-name">{{ s.nickname }}</span>
+                            <span
+                              v-if="getMasterPlayerName(s.nickname) !== s.nickname"
+                              class="master-alias-pill"
+                              :title="`该账号实际隶属选手：${getMasterPlayerName(s.nickname)}`"
+                            >
+                              {{ getMasterPlayerName(s.nickname) }}
+                            </span>
+                          </div>
+                        </div>
                       </td>
                       <td>{{ s.build }}</td>
                       <td>
@@ -207,7 +221,28 @@
           <div class="view-header-bar">
             <div>
               <h2>王牌对决选手登顶排行榜</h2>
-              <p class="muted">基于 160 场真实对局与 45 篇作者原帖统计，包含每位选手的出场次数、登顶夺冠胜场、登顶胜率与常用流派。</p>
+              <p class="muted">
+                {{ groupByPlayer ? `已智能归纳选手的多个游戏账号/战队马甲（共 ${aggregatedPlayers.length} 位真实选手）` : `按全部 ${catalog?.counts?.players || 148} 个原始游戏对决账号独立呈现` }}
+              </p>
+            </div>
+
+            <div class="group-mode-toggle">
+              <button
+                type="button"
+                class="group-toggle-btn"
+                :class="{ active: groupByPlayer }"
+                @click="groupByPlayer = true"
+              >
+                👤 按选手合并账号 ({{ aggregatedPlayers.length }} 人)
+              </button>
+              <button
+                type="button"
+                class="group-toggle-btn"
+                :class="{ active: !groupByPlayer }"
+                @click="groupByPlayer = false"
+              >
+                🎮 按单账号细分 ({{ catalog?.counts?.players || 148 }} 账号)
+              </button>
             </div>
           </div>
 
@@ -305,14 +340,23 @@
                   <td class="player-cell">
                     <img :src="getPlayerAvatar(p.nickname)" class="player-inline-avatar" alt="" />
                     <div class="player-inline-meta">
-                      <span class="player-name">{{ p.nickname }}</span>
-                      <small v-if="p.observedWins > 0" class="win-tag">曾获 {{ p.observedWins }} 冠</small>
+                      <div class="player-name-row">
+                        <span class="player-name">{{ p.nickname }}</span>
+                        <small v-if="p.observedWins > 0" class="win-tag">曾获 {{ p.observedWins }} 冠</small>
+                      </div>
+                      <div v-if="p.linkedAccounts && p.linkedAccounts.length > 1" class="accounts-chip-list">
+                        <span class="accounts-count-pill">{{ p.linkedAccounts.length }} 个账号合并：</span>
+                        <span class="accounts-names" :title="p.linkedAccounts.join('、')">{{ p.linkedAccounts.join('、') }}</span>
+                      </div>
+                      <div v-else-if="!groupByPlayer && getMasterPlayerName(p.nickname) !== p.nickname" class="belongs-to-text">
+                        隶属于：<strong>{{ getMasterPlayerName(p.nickname) }}</strong>
+                      </div>
                     </div>
                   </td>
                   <td><strong>{{ p.observedMatches }}</strong> 场</td>
                   <td><strong class="winner-crown">{{ p.observedWins }}</strong> 次</td>
                   <td><span class="rate-badge">{{ p.observedMatches ? percent(p.observedWins / p.observedMatches) : '0.0%' }}</span></td>
-                  <td>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : (p.builds.slice(0, 2).map(b => b.label).join('、') || '暂无') }}</td>
+                  <td>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : (p.builds.slice(0, 2).map((b: any) => b.label).join('、') || '暂无') }}</td>
                 </tr>
               </tbody>
             </table>
@@ -340,6 +384,11 @@ import { computed, watch, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { researchApi, localResearch, getAdminToken, setAdminToken, type ResearchMatch, type Stats } from '../api/prediction'
 import { getPlayerAvatar } from '../utils/player-avatar'
+import {
+  getMasterPlayerName,
+  aggregateCatalogPlayers,
+  type AggregatedPlayerProfile
+} from '../utils/player-grouping'
 
 interface CatalogMatchSeat {
   slot: number
@@ -373,6 +422,7 @@ interface CatalogProfile {
   commonBuilds: string[]
   claims: any[]
   history: any[]
+  linkedAccounts?: string[]
 }
 
 interface CatalogData {
@@ -407,12 +457,13 @@ const query = ref('')
 const selectedDay = ref('')
 const playerSearch = ref('')
 
-// 选手排序状态
+// 选手排序与归类状态
 type SortKey = 'wins' | 'winRate' | 'matches' | 'nickname'
 type SortOrder = 'asc' | 'desc'
 
 const sortKey = ref<SortKey>('wins')
 const sortOrder = ref<SortOrder>('desc')
+const groupByPlayer = ref(true) // 默认开启：智能归纳同选手的多个账号
 
 function setSort(key: SortKey) {
   if (sortKey.value === key) {
@@ -423,10 +474,29 @@ function setSort(key: SortKey) {
   }
 }
 
-// 总览计算属性：胜场 TOP 8
-const topWinners = computed(() => {
+// 归并后的真实选手档案列表（多账号归集）
+const aggregatedPlayers = computed<AggregatedPlayerProfile[]>(() => {
   if (!catalog.value?.players) return []
-  return catalog.value.players
+  return aggregateCatalogPlayers(catalog.value.players)
+})
+
+// 选手统计页激活数据源（按合并后选手或按原始独立账号）
+const activePlayersList = computed<any[]>(() => {
+  if (groupByPlayer.value) {
+    return aggregatedPlayers.value
+  }
+  return (catalog.value?.players || []).map(p => ({
+    ...p,
+    masterName: getMasterPlayerName(p.nickname),
+    linkedAccounts: [p.nickname],
+    note: undefined
+  }))
+})
+
+// 总览计算属性：胜场 TOP 8（基于归纳后的真实选手实力）
+const topWinners = computed(() => {
+  const source = aggregatedPlayers.value.length ? aggregatedPlayers.value : (catalog.value?.players || [])
+  return source
     .filter(p => p.observedWins > 0)
     .slice()
     .sort((a, b) => b.observedWins - a.observedWins || b.observedMatches - a.observedMatches)
@@ -473,15 +543,17 @@ const filteredCatalogMatches = computed(() => {
   })
 })
 
-// 选手统计页计算属性（多维可排序）
+// 选手统计页计算属性（多维可排序、多账号可过滤）
 const filteredCatalogPlayers = computed(() => {
-  const list = catalog.value?.players || []
+  const list = activePlayersList.value
   const q = playerSearch.value.trim().toLowerCase()
   const filtered = list.filter(p => {
     if (!q) return true
     const text = [
       p.nickname,
-      ...p.builds.map(b => b.label),
+      p.masterName || '',
+      ...(p.linkedAccounts || []),
+      ...p.builds.map((b: any) => b.label),
       ...p.commonBuilds
     ].join(' ').toLowerCase()
     return text.includes(q)
@@ -651,6 +723,11 @@ watch(section, () => {
 }
 
 .view-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
   margin-bottom: 16px;
 
   h2 {
@@ -662,6 +739,39 @@ watch(section, () => {
 
   p {
     margin: 0;
+  }
+}
+
+.group-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $bg-subtle;
+  padding: 4px;
+  border-radius: $radius-full;
+  border: 1px solid $border-subtle;
+
+  .group-toggle-btn {
+    padding: 6px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    border-radius: $radius-full;
+    border: none;
+    background: transparent;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: $text-primary;
+    }
+
+    &.active {
+      background: $bg-surface;
+      color: $color-primary;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
   }
 }
 
@@ -816,13 +926,31 @@ button,
     flex: 1;
     min-width: 0;
 
-    h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin: 0 0 6px;
-      color: $text-primary;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .winner-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+
+      h3 {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+        color: $text-primary;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .multi-tag-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: $radius-sm;
+      background: rgba(#6366F1, 0.1);
+      color: #4F46E5;
+      border: 1px solid rgba(#6366F1, 0.2);
       white-space: nowrap;
     }
   }
@@ -1260,6 +1388,57 @@ button,
     .player-inline-meta {
       display: flex;
       flex-direction: column;
+
+      .player-name-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .master-alias-pill {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: $radius-sm;
+        background: rgba($color-primary, 0.08);
+        color: $color-primary;
+        border: 1px solid rgba($color-primary, 0.15);
+      }
+
+      .accounts-chip-list {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 3px;
+        font-size: 11px;
+        line-height: 1.3;
+
+        .accounts-count-pill {
+          color: $color-primary;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .accounts-names {
+          color: $text-muted;
+          max-width: 320px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      .belongs-to-text {
+        font-size: 11px;
+        color: $text-muted;
+        margin-top: 2px;
+
+        strong {
+          color: $color-primary;
+          font-weight: 600;
+        }
+      }
     }
   }
 }
