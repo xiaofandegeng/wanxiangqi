@@ -39,12 +39,26 @@ export class CatalogService {
  await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
  const [players,plays,claims,sources]=[
  await client.query('SELECT id,author,nickname,identity_status FROM prediction_catalog_players WHERE available_at<=$1 ORDER BY nickname',[cutoff]),
- await client.query(`SELECT p.*,m.day::text,m.ordinal,m.source_url,m.material_sha256,m.winner_build FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
+ await client.query(`SELECT p.*,m.day::text,m.ordinal,m.source_url,m.material_sha256,m.ban,m.winner_build FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
  await client.query(`SELECT c.*,c.window_start::text AS start,c.window_end::text AS finish FROM prediction_catalog_claims c JOIN prediction_catalog_materials b ON b.sha256=c.material_sha256 WHERE octet_length(b.content)=b.size_bytes AND c.available_at<=$1 AND c.window_end<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY c.window_end DESC,c.id`,[cutoff]),
  await client.query(`SELECT s.*, (SELECT count(*)::int FROM prediction_catalog_matches m WHERE m.source_url=s.url AND status='TRANSCRIBED' AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date) AS matches FROM prediction_catalog_sources s WHERE s.created_at<=$1 ORDER BY url DESC`,[cutoff])]
  await client.query('COMMIT')
+ const playerMap=new Map(players.rows.map(p=>[p.id,p.nickname]))
+ const matchMap=new Map()
+ for(const r of plays.rows){
+  let m=matchMap.get(r.match_id)
+  if(!m){
+   m={id:r.match_id,day:r.day,ordinal:r.ordinal,sourceUrl:r.source_url,materialSha256:r.material_sha256,ban:r.ban||null,winnerBuild:r.winner_build,winnerSlot:null,winnerNickname:null,seats:[]}
+   matchMap.set(r.match_id,m)
+  }
+  const nick=playerMap.get(r.player_id)||'未知'
+  if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
+  m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,build:r.build_label,winner:Boolean(r.winner)})
+ }
+ for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot)}
+ const matches=[...matchMap.values()].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
  const profiles=players.rows.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
- return {usageScope:'INTERNAL_ONLY',status:'TRANSCRIBED_NOT_VERIFIED_MATCHES',contributesToModel:false,contributesToVerifiedModel:false,availableForExperimentalModel:true,counts:{players:profiles.length,matches:new Set(plays.rows.map(x=>x.match_id)).size,plays:plays.rowCount,claims:claims.rowCount,sources:sources.rowCount},players:profiles,sources:sources.rows,notice:'昵称检索档案，未确认UID；频次仅限已采集标签，跨版本未知；专长为来源作者评价。不计入已核验完整赛果或正式模型；可显式启用未校准的来源实验概率。'}
+ return {usageScope:'INTERNAL_ONLY',status:'TRANSCRIBED_NOT_VERIFIED_MATCHES',contributesToModel:false,contributesToVerifiedModel:false,availableForExperimentalModel:true,counts:{players:profiles.length,matches:new Set(plays.rows.map(x=>x.match_id)).size,plays:plays.rowCount,claims:claims.rowCount,sources:sources.rowCount},matches,players:profiles,sources:sources.rows,notice:'昵称检索档案，未确认UID；频次仅限已采集标签，跨版本未知；专长为来源作者评价。不计入已核验完整赛果或正式模型；可显式启用未校准的来源实验概率。'}
  }catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
  }
 }
