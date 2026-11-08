@@ -15,16 +15,7 @@
         <router-link to="/research/players" active-class="is-active" class="nav-item">选手统计</router-link>
         <router-link to="/research/roster" active-class="is-active" class="nav-item">玩法档案</router-link>
         <router-link to="/research/predict" active-class="is-active" class="nav-item">赛前研究</router-link>
-        <router-link to="/research/sources" active-class="is-active" class="nav-item">来源资料</router-link>
-        <router-link to="/research/import" active-class="is-active" class="nav-item">数据录入</router-link>
       </nav>
-
-      <div class="header-actions">
-        <router-link class="source-admin-pill" to="/admin/sources">
-          <span class="dot"></span>
-          原件与来源
-        </router-link>
-      </div>
     </div>
   </header>
 </template>
@@ -98,7 +89,7 @@
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -110,8 +101,8 @@
 .nav-item {
   display: inline-flex;
   align-items: center;
-  padding: 7px 12px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 13.5px;
   font-weight: 500;
   color: $text-secondary;
   border-radius: $radius-sm;
@@ -127,39 +118,6 @@
     color: $color-primary;
     background-color: $color-primary-light;
     font-weight: 600;
-  }
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.source-admin-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  color: $text-secondary;
-  background: $bg-subtle;
-  border: 1px solid $border-color;
-  border-radius: $radius-full;
-  transition: $transition-base;
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: $color-success;
-  }
-
-  &:hover {
-    border-color: $border-hover;
-    background-color: $bg-surface;
-    color: $color-primary;
   }
 }
 

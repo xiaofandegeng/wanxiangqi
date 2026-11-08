@@ -5,17 +5,17 @@ import router from '../src/router'
 
 const ACTIVE_ROUTES: Array<[string, string]> = [
   ['/', 'home'],
-  ['/research/roster', 'research-roster'],
-  ['/research/sources', 'research-sources'],
   ['/research/matches', 'research-matches'],
   ['/research/players', 'research-players'],
-  ['/research/predict', 'research-predict'],
-  ['/research/import', 'research-import'],
-  ['/admin/sources', 'admin-sources']
+  ['/research/roster', 'research-roster'],
+  ['/research/predict', 'research-predict']
 ]
 
 // 旧路由不再注册，统一落入 not-found 兜底
 const RETIRED_PATHS = [
+  '/research/sources',
+  '/research/import',
+  '/admin/sources',
   '/learn',
   '/lineups',
   '/library',
