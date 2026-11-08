@@ -392,6 +392,204 @@ export function findCommanderMeta(rawName: string | null | undefined): Commander
   )
 }
 
+/** 核心选手权威绝活与招牌棋手档案库定义 */
+export interface PlayerMasterProfileDef {
+  masterName: string
+  aliases: string[]
+  signatureCommander: string // 最爱用/胜率最高的官方招牌棋手
+  alternativeCommanders: string[] // 常用备选棋手
+  signatureBuilds: string[] // 招牌擅长阵容（按熟练度与实战胜率从高到低排序）
+  playstyle: string // 打法风格与竞技画像
+  note?: string
+}
+
+/** 明星选手权威知识库（结合国服战报与选手真实流派画像） */
+export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
+  {
+    masterName: '沐汐',
+    aliases: ['沐汐', 'EZ沐汐', 'EZ沐汐嘻嘻嘻', 'EZ抖音沐汐', 'QT鱼沐汐0丶7版', 'EZ拉丁鱼丶沐汐', 'EZ拉丁鱼', '拉丁鱼', 'EZ灬欧洲鱼', '欧洲鱼', '沐汐诸葛龟版'],
+    signatureCommander: '乔汐',
+    alternativeCommanders: ['阿离', '玉环'],
+    signatureBuilds: ['日落海倒转', '三分倒转', '伞半月'],
+    playstyle: '国一倒转王，日落海与三分倒转天花板，刷牌节奏极快'
+  },
+  {
+    masterName: '嘉誉',
+    aliases: ['嘉誉', '刷牌之怪嘉誉', '胜天半子嘉誉'],
+    signatureCommander: '马可',
+    alternativeCommanders: ['玉环', '镜'],
+    signatureBuilds: ['镜猪转吕布', '牺牲李信', '雷霆战机'],
+    playstyle: '擅长高费大核变阵与镜猪体系，胜天半子后期运营'
+  },
+  {
+    masterName: '遗愿',
+    aliases: ['遗愿', 'QT披萨鱼遗愿', 'QT电竞披萨鱼', '披萨鱼', 'QT披萨鱼', '抖音遗愿1'],
+    signatureCommander: '嬴律',
+    alternativeCommanders: ['白歌', '香香'],
+    signatureBuilds: ['三分登场', '逐鹿蒙恬', '河洛木兰'],
+    playstyle: '三分登场与逐鹿体系招牌高手，单核追三连胜压制'
+  },
+  {
+    masterName: '刺儿',
+    aliases: ['刺儿', '抖音刺儿'],
+    signatureCommander: '乔汐',
+    alternativeCommanders: ['镜', '阿离'],
+    signatureBuilds: ['日落海倒转', '镜猪转海月', '镜猪转吕布'],
+    playstyle: '极速倒转与海月爆发，擅长抓抢节奏'
+  },
+  {
+    masterName: '刺痛',
+    aliases: ['刺痛', '抖音刺痛', 'QG刺痛', 'Hurt刺痛'],
+    signatureCommander: '香香',
+    alternativeCommanders: ['班叔', '马可'],
+    signatureBuilds: ['稷下坦射', '逐鹿蒙犽', '传统养猪'],
+    playstyle: '顶尖职业射手底蕴，擅长稷下坦射与养猪速射推进'
+  },
+  {
+    masterName: '逆光',
+    aliases: ['逆光', 'B站QT逆光', 'QT逆光'],
+    signatureCommander: '庄小鱼',
+    alternativeCommanders: ['孙小宾', '诸葛亮'],
+    signatureBuilds: ['传统养猪', '三分倒转', '雷霆战机'],
+    playstyle: '前排保核运营稳健，传统养猪与雷霆战机专精'
+  },
+  {
+    masterName: '小谷芷',
+    aliases: ['小谷芷', 'EGM小谷芷', '抖音EGM小谷芷', '小琳谷芷'],
+    signatureCommander: '安琪拉',
+    alternativeCommanders: ['嬴律', '庄小鱼'],
+    signatureBuilds: ['雷霆战机', '三分登场', '传统养猪'],
+    playstyle: '雷霆战机天花板，法爆机甲压制力极强'
+  },
+  {
+    masterName: '丰川祥子',
+    aliases: ['丰川祥子', '祥子'],
+    signatureCommander: '武凤',
+    alternativeCommanders: ['白歌', '马可'],
+    signatureBuilds: ['河洛木兰', '逐鹿蒙恬', '三分登场'],
+    playstyle: '河洛女帝近战爆发与逐鹿前排压制'
+  },
+  {
+    masterName: '白白白白3',
+    aliases: ['白白白白3', '白白白白白3', '白白'],
+    signatureCommander: '庄小鱼',
+    alternativeCommanders: ['镜', '马可'],
+    signatureBuilds: ['传统养猪', '镜猪转吕布', '日落海倒转'],
+    playstyle: '多核养猪与后期大吕布换帅'
+  },
+  {
+    masterName: '新一',
+    aliases: ['新一', 'QT新一', '抖音QT新一'],
+    signatureCommander: '嬴律',
+    alternativeCommanders: ['安琪拉', '白歌'],
+    signatureBuilds: ['三分登场', '成年礼三分', '雷霆战机'],
+    playstyle: '成年礼三分与雷霆战机速追三星'
+  },
+  {
+    masterName: '猪葛龟',
+    aliases: ['猪葛龟', '猪葛龟龟', '抖音猪葛龟龟', '抖音诸葛龟龟', 'I蟲抖音猪葛龟'],
+    signatureCommander: '庄小鱼',
+    alternativeCommanders: ['司马懿', '武凤'],
+    signatureBuilds: ['传统养猪', '牺牲李信', '雷霆战机'],
+    playstyle: '庄周免控养猪天花板，坦度拉满'
+  },
+  {
+    masterName: '呆头鹅',
+    aliases: ['呆头鹅', '抖音呆头鹅'],
+    signatureCommander: '乔汐',
+    alternativeCommanders: ['阿离', '嬴律'],
+    signatureBuilds: ['日落海倒转', '伞半月', '三分倒转'],
+    playstyle: '伞半月与日落海倒转高手'
+  },
+  {
+    masterName: '世薄情',
+    aliases: ['世薄情', '抖音世薄情'],
+    signatureCommander: '马可',
+    alternativeCommanders: ['嬴律', '白歌'],
+    signatureBuilds: ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
+    playstyle: '大河龙蛇与逐鹿变阵专家'
+  },
+  {
+    masterName: '小新游',
+    aliases: ['小新游', '抖音小新游', '小新U'],
+    signatureCommander: '嬴律',
+    alternativeCommanders: ['庄小鱼', '白歌'],
+    signatureBuilds: ['三分登场', '传统养猪', '雷霆战机'],
+    playstyle: '三分速成与低费追三'
+  },
+  {
+    masterName: '妖柒',
+    aliases: ['妖柒', '抖音妖柒'],
+    signatureCommander: '安琪拉',
+    alternativeCommanders: ['乔汐', '庄小鱼'],
+    signatureBuilds: ['雷霆战机', '日落海倒转', '传统养猪'],
+    playstyle: '机甲爆发与雷霆切后'
+  },
+  {
+    masterName: '梦飞',
+    aliases: ['梦飞', '梦飞大大', '抖音梦飞'],
+    signatureCommander: '马可',
+    alternativeCommanders: ['庄小鱼', '玉环'],
+    signatureBuilds: ['镜猪转吕布', '牺牲李信', '传统养猪'],
+    playstyle: '大局运营与后期高质量变阵'
+  },
+  {
+    masterName: '晓枫',
+    aliases: ['晓枫', 'RW侠.晓枫', 'RW侠晓枫'],
+    signatureCommander: '乔汐',
+    alternativeCommanders: ['阿离', '安琪拉'],
+    signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机'],
+    playstyle: '极速倒转与机动爆发'
+  },
+  {
+    masterName: '清辞',
+    aliases: ['清辞', 'EG清辞', 'DYEG清辞', '抖音EG清辞', '武汉 EG清辞'],
+    signatureCommander: '白歌',
+    alternativeCommanders: ['乔汐', '嬴律'],
+    signatureBuilds: ['三分倒转', '日落海倒转', '河洛木兰'],
+    playstyle: '倒转控节奏与女帝连招'
+  },
+  {
+    masterName: '湛蓝',
+    aliases: ['湛蓝', '抖音湛蓝'],
+    signatureCommander: '嬴律',
+    alternativeCommanders: ['香香', '白歌'],
+    signatureBuilds: ['三分登场', '成年礼三分', '逐鹿蒙恬'],
+    playstyle: '成年礼三分与逐鹿射手推进'
+  },
+  {
+    masterName: '阿文',
+    aliases: ['阿文', 'EZ阿文', '抖音EZ阿文', '阿文倒转王'],
+    signatureCommander: '乔汐',
+    alternativeCommanders: ['阿离', '白歌'],
+    signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机'],
+    playstyle: '公孙离与乔汐双倒转专家'
+  },
+  {
+    masterName: '皮皮鲨',
+    aliases: ['皮皮鲨', 'EGM皮皮鲨', '抖音EGM皮皮鲨'],
+    signatureCommander: '玉环',
+    alternativeCommanders: ['庄小鱼', '乔汐'],
+    signatureBuilds: ['日落海倒转', '传统养猪', '大河龙蛇'],
+    playstyle: '霓裳连击与倒转大核'
+  }
+]
+
+/** 查找选手权威核心档案 */
+export function findPlayerMasterProfile(nameOrAlias: string | null | undefined): PlayerMasterProfileDef | null {
+  if (!nameOrAlias || !nameOrAlias.trim()) return null
+  const clean = nameOrAlias.trim()
+  const master = getMasterPlayerName(clean)
+  return (
+    PLAYER_MASTER_PROFILES.find(
+      p =>
+        p.masterName === master ||
+        p.masterName === clean ||
+        p.aliases.some(a => a.toLowerCase() === clean.toLowerCase() || clean.toLowerCase().includes(a.toLowerCase()))
+    ) || null
+  )
+}
+
 /** 选手出战阵容推断结构体 */
 export interface PlayerInferredLineup {
   lineupName: string // 本场推断阵容名称
@@ -401,14 +599,23 @@ export interface PlayerInferredLineup {
   bannedWarning?: string // 若第一流派被 Ban，给出告警提示
 }
 
-/** 核心推断逻辑：根据选手历史擅长流派 + 本场Ban位 + 所选棋手，推断本场选手的出战阵容 */
+/** 核心推断逻辑：根据选手历史擅长流派 + 权威绝活库 + 本场Ban位 + 所选棋手，精准推断本场选手的出战阵容 */
 export function inferPlayerLineup(
   commonBuilds: string[] = [],
   bannedFaction: string | null = null,
-  commanderName: string | null = null
+  commanderName: string | null = null,
+  playerNickname?: string | null
 ): PlayerInferredLineup {
-  // 1. 若选手没有历史流派样本，中性推断
-  if (!commonBuilds || commonBuilds.length === 0) {
+  // 结合选手权威绝活档案
+  const masterDef = findPlayerMasterProfile(playerNickname)
+  let candidateBuilds = [...commonBuilds]
+  if (masterDef) {
+    // 优先采用选手的权威绝活流派，与历史提取流派去重融合
+    candidateBuilds = Array.from(new Set([...masterDef.signatureBuilds, ...candidateBuilds]))
+  }
+
+  // 1. 若选手无任何流派样本，中性推断
+  if (candidateBuilds.length === 0) {
     const meta = findCommanderMeta(commanderName)
     const fallbackName = meta ? `${meta.name}偏向构筑` : '多流派平衡'
     return {
@@ -419,20 +626,20 @@ export function inferPlayerLineup(
     }
   }
 
-  const primary = commonBuilds[0]
+  const primary = candidateBuilds[0]
 
   // 2. 检查选手的第 1 擅长流派是否受当前禁选 Ban 位封锁
   if (bannedFaction && bannedFaction.trim()) {
     const bf = bannedFaction.trim()
     if (primary.includes(bf)) {
       // 主力流派被 Ban，寻找未被 Ban 的次选擅长
-      const fallback = commonBuilds.find(b => !b.includes(bf))
+      const fallback = candidateBuilds.find(b => !b.includes(bf))
       if (fallback) {
         return {
           lineupName: fallback,
           isFallback: true,
           primaryBuild: primary,
-          reason: `主力擅长「${primary}」受「${bf}」禁选封锁，转用备选擅长「${fallback}」`,
+          reason: `主力擅长「${primary}」受「${bf}」禁选封锁，转用备选招牌「${fallback}」`,
           bannedWarning: `主力「${primary}」受禁选封锁！`
         }
       } else {
@@ -447,12 +654,11 @@ export function inferPlayerLineup(
     }
   }
 
-  // 3. 第一擅长未被 Ban：优先按选手招牌擅长出战
-  // 若选手有多个擅长流派，且所选棋手对其中某个擅长有特异协同，则根据棋手选用该擅长
-  if (commanderName && commonBuilds.length > 1) {
+  // 3. 第一擅长未被 Ban：若选手选择了特定棋手，且棋手与某个擅长流派有专属协同机制，则精准推断为该擅长
+  if (commanderName && candidateBuilds.length > 1) {
     const meta = findCommanderMeta(commanderName)
     if (meta) {
-      const synergizedBuild = commonBuilds.find(b =>
+      const synergizedBuild = candidateBuilds.find(b =>
         (!bannedFaction || !b.includes(bannedFaction)) &&
         meta.synergizedPlaystyles.some(sp => b.includes(sp) || sp.includes(b))
       )
@@ -461,7 +667,7 @@ export function inferPlayerLineup(
           lineupName: synergizedBuild,
           isFallback: false,
           primaryBuild: primary,
-          reason: `配合所选棋手「${meta.name}」机制特性，选手选用契合度更高的擅长流派「${synergizedBuild}」`
+          reason: `配合所选棋手「${meta.name}」机制特性，选手选用契合度更高的招牌「${synergizedBuild}」`
         }
       }
     }
@@ -471,7 +677,7 @@ export function inferPlayerLineup(
     lineupName: primary,
     isFallback: false,
     primaryBuild: primary,
-    reason: '选手个人历史招牌流派（擅长率最高）'
+    reason: masterDef ? `选手核心招牌绝活流派（${masterDef.playstyle}）` : '选手个人历史招牌流派（擅长率最高）'
   }
 }
 
@@ -491,12 +697,13 @@ export function evaluateCommander(
   commanderName: string | null | undefined,
   commonBuilds: string[] = [],
   version: string = CURRENT_LATEST_VERSION,
-  bannedFaction: string | null = null
+  bannedFaction: string | null = null,
+  playerNickname?: string | null
 ): CommanderEvaluation | null {
   if (!commanderName || !commanderName.trim()) return null
   const clean = commanderName.trim()
   const meta = findCommanderMeta(clean)
-  const inferred = inferPlayerLineup(commonBuilds, bannedFaction, commanderName)
+  const inferred = inferPlayerLineup(commonBuilds, bannedFaction, commanderName, playerNickname)
 
   if (!meta) {
     return {
@@ -598,8 +805,30 @@ export interface PlayerMatchupProfile {
   topRivals: HeadToHeadRecord[] // 遭遇次数最多宿敌
 }
 
+export interface ActiveOpponentRelation {
+  seat: number // 席位号 1-6
+  nickname: string
+  masterName: string
+  wins: number
+  losses: number
+  encounters: number
+  scoreText: string // 例如 "3-0" 或 "2-1"
+}
+
+export interface CrossMatrixCell {
+  fromSeat: number
+  toSeat: number
+  wins: number
+  losses: number
+  encounters: number
+  status: 'WIN' | 'LOSE' | 'TIED' | 'NONE'
+  label: string // 例如 "3-0"、"0-2"、"1-1"、"-"
+  tooltip: string
+}
+
 export interface SixPlayerMatchupResult {
   players: {
+    slot: number // 席位号 1-6
     nickname: string
     masterName: string
     commander: string | null
@@ -616,6 +845,9 @@ export interface SixPlayerMatchupResult {
     versionAdaptation: VersionLineupAdaptation
     suppressedBy: string[] // 被本场哪些选手历史压制
     suppresses: string[] // 本场克制哪些选手
+    activeSuppressedBy: ActiveOpponentRelation[] // 本场苦主对手列表（带席位与战绩）
+    activeSuppresses: ActiveOpponentRelation[] // 本场克制对手列表（带席位与战绩）
+    h2hSummary: string // 同场两两克制一句话摘要
   }[]
   crossMatchups: {
     winner: string
@@ -625,6 +857,20 @@ export interface SixPlayerMatchupResult {
     encounters: number
     description: string
   }[]
+  suppressionChains: {
+    winnerSeat: number
+    winnerName: string
+    loserSeat: number
+    loserName: string
+    wins: number
+    losses: number
+    encounters: number
+    description: string
+  }[]
+  crossMatrix: {
+    seats: { seat: number; nickname: string; masterName: string }[]
+    cells: CrossMatrixCell[][]
+  }
   targetVersion: string
   versionMeta: GameVersionMeta
   versionSummary: {
@@ -808,15 +1054,14 @@ export function buildPlayerMatchupProfiles(
     // 最频繁相遇对手
     profile.topRivals = h2hList.slice(0, 5)
 
-    // 常用阵容与版本适应度
+    // 常用阵容与版本适应度：历史提取流派与选手权威绝活档案融合
     const bmap = buildCounts.get(profile.playerName)
-    if (bmap) {
-      profile.commonBuilds = [...bmap.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .map(x => x[0])
-        .slice(0, 3)
+    const histBuilds = bmap ? [...bmap.entries()].sort((a, b) => b[1] - a[1]).map(x => x[0]) : []
+    const masterDef = findPlayerMasterProfile(profile.playerName) || findPlayerMasterProfile(profile.masterName)
+    if (masterDef) {
+      profile.commonBuilds = Array.from(new Set([...masterDef.signatureBuilds, ...histBuilds])).slice(0, 4)
     } else {
-      profile.commonBuilds = []
+      profile.commonBuilds = histBuilds.slice(0, 3)
     }
     profile.versionAdaptation = evaluateVersionLineupAdaptation(profile.commonBuilds, CURRENT_LATEST_VERSION)
   }
@@ -946,10 +1191,11 @@ export function evaluate6PlayerMatchup(
   }
 
   // 1. 获取每位选手的 masterName 与 profile、所选棋手
-  const roster = participants.map(p => {
+  const roster = participants.map((p, idx) => {
     const master = getMasterPlayerName(p.nickname)
     const prof = profileMap.get(master) || profileMap.get(p.nickname)
     return {
+      slot: idx + 1,
       nickname: p.nickname,
       masterName: master,
       commander: p.commander || null,
@@ -957,45 +1203,161 @@ export function evaluate6PlayerMatchup(
     }
   })
 
-  // 2. 计算两两交锋克制矩阵
+  // 2. 计算两两交锋克制矩阵与压制链
   const crossMatchups: SixPlayerMatchupResult['crossMatchups'] = []
+  const suppressionChains: SixPlayerMatchupResult['suppressionChains'] = []
   const h2hAdvantage = new Map<string, number>()
   const suppressedByMap = new Map<string, string[]>()
   const suppressesMap = new Map<string, string[]>()
+  const activeSuppressesMap = new Map<string, ActiveOpponentRelation[]>()
+  const activeSuppressedByMap = new Map<string, ActiveOpponentRelation[]>()
+
+  // 6x6 矩阵网格初始化
+  const matrixCells: CrossMatrixCell[][] = Array.from({ length: roster.length }, () =>
+    Array.from({ length: roster.length }, () => ({
+      fromSeat: 0,
+      toSeat: 0,
+      wins: 0,
+      losses: 0,
+      encounters: 0,
+      status: 'NONE' as const,
+      label: '-',
+      tooltip: '历史无同场记录'
+    }))
+  )
+
+  for (let i = 0; i < roster.length; i++) {
+    for (let j = 0; j < roster.length; j++) {
+      matrixCells[i][j].fromSeat = roster[i].slot
+      matrixCells[i][j].toSeat = roster[j].slot
+      if (i === j) {
+        matrixCells[i][j].label = '—'
+        matrixCells[i][j].tooltip = '自身席位'
+      }
+    }
+  }
 
   for (let i = 0; i < roster.length; i++) {
     for (let j = i + 1; j < roster.length; j++) {
       const pA = roster[i]
       const pB = roster[j]
 
-      // 查找 A 在面对 B 时的记录
+      // 查找 A 在面对 B 时的历史交锋记录
       const recA = pA.profile?.h2h.find(x => x.opponentMaster === pB.masterName)
       if (recA && (recA.wins > 0 || recA.losses > 0)) {
         const netA = recA.wins - recA.losses
         h2hAdvantage.set(pA.masterName, (h2hAdvantage.get(pA.masterName) || 0) + netA * 0.15)
         h2hAdvantage.set(pB.masterName, (h2hAdvantage.get(pB.masterName) || 0) - netA * 0.15)
 
+        // 填充网格
+        matrixCells[i][j] = {
+          fromSeat: pA.slot,
+          toSeat: pB.slot,
+          wins: recA.wins,
+          losses: recA.losses,
+          encounters: recA.encounters,
+          status: recA.wins > recA.losses ? 'WIN' : recA.losses > recA.wins ? 'LOSE' : 'TIED',
+          label: `${recA.wins}-${recA.losses}`,
+          tooltip: `#${pA.slot} ${pA.nickname} 对 #${pB.slot} ${pB.nickname}：${recA.wins}胜 ${recA.losses}负 (共${recA.encounters}战)`
+        }
+        matrixCells[j][i] = {
+          fromSeat: pB.slot,
+          toSeat: pA.slot,
+          wins: recA.losses,
+          losses: recA.wins,
+          encounters: recA.encounters,
+          status: recA.losses > recA.wins ? 'WIN' : recA.wins > recA.losses ? 'LOSE' : 'TIED',
+          label: `${recA.losses}-${recA.wins}`,
+          tooltip: `#${pB.slot} ${pB.nickname} 对 #${pA.slot} ${pA.nickname}：${recA.losses}胜 ${recA.wins}负 (共${recA.encounters}战)`
+        }
+
         if (recA.wins > recA.losses) {
           suppressesMap.set(pA.masterName, [...(suppressesMap.get(pA.masterName) || []), pB.masterName])
           suppressedByMap.set(pB.masterName, [...(suppressedByMap.get(pB.masterName) || []), pA.masterName])
+
+          const relA: ActiveOpponentRelation = {
+            seat: pB.slot,
+            nickname: pB.nickname,
+            masterName: pB.masterName,
+            wins: recA.wins,
+            losses: recA.losses,
+            encounters: recA.encounters,
+            scoreText: `${recA.wins}-${recA.losses}`
+          }
+          activeSuppressesMap.set(pA.masterName, [...(activeSuppressesMap.get(pA.masterName) || []), relA])
+
+          const relB: ActiveOpponentRelation = {
+            seat: pA.slot,
+            nickname: pA.nickname,
+            masterName: pA.masterName,
+            wins: recA.losses,
+            losses: recA.wins,
+            encounters: recA.encounters,
+            scoreText: `${recA.losses}-${recA.wins}`
+          }
+          activeSuppressedByMap.set(pB.masterName, [...(activeSuppressedByMap.get(pB.masterName) || []), relB])
+
           crossMatchups.push({
             winner: pA.masterName,
             loser: pB.masterName,
             wins: recA.wins,
             losses: recA.losses,
             encounters: recA.encounters,
-            description: `${pA.masterName} 历史上同场压制 ${pB.masterName} (${recA.wins}胜 ${recA.losses}负 / ${recA.encounters}战)`
+            description: `${pA.nickname} 历史上同场压制 ${pB.nickname} (${recA.wins}胜 ${recA.losses}负 / ${recA.encounters}战)`
+          })
+          suppressionChains.push({
+            winnerSeat: pA.slot,
+            winnerName: pA.nickname,
+            loserSeat: pB.slot,
+            loserName: pB.nickname,
+            wins: recA.wins,
+            losses: recA.losses,
+            encounters: recA.encounters,
+            description: `#${pA.slot} ${pA.nickname} 压制 #${pB.slot} ${pB.nickname} (${recA.wins}胜 ${recA.losses}负)`
           })
         } else if (recA.losses > recA.wins) {
           suppressesMap.set(pB.masterName, [...(suppressesMap.get(pB.masterName) || []), pA.masterName])
           suppressedByMap.set(pA.masterName, [...(suppressedByMap.get(pA.masterName) || []), pB.masterName])
+
+          const relB: ActiveOpponentRelation = {
+            seat: pA.slot,
+            nickname: pA.nickname,
+            masterName: pA.masterName,
+            wins: recA.losses,
+            losses: recA.wins,
+            encounters: recA.encounters,
+            scoreText: `${recA.losses}-${recA.wins}`
+          }
+          activeSuppressesMap.set(pB.masterName, [...(activeSuppressesMap.get(pB.masterName) || []), relB])
+
+          const relA: ActiveOpponentRelation = {
+            seat: pB.slot,
+            nickname: pB.nickname,
+            masterName: pB.masterName,
+            wins: recA.wins,
+            losses: recA.losses,
+            encounters: recA.encounters,
+            scoreText: `${recA.wins}-${recA.losses}`
+          }
+          activeSuppressedByMap.set(pA.masterName, [...(activeSuppressedByMap.get(pA.masterName) || []), relA])
+
           crossMatchups.push({
             winner: pB.masterName,
             loser: pA.masterName,
             wins: recA.losses,
             losses: recA.wins,
             encounters: recA.encounters,
-            description: `${pB.masterName} 历史上同场压制 ${pA.masterName} (${recA.losses}胜 ${recA.wins}负 / ${recA.encounters}战)`
+            description: `${pB.nickname} 历史上同场压制 ${pA.nickname} (${recA.losses}胜 ${recA.wins}负 / ${recA.encounters}战)`
+          })
+          suppressionChains.push({
+            winnerSeat: pB.slot,
+            winnerName: pB.nickname,
+            loserSeat: pA.slot,
+            loserName: pA.nickname,
+            wins: recA.losses,
+            losses: recA.wins,
+            encounters: recA.encounters,
+            description: `#${pB.slot} ${pB.nickname} 压制 #${pA.slot} ${pA.nickname} (${recA.losses}胜 ${recA.wins}负)`
           })
         }
       }
@@ -1030,9 +1392,9 @@ export function evaluate6PlayerMatchup(
     )
     const versionModifier = versionAdapt.bonus
 
-    // 所选棋手机制强度与流派协同修正分
-    const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion, bannedFaction)
-    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander)
+    // 所选棋手机制强度与流派协同修正分（结合选手专属绝活画像与棋手协同）
+    const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion, bannedFaction, p.nickname)
+    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander, p.nickname)
     const commanderModifier = cmdEval ? cmdEval.bonus : 0
 
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
@@ -1041,7 +1403,20 @@ export function evaluate6PlayerMatchup(
 
     const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier
 
+    const activeSupp = activeSuppressesMap.get(p.masterName) || []
+    const activeSuppBy = activeSuppressedByMap.get(p.masterName) || []
+
+    let h2hSummary = '同场交锋均势 / 历史首战'
+    if (activeSupp.length > 0 && activeSuppBy.length > 0) {
+      h2hSummary = `压制 #${activeSupp.map(x => `${x.seat} ${x.nickname}(${x.scoreText})`).join('、')}；遭 #${activeSuppBy.map(x => `${x.seat} ${x.nickname}(${x.scoreText})`).join('、')} 苦主克制`
+    } else if (activeSupp.length > 0) {
+      h2hSummary = `压制同场对手：${activeSupp.map(x => `#${x.seat} ${x.nickname} (${x.scoreText})`).join('、')}`
+    } else if (activeSuppBy.length > 0) {
+      h2hSummary = `遭遇克星苦主：${activeSuppBy.map(x => `#${x.seat} ${x.nickname} (${x.scoreText})`).join('、')}`
+    }
+
     return {
+      slot: p.slot,
       nickname: p.nickname,
       masterName: p.masterName,
       commander: p.commander,
@@ -1057,7 +1432,10 @@ export function evaluate6PlayerMatchup(
       banEvaluation: banEval,
       versionAdaptation: versionAdapt,
       suppressedBy: suppressedByMap.get(p.masterName) || [],
-      suppresses: suppressesMap.get(p.masterName) || []
+      suppresses: suppressesMap.get(p.masterName) || [],
+      activeSuppressedBy: activeSuppBy,
+      activeSuppresses: activeSupp,
+      h2hSummary
     }
   })
 
@@ -1095,6 +1473,11 @@ export function evaluate6PlayerMatchup(
   return {
     players: preliminary,
     crossMatchups,
+    suppressionChains,
+    crossMatrix: {
+      seats: roster.map(r => ({ seat: r.slot, nickname: r.nickname, masterName: r.masterName })),
+      cells: matrixCells
+    },
     targetVersion,
     versionMeta: verMeta,
     versionSummary: {

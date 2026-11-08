@@ -127,6 +127,8 @@ export const MASTER_PLAYER_GROUPS: readonly MasterPlayerGroup[] = [
   { masterName: '北念', aliases: ['北念', '抖音搜索北念'], note: '选手北念' },
   // 58. 刺儿
   { masterName: '刺儿', aliases: ['刺儿', '抖音刺儿'], note: '选手刺儿' },
+  // 58b. 刺痛
+  { masterName: '刺痛', aliases: ['刺痛', '抖音刺痛', 'QG刺痛', 'Hurt刺痛'], note: '顶级射手高手 / 擅长稷下坦射与养猪' },
   // 59. 呆头鹅
   { masterName: '呆头鹅', aliases: ['呆头鹅', '抖音呆头鹅'], note: '选手呆头鹅' },
   // 60. 区王

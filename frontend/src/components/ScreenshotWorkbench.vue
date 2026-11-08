@@ -162,6 +162,112 @@
               {{ getSeatSynergy(p.nickname, p.commander)!.label }}
             </div>
           </div>
+
+          <!-- 4. 同场克制关系雷达 (直接显出压制谁、被谁克制、胜负分) -->
+          <div v-if="p.nickname && getSeatMatchupInfo(idx)" class="seat-h2h-row">
+            <div
+              v-if="getSeatMatchupInfo(idx)!.activeSuppresses.length"
+              class="h2h-tag-item suppress"
+              :title="`历史同场压制：${getSeatMatchupInfo(idx)!.activeSuppresses.map(x => `#${x.seat} ${x.nickname} (${x.scoreText})`).join('、')}`"
+            >
+              <span class="tag-label">⚡ 克制：</span>
+              <span class="tag-body">
+                <span v-for="opp in getSeatMatchupInfo(idx)!.activeSuppresses.slice(0, 2)" :key="opp.seat" class="opp-badge">
+                  #{{ opp.seat }}{{ opp.nickname.slice(0, 3) }} ({{ opp.scoreText }})
+                </span>
+                <span v-if="getSeatMatchupInfo(idx)!.activeSuppresses.length > 2">...</span>
+              </span>
+              <span class="tag-score">+{{ getSeatMatchupInfo(idx)!.h2hBonus }}</span>
+            </div>
+
+            <div
+              v-if="getSeatMatchupInfo(idx)!.activeSuppressedBy.length"
+              class="h2h-tag-item nemesis"
+              :title="`历史遇克星苦主：${getSeatMatchupInfo(idx)!.activeSuppressedBy.map(x => `#${x.seat} ${x.nickname} (${x.scoreText})`).join('、')}`"
+            >
+              <span class="tag-label">⚠️ 苦主：</span>
+              <span class="tag-body">
+                <span v-for="opp in getSeatMatchupInfo(idx)!.activeSuppressedBy.slice(0, 2)" :key="opp.seat" class="opp-badge">
+                  #{{ opp.seat }}{{ opp.nickname.slice(0, 3) }} ({{ opp.scoreText }})
+                </span>
+                <span v-if="getSeatMatchupInfo(idx)!.activeSuppressedBy.length > 2">...</span>
+              </span>
+              <span class="tag-score">{{ getSeatMatchupInfo(idx)!.h2hBonus }}</span>
+            </div>
+
+            <div
+              v-if="!getSeatMatchupInfo(idx)!.activeSuppresses.length && !getSeatMatchupInfo(idx)!.activeSuppressedBy.length"
+              class="h2h-tag-item neutral"
+            >
+              <span class="tag-label">⚖️ 势均力敌</span>
+              <span class="tag-body">同场无明显偏向</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6人同场两两交锋克制矩阵与压制链图解 (用户最关心的压制关系全景透视) -->
+      <div v-if="matchupResult && (matchupResult.suppressionChains.length || matchupResult.crossMatrix)" class="h2h-matrix-board">
+        <div class="matrix-board-header">
+          <div class="board-title">
+            <span class="title-icon">⚡</span>
+            <strong>本场 6 人同场交锋克制矩阵与压制链图解</strong>
+            <small class="title-sub">(基于王牌对决历史真实同场战绩 · 实时双向克制修正)</small>
+          </div>
+        </div>
+
+        <!-- 压制链流向图 (A 压制 B) -->
+        <div v-if="matchupResult.suppressionChains.length" class="suppression-chains-flow">
+          <div class="chain-flow-title">⚔️ 实时同场压制链条 (高胜率克制关系)：</div>
+          <div class="chain-tags-wrap">
+            <div
+              v-for="(chain, cIdx) in matchupResult.suppressionChains"
+              :key="cIdx"
+              class="chain-pill"
+            >
+              <span class="winner-tag">#{{ chain.winnerSeat }} {{ chain.winnerName }}</span>
+              <span class="chain-arrow">── {{ chain.wins }}胜 {{ chain.losses }}负 ({{ ((chain.wins / (chain.wins + chain.losses)) * 100).toFixed(0) }}%) ──➔</span>
+              <span class="loser-tag">#{{ chain.loserSeat }} {{ chain.loserName }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else class="chain-empty-tip">
+          🤝 本场 6 位选手历史同场交锋记录中战绩持平或首度同场，暂无单边绝对压制链。
+        </div>
+
+        <!-- 6x6 两两交锋微型对战矩阵表格 -->
+        <div v-if="matchupResult.crossMatrix" class="cross-table-wrap">
+          <table class="cross-h2h-table">
+            <thead>
+              <tr>
+                <th class="corner-th">交手胜负 (横对纵)</th>
+                <th v-for="s in matchupResult.crossMatrix.seats" :key="s.seat">
+                  #{{ s.seat }} {{ s.nickname }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, rIdx) in matchupResult.crossMatrix.cells" :key="rIdx">
+                <th class="row-seat-th">
+                  #{{ matchupResult.crossMatrix.seats[rIdx]?.seat }} {{ matchupResult.crossMatrix.seats[rIdx]?.nickname }}
+                </th>
+                <td
+                  v-for="(cell, cIdx) in row"
+                  :key="cIdx"
+                  :class="['h2h-cell', cell.status.toLowerCase()]"
+                  :title="cell.tooltip"
+                >
+                  {{ cell.label }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-legend">
+            <span class="legend-item win">■ 绿色：同场占优压制</span>
+            <span class="legend-item lose">■ 红色：遭遇克星苦主</span>
+            <span class="legend-item tied">■ 黄色：历史战平</span>
+            <span class="legend-item none">■ 灰色：无直接交手</span>
+          </div>
         </div>
       </div>
     </div>
@@ -236,10 +342,13 @@
             <span v-if="topPick.versionModifier > 0" class="reason-tag positive">
               🔥 版本红利 (+{{ (topPick.versionModifier * 100).toFixed(0) }}%)
             </span>
-            <span v-if="topPick.h2hBonus > 0" class="reason-tag positive">
+            <span v-if="topPick.activeSuppresses?.length" class="reason-tag positive">
+              ⚡ 同场压制 {{ topPick.activeSuppresses.map(x => `#${x.seat}${x.nickname}(${x.scoreText})`).join('、') }}
+            </span>
+            <span v-else-if="topPick.h2hBonus > 0" class="reason-tag positive">
               ⚡ 同场克制 {{ topPick.suppresses.length }} 名对手
             </span>
-            <span v-if="!topPick.suppressedBy.length" class="reason-tag positive">
+            <span v-if="!topPick.activeSuppressedBy?.length && !topPick.suppressedBy.length" class="reason-tag positive">
               🛡️ 全场无苦主压制
             </span>
             <span v-if="topPick.banModifier > 0" class="reason-tag positive">
@@ -282,7 +391,10 @@
             <span v-if="secondPick.versionModifier > 0" class="reason-tag positive">
               🔥 版本加成 (+{{ (secondPick.versionModifier * 100).toFixed(0) }}%)
             </span>
-            <span v-if="secondPick.suppressedBy.length" class="reason-tag warning">
+            <span v-if="secondPick.activeSuppressedBy?.length" class="reason-tag warning">
+              ⚠️ 遇苦主：{{ secondPick.activeSuppressedBy.map(x => `#${x.seat}${x.nickname}(${x.scoreText})`).join('、') }}
+            </span>
+            <span v-else-if="secondPick.suppressedBy.length" class="reason-tag warning">
               ⚠️ 遇苦主：{{ secondPick.suppressedBy.join('、') }}
             </span>
           </div>
@@ -299,7 +411,10 @@
             <img :src="getPlayerAvatar(rp.nickname)" class="danger-avatar" alt="" />
             <div class="danger-info">
               <strong>{{ rp.nickname }} <small v-if="rp.commander">· 棋手: {{ rp.commander }}</small></strong>
-              <small v-if="rp.banEvaluation?.level === 'CRITICAL'">
+              <small v-if="rp.activeSuppressedBy?.length" class="danger-alert-text">
+                ⚠️ 遭遇苦主死克：{{ rp.activeSuppressedBy.map(x => `#${x.seat}${x.nickname}(${x.scoreText})`).join('、') }}
+              </small>
+              <small v-else-if="rp.banEvaluation?.level === 'CRITICAL'">
                 核心阵容受「{{ bannedFaction }}」封锁，历史登顶率骤降
               </small>
               <small v-else-if="rp.suppressedBy.length">

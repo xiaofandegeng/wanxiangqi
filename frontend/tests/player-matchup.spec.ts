@@ -95,7 +95,7 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
       winnerSlot: 6,
       seats: [
         { slot: 1, nickname: '世薄情', build: '河洛没有木兰', winner: false },
-        { slot: 2, nickname: 'EZ拉丁鱼', build: '我不后悔', winner: false },
+        { slot: 2, nickname: 'EZ拉丁鱼', build: '日落海倒转', winner: false },
         { slot: 3, nickname: '北念', build: '河洛木兰', winner: false },
         { slot: 4, nickname: '抖音小新游', build: '三分倒转', winner: false },
         { slot: 5, nickname: '抖音妖柒', build: '传统养猪', winner: false },

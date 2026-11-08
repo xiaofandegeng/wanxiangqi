@@ -2985,7 +2985,7 @@
         {
           "slot": 1,
           "nickname": "EZ拉丁鱼",
-          "build": "我不后悔",
+          "build": "日落海倒转",
           "commander": "公孙离",
           "avatar": "/avatars/gongsunli.png"
         },
@@ -3013,19 +3013,19 @@
         {
           "slot": 5,
           "nickname": "下雨了下雨了",
-          "build": "我也曾风光过",
+          "build": "伞半月",
           "commander": "公孙离",
           "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音所谓Y",
-          "build": "放下你的身段",
+          "build": "镜猪转吕布",
           "commander": "镜",
           "avatar": "/avatars/jing.png"
         }
       ],
-      "winnerBuild": "我不后悔"
+      "winnerBuild": "日落海倒转"
     },
     {
       "key": "ruanshi:2026-11-06:2",
@@ -3045,28 +3045,28 @@
         {
           "slot": 2,
           "nickname": "EGM抖音画笔",
-          "build": "曾得皇恩盛宠",
+          "build": "日落海倒转",
           "commander": "公孙离",
           "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EGM皮皮鲨",
-          "build": "曾耀一日风华",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "有局丨白兔",
-          "build": "曾有万众瞩目",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 5,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "曾着一身华服",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         },
@@ -3098,7 +3098,7 @@
         {
           "slot": 2,
           "nickname": "墨宝",
-          "build": "爱是会消失的对吗",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         },
@@ -3271,7 +3271,7 @@
         {
           "slot": 4,
           "nickname": "娇弱的佩奇",
-          "build": "已不在乎是非对错",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         },
@@ -3339,7 +3339,7 @@
         {
           "slot": 6,
           "nickname": "抖音猪葛龟龟",
-          "build": "游戏都不给进的冷宫女子",
+          "build": "传统养猪",
           "commander": "庄周",
           "avatar": "/avatars/zhuangzhou.png"
         }
