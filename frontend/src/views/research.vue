@@ -330,34 +330,129 @@
                     </span>
                   </th>
                   <th>常用阵容标签</th>
+                  <th>同场交手克制</th>
+                  <th>禁选影响度</th>
+                  <th class="action-col">博弈详情</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(p, idx) in filteredCatalogPlayers" :key="p.id">
-                  <td class="rank-cell">
-                    <span class="rank-badge" :class="`rank-${idx + 1}`">#{{ idx + 1 }}</span>
-                  </td>
-                  <td class="player-cell">
-                    <img :src="getPlayerAvatar(p.nickname)" class="player-inline-avatar" alt="" />
-                    <div class="player-inline-meta">
-                      <div class="player-name-row">
-                        <span class="player-name">{{ p.nickname }}</span>
-                        <small v-if="p.observedWins > 0" class="win-tag">曾获 {{ p.observedWins }} 冠</small>
+                <template v-for="(p, idx) in filteredCatalogPlayers" :key="p.id">
+                  <tr class="player-data-row" :class="{ 'row-expanded': expandedPlayerId === p.id }" @click="toggleExpandPlayer(p.id)">
+                    <td class="rank-cell">
+                      <span class="rank-badge" :class="`rank-${idx + 1}`">#{{ idx + 1 }}</span>
+                    </td>
+                    <td class="player-cell">
+                      <img :src="getPlayerAvatar(p.nickname)" class="player-inline-avatar" alt="" />
+                      <div class="player-inline-meta">
+                        <div class="player-name-row">
+                          <span class="player-name">{{ p.nickname }}</span>
+                          <small v-if="p.observedWins > 0" class="win-tag">曾获 {{ p.observedWins }} 冠</small>
+                        </div>
+                        <div v-if="p.linkedAccounts && p.linkedAccounts.length > 1" class="accounts-chip-list">
+                          <span class="accounts-count-pill">{{ p.linkedAccounts.length }} 个账号合并：</span>
+                          <span class="accounts-names" :title="p.linkedAccounts.join('、')">{{ p.linkedAccounts.join('、') }}</span>
+                        </div>
+                        <div v-else-if="!groupByPlayer && getMasterPlayerName(p.nickname) !== p.nickname" class="belongs-to-text">
+                          隶属于：<strong>{{ getMasterPlayerName(p.nickname) }}</strong>
+                        </div>
                       </div>
-                      <div v-if="p.linkedAccounts && p.linkedAccounts.length > 1" class="accounts-chip-list">
-                        <span class="accounts-count-pill">{{ p.linkedAccounts.length }} 个账号合并：</span>
-                        <span class="accounts-names" :title="p.linkedAccounts.join('、')">{{ p.linkedAccounts.join('、') }}</span>
+                    </td>
+                    <td><strong>{{ p.observedMatches }}</strong> 场</td>
+                    <td><strong class="winner-crown">{{ p.observedWins }}</strong> 次</td>
+                    <td><span class="rate-badge">{{ p.observedMatches ? percent(p.observedWins / p.observedMatches) : '0.0%' }}</span></td>
+                    <td>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : (p.builds.slice(0, 2).map((b: any) => b.label).join('、') || '暂无') }}</td>
+                    
+                    <!-- 同场克制关系摘要 -->
+                    <td class="matchup-summary-cell">
+                      <div class="matchup-pills">
+                        <span v-if="getPlayerMatchup(p.nickname)?.victims?.[0]" class="pill-suppress" :title="`同场压制：${getPlayerMatchup(p.nickname)!.victims[0].opponentMaster} (${getPlayerMatchup(p.nickname)!.victims[0].wins}胜 ${getPlayerMatchup(p.nickname)!.victims[0].losses}负)`">
+                          ⚡ 克制 {{ getPlayerMatchup(p.nickname)!.victims[0].opponentMaster }}
+                        </span>
+                        <span v-if="getPlayerMatchup(p.nickname)?.nemeses?.[0]" class="pill-nemesis" :title="`同场苦主：${getPlayerMatchup(p.nickname)!.nemeses[0].opponentMaster} (${getPlayerMatchup(p.nickname)!.nemeses[0].losses}负 ${getPlayerMatchup(p.nickname)!.nemeses[0].wins}胜)`">
+                          ⚠️ 苦主 {{ getPlayerMatchup(p.nickname)!.nemeses[0].opponentMaster }}
+                        </span>
+                        <span v-if="!getPlayerMatchup(p.nickname)?.victims?.[0] && !getPlayerMatchup(p.nickname)?.nemeses?.[0]" class="pill-neutral">
+                          互有胜负
+                        </span>
                       </div>
-                      <div v-else-if="!groupByPlayer && getMasterPlayerName(p.nickname) !== p.nickname" class="belongs-to-text">
-                        隶属于：<strong>{{ getMasterPlayerName(p.nickname) }}</strong>
+                    </td>
+
+                    <!-- 禁选敏感度摘要 -->
+                    <td class="ban-summary-cell">
+                      <span v-if="getPlayerMatchup(p.nickname)?.factions?.[0]?.share && getPlayerMatchup(p.nickname)!.factions[0].share >= 0.5" class="ban-vulnerable-pill">
+                        惧禁「{{ getPlayerMatchup(p.nickname)!.factions[0].faction }}」
+                      </span>
+                      <span v-else-if="getPlayerMatchup(p.nickname)?.factions?.length && getPlayerMatchup(p.nickname)!.factions.length >= 3" class="ban-versatile-pill">
+                        抗禁全能池
+                      </span>
+                      <span v-else class="ban-normal-pill">
+                        常规抗性
+                      </span>
+                    </td>
+
+                    <td class="action-cell">
+                      <button class="expand-btn" :title="expandedPlayerId === p.id ? '收起克制与Ban位' : '展开克制与Ban位'">
+                        {{ expandedPlayerId === p.id ? '▲ 收起' : '▼ 展开' }}
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 展开抽屉行：选手交锋克制图谱与Ban位适应力矩阵 -->
+                  <tr v-if="expandedPlayerId === p.id" :key="`exp-${p.id}`" class="player-expand-detail-row">
+                    <td colspan="9">
+                      <div class="expand-panel-content">
+                        <!-- 1. 同场交锋详细谱 -->
+                        <div class="expand-h2h-col">
+                          <h4>⚔️ 【{{ p.nickname }}】同场交手克制全景 (Head-to-Head)</h4>
+                          <p class="muted">统计该选手在同一场比赛（同局 6 席）中与各对手的胜负压制记录：</p>
+                          
+                          <div v-if="getPlayerMatchup(p.nickname)?.h2h.length" class="h2h-table-wrap">
+                            <div v-for="opp in getPlayerMatchup(p.nickname)!.h2h.slice(0, 6)" :key="opp.opponent" class="h2h-card">
+                              <img :src="getPlayerAvatar(opp.opponentMaster)" class="h2h-avatar" alt="" />
+                              <div class="h2h-info">
+                                <strong>{{ opp.opponentMaster }}</strong>
+                                <small>同场 {{ opp.encounters }} 战</small>
+                              </div>
+                              <div class="h2h-score" :class="{ win: opp.wins > opp.losses, loss: opp.losses > opp.wins }">
+                                {{ opp.wins }} 胜 - {{ opp.losses }} 负
+                                <span class="h2h-badge">{{ opp.summary }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <p v-else class="muted">该选手在已转写对局中暂无深度多局同场碰撞样本。</p>
+                        </div>
+
+                        <!-- 2. Ban位与阵营依赖剖析 -->
+                        <div class="expand-ban-col">
+                          <h4>🛡️ 核心阵营依赖与 Ban 位适应力</h4>
+                          <p class="muted">根据该选手全部对局与胜场的阵营构筑，分析受禁选封锁影响：</p>
+
+                          <div class="faction-bars">
+                            <div v-for="f in (getPlayerMatchup(p.nickname)?.factions || []).slice(0, 4)" :key="f.faction" class="faction-bar-item">
+                              <div class="bar-head">
+                                <span>{{ f.faction }}阵营</span>
+                                <small>{{ f.matches }} 战 {{ f.wins }} 冠 (占 {{ (f.share * 100).toFixed(0) }}%)</small>
+                              </div>
+                              <div class="bar-track">
+                                <div class="bar-fill" :style="{ width: `${Math.min(100, Math.max(5, f.share * 100))}%` }"></div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="ban-verdict-box">
+                            <strong>战术建议：</strong>
+                            <p v-if="getPlayerMatchup(p.nickname)?.factions?.[0]?.share && getPlayerMatchup(p.nickname)!.factions[0].share >= 0.5">
+                              该选手对「{{ getPlayerMatchup(p.nickname)!.factions[0].faction }}」阵营依赖高达 {{ (getPlayerMatchup(p.nickname)!.factions[0].share * 100).toFixed(0) }}%。当场上禁用该阵营时，战力严重受阻，需警惕其爆冷可能。
+                            </p>
+                            <p v-else>
+                              该选手多阵营构筑均衡，对单一阵营禁用具有极强抗性，赛前选阵容错率高。
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td><strong>{{ p.observedMatches }}</strong> 场</td>
-                  <td><strong class="winner-crown">{{ p.observedWins }}</strong> 次</td>
-                  <td><span class="rate-badge">{{ p.observedMatches ? percent(p.observedWins / p.observedMatches) : '0.0%' }}</span></td>
-                  <td>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : (p.builds.slice(0, 2).map((b: any) => b.label).join('、') || '暂无') }}</td>
-                </tr>
+                    </td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </div>
@@ -389,6 +484,10 @@ import {
   aggregateCatalogPlayers,
   type AggregatedPlayerProfile
 } from '../utils/player-grouping'
+import {
+  buildPlayerMatchupProfiles,
+  type PlayerMatchupProfile
+} from '../utils/player-matchup'
 
 interface CatalogMatchSeat {
   slot: number
@@ -464,6 +563,22 @@ type SortOrder = 'asc' | 'desc'
 const sortKey = ref<SortKey>('wins')
 const sortOrder = ref<SortOrder>('desc')
 const groupByPlayer = ref(true) // 默认开启：智能归纳同选手的多个账号
+const expandedPlayerId = ref<string | null>(null)
+
+function toggleExpandPlayer(id: string) {
+  expandedPlayerId.value = expandedPlayerId.value === id ? null : id
+}
+
+// 缓存构建的全量选手同场交锋与Ban位依赖图谱
+const matchupProfilesMap = computed(() => {
+  const matches = catalog.value?.matches || []
+  return buildPlayerMatchupProfiles(matches, groupByPlayer.value)
+})
+
+function getPlayerMatchup(nickname: string): PlayerMatchupProfile | undefined {
+  const key = groupByPlayer.value ? getMasterPlayerName(nickname) : nickname
+  return matchupProfilesMap.value.get(key) || matchupProfilesMap.value.get(nickname)
+}
 
 function setSort(key: SortKey) {
   if (sortKey.value === key) {
@@ -1441,6 +1556,230 @@ button,
       }
     }
   }
+
+  .player-data-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &.row-expanded {
+      background-color: rgba($color-primary, 0.04);
+      td {
+        border-bottom-color: transparent;
+      }
+    }
+  }
+
+  .matchup-summary-cell {
+    .matchup-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .pill-suppress {
+      display: inline-flex;
+      font-size: 11px;
+      font-weight: 600;
+      color: $color-success;
+      background: rgba($color-success, 0.1);
+      padding: 1px 6px;
+      border-radius: $radius-sm;
+      white-space: nowrap;
+    }
+
+    .pill-nemesis {
+      display: inline-flex;
+      font-size: 11px;
+      font-weight: 600;
+      color: $color-danger;
+      background: rgba($color-danger, 0.1);
+      padding: 1px 6px;
+      border-radius: $radius-sm;
+      white-space: nowrap;
+    }
+
+    .pill-neutral {
+      font-size: 11px;
+      color: $text-muted;
+    }
+  }
+
+  .ban-summary-cell {
+    .ban-vulnerable-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: $color-danger;
+      background: rgba($color-danger, 0.12);
+      padding: 2px 7px;
+      border-radius: 9999px;
+      border: 1px solid rgba($color-danger, 0.25);
+      white-space: nowrap;
+    }
+
+    .ban-versatile-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: $color-primary;
+      background: rgba($color-primary, 0.1);
+      padding: 2px 7px;
+      border-radius: 9999px;
+      border: 1px solid rgba($color-primary, 0.25);
+      white-space: nowrap;
+    }
+
+    .ban-normal-pill {
+      font-size: 11px;
+      color: $text-secondary;
+    }
+  }
+
+  .expand-btn {
+    @include button-secondary;
+    padding: 3px 8px;
+    font-size: 11px;
+    border-radius: $radius-sm;
+    white-space: nowrap;
+  }
+
+  .player-expand-detail-row {
+    background-color: rgba($color-primary, 0.02);
+
+    td {
+      padding: 0 16px 18px;
+      border-bottom: 2px solid rgba($color-primary, 0.2);
+    }
+
+    .expand-panel-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 16px;
+      background: $bg-canvas;
+      border: 1px solid $border-subtle;
+      border-radius: $radius-md;
+      margin-top: 4px;
+
+      h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0 0 4px 0;
+      }
+    }
+
+    .expand-h2h-col {
+      .h2h-table-wrap {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .h2h-card {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: $bg-subtle;
+        border-radius: $radius-sm;
+
+        .h2h-avatar {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+        }
+
+        .h2h-info {
+          display: flex;
+          flex-direction: column;
+
+          strong {
+            font-size: 12px;
+            color: $text-primary;
+          }
+          small {
+            font-size: 10.5px;
+            color: $text-muted;
+          }
+        }
+
+        .h2h-score {
+          margin-left: auto;
+          font-size: 11.5px;
+          font-weight: 700;
+          text-align: right;
+
+          &.win {
+            color: $color-success;
+          }
+          &.loss {
+            color: $color-danger;
+          }
+
+          .h2h-badge {
+            display: block;
+            font-size: 9.5px;
+            font-weight: normal;
+            color: $text-muted;
+          }
+        }
+      }
+    }
+
+    .expand-ban-col {
+      .faction-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 10px 0;
+      }
+
+      .faction-bar-item {
+        .bar-head {
+          display: flex;
+          justify-content: space-between;
+          font-size: 11.5px;
+          color: $text-primary;
+          margin-bottom: 3px;
+
+          small {
+            color: $text-muted;
+          }
+        }
+
+        .bar-track {
+          height: 6px;
+          background: $border-subtle;
+          border-radius: 9999px;
+          overflow: hidden;
+
+          .bar-fill {
+            height: 100%;
+            background: $color-primary;
+            border-radius: 9999px;
+          }
+        }
+      }
+
+      .ban-verdict-box {
+        margin-top: 10px;
+        padding: 10px 12px;
+        background: $bg-subtle;
+        border-radius: $radius-sm;
+        font-size: 12px;
+        line-height: 1.5;
+
+        strong {
+          color: $color-primary;
+        }
+
+        p {
+          margin: 4px 0 0;
+          color: $text-secondary;
+        }
+      }
+    }
+  }
 }
 
 .research-match {
@@ -1509,6 +1848,14 @@ button,
 }
 
 @media (max-width: 768px) {
+  .player-expand-detail-row .expand-panel-content {
+    grid-template-columns: 1fr;
+  }
+
+  .expand-h2h-col .h2h-table-wrap {
+    grid-template-columns: 1fr;
+  }
+
   .research-heading {
     align-items: flex-start;
     flex-direction: column;

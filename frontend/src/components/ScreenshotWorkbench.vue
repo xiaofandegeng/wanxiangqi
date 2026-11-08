@@ -29,6 +29,113 @@
   <p class="shot-warning">虚拟钻石／积分建议：暂不分配，保留100%。当前没有经过校准的六人获胜概率。</p>
   <section v-if="result.model" class="shot-model"><h3>后端模型结果</h3><p>{{ result.model.modelVersion }} · {{ result.model.trainingMatches }} 场训练 · {{ result.model.calibrated?'已校准':'未校准' }}</p><p>{{ result.model.notice }}</p><ol><li v-for="p in result.model.players" :key="p.nickname"><strong>{{ p.nickname }}：{{ (p.probability*100).toFixed(2) }}%</strong><span v-if="p.coldStart"> · 无历史，使用先验</span></li></ol><p v-if="result.model.diagnostic.model">离线滚动诊断 {{ result.model.diagnostic.evaluatedMatches }} 场：模型对数损失 {{ result.model.diagnostic.model.logLoss.toFixed(3) }}；均分基线 {{ result.model.diagnostic.uniform!.logLoss.toFixed(3) }}（越低越好）。不是前瞻验证。</p><p class="shot-warning" v-if="result.model.diagnostic.conclusion==='NOT_BEATING_UNIFORM'">当前离线诊断未优于六人均分基线，尚无证据表明这些概率具有预测优势。</p><p>{{ result.model.diagnostic.notice }}</p><details><summary>复算依据</summary><p>数据指纹 {{ result.model.dataHash }}</p><p>只学习名单中的选手身份与冠军标签，不读取本场返奖率、赛后阵容或作者评价。每次结果随分析记录保存。</p></details></section>
   <p>数据截止：{{ new Date(result.featureCutoff).toLocaleString('zh-CN') }}；同日无精确时间的历史场次保守排除。</p>
+
+  <!-- 六人同场克制与Ban位影响深度研判面板 -->
+  <section v-if="matchupResult" class="shot-advanced-analysis">
+    <div class="analysis-header-row">
+      <div>
+        <h3>六人同场博弈与禁选研判（克制链 + Ban位冲击）</h3>
+        <p class="muted">根据 26 个比赛日历史真实同场交锋记录与阵营依赖度，实时测算克制网络与禁选冲击。</p>
+      </div>
+      <span class="ban-tag" v-if="bannedFaction">当前禁用：{{ bannedFaction }}</span>
+    </div>
+
+    <!-- 1. 阵营禁用冲击剖析 -->
+    <div class="ban-analysis-card" v-if="bannedFaction">
+      <div class="ban-summary-banner">
+        <span class="ban-icon">🛡️</span>
+        <div class="ban-summary-text">
+          <strong>禁选大局研判</strong>
+          <p>{{ matchupResult.banSummary.summaryText }}</p>
+        </div>
+      </div>
+
+      <div class="ban-players-grid">
+        <div v-for="p in matchupResult.players" :key="p.nickname" class="ban-player-card" :class="p.banEvaluation?.level.toLowerCase()">
+          <div class="card-top">
+            <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-small" alt="" />
+            <div>
+              <strong>{{ p.nickname }}</strong>
+              <small v-if="p.masterName !== p.nickname">({{ p.masterName }})</small>
+            </div>
+            <span class="impact-level-pill" :class="p.banEvaluation?.level.toLowerCase()">
+              {{ p.banEvaluation?.levelLabel || '无影响' }}
+            </span>
+          </div>
+          <p class="ban-desc">{{ p.banEvaluation?.description }}</p>
+          <div class="ban-advice-row">
+            <span class="advice-label">对策：</span>
+            <span>{{ p.banEvaluation?.advice }}</span>
+          </div>
+          <div v-if="p.banEvaluation?.historicalRecord.matches" class="ban-hist-stat">
+            历史此Ban下：{{ p.banEvaluation.historicalRecord.wins }}/{{ p.banEvaluation.historicalRecord.matches }} 夺冠 (胜率 {{ p.banEvaluation.historicalRecord.winRate }}%)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 同场交锋与克制链 -->
+    <div class="h2h-analysis-card">
+      <h4>⚡ 六人历史同场交手与对位克制链</h4>
+      <div v-if="matchupResult.crossMatchups.length" class="cross-matchups-list">
+        <div v-for="(cm, idx) in matchupResult.crossMatchups" :key="idx" class="cross-matchup-item">
+          <span class="edge-icon">⚔️</span>
+          <div class="matchup-text">
+            <strong>{{ cm.winner }}</strong>
+            <span class="sub-suppress">同场压制</span>
+            <strong>{{ cm.loser }}</strong>
+            <span class="stat-pill">{{ cm.wins }}胜 {{ cm.losses }}负 · {{ cm.encounters }}战</span>
+          </div>
+        </div>
+      </div>
+      <p v-else class="empty-h2h-text">当前 6 位选手在库内暂无历史同场两两直接交锋胜负记录（势均力敌）。</p>
+
+      <!-- 每位选手的克制与被克制标记 -->
+      <div class="player-nemesis-grid">
+        <div v-for="p in matchupResult.players" :key="p.nickname" class="nemesis-row">
+          <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-mini" alt="" />
+          <strong class="nemesis-name">{{ p.nickname }}</strong>
+          <div class="nemesis-tags">
+            <span v-for="opp in p.suppressedBy" :key="opp" class="tag-suppressed" title="历史上曾被该选手同场多次压制">
+              ⚠️ 遇苦主：{{ opp }}
+            </span>
+            <span v-for="vic in p.suppresses" :key="vic" class="tag-suppress" title="历史上同场多次压制该选手">
+              ⚡ 克制：{{ vic }}
+            </span>
+            <span v-if="!p.suppressedBy.length && !p.suppresses.length" class="tag-neutral">
+              同场相对均势
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 综合博弈校正战力与胜率 -->
+    <div class="adjusted-probability-box">
+      <h4>🎯 综合博弈胜率推演（融合基础胜率 + 克制加成 + Ban位修正）</h4>
+      <div class="prob-bars-list">
+        <div v-for="p in matchupResult.players" :key="p.nickname" class="prob-row">
+          <div class="row-info">
+            <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-mini" alt="" />
+            <span class="name">{{ p.nickname }}</span>
+            <div class="modifiers-pills">
+              <span v-if="p.h2hBonus !== 0" class="mod-pill" :class="{ positive: p.h2hBonus > 0, negative: p.h2hBonus < 0 }">
+                克制 {{ p.h2hBonus > 0 ? '+' : '' }}{{ p.h2hBonus }}
+              </span>
+              <span v-if="p.banModifier !== 0" class="mod-pill" :class="{ positive: p.banModifier > 0, negative: p.banModifier < 0 }">
+                Ban位 {{ p.banModifier > 0 ? '+' : '' }}{{ p.banModifier }}
+              </span>
+            </div>
+            <strong class="prob-val">{{ (p.adjustedProbability * 100).toFixed(1) }}%</strong>
+          </div>
+          <div class="prob-track">
+            <div class="prob-fill" :style="{ width: `${Math.min(100, Math.max(2, p.adjustedProbability * 100))}%` }"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section v-if="result.aceContext" class="shot-context-result"><h3>本场条件</h3><p>阵营禁用与已知玩法用于核对；当前实验概率尚未使用这些条件。</p><p>禁用：{{ result.aceContext.bannedFaction || '未提供' }}</p><ul><li v-for="p in result.aceContext.players" :key="p.seat">{{ p.nickname }} · 棋手 {{ p.commander||'未知' }} · 玩法 {{ p.visiblePlan||'未知' }}</li></ul><p v-for="g in result.aceContext.sharedPlans" :key="g.label">{{ g.label }}：席位 {{ g.seats.join('、') }} 选择标签相同，需复核实际英雄竞争；不据此直接加减胜率。</p><p v-for="w in result.aceContext.warnings.filter(w => !w.includes('RETURN'))" :key="w">{{ contextWarnings[w]||w }}</p><a v-for="source in result.aceContext.rules.sources" :key="source.url" :href="source.url" target="_blank" rel="noreferrer">{{ source.title }} </a></section>
   <ul class="shot-gaps"><li v-for="b in result.blockers" :key="b">{{ blockerNames[b]||b }}</li></ul>
   <div class="shot-profiles"><article v-for="(p,i) in result.players" :key="i"><h4>{{ p.nickname }}</h4><p>档案：{{ p.profileNickname||'未匹配' }} · 程序概率：{{ p.probability == null ? '未计算' : (p.probability*100).toFixed(2)+'%（实验）' }}</p><p>近7日来源样本 {{ p.recent7.wins }}/{{ p.recent7.observations }} 登顶；近30日 {{ p.recent30.wins }}/{{ p.recent30.observations }}</p><p class="muted">以上仅已采集样本，无模式/版本完整性保证，不能当作完整近期战绩。</p><ul><li v-for="b in p.buildRates" :key="b.label">{{ b.label }}：{{ b.wins }}/{{ b.observations }} 登顶（{{ (100*b.observedWinShare).toFixed(1) }}% 来源选择标签样本）；最终阵容胜率未知</li></ul><p v-if="!p.buildRates.length">暂无可关联的逐局玩法。</p><details v-if="p.claims.length"><summary>作者专长评价与原文</summary><ul><li v-for="c in p.claims" :key="c.id">{{ c.kind==='COMMANDER_AUTHOR_CLAIM'?'棋手':'玩法' }}：{{ c.text }} <a :href="c.sourceUrl" target="_blank" rel="noreferrer">来源</a></li></ul></details></article></div>
@@ -39,6 +146,8 @@
 import {computed,onMounted,ref,watch} from 'vue'
 import {uploadEvidence} from '../api/index'
 import {researchApi} from '../api/prediction'
+import {evaluate6PlayerMatchup, type SixPlayerMatchupResult} from '../utils/player-matchup'
+import {getPlayerAvatar} from '../utils/player-avatar'
 interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
 interface Sample {wins:number;observations:number}
@@ -48,6 +157,7 @@ interface Result {model?:WinnerModel|null;aceContext?:AceContext;status:string;n
 const capturedAt=ref('')
 const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false),mode=ref('WANXIANG'),version=ref('')
 const savedAnalysisId=ref('')
+const catalogMatches=ref<any[]>([])
 async function loadSaved(){busy.value=true;error.value='';result.value=null;draft.value=null;confirmed.value=false;try{result.value=await researchApi<Result>(`screenshot-analyses/${encodeURIComponent(savedAnalysisId.value.trim())}`)}catch(e){error.value=e instanceof Error?e.message:'读取失败'}finally{busy.value=false}}
 const experimentalProbability=ref(true)
 const supportStage=ref('UNKNOWN'),bannedFaction=ref('')
@@ -62,7 +172,21 @@ async function read(){if(!file.value)return;busy.value=true;error.value='';draft
  try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
 async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
 watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
-onMounted(async()=>{try{profiles.value=(await researchApi<{players:{id:string;nickname:string}[]}>('catalog')).players||[]}catch(e){error.value=e instanceof Error?e.message:'档案加载失败'}})
+
+// 实时计算同场克制与禁选阵营影响
+const matchupResult=computed<SixPlayerMatchupResult|null>(()=>{
+ const valid=players.value.filter(p=>p.nickname&&p.nickname.trim())
+ if(valid.length<2)return null
+ return evaluate6PlayerMatchup(valid,bannedFaction.value,catalogMatches.value)
+})
+
+onMounted(async()=>{
+ try{
+  const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[]}>('catalog')
+  profiles.value=cat.players||[]
+  catalogMatches.value=cat.matches||[]
+ }catch(e){error.value=e instanceof Error?e.message:'档案加载失败'}
+})
 </script>
 <style lang="scss" scoped>
 @use '../styles/variables.scss' as *;
@@ -268,6 +392,375 @@ onMounted(async()=>{try{profiles.value=(await researchApi<{players:{id:string;ni
   }
 }
 
+.shot-advanced-analysis {
+  margin: 24px 0;
+  padding: 24px;
+  background: $bg-surface;
+  border-radius: $radius-lg;
+  border: 1px solid $border-subtle;
+  box-shadow: $shadow-sm;
+
+  .analysis-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid $border-subtle;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0 0 6px 0;
+    }
+  }
+
+  .ban-tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba($color-danger, 0.12);
+    color: $color-danger;
+    border: 1px solid rgba($color-danger, 0.3);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+}
+
+.ban-analysis-card {
+  margin-bottom: 24px;
+
+  .ban-summary-banner {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba($color-warning, 0.1);
+    border: 1px solid rgba($color-warning, 0.25);
+    border-radius: $radius-md;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+
+    .ban-icon {
+      font-size: 20px;
+    }
+
+    .ban-summary-text {
+      strong {
+        color: $text-primary;
+        font-size: 14px;
+      }
+      p {
+        margin: 4px 0 0 0;
+        font-size: 13px;
+        color: $text-primary;
+      }
+    }
+  }
+
+  .ban-players-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .ban-player-card {
+    background: $bg-subtle;
+    border-radius: $radius-md;
+    padding: 14px;
+    border-left: 4px solid $border-subtle;
+
+    &.critical {
+      border-left-color: $color-danger;
+      background: rgba($color-danger, 0.04);
+    }
+    &.moderate {
+      border-left-color: $color-warning;
+      background: rgba($color-warning, 0.04);
+    }
+    &.benefited {
+      border-left-color: $color-success;
+      background: rgba($color-success, 0.04);
+    }
+    &.immune {
+      border-left-color: $color-primary;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+
+      strong {
+        font-size: 14px;
+        color: $text-primary;
+      }
+      small {
+        color: $text-secondary;
+        font-size: 11px;
+      }
+    }
+
+    .player-avatar-small {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid $border-subtle;
+    }
+
+    .impact-level-pill {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+
+      &.critical {
+        background: rgba($color-danger, 0.15);
+        color: $color-danger;
+      }
+      &.moderate {
+        background: rgba($color-warning, 0.15);
+        color: $color-warning;
+      }
+      &.benefited {
+        background: rgba($color-success, 0.15);
+        color: $color-success;
+      }
+      &.immune {
+        background: $border-subtle;
+        color: $text-secondary;
+      }
+    }
+
+    .ban-desc {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: $text-primary;
+      margin: 6px 0;
+    }
+
+    .ban-advice-row {
+      font-size: 12px;
+      color: $text-secondary;
+      line-height: 1.5;
+      margin-top: 6px;
+
+      .advice-label {
+        font-weight: 700;
+        color: $color-primary;
+      }
+    }
+
+    .ban-hist-stat {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed $border-subtle;
+      font-size: 11.5px;
+      color: $text-secondary;
+    }
+  }
+}
+
+.h2h-analysis-card {
+  margin-bottom: 24px;
+  background: $bg-canvas;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 16px 20px;
+
+  h4 {
+    margin: 0 0 14px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  .cross-matchups-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .cross-matchup-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: $bg-subtle;
+    border-radius: $radius-sm;
+    font-size: 13px;
+
+    .edge-icon {
+      font-size: 16px;
+    }
+
+    .matchup-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+
+      .sub-suppress {
+        color: $color-danger;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .stat-pill {
+        font-size: 11px;
+        background: $border-subtle;
+        color: $text-secondary;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .empty-h2h-text {
+    font-size: 13px;
+    color: $text-secondary;
+    padding: 12px 0;
+  }
+
+  .player-nemesis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .nemesis-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: $bg-subtle;
+    border-radius: $radius-sm;
+
+    .player-avatar-mini {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+
+    .nemesis-name {
+      font-size: 13px;
+      color: $text-primary;
+      min-width: 60px;
+    }
+
+    .nemesis-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag-suppressed {
+      font-size: 11.5px;
+      color: $color-danger;
+      background: rgba($color-danger, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .tag-suppress {
+      font-size: 11.5px;
+      color: $color-success;
+      background: rgba($color-success, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .tag-neutral {
+      font-size: 11.5px;
+      color: $text-secondary;
+    }
+  }
+}
+
+.adjusted-probability-box {
+  background: $bg-canvas;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 16px 20px;
+
+  h4 {
+    margin: 0 0 14px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  .prob-bars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .prob-row {
+    .row-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      .name {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: $text-primary;
+        min-width: 80px;
+      }
+
+      .modifiers-pills {
+        display: flex;
+        gap: 6px;
+
+        .mod-pill {
+          font-size: 10.5px;
+          padding: 1px 6px;
+          border-radius: 4px;
+
+          &.positive {
+            background: rgba($color-success, 0.15);
+            color: $color-success;
+          }
+          &.negative {
+            background: rgba($color-danger, 0.15);
+            color: $color-danger;
+          }
+        }
+      }
+
+      .prob-val {
+        margin-left: auto;
+        font-size: 14px;
+        font-weight: 700;
+        color: $color-primary;
+      }
+    }
+
+    .prob-track {
+      height: 8px;
+      background: $border-subtle;
+      border-radius: 9999px;
+      overflow: hidden;
+
+      .prob-fill {
+        height: 100%;
+        background: linear-gradient(90deg, $color-primary, $color-primary-hover);
+        border-radius: 9999px;
+        transition: width 0.3s ease;
+      }
+    }
+  }
+}
+
 .shot-context-result {
   border-left: 3px solid $color-primary;
   border-radius: 0 $radius-md $radius-md 0;
@@ -325,6 +818,12 @@ onMounted(async()=>{try{profiles.value=(await researchApi<{players:{id:string;ni
 @media (max-width: 768px) {
   .shot-workbench {
     padding: 18px;
+  }
+
+  .ban-analysis-card .ban-players-grid,
+  .h2h-analysis-card .cross-matchups-list,
+  .h2h-analysis-card .player-nemesis-grid {
+    grid-template-columns: 1fr;
   }
 
   .shot-upload,
