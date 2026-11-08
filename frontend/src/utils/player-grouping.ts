@@ -140,7 +140,9 @@ export const MASTER_PLAYER_GROUPS: readonly MasterPlayerGroup[] = [
   // 64. 白起（EG战队）
   { masterName: '白起', aliases: ['白起', '抖音EG白起'], note: 'EG战队' },
   // 65. 龙傲天
-  { masterName: '龙傲天', aliases: ['龙傲天', '抖音龙傲天'], note: '选手龙傲天' }
+  { masterName: '龙傲天', aliases: ['龙傲天', '抖音龙傲天'], note: '选手龙傲天' },
+  // 66. 晓枫（RW侠战队职业选手）
+  { masterName: '晓枫', aliases: ['晓枫', 'RW侠.晓枫', 'RW侠晓枫', 'RW晓枫'], note: 'RW侠战队选手 / S1赛事冠军' }
 ]
 
 const ALIAS_TO_MASTER_MAP = new Map<string, MasterPlayerGroup>()
