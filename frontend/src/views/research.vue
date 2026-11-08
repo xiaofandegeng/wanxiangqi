@@ -211,25 +211,97 @@
             </div>
           </div>
 
-          <div class="research-filters">
+          <div class="research-filters player-filter-bar">
             <input v-model="playerSearch" placeholder="搜索选手昵称或流派阵容" aria-label="搜索选手">
+            <div class="sort-pills">
+              <span class="sort-label">排序方式：</span>
+              <button
+                type="button"
+                class="sort-pill"
+                :class="{ active: sortKey === 'wins' }"
+                @click="setSort('wins')"
+              >
+                👑 登顶夺冠 {{ sortKey === 'wins' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button>
+              <button
+                type="button"
+                class="sort-pill"
+                :class="{ active: sortKey === 'winRate' }"
+                @click="setSort('winRate')"
+              >
+                📈 登顶胜率 {{ sortKey === 'winRate' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button>
+              <button
+                type="button"
+                class="sort-pill"
+                :class="{ active: sortKey === 'matches' }"
+                @click="setSort('matches')"
+              >
+                ⚔️ 观察场次 {{ sortKey === 'matches' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button>
+              <button
+                type="button"
+                class="sort-pill"
+                :class="{ active: sortKey === 'nickname' }"
+                @click="setSort('nickname')"
+              >
+                🔤 选手昵称 {{ sortKey === 'nickname' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button>
+            </div>
           </div>
 
           <div class="research-table">
             <table>
               <thead>
                 <tr>
-                  <th>榜单排名</th>
-                  <th>选手 / 战队</th>
-                  <th>观察场次</th>
-                  <th>登顶夺冠</th>
-                  <th>登顶胜率</th>
+                  <th class="th-sortable" title="点击恢复默认胜场排行" @click="setSort('wins')">
+                    <span class="th-content">
+                      榜单排名
+                      <span class="sort-indicator" :class="{ active: sortKey === 'wins' }">
+                        {{ sortKey === 'wins' ? (sortOrder === 'desc' ? '▼' : '▲') : '⇅' }}
+                      </span>
+                    </span>
+                  </th>
+                  <th class="th-sortable" title="点击按选手昵称排序" @click="setSort('nickname')">
+                    <span class="th-content">
+                      选手 / 战队
+                      <span class="sort-indicator" :class="{ active: sortKey === 'nickname' }">
+                        {{ sortKey === 'nickname' ? (sortOrder === 'desc' ? '▼' : '▲') : '⇅' }}
+                      </span>
+                    </span>
+                  </th>
+                  <th class="th-sortable" title="点击按出场观察场次排序" @click="setSort('matches')">
+                    <span class="th-content">
+                      观察场次
+                      <span class="sort-indicator" :class="{ active: sortKey === 'matches' }">
+                        {{ sortKey === 'matches' ? (sortOrder === 'desc' ? '▼' : '▲') : '⇅' }}
+                      </span>
+                    </span>
+                  </th>
+                  <th class="th-sortable" title="点击按登顶夺冠次数排序" @click="setSort('wins')">
+                    <span class="th-content">
+                      登顶夺冠
+                      <span class="sort-indicator" :class="{ active: sortKey === 'wins' }">
+                        {{ sortKey === 'wins' ? (sortOrder === 'desc' ? '▼' : '▲') : '⇅' }}
+                      </span>
+                    </span>
+                  </th>
+                  <th class="th-sortable" title="点击按登顶胜率排序" @click="setSort('winRate')">
+                    <span class="th-content">
+                      登顶胜率
+                      <span class="sort-indicator" :class="{ active: sortKey === 'winRate' }">
+                        {{ sortKey === 'winRate' ? (sortOrder === 'desc' ? '▼' : '▲') : '⇅' }}
+                      </span>
+                    </span>
+                  </th>
                   <th>常用阵容标签</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(p, idx) in filteredCatalogPlayers" :key="p.id">
-                  <td>#{{ idx + 1 }}</td>
+                  <td class="rank-cell">
+                    <span class="rank-badge" :class="`rank-${idx + 1}`">#{{ idx + 1 }}</span>
+                  </td>
                   <td class="player-cell">
                     <img :src="getPlayerAvatar(p.nickname)" class="player-inline-avatar" alt="" />
                     <div class="player-inline-meta">
@@ -239,7 +311,7 @@
                   </td>
                   <td><strong>{{ p.observedMatches }}</strong> 场</td>
                   <td><strong class="winner-crown">{{ p.observedWins }}</strong> 次</td>
-                  <td>{{ p.observedMatches ? percent(p.observedWins / p.observedMatches) : '0.0%' }}</td>
+                  <td><span class="rate-badge">{{ p.observedMatches ? percent(p.observedWins / p.observedMatches) : '0.0%' }}</span></td>
                   <td>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : (p.builds.slice(0, 2).map(b => b.label).join('、') || '暂无') }}</td>
                 </tr>
               </tbody>
@@ -335,6 +407,22 @@ const query = ref('')
 const selectedDay = ref('')
 const playerSearch = ref('')
 
+// 选手排序状态
+type SortKey = 'wins' | 'winRate' | 'matches' | 'nickname'
+type SortOrder = 'asc' | 'desc'
+
+const sortKey = ref<SortKey>('wins')
+const sortOrder = ref<SortOrder>('desc')
+
+function setSort(key: SortKey) {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
+  } else {
+    sortKey.value = key
+    sortOrder.value = key === 'nickname' ? 'asc' : 'desc'
+  }
+}
+
 // 总览计算属性：胜场 TOP 8
 const topWinners = computed(() => {
   if (!catalog.value?.players) return []
@@ -385,22 +473,62 @@ const filteredCatalogMatches = computed(() => {
   })
 })
 
-// 选手统计页计算属性
+// 选手统计页计算属性（多维可排序）
 const filteredCatalogPlayers = computed(() => {
   const list = catalog.value?.players || []
   const q = playerSearch.value.trim().toLowerCase()
-  return list
-    .filter(p => {
-      if (!q) return true
-      const text = [
-        p.nickname,
-        ...p.builds.map(b => b.label),
-        ...p.commonBuilds
-      ].join(' ').toLowerCase()
-      return text.includes(q)
-    })
-    .slice()
-    .sort((a, b) => b.observedWins - a.observedWins || b.observedMatches - a.observedMatches)
+  const filtered = list.filter(p => {
+    if (!q) return true
+    const text = [
+      p.nickname,
+      ...p.builds.map(b => b.label),
+      ...p.commonBuilds
+    ].join(' ').toLowerCase()
+    return text.includes(q)
+  })
+
+  return filtered.slice().sort((a, b) => {
+    const factor = sortOrder.value === 'desc' ? 1 : -1
+    const aRate = a.observedMatches ? a.observedWins / a.observedMatches : 0
+    const bRate = b.observedMatches ? b.observedWins / b.observedMatches : 0
+
+    if (sortKey.value === 'wins') {
+      if (b.observedWins !== a.observedWins) {
+        return factor * (b.observedWins - a.observedWins)
+      }
+      if (bRate !== aRate) {
+        return factor * (bRate - aRate)
+      }
+      return factor * (b.observedMatches - a.observedMatches)
+    }
+
+    if (sortKey.value === 'winRate') {
+      if (bRate !== aRate) {
+        return factor * (bRate - aRate)
+      }
+      if (b.observedWins !== a.observedWins) {
+        return factor * (b.observedWins - a.observedWins)
+      }
+      return factor * (b.observedMatches - a.observedMatches)
+    }
+
+    if (sortKey.value === 'matches') {
+      if (b.observedMatches !== a.observedMatches) {
+        return factor * (b.observedMatches - a.observedMatches)
+      }
+      if (b.observedWins !== a.observedWins) {
+        return factor * (b.observedWins - a.observedWins)
+      }
+      return factor * (bRate - aRate)
+    }
+
+    if (sortKey.value === 'nickname') {
+      const cmp = a.nickname.localeCompare(b.nickname, 'zh-CN')
+      return sortOrder.value === 'asc' ? cmp : -cmp
+    }
+
+    return 0
+  })
 })
 
 const percent = (n: number) => (n * 100).toFixed(1) + '%'
@@ -938,6 +1066,131 @@ button,
   display: flex;
   gap: 12px;
   margin: 18px 0;
+}
+
+.player-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+
+  input {
+    flex: 1;
+    min-width: 240px;
+  }
+}
+
+.sort-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .sort-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+
+  .sort-pill {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: $radius-full;
+    border: 1px solid $border-subtle;
+    background: $bg-surface;
+    color: $text-secondary;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $border-hover;
+      color: $color-primary;
+      background-color: $bg-subtle;
+    }
+
+    &.active {
+      background-color: $color-primary-light;
+      border-color: rgba($color-primary, 0.4);
+      color: $color-primary;
+      font-weight: 600;
+    }
+  }
+}
+
+.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(30, 70, 58, 0.08);
+    color: $color-primary;
+
+    .sort-indicator {
+      color: $color-primary;
+      opacity: 0.9;
+    }
+  }
+
+  .th-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sort-indicator {
+    display: inline-block;
+    font-size: 11px;
+    color: $text-muted;
+    opacity: 0.5;
+    transition: all 0.15s ease;
+
+    &.active {
+      color: $color-primary;
+      opacity: 1;
+      font-weight: 700;
+    }
+  }
+}
+
+.rank-cell {
+  width: 72px;
+
+  .rank-badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: $radius-sm;
+    background: $bg-subtle;
+    color: $text-secondary;
+
+    &.rank-1 {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid rgba(#F59E0B, 0.3);
+    }
+    &.rank-2 {
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px solid rgba(#94A3B8, 0.3);
+    }
+    &.rank-3 {
+      background: #FFEDD5;
+      color: #C2410C;
+      border: 1px solid rgba(#F97316, 0.3);
+    }
+  }
+}
+
+.rate-badge {
+  font-weight: 600;
+  color: $text-primary;
+  font-variant-numeric: tabular-nums;
 }
 
 .research-page input,
