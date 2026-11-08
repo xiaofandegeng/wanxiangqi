@@ -1,7 +1,15 @@
-// 王牌对决历日历史胜者图谱与战绩补充数据 (2026-10-11 ~ 2026-11-05)
+// 王牌对决历日历史胜者图谱与战绩补充数据 (2026-10-11 ~ 2026-11-07)
 // 依据作者软柿原帖胜者公报（@胜者老师名单）与存证原帖整理
 
 export const HISTORICAL_DATE_GROUPS = [
+  {
+    day: '2026-11-07',
+    sourceUrl: 'https://www.douyin.com/note/7705642819038203175',
+    title: '万象棋王牌对决1107日胜者一图流',
+    winners: ['EZ拉丁鱼', '世薄情', '遗愿', '抖音猪葛龟龟', '抖音EGM小谷芷', 'EG清辞', '抖音妖柒', '梦飞大大'],
+    builds: ['我不后悔', '逐鹿蒙恬', '三分登场', '传统养猪', '雷霆战机', '三分倒转', '传统养猪', '日落海倒转'],
+    bans: [null, null, null, null, null, null, '逐鹿', '三分']
+  },
   {
     day: '2026-11-05',
     sourceUrl: 'https://www.douyin.com/note/7704915352362221519',
@@ -112,19 +120,21 @@ export function buildHistoricalSnapshotMatches() {
     for (let i = 0; i < group.winners.length; i++) {
       const winner = group.winners[i]
       const ordinal = i + 1
+      const winnerBuild = group.builds?.[i] || '胜者一图流公布'
+      const ban = group.bans?.[i] || null
       matches.push({
         id: `ruanshi:${group.day}:snap-${ordinal}`,
         day: group.day,
         ordinal,
         sourceUrl: group.sourceUrl,
         materialSha256: '',
-        ban: null,
-        winnerBuild: '胜者一图流公布',
+        ban,
+        winnerBuild,
         winnerSlot: 1,
         winnerNickname: winner,
         matchType: 'winner_snapshot',
         seats: [
-          { slot: 1, playerId: `snap:${winner}`, nickname: winner, build: '胜者一图流公布', winner: true },
+          { slot: 1, playerId: `snap:${winner}`, nickname: winner, build: winnerBuild, winner: true },
           { slot: 2, playerId: '', nickname: '席位2', build: '对位参战', winner: false },
           { slot: 3, playerId: '', nickname: '席位3', build: '对位参战', winner: false },
           { slot: 4, playerId: '', nickname: '席位4', build: '对位参战', winner: false },

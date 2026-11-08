@@ -21,7 +21,7 @@
 
     <template v-else>
       <div class="research-toolbar">
-        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || 160} 场收录 · ${catalog?.counts?.players || 148} 位选手 · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
+        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || 168} 场收录 · ${catalog?.counts?.players || 148} 位选手 · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
         <div>
           <button @click="load">刷新</button>
           <button v-if="hasToken" @click="disconnect">清除凭证</button>
@@ -35,14 +35,14 @@
         <template v-if="section==='overview'">
           <div class="research-metrics">
             <div class="metric-highlight">
-              <strong>{{ catalog?.counts?.totalMatches || 160 }}</strong>
+              <strong>{{ catalog?.counts?.totalMatches || 168 }}</strong>
               <span>王牌对决战绩场次</span>
-              <small>{{ catalog?.counts?.matches || 62 }} 场转写 + 98 场胜者公报</small>
+              <small>{{ catalog?.counts?.matches || 62 }} 场转写 + 106 场胜者公报</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.totalDays || 25 }}</strong>
+              <strong>{{ catalog?.counts?.totalDays || 26 }}</strong>
               <span>全量覆盖比赛日</span>
-              <small>2026-10-11 ~ 11-06 连续追踪</small>
+              <small>2026-10-11 ~ 11-07 连续追踪</small>
             </div>
             <div>
               <strong>{{ aggregatedPlayers.length || 112 }}</strong>
@@ -50,7 +50,7 @@
               <small>已归类 {{ catalog?.counts?.players || 148 }} 个对决账号</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.sources || 45 }}</strong>
+              <strong>{{ catalog?.counts?.sources || 46 }}</strong>
               <span>作者战报原帖出处</span>
               <small>全量胜者图谱与流派声明</small>
             </div>
@@ -61,7 +61,7 @@
             <div class="section-title-row">
               <div>
                 <h2>王牌对决登顶榜（夺冠最高选手 TOP 8）</h2>
-                <p>基于 25 日全量作者战报与实战对局的冠军统计，投对决看选手实力</p>
+                <p>基于 26 日全量作者战报与实战对局的冠军统计，投对决看选手实力</p>
               </div>
               <router-link to="/research/players" class="more-link">查看完整 148 位选手榜单 →</router-link>
             </div>
@@ -91,7 +91,7 @@
                 <h2>最新王牌对决战况速览</h2>
                 <p>已对照 60 张 WebP 原图核验六席位阵容与最终登顶归属</p>
               </div>
-              <router-link to="/research/matches" class="more-link">浏览全量 160 场赛果 →</router-link>
+              <router-link to="/research/matches" class="more-link">浏览全量 168 场赛果 →</router-link>
             </div>
             <div class="recent-matches-grid">
               <div v-for="m in recentCatalogMatches" :key="m.id" class="recent-match-card">
@@ -119,7 +119,7 @@
           <section class="research-split">
             <div>
               <h2>先有赛果，再谈预测</h2>
-              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。王牌对决公开战报已完成 160 场真实对局转写，覆盖 25 个比赛日与 148 位实战选手。所有选手 100% 绑定专属头像，作为赛前推演的实战依据。</p>
+              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。王牌对决公开战报已完成 168 场真实对局转写，覆盖 26 个比赛日与 148 位实战选手。所有选手 100% 绑定专属头像，作为赛前推演的实战依据。</p>
               <router-link class="research-link" to="/research/matches">查看场次与赛果明细 →</router-link>
             </div>
             <ol>
@@ -132,7 +132,7 @@
 
           <section class="research-note">
             <h2>来源核验进度</h2>
-            <p>已收录 10月11日~11月6日共 25 个比赛日、160 场王牌对决真实对局，原图与作者公报哈希一致。收录 148 位真实参赛选手并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
+            <p>已收录 10月11日~11月7日共 26 个比赛日、168 场王牌对决真实对局，原图与作者公报哈希一致。收录 148 位真实参赛选手并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
           </section>
         </template>
 
@@ -141,7 +141,7 @@
           <div class="view-header-bar">
             <div>
               <h2>王牌对决实战对局</h2>
-              <p class="muted">全量收录 25 个比赛日、160 场真实对局。支持按日期与流派快速筛选。</p>
+              <p class="muted">全量收录 26 个比赛日、168 场真实对局。支持按日期与流派快速筛选。</p>
             </div>
           </div>
 
