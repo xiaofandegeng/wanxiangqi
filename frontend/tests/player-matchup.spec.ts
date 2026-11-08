@@ -153,3 +153,4 @@ describe('选手同场克制与Ban位影响分析引擎 (player-matchup)', () =>
     expect(result.banSummary.summaryText).toContain('逐鹿')
   })
 })
+
