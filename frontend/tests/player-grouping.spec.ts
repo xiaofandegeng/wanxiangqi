@@ -104,3 +104,4 @@ describe('选手多账号归并体系 (player-grouping)', () => {
     expect(boqing.linkedAccounts).toEqual(['世薄情'])
   })
 })
+
