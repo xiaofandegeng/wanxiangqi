@@ -8,7 +8,7 @@
     {
       "url": "https://www.douyin.com/note/7705300109956877603",
       "title": "万象棋王牌对决1106胜者一图流",
-      "status": "DISCOVERED",
+      "status": "TRANSCRIBED",
       "note": "2026-11-07 主页已核对；原图和赛果待校对"
     },
     {
@@ -664,975 +664,30 @@
       "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
       "imageOrdinal": 5,
       "file": "docs/prediction_artifacts/ruanshi-2026-11-07/1106-5.webp"
+    },
+    {
+      "key": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+      "sha256": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "imageOrdinal": 1,
+      "file": "docs/prediction_artifacts/ruanshi-2026-11-07/1106-1.webp"
+    },
+    {
+      "key": "669a7892bafde4190c8a9bd737e440a43e62af7d5a043df1ddefd734241a4b3c",
+      "sha256": "669a7892bafde4190c8a9bd737e440a43e62af7d5a043df1ddefd734241a4b3c",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "imageOrdinal": 2,
+      "file": "docs/prediction_artifacts/ruanshi-2026-11-07/1106-2.webp"
+    },
+    {
+      "key": "3b4279432dc46301c1382d3b603edd523de1bf41eb84128c5d0d1baaa5bef794",
+      "sha256": "3b4279432dc46301c1382d3b603edd523de1bf41eb84128c5d0d1baaa5bef794",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "imageOrdinal": 3,
+      "file": "docs/prediction_artifacts/ruanshi-2026-11-07/1106-3.webp"
     }
   ],
   "matches": [
-    {
-      "key": "ruanshi:2026-10-29:1",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 1,
-      "materialKey": "41a714040c1089a4a4ea2d2c4ceced67cdf04d9e7c364aae7738b09e28a4446b",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "小琳谷芷",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 2,
-          "nickname": "B站QT小优律",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 3,
-          "nickname": "娇弱的佩奇",
-          "build": "大河龙蛇"
-        },
-        {
-          "slot": 4,
-          "nickname": "丰川祥子",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EGM李由多",
-          "build": "曜转吕布"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音QT新一",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "雷霆战机"
-    },
-    {
-      "key": "ruanshi:2026-10-29:2",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 2,
-      "materialKey": "fa22d20b81aca0cf112c2d6a4e51241b1d3ffe81eb03e8c647e18e6ea6fee407",
-      "ban": "大河",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "DY道无涯",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 2,
-          "nickname": "I蟲丶初心",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 3,
-          "nickname": "遗愿",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 4,
-          "nickname": "墨宝",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 5,
-          "nickname": "小天使翼",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音湛蓝",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "日落海倒转"
-    },
-    {
-      "key": "ruanshi:2026-10-29:3",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 3,
-      "materialKey": "3ad3ce246017a78735995e882819b00e7826ed1ae33d9bd86355ad027f3ba7ea",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EZ小超",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音群星李由多",
-          "build": "坐火箭露娜"
-        },
-        {
-          "slot": 3,
-          "nickname": "BLIBLI喵喵虾条",
-          "build": "日落海整备"
-        },
-        {
-          "slot": 4,
-          "nickname": "胖狗王",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音瑞梨",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音刺痛",
-          "build": "传统养猪"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-29:4",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 4,
-      "materialKey": "6a8255eaa1e89e24e951c8c8c642733e0650603547a0aa38466b6a6005318f76",
-      "ban": "大河",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EGM皮皮鲨",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 2,
-          "nickname": "QT电竞披萨鱼",
-          "build": "猪镜转李信"
-        },
-        {
-          "slot": 3,
-          "nickname": "胜天半子嘉誉",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 4,
-          "nickname": "BILI星光柯基",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 5,
-          "nickname": "EGM抖音画笔",
-          "build": "半月"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音DY小凌",
-          "build": "日落海倒转"
-        }
-      ],
-      "winnerBuild": "日落海倒转"
-    },
-    {
-      "key": "ruanshi:2026-10-29:5",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 5,
-      "materialKey": "d3285bb6768c2011eaa57b6f2e11e84f796fa79ee239036a6dd1ada9009459f3",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EGM I 无量怜苓",
-          "build": "毒奶"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音EZ姚半仙",
-          "build": "伞沈梦溪"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音呆头鹅",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 4,
-          "nickname": "EZ抖音沐汐",
-          "build": "三分登场姜子牙"
-        },
-        {
-          "slot": 5,
-          "nickname": "斗鱼奇谋",
-          "build": "三分登场混沌裂隙"
-        },
-        {
-          "slot": 6,
-          "nickname": "冷酷心机小猫",
-          "build": "雷霆战机"
-        }
-      ],
-      "winnerBuild": "毒奶"
-    },
-    {
-      "key": "ruanshi:2026-10-29:6",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 6,
-      "materialKey": "b4c3bb08f329f8c4349faebc5183a9382d13235cf951d633280afe8df8073c82",
-      "ban": "河洛",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EZ丶7D",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音EG反骨",
-          "build": "镜猪"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音梦飞冻冻",
-          "build": "三分登场"
-        },
-        {
-          "slot": 4,
-          "nickname": "喵帕斯",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EZ张嘉豪",
-          "build": "镜猪"
-        },
-        {
-          "slot": 6,
-          "nickname": "B站万象棋小祥",
-          "build": "伞半月"
-        }
-      ],
-      "winnerBuild": "三分倒转"
-    },
-    {
-      "key": "ruanshi:2026-10-29:7",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 7,
-      "materialKey": "c6dfc41749413d16bfdfa66f88af15f479789f44bde8c88234410e0d629e09f3",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "世薄情",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 2,
-          "nickname": "马克之母挽星",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 3,
-          "nickname": "YK丶",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音EG许诺1",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 5,
-          "nickname": "EZ灬欧洲鱼",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 6,
-          "nickname": "I蟲丶沐小呆",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "河洛木兰"
-    },
-    {
-      "key": "ruanshi:2026-10-29:8",
-      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
-      "day": "2026-10-29",
-      "ordinal": 8,
-      "materialKey": "44cde017e74e83fb56a30d26aca14284c45103cde34192963dce02ae15404475",
-      "ban": "河洛",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音EZ羡鱼儿",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音猪葛龟龟",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音清晨",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音搜索北念",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EGM小谷芷",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 6,
-          "nickname": "EZ天誉",
-          "build": "三分倒转"
-        }
-      ],
-      "winnerBuild": "传统养猪"
-    },
-    {
-      "key": "ruanshi:2026-10-28:1",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 1,
-      "materialKey": "7fdad8247f66080c3928041920615eec76f73ad85596bbc15aacf2c87b158220",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "娇弱的佩奇",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 2,
-          "nickname": "小宇13",
-          "build": "三分登场"
-        },
-        {
-          "slot": 3,
-          "nickname": "小慷",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 4,
-          "nickname": "冷酷心机小猫",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EG如昨",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 6,
-          "nickname": "B站QT小优律",
-          "build": "三分倒转"
-        }
-      ],
-      "winnerBuild": "河洛木兰"
-    },
-    {
-      "key": "ruanshi:2026-10-28:3",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 3,
-      "materialKey": "5da630abd872359939beae28f58abe967030c6606d50d7be76d9b6edb3cff613",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音猪葛龟龟",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 3,
-          "nickname": "YK丶",
-          "build": "日落海整备"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音EG航迹云",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 5,
-          "nickname": "小天使翼",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 6,
-          "nickname": "EZ抖音沐汐",
-          "build": "泳池派对"
-        }
-      ],
-      "winnerBuild": "逐鹿蒙恬"
-    },
-    {
-      "key": "ruanshi:2026-10-28:4",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 4,
-      "materialKey": "ea9950734cd5e6afea5099ef275ba018dfc52004a8421708cca3596e4b52e79b",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音妖柒",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 2,
-          "nickname": "君莫",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 3,
-          "nickname": "事后诸葛亮",
-          "build": "大河龙蛇"
-        },
-        {
-          "slot": 4,
-          "nickname": "EZ阿文",
-          "build": "伞百里守约"
-        },
-        {
-          "slot": 5,
-          "nickname": "B站QT孙悟方",
-          "build": "三分毒奶"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音EGM李由多",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "雷霆战机"
-    },
-    {
-      "key": "ruanshi:2026-10-28:5",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 5,
-      "materialKey": "ffc98258fd37817c001c4e9c3fa88f85ea14bfec46b1691a7d86a346ba0646ff",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音搜流儿",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音丶公孙策",
-          "build": "自爆木兰"
-        },
-        {
-          "slot": 3,
-          "nickname": "胖狗王",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音刺痛",
-          "build": "逐鹿蒙犽"
-        },
-        {
-          "slot": 5,
-          "nickname": "快手小斯",
-          "build": "三分登场"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音群星李由多",
-          "build": "牺牲李信"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-28:7",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 7,
-      "materialKey": "094c13c58c9a0689ddab1927977e12413ccee7c451de2067c37ff3263c015aec",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音梦飞1",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "墨宝",
-          "build": "干将遗志周瑜"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音EG福鱼",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音小新游",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音QT萌岑",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音梦飞冻冻",
-          "build": "河洛木兰"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-28:6",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 6,
-      "materialKey": "b5b0d0ff00815ee2ccb2c9147cc318d1ec0e64428f6018ff3969b924a2a236ba",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音所演",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "DY寻心",
-          "build": "日落海整备"
-        },
-        {
-          "slot": 3,
-          "nickname": "B站万象棋小祥",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 4,
-          "nickname": "安逸体面离场",
-          "build": "河洛木兰变李信"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EG反骨",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 6,
-          "nickname": "I蟲丶沐小呆",
-          "build": "河洛木兰"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-28:8",
-      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
-      "day": "2026-10-28",
-      "ordinal": 8,
-      "materialKey": "46a73851214a0f122051c31d0f36b264be8bb9780f2fc5665ccae2d4249ba032",
-      "ban": "河洛",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "BLIBLI喵喵虾条",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音EG清辞",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 3,
-          "nickname": "武汉EG碎碎圆圆",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 4,
-          "nickname": "小琳谷芷",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音刺儿",
-          "build": "镜猪转吕布"
-        },
-        {
-          "slot": 6,
-          "nickname": "EZ丶7D",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-27:2",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 2,
-      "materialKey": "0759db2f7923a57c0ae09130b9bf7f7e41399656295d6900a41d90ff2bbf91da",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 2,
-          "nickname": "我是66熊",
-          "build": "三分登场"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音清晨",
-          "build": "大河龙蛇"
-        },
-        {
-          "slot": 4,
-          "nickname": "丰川祥子",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 5,
-          "nickname": "EGM皮皮鲨",
-          "build": "大河龙蛇"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音妖柒",
-          "build": "算盘周瑜换帅吕布"
-        }
-      ],
-      "winnerBuild": "逐鹿蒙恬"
-    },
-    {
-      "key": "ruanshi:2026-10-27:1",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 1,
-      "materialKey": "703b69e4d2b855a27158ad50413a1cd8f009136d9bb87ab953e159e1ba73d7b6",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音湛蓝",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "EZ阿文",
-          "build": "伞沈梦溪"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音EGM李由多",
-          "build": "大河蛇拼公孙离"
-        },
-        {
-          "slot": 4,
-          "nickname": "冷酷心机小猫",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 5,
-          "nickname": "娇弱的佩奇",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音QT萌岑",
-          "build": "大河开团了一半射"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
-    {
-      "key": "ruanshi:2026-10-27:3",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 3,
-      "materialKey": "c96519b458fb6522d10a57d0ff6a7ed19c868f7acefe34d250de98e31f5c3979",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "小天使翼",
-          "build": "成年礼三分"
-        },
-        {
-          "slot": 2,
-          "nickname": "BLIBLI喵喵虾条",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音龙傲天",
-          "build": "乔汐速6司空震"
-        },
-        {
-          "slot": 4,
-          "nickname": "一个打五个",
-          "build": "三分倒转"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音火山羊",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 6,
-          "nickname": "ASEN",
-          "build": "三分倒转"
-        }
-      ],
-      "winnerBuild": "成年礼三分"
-    },
-    {
-      "key": "ruanshi:2026-10-27:4",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 4,
-      "materialKey": "3cd1689e7adc9981065a86ef02c8d6e1a9c78be2b655d81870c6182c796e12e1",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "风华绝代小樾",
-          "build": "金算盘"
-        },
-        {
-          "slot": 2,
-          "nickname": "B站QT逆光",
-          "build": "雷霆战机"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音EG如昨",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 4,
-          "nickname": "抖音刺痛",
-          "build": "三分登场"
-        },
-        {
-          "slot": 5,
-          "nickname": "YK丶",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音群星李由多",
-          "build": "大司命山鬼"
-        }
-      ],
-      "winnerBuild": "金算盘"
-    },
-    {
-      "key": "ruanshi:2026-10-27:5",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 5,
-      "materialKey": "5b3b71473ac4a1b493b033cda64e287af04e611462dd910f86928e0889d997ef",
-      "ban": "逐鹿",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音EZ羡鱼儿",
-          "build": "河洛木兰"
-        },
-        {
-          "slot": 2,
-          "nickname": "百川",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音呆头鹅",
-          "build": "坐火箭海月"
-        },
-        {
-          "slot": 4,
-          "nickname": "浪屿",
-          "build": "三分登场"
-        },
-        {
-          "slot": 5,
-          "nickname": "虎牙EGM行乐",
-          "build": "大河龙蛇"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音EZ姚半仙",
-          "build": "河洛木兰"
-        }
-      ],
-      "winnerBuild": "河洛木兰"
-    },
-    {
-      "key": "ruanshi:2026-10-27:7",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 7,
-      "materialKey": "a47b01d3c88b1e5be4af8aa6e8e36354be8684c37dae1e56ca9528a06e661caa",
-      "ban": "日落海",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "抖音小新游",
-          "build": "四驱兄弟转吕布"
-        },
-        {
-          "slot": 2,
-          "nickname": "抖音EG万象棋",
-          "build": "大河开团射"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音一朵老雏菊",
-          "build": "牺牲李信"
-        },
-        {
-          "slot": 4,
-          "nickname": "胜天半子嘉誉",
-          "build": "三分登场"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音诸葛龟龟",
-          "build": "三分登场"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音EGM小谷芷",
-          "build": "逐鹿蒙恬"
-        }
-      ],
-      "winnerBuild": "四区吕布"
-    },
-    {
-      "key": "ruanshi:2026-10-27:6",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 6,
-      "materialKey": "c227ea79b40941a05d4c1651e830332850d9f8a06c31e5f0ae980ae74eb4b15d",
-      "ban": "河洛",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EZ灬欧洲鱼",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 2,
-          "nickname": "BILI星光柯基",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音梦飞",
-          "build": "镜猪吕布"
-        },
-        {
-          "slot": 4,
-          "nickname": "斗鱼奇谋",
-          "build": "三分登场"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音QT新一",
-          "build": "逐鹿蒙恬"
-        },
-        {
-          "slot": 6,
-          "nickname": "EZ丶7D",
-          "build": "三分倒转"
-        }
-      ],
-      "winnerBuild": "传统养猪"
-    },
-    {
-      "key": "ruanshi:2026-10-27:8",
-      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
-      "day": "2026-10-27",
-      "ordinal": 8,
-      "materialKey": "e92ab381fc1b847fa8cd0c8d2e0f0f8be934112ada974c5e467775ee821d5f58",
-      "ban": "河洛",
-      "winnerSlot": 1,
-      "seats": [
-        {
-          "slot": 1,
-          "nickname": "EZ天誉",
-          "build": "三分登场"
-        },
-        {
-          "slot": 2,
-          "nickname": "EZ沐汐嘻嘻嘻",
-          "build": "毒奶"
-        },
-        {
-          "slot": 3,
-          "nickname": "抖音EG反骨",
-          "build": "镜猪转海月"
-        },
-        {
-          "slot": 4,
-          "nickname": "I蟲抖音猪葛龟龟",
-          "build": "日落海倒转"
-        },
-        {
-          "slot": 5,
-          "nickname": "抖音EZ张嘉豪",
-          "build": "传统养猪"
-        },
-        {
-          "slot": 6,
-          "nickname": "抖音搜索北念",
-          "build": "三分登场"
-        }
-      ],
-      "winnerBuild": "三分登场"
-    },
     {
       "key": "ruanshi:2026-10-23:1",
       "sourceUrl": "https://www.douyin.com/note/7699843298281803008",
@@ -2936,6 +1991,1218 @@
       "winnerBuild": "镜猪吕布"
     },
     {
+      "key": "ruanshi:2026-10-27:1",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 1,
+      "materialKey": "703b69e4d2b855a27158ad50413a1cd8f009136d9bb87ab953e159e1ba73d7b6",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音湛蓝",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "EZ阿文",
+          "build": "伞沈梦溪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EGM李由多",
+          "build": "大河蛇拼公孙离"
+        },
+        {
+          "slot": 4,
+          "nickname": "冷酷心机小猫",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 5,
+          "nickname": "娇弱的佩奇",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音QT萌岑",
+          "build": "大河开团了一半射"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-27:2",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 2,
+      "materialKey": "0759db2f7923a57c0ae09130b9bf7f7e41399656295d6900a41d90ff2bbf91da",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "世薄情",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 2,
+          "nickname": "我是66熊",
+          "build": "三分登场"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音清晨",
+          "build": "大河龙蛇"
+        },
+        {
+          "slot": 4,
+          "nickname": "丰川祥子",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 5,
+          "nickname": "EGM皮皮鲨",
+          "build": "大河龙蛇"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音妖柒",
+          "build": "算盘周瑜换帅吕布"
+        }
+      ],
+      "winnerBuild": "逐鹿蒙恬"
+    },
+    {
+      "key": "ruanshi:2026-10-27:3",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 3,
+      "materialKey": "c96519b458fb6522d10a57d0ff6a7ed19c868f7acefe34d250de98e31f5c3979",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "小天使翼",
+          "build": "成年礼三分"
+        },
+        {
+          "slot": 2,
+          "nickname": "BLIBLI喵喵虾条",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音龙傲天",
+          "build": "乔汐速6司空震"
+        },
+        {
+          "slot": 4,
+          "nickname": "一个打五个",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音火山羊",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 6,
+          "nickname": "ASEN",
+          "build": "三分倒转"
+        }
+      ],
+      "winnerBuild": "成年礼三分"
+    },
+    {
+      "key": "ruanshi:2026-10-27:4",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 4,
+      "materialKey": "3cd1689e7adc9981065a86ef02c8d6e1a9c78be2b655d81870c6182c796e12e1",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "风华绝代小樾",
+          "build": "金算盘"
+        },
+        {
+          "slot": 2,
+          "nickname": "B站QT逆光",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG如昨",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音刺痛",
+          "build": "三分登场"
+        },
+        {
+          "slot": 5,
+          "nickname": "YK丶",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音群星李由多",
+          "build": "大司命山鬼"
+        }
+      ],
+      "winnerBuild": "金算盘"
+    },
+    {
+      "key": "ruanshi:2026-10-27:5",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 5,
+      "materialKey": "5b3b71473ac4a1b493b033cda64e287af04e611462dd910f86928e0889d997ef",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EZ羡鱼儿",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 2,
+          "nickname": "百川",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音呆头鹅",
+          "build": "坐火箭海月"
+        },
+        {
+          "slot": 4,
+          "nickname": "浪屿",
+          "build": "三分登场"
+        },
+        {
+          "slot": 5,
+          "nickname": "虎牙EGM行乐",
+          "build": "大河龙蛇"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EZ姚半仙",
+          "build": "河洛木兰"
+        }
+      ],
+      "winnerBuild": "河洛木兰"
+    },
+    {
+      "key": "ruanshi:2026-10-27:6",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 6,
+      "materialKey": "c227ea79b40941a05d4c1651e830332850d9f8a06c31e5f0ae980ae74eb4b15d",
+      "ban": "河洛",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ灬欧洲鱼",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 2,
+          "nickname": "BILI星光柯基",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音梦飞",
+          "build": "镜猪吕布"
+        },
+        {
+          "slot": 4,
+          "nickname": "斗鱼奇谋",
+          "build": "三分登场"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音QT新一",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 6,
+          "nickname": "EZ丶7D",
+          "build": "三分倒转"
+        }
+      ],
+      "winnerBuild": "传统养猪"
+    },
+    {
+      "key": "ruanshi:2026-10-27:7",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 7,
+      "materialKey": "a47b01d3c88b1e5be4af8aa6e8e36354be8684c37dae1e56ca9528a06e661caa",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音小新游",
+          "build": "四驱兄弟转吕布"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG万象棋",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音一朵老雏菊",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 4,
+          "nickname": "胜天半子嘉誉",
+          "build": "三分登场"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音诸葛龟龟",
+          "build": "三分登场"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EGM小谷芷",
+          "build": "逐鹿蒙恬"
+        }
+      ],
+      "winnerBuild": "四区吕布"
+    },
+    {
+      "key": "ruanshi:2026-10-27:8",
+      "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+      "day": "2026-10-27",
+      "ordinal": 8,
+      "materialKey": "e92ab381fc1b847fa8cd0c8d2e0f0f8be934112ada974c5e467775ee821d5f58",
+      "ban": "河洛",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ天誉",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "EZ沐汐嘻嘻嘻",
+          "build": "毒奶"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG反骨",
+          "build": "镜猪转海月"
+        },
+        {
+          "slot": 4,
+          "nickname": "I蟲抖音猪葛龟龟",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EZ张嘉豪",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音搜索北念",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-28:1",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 1,
+      "materialKey": "7fdad8247f66080c3928041920615eec76f73ad85596bbc15aacf2c87b158220",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "娇弱的佩奇",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 2,
+          "nickname": "小宇13",
+          "build": "三分登场"
+        },
+        {
+          "slot": 3,
+          "nickname": "小慷",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 4,
+          "nickname": "冷酷心机小猫",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EG如昨",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站QT小优律",
+          "build": "三分倒转"
+        }
+      ],
+      "winnerBuild": "河洛木兰"
+    },
+    {
+      "key": "ruanshi:2026-10-28:3",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 3,
+      "materialKey": "5da630abd872359939beae28f58abe967030c6606d50d7be76d9b6edb3cff613",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "世薄情",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音猪葛龟龟",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 3,
+          "nickname": "YK丶",
+          "build": "日落海整备"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EG航迹云",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 5,
+          "nickname": "小天使翼",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 6,
+          "nickname": "EZ抖音沐汐",
+          "build": "泳池派对"
+        }
+      ],
+      "winnerBuild": "逐鹿蒙恬"
+    },
+    {
+      "key": "ruanshi:2026-10-28:4",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 4,
+      "materialKey": "ea9950734cd5e6afea5099ef275ba018dfc52004a8421708cca3596e4b52e79b",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音妖柒",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 2,
+          "nickname": "君莫",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 3,
+          "nickname": "事后诸葛亮",
+          "build": "大河龙蛇"
+        },
+        {
+          "slot": 4,
+          "nickname": "EZ阿文",
+          "build": "伞百里守约"
+        },
+        {
+          "slot": 5,
+          "nickname": "B站QT孙悟方",
+          "build": "三分毒奶"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EGM李由多",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "雷霆战机"
+    },
+    {
+      "key": "ruanshi:2026-10-28:5",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 5,
+      "materialKey": "ffc98258fd37817c001c4e9c3fa88f85ea14bfec46b1691a7d86a346ba0646ff",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音搜流儿",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音丶公孙策",
+          "build": "自爆木兰"
+        },
+        {
+          "slot": 3,
+          "nickname": "胖狗王",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音刺痛",
+          "build": "逐鹿蒙犽"
+        },
+        {
+          "slot": 5,
+          "nickname": "快手小斯",
+          "build": "三分登场"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音群星李由多",
+          "build": "牺牲李信"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-28:6",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 6,
+      "materialKey": "b5b0d0ff00815ee2ccb2c9147cc318d1ec0e64428f6018ff3969b924a2a236ba",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音所演",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "DY寻心",
+          "build": "日落海整备"
+        },
+        {
+          "slot": 3,
+          "nickname": "B站万象棋小祥",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 4,
+          "nickname": "安逸体面离场",
+          "build": "河洛木兰变李信"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EG反骨",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 6,
+          "nickname": "I蟲丶沐小呆",
+          "build": "河洛木兰"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-28:7",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 7,
+      "materialKey": "094c13c58c9a0689ddab1927977e12413ccee7c451de2067c37ff3263c015aec",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音梦飞1",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "墨宝",
+          "build": "干将遗志周瑜"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG福鱼",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音小新游",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音QT萌岑",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音梦飞冻冻",
+          "build": "河洛木兰"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-28:8",
+      "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+      "day": "2026-10-28",
+      "ordinal": 8,
+      "materialKey": "46a73851214a0f122051c31d0f36b264be8bb9780f2fc5665ccae2d4249ba032",
+      "ban": "河洛",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "BLIBLI喵喵虾条",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG清辞",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 3,
+          "nickname": "武汉EG碎碎圆圆",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 4,
+          "nickname": "小琳谷芷",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音刺儿",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 6,
+          "nickname": "EZ丶7D",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-29:1",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 1,
+      "materialKey": "41a714040c1089a4a4ea2d2c4ceced67cdf04d9e7c364aae7738b09e28a4446b",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "小琳谷芷",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 2,
+          "nickname": "B站QT小优律",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 3,
+          "nickname": "娇弱的佩奇",
+          "build": "大河龙蛇"
+        },
+        {
+          "slot": 4,
+          "nickname": "丰川祥子",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EGM李由多",
+          "build": "曜转吕布"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音QT新一",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "雷霆战机"
+    },
+    {
+      "key": "ruanshi:2026-10-29:2",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 2,
+      "materialKey": "fa22d20b81aca0cf112c2d6a4e51241b1d3ffe81eb03e8c647e18e6ea6fee407",
+      "ban": "大河",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "DY道无涯",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 2,
+          "nickname": "I蟲丶初心",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 3,
+          "nickname": "遗愿",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 4,
+          "nickname": "墨宝",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 5,
+          "nickname": "小天使翼",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音湛蓝",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "日落海倒转"
+    },
+    {
+      "key": "ruanshi:2026-10-29:3",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 3,
+      "materialKey": "3ad3ce246017a78735995e882819b00e7826ed1ae33d9bd86355ad027f3ba7ea",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ小超",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音群星李由多",
+          "build": "坐火箭露娜"
+        },
+        {
+          "slot": 3,
+          "nickname": "BLIBLI喵喵虾条",
+          "build": "日落海整备"
+        },
+        {
+          "slot": 4,
+          "nickname": "胖狗王",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音瑞梨",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音刺痛",
+          "build": "传统养猪"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-10-29:4",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 4,
+      "materialKey": "6a8255eaa1e89e24e951c8c8c642733e0650603547a0aa38466b6a6005318f76",
+      "ban": "大河",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EGM皮皮鲨",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 2,
+          "nickname": "QT电竞披萨鱼",
+          "build": "猪镜转李信"
+        },
+        {
+          "slot": 3,
+          "nickname": "胜天半子嘉誉",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 4,
+          "nickname": "BILI星光柯基",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 5,
+          "nickname": "EGM抖音画笔",
+          "build": "半月"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音DY小凌",
+          "build": "日落海倒转"
+        }
+      ],
+      "winnerBuild": "日落海倒转"
+    },
+    {
+      "key": "ruanshi:2026-10-29:5",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 5,
+      "materialKey": "d3285bb6768c2011eaa57b6f2e11e84f796fa79ee239036a6dd1ada9009459f3",
+      "ban": "日落海",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EGM I 无量怜苓",
+          "build": "毒奶"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EZ姚半仙",
+          "build": "伞沈梦溪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音呆头鹅",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 4,
+          "nickname": "EZ抖音沐汐",
+          "build": "三分登场姜子牙"
+        },
+        {
+          "slot": 5,
+          "nickname": "斗鱼奇谋",
+          "build": "三分登场混沌裂隙"
+        },
+        {
+          "slot": 6,
+          "nickname": "冷酷心机小猫",
+          "build": "雷霆战机"
+        }
+      ],
+      "winnerBuild": "毒奶"
+    },
+    {
+      "key": "ruanshi:2026-10-29:6",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 6,
+      "materialKey": "b4c3bb08f329f8c4349faebc5183a9382d13235cf951d633280afe8df8073c82",
+      "ban": "河洛",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ丶7D",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG反骨",
+          "build": "镜猪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音梦飞冻冻",
+          "build": "三分登场"
+        },
+        {
+          "slot": 4,
+          "nickname": "喵帕斯",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EZ张嘉豪",
+          "build": "镜猪"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站万象棋小祥",
+          "build": "伞半月"
+        }
+      ],
+      "winnerBuild": "三分倒转"
+    },
+    {
+      "key": "ruanshi:2026-10-29:7",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 7,
+      "materialKey": "c6dfc41749413d16bfdfa66f88af15f479789f44bde8c88234410e0d629e09f3",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "世薄情",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 2,
+          "nickname": "马克之母挽星",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 3,
+          "nickname": "YK丶",
+          "build": "河洛木兰"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EG许诺1",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 5,
+          "nickname": "EZ灬欧洲鱼",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 6,
+          "nickname": "I蟲丶沐小呆",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "河洛木兰"
+    },
+    {
+      "key": "ruanshi:2026-10-29:8",
+      "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+      "day": "2026-10-29",
+      "ordinal": 8,
+      "materialKey": "44cde017e74e83fb56a30d26aca14284c45103cde34192963dce02ae15404475",
+      "ban": "河洛",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EZ羡鱼儿",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音猪葛龟龟",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音清晨",
+          "build": "镜猪转吕布"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音搜索北念",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EGM小谷芷",
+          "build": "雷霆战机"
+        },
+        {
+          "slot": 6,
+          "nickname": "EZ天誉",
+          "build": "三分倒转"
+        }
+      ],
+      "winnerBuild": "传统养猪"
+    },
+    {
+      "key": "ruanshi:2026-11-06:1",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 1,
+      "materialKey": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ拉丁鱼",
+          "build": "我不后悔"
+        },
+        {
+          "slot": 2,
+          "nickname": "WE葫芦呼噜",
+          "build": "镜转吕布"
+        },
+        {
+          "slot": 3,
+          "nickname": "胜天半子嘉誉",
+          "build": "牺牲李信"
+        },
+        {
+          "slot": 4,
+          "nickname": "DY棒教练",
+          "build": "镜转海月"
+        },
+        {
+          "slot": 5,
+          "nickname": "下雨了下雨了",
+          "build": "我也曾风光过"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音所谓Y",
+          "build": "放下你的身段"
+        }
+      ],
+      "winnerBuild": "我不后悔"
+    },
+    {
+      "key": "ruanshi:2026-11-06:2",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 2,
+      "materialKey": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "遗愿",
+          "build": "三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "EGM抖音画笔",
+          "build": "曾得皇恩盛宠"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EGM皮皮鲨",
+          "build": "曾耀一日风华"
+        },
+        {
+          "slot": 4,
+          "nickname": "有局丨白兔",
+          "build": "曾有万众瞩目"
+        },
+        {
+          "slot": 5,
+          "nickname": "BLIBLI喵喵虾条",
+          "build": "曾着一身华服"
+        },
+        {
+          "slot": 6,
+          "nickname": "EZ天眷",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "三分登场"
+    },
+    {
+      "key": "ruanshi:2026-11-06:3",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 3,
+      "materialKey": "669a7892bafde4190c8a9bd737e440a43e62af7d5a043df1ddefd734241a4b3c",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "兰陵笑笑笑",
+          "build": "马可养镜"
+        },
+        {
+          "slot": 2,
+          "nickname": "墨宝",
+          "build": "爱是会消失的对吗"
+        },
+        {
+          "slot": 3,
+          "nickname": "丰川祥子",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音湛蓝",
+          "build": "三分登场"
+        },
+        {
+          "slot": 5,
+          "nickname": "B站东方朔",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 6,
+          "nickname": "糊涂蛋ZXZ",
+          "build": "三分登场"
+        }
+      ],
+      "winnerBuild": "马可养镜"
+    },
+    {
+      "key": "ruanshi:2026-11-06:4",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 4,
+      "materialKey": "669a7892bafde4190c8a9bd737e440a43e62af7d5a043df1ddefd734241a4b3c",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音妖柒",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 2,
+          "nickname": "B站QT孙悟方",
+          "build": "三分登场"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音群星YUN落",
+          "build": "崛起"
+        },
+        {
+          "slot": 4,
+          "nickname": "白白白白白3",
+          "build": "多彩古币"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EZ阿文",
+          "build": "三分登场"
+        },
+        {
+          "slot": 6,
+          "nickname": "马克之母挽星",
+          "build": "河洛木兰"
+        }
+      ],
+      "winnerBuild": "传统养猪"
+    },
+    {
+      "key": "ruanshi:2026-11-06:5",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 5,
+      "materialKey": "3b4279432dc46301c1382d3b603edd523de1bf41eb84128c5d0d1baaa5bef794",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EG清辞",
+          "build": "三分倒转"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG如昨",
+          "build": "传统养猪"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EZ、色彩",
+          "build": "大河开团射"
+        },
+        {
+          "slot": 4,
+          "nickname": "书遇OVO",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音搜流儿",
+          "build": "三分登场"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EGM李由多",
+          "build": "三分倒转"
+        }
+      ],
+      "winnerBuild": "三分倒转"
+    },
+    {
+      "key": "ruanshi:2026-11-06:6",
+      "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+      "day": "2026-11-06",
+      "ordinal": 6,
+      "materialKey": "3b4279432dc46301c1382d3b603edd523de1bf41eb84128c5d0d1baaa5bef794",
+      "winnerSlot": 1,
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音梦飞冻冻",
+          "build": "成年礼三分登场"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG反骨",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音梦飞1",
+          "build": "三分登场"
+        },
+        {
+          "slot": 4,
+          "nickname": "娇弱的佩奇",
+          "build": "已不在乎是非对错"
+        },
+        {
+          "slot": 5,
+          "nickname": "儒雅随和的77",
+          "build": "伞刘邦"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音一朵老雏菊",
+          "build": "大河山鬼"
+        }
+      ],
+      "winnerBuild": "成年礼三分登场"
+    },
+    {
       "key": "ruanshi:2026-11-06:7",
       "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
       "day": "2026-11-06",
@@ -2972,7 +3239,7 @@
         {
           "slot": 6,
           "nickname": "抖音猪葛龟龟",
-          "build": "UNKNOWN"
+          "build": "游戏都不给进的冷宫女子"
         }
       ],
       "winnerBuild": "日落海倒转"
