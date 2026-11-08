@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="grad_%E9%A9%AC%E5%8F%AF%E5%89%8A0%E4%B8%B67%E5%AF%B9%E5%90%97" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.3)" />
+    </filter>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#grad_%E9%A9%AC%E5%8F%AF%E5%89%8A0%E4%B8%B67%E5%AF%B9%E5%90%97)" stroke="rgba(255,255,255,0.3)" stroke-width="3" filter="url(#glow)" />
+  <rect x="35" y="16" width="50" height="18" rx="9" fill="rgba(0,0,0,0.35)" />
+  <text x="60" y="29" fill="#FFFFFF" font-size="10" font-family="system-ui, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1">SOLO</text>
+  <text x="60" y="72" fill="#FFFFFF" font-size="24" font-family="system-ui, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">沐汐</text>
+  <text x="60" y="92" fill="rgba(255,255,255,0.75)" font-size="9" font-family="system-ui, sans-serif" text-anchor="middle">ACE PLAYER</text>
+</svg>

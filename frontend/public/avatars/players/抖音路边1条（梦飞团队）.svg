@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="grad_%E6%8A%96%E9%9F%B3%E8%B7%AF%E8%BE%B91%E6%9D%A1%EF%BC%88%E6%A2%A6%E9%A3%9E%E5%9B%A2%E9%98%9F%EF%BC%89" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#831843" />
+      <stop offset="100%" stop-color="#DB2777" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.3)" />
+    </filter>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#grad_%E6%8A%96%E9%9F%B3%E8%B7%AF%E8%BE%B91%E6%9D%A1%EF%BC%88%E6%A2%A6%E9%A3%9E%E5%9B%A2%E9%98%9F%EF%BC%89)" stroke="rgba(255,255,255,0.3)" stroke-width="3" filter="url(#glow)" />
+  <rect x="35" y="16" width="50" height="18" rx="9" fill="rgba(0,0,0,0.35)" />
+  <text x="60" y="29" fill="#FFFFFF" font-size="10" font-family="system-ui, sans-serif" font-weight="bold" text-anchor="middle" letter-spacing="1">DY</text>
+  <text x="60" y="72" fill="#FFFFFF" font-size="18" font-family="system-ui, sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">路边1条（梦飞团队）</text>
+  <text x="60" y="92" fill="rgba(255,255,255,0.75)" font-size="9" font-family="system-ui, sans-serif" text-anchor="middle">ACE PLAYER</text>
+</svg>
