@@ -187,6 +187,25 @@
             >
               {{ getSeatSynergy(p.nickname, p.commander)!.label }}
             </div>
+
+            <!-- 4.2 棋手 × 阵容王牌对决高压实战胜率徽章 -->
+            <div
+              v-if="p.commander && getSeatCommanderBuildSynergy(idx)"
+              class="seat-comb-winrate-badge"
+              :class="getSeatCommanderBuildSynergy(idx)!.tier.toLowerCase()"
+              :title="getSeatCommanderBuildSynergy(idx)!.reason"
+            >
+              <div class="comb-top-row">
+                <span class="comb-icon">👑</span>
+                <span class="comb-title">王牌胜率:</span>
+                <strong class="comb-pct">{{ getSeatCommanderBuildSynergy(idx)!.winRateFormatted }}</strong>
+                <span class="comb-tier-tag">{{ getSeatCommanderBuildSynergy(idx)!.tierLabel }}</span>
+              </div>
+              <div class="comb-stat-row">
+                <span class="comb-sample">王牌实战: {{ getSeatCommanderBuildSynergy(idx)!.sampleMatches }}战{{ getSeatCommanderBuildSynergy(idx)!.sampleWins }}胜</span>
+                <span class="comb-mod">({{ getSeatCommanderBuildSynergy(idx)!.scoreModifier >= 0 ? '+' : '' }}{{ (getSeatCommanderBuildSynergy(idx)!.scoreModifier * 100).toFixed(0) }}%)</span>
+              </div>
+            </div>
           </div>
 
           <!-- 4.5 棋手适配流派池（展示棋手可玩的多套阵容与禁选剔除状态，支持点击切换） -->
@@ -219,6 +238,38 @@
             :title="getSeatInferredLineup(p.nickname, p.commander, idx)!.reason"
           >
             💡 {{ getSeatInferredLineup(p.nickname, p.commander, idx)!.reason }}
+          </div>
+
+          <!-- 4.3 阵容体系与六人同场生态克制雷达 (王牌高压赛场) -->
+          <div v-if="p.nickname && getSeatLineupCounterInfo(idx)" class="seat-lineup-radar-row">
+            <div
+              class="lineup-radar-badge"
+              :class="{
+                'is-adv': getSeatLineupCounterInfo(idx)!.lineupCounterScore > 0,
+                'is-dis': getSeatLineupCounterInfo(idx)!.lineupCounterScore < 0,
+                'is-neu': getSeatLineupCounterInfo(idx)!.lineupCounterScore === 0
+              }"
+              :title="getSeatLineupCounterInfo(idx)!.lineupCounterSummary"
+            >
+              <div class="radar-top-row">
+                <span class="radar-icon">{{ getSeatLineupCounterInfo(idx)!.lineupArchetype?.icon || '⚔️' }}</span>
+                <span class="radar-name">{{ getSeatLineupCounterInfo(idx)!.lineupArchetype?.name || '体系' }}</span>
+                <span class="radar-score" v-if="getSeatLineupCounterInfo(idx)!.lineupCounterScore !== 0">
+                  ({{ getSeatLineupCounterInfo(idx)!.lineupCounterScore > 0 ? '+' : '' }}{{ (getSeatLineupCounterInfo(idx)!.lineupCounterScore * 100).toFixed(0) }}%)
+                </span>
+              </div>
+              <div class="radar-sub-row">
+                <span v-if="getSeatLineupCounterInfo(idx)!.lineupCounters.length" class="radar-pill win">
+                  王牌克制 #{{ getSeatLineupCounterInfo(idx)!.lineupCounters.map(c => c.targetSeat).join('、#') }}
+                </span>
+                <span v-if="getSeatLineupCounterInfo(idx)!.lineupCounteredBy.length" class="radar-pill lose">
+                  王牌受制 #{{ getSeatLineupCounterInfo(idx)!.lineupCounteredBy.map(c => c.targetSeat).join('、#') }}
+                </span>
+                <span v-if="!getSeatLineupCounterInfo(idx)!.lineupCounters.length && !getSeatLineupCounterInfo(idx)!.lineupCounteredBy.length" class="radar-pill eq">
+                  王牌体系均势
+                </span>
+              </div>
+            </div>
           </div>
 
           <!-- 4. 同场克制关系雷达 (直接显出压制谁、被谁克制、胜负分) -->
@@ -328,6 +379,75 @@
           </div>
         </div>
       </div>
+
+      <!-- 6人阵容体系对抗与博弈克制矩阵 (王牌对决赛场生态图解) -->
+      <div v-if="matchupResult && matchupResult.lineupMatrix" class="lineup-counter-matrix-board">
+        <div class="matrix-board-header">
+          <div class="board-title">
+            <span class="title-icon">👑</span>
+            <strong>本场 6 人王牌对决阵容体系博弈与相生相克矩阵</strong>
+            <small class="title-sub">(专门针对王牌对决高压赛场：顶尖选手快节奏、强对抗、极速卡位下的流派相生相克)</small>
+          </div>
+        </div>
+
+        <!-- 体系生态概览条 -->
+        <div class="lineup-eco-summary-bar">
+          <span class="eco-icon">🌐</span>
+          <span class="eco-text">{{ matchupResult.lineupMatrix.ecosystemSummary }}</span>
+        </div>
+
+        <!-- 6 席战术体系与出战阵容卡片药丸 -->
+        <div class="lineup-archetypes-list">
+          <div
+            v-for="seat in matchupResult.lineupMatrix.seats"
+            :key="seat.seat"
+            class="archetype-seat-pill"
+          >
+            <span class="seat-badge">#{{ seat.seat }}</span>
+            <span class="player-name">{{ seat.nickname }}</span>
+            <span class="build-tag">{{ seat.buildName }}</span>
+            <span class="arch-type-badge">
+              {{ seat.archetype.icon }} {{ seat.archetype.name }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 6x6 体系对抗矩阵表 -->
+        <div class="lineup-table-wrap">
+          <table class="lineup-counter-table">
+            <thead>
+              <tr>
+                <th class="corner-th">阵容相克 (横对纵)</th>
+                <th v-for="s in matchupResult.lineupMatrix.seats" :key="s.seat">
+                  #{{ s.seat }} {{ s.archetype.icon }} {{ s.archetype.name }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, rIdx) in matchupResult.lineupMatrix.cells" :key="rIdx">
+                <th class="row-seat-th">
+                  #{{ matchupResult.lineupMatrix.seats[rIdx]?.seat }}
+                  {{ matchupResult.lineupMatrix.seats[rIdx]?.archetype.icon }}
+                  {{ matchupResult.lineupMatrix.seats[rIdx]?.archetype.name }}
+                </th>
+                <td
+                  v-for="(cell, cIdx) in row"
+                  :key="cIdx"
+                  :class="['counter-cell', cell.status.toLowerCase()]"
+                  :title="cell.tooltip"
+                >
+                  {{ cell.label }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-legend">
+            <span class="legend-item win">■ 绿色【克制】：刺客切射手 / 法爆融肉坦 / 射手风筝战士 / 倒转消耗肉坦</span>
+            <span class="legend-item lose">■ 红色【受制】：肉坦防刺客 / 刺客秒法爆 / 战士绞杀刺客 / 射手风筝近战</span>
+            <span class="legend-item tied">■ 蓝色【均势】：同体系或平稳博弈</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 禁选阵营一键点选胶囊与当前版本 -->
@@ -400,6 +520,15 @@
             <span v-if="topPick.commanderModifier > 0" class="reason-tag positive">
               ♟️ 棋手协同 (+{{ (topPick.commanderModifier * 100).toFixed(0) }}%)
             </span>
+            <span v-if="topPick.commanderBuildModifier > 0" class="reason-tag positive">
+              👑 王牌高胜率组合 (王牌实战{{ topPick.commanderBuildSynergy?.winRateFormatted }} · +{{ (topPick.commanderBuildModifier * 100).toFixed(0) }}%)
+            </span>
+            <span v-if="topPick.lineupCounterScore > 0" class="reason-tag positive">
+              ⚔️ 王牌体系克制优势 ({{ topPick.lineupArchetype?.name }}对位占优 · +{{ (topPick.lineupCounterScore * 100).toFixed(0) }}%)
+            </span>
+            <span v-else-if="topPick.lineupCounterScore < 0" class="reason-tag warning">
+              ⚠️ 王牌体系受制压力 ({{ (topPick.lineupCounterScore * 100).toFixed(0) }}%)
+            </span>
             <span v-if="topPick.versionModifier > 0" class="reason-tag positive">
               🔥 版本红利 (+{{ (topPick.versionModifier * 100).toFixed(0) }}%)
             </span>
@@ -451,6 +580,15 @@
             </span>
             <span v-if="secondPick.commanderModifier > 0" class="reason-tag positive">
               ♟️ 棋手协同 (+{{ (secondPick.commanderModifier * 100).toFixed(0) }}%)
+            </span>
+            <span v-if="secondPick.commanderBuildModifier > 0" class="reason-tag positive">
+              👑 王牌高胜率组合 (王牌实战{{ secondPick.commanderBuildSynergy?.winRateFormatted }} · +{{ (secondPick.commanderBuildModifier * 100).toFixed(0) }}%)
+            </span>
+            <span v-if="secondPick.lineupCounterScore > 0" class="reason-tag positive">
+              ⚔️ 王牌体系克制优势 ({{ secondPick.lineupArchetype?.name }}对位占优 · +{{ (secondPick.lineupCounterScore * 100).toFixed(0) }}%)
+            </span>
+            <span v-else-if="secondPick.lineupCounterScore < 0" class="reason-tag warning">
+              ⚠️ 王牌体系受制压力 ({{ (secondPick.lineupCounterScore * 100).toFixed(0) }}%)
             </span>
             <span v-if="secondPick.versionModifier > 0" class="reason-tag positive">
               🔥 版本加成 (+{{ (secondPick.versionModifier * 100).toFixed(0) }}%)
@@ -754,7 +892,9 @@ import {
   type SixPlayerMatchupResult,
   type CommanderUsageProfile,
   type CommanderAdaptivePool,
-  type PlayerLineupProficiency
+  type PlayerLineupProficiency,
+  evaluateCommanderBuildSynergy,
+  type CommanderBuildSynergyEval
 } from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
 import {getMasterPlayerName} from '../utils/player-grouping'
@@ -1111,6 +1251,30 @@ function getSeatMatchupInfo(seatIdx: number) {
   if (!matchupResult.value) return null
   const slot = seatIdx + 1
   return matchupResult.value.players.find(p => p.slot === slot) || null
+}
+
+// 席位棋手搭配该阵容的大盘胜率评估
+function getSeatCommanderBuildSynergy(seatIdx: number): CommanderBuildSynergyEval | null {
+  const info = getSeatMatchupInfo(seatIdx)
+  if (info?.commanderBuildSynergy) return info.commanderBuildSynergy
+  const p = players.value[seatIdx]
+  if (!p || !p.commander) return null
+  const inferred = getSeatInferredLineup(p.nickname, p.commander, seatIdx)
+  if (!inferred?.lineupName) return null
+  return evaluateCommanderBuildSynergy(p.commander, inferred.lineupName, catalogMatches.value)
+}
+
+// 席位阵容战术体系与生态克制雷达信息
+function getSeatLineupCounterInfo(seatIdx: number) {
+  const info = getSeatMatchupInfo(seatIdx)
+  if (!info) return null
+  return {
+    lineupArchetype: info.lineupArchetype,
+    lineupCounterScore: info.lineupCounterScore,
+    lineupCounters: info.lineupCounters,
+    lineupCounteredBy: info.lineupCounteredBy,
+    lineupCounterSummary: info.lineupCounterSummary
+  }
 }
 
 // 极速模式：一键批量填入名单（支持模糊纠偏与招牌棋手自动匹配）
@@ -1898,6 +2062,85 @@ onUnmounted(() => {
             border: 1px solid #fecaca;
           }
         }
+
+        .seat-comb-winrate-badge {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 2.5px 6px;
+          border-radius: 4px;
+          font-size: 9.5px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+
+          .comb-top-row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+
+            .comb-icon {
+              font-size: 10px;
+            }
+
+            .comb-title {
+              color: $text-secondary;
+              font-size: 9px;
+            }
+
+            .comb-pct {
+              color: $text-primary;
+              font-weight: 800;
+            }
+
+            .comb-tier-tag {
+              font-size: 8.5px;
+              font-weight: 700;
+              padding: 0.5px 3px;
+              border-radius: 2px;
+            }
+          }
+
+          .comb-stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 8.5px;
+            color: $text-muted;
+
+            .comb-mod {
+              font-weight: 700;
+            }
+          }
+
+          &.s {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            .comb-pct { color: #15803d; }
+            .comb-tier-tag { background: #dcfce7; color: #15803d; }
+            .comb-mod { color: #15803d; }
+          }
+          &.a {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            .comb-pct { color: #1d4ed8; }
+            .comb-tier-tag { background: #dbeafe; color: #1d4ed8; }
+            .comb-mod { color: #1d4ed8; }
+          }
+          &.b {
+            background: #fefce8;
+            border-color: #fef08a;
+            .comb-pct { color: #a16207; }
+            .comb-tier-tag { background: #fef9c3; color: #a16207; }
+            .comb-mod { color: #a16207; }
+          }
+          &.c {
+            background: #fef2f2;
+            border-color: #fecaca;
+            .comb-pct { color: #b91c1c; }
+            .comb-tier-tag { background: #fee2e2; color: #b91c1c; }
+            .comb-mod { color: #b91c1c; }
+          }
+        }
       }
 
       .seat-adaptive-pool {
@@ -1978,6 +2221,83 @@ onUnmounted(() => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+
+      .seat-lineup-radar-row {
+        width: 100%;
+
+        .lineup-radar-badge {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 3px 6px;
+          border-radius: 4px;
+          font-size: 9.5px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+
+          .radar-top-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+
+            .radar-icon {
+              font-size: 11px;
+            }
+
+            .radar-name {
+              color: $text-primary;
+            }
+
+            .radar-score {
+              font-size: 9px;
+              font-weight: 800;
+            }
+          }
+
+          .radar-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+
+            .radar-pill {
+              font-size: 8.5px;
+              padding: 0.5px 4px;
+              border-radius: 2px;
+              font-weight: 600;
+
+              &.win {
+                background: #dcfce7;
+                color: #15803d;
+              }
+              &.lose {
+                background: #fee2e2;
+                color: #b91c1c;
+              }
+              &.eq {
+                background: #e0f2fe;
+                color: #0284c7;
+              }
+            }
+          }
+
+          &.is-adv {
+            background: #f0fdf4;
+            border-color: #86efac;
+            .radar-score { color: #16a34a; }
+          }
+          &.is-dis {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            .radar-score { color: #dc2626; }
+          }
+          &.is-neu {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+          }
+        }
       }
 
       .seat-synergy-tag {
@@ -2249,6 +2569,172 @@ onUnmounted(() => {
           &.lose { color: #b91c1c; }
           &.tied { color: #a16207; }
           &.none { color: #9ca3af; }
+        }
+      }
+    }
+  }
+
+  .lineup-counter-matrix-board {
+    margin-top: 14px;
+    padding: 14px;
+    background: #fafaf9;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-md;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .matrix-board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .board-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+        color: $text-primary;
+
+        .title-icon {
+          font-size: 15px;
+        }
+
+        .title-sub {
+          color: $text-secondary;
+          font-size: 11px;
+          margin-left: 4px;
+        }
+      }
+    }
+
+    .lineup-eco-summary-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      color: #166534;
+      font-weight: 600;
+    }
+
+    .lineup-archetypes-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .archetype-seat-pill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: #fff;
+        border: 1px solid $border-subtle;
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 10.5px;
+
+        .seat-badge {
+          font-weight: 800;
+          color: $color-primary;
+        }
+
+        .player-name {
+          font-weight: 700;
+          color: $text-primary;
+        }
+
+        .build-tag {
+          color: $text-secondary;
+          background: #f1f5f9;
+          padding: 1px 4px;
+          border-radius: 2px;
+          font-size: 9.5px;
+        }
+
+        .arch-type-badge {
+          font-weight: 700;
+          color: #0f766e;
+          background: #ccfbf1;
+          padding: 1px 5px;
+          border-radius: 2px;
+          font-size: 9.5px;
+        }
+      }
+    }
+
+    .lineup-table-wrap {
+      overflow-x: auto;
+
+      .lineup-counter-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        text-align: center;
+
+        th, td {
+          border: 1px solid $border-subtle;
+          padding: 6px 8px;
+        }
+
+        thead th {
+          background: $bg-subtle;
+          font-weight: 700;
+          color: $text-primary;
+          white-space: nowrap;
+        }
+
+        .corner-th {
+          font-size: 10.5px;
+          color: $text-secondary;
+          width: 130px;
+        }
+
+        .row-seat-th {
+          background: $bg-subtle;
+          font-weight: 700;
+          color: $text-primary;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        .counter-cell {
+          font-weight: 700;
+          cursor: default;
+          transition: background-color 0.15s ease;
+
+          &.counter {
+            background: #dcfce7;
+            color: #15803d;
+          }
+
+          &.countered {
+            background: #fee2e2;
+            color: #b91c1c;
+          }
+
+          &.tied {
+            background: #f0f9ff;
+            color: #0369a1;
+          }
+        }
+      }
+
+      .table-legend {
+        display: flex;
+        gap: 16px;
+        margin-top: 8px;
+        font-size: 10.5px;
+        flex-wrap: wrap;
+
+        .legend-item {
+          font-weight: 600;
+
+          &.win { color: #15803d; }
+          &.lose { color: #b91c1c; }
+          &.tied { color: #0369a1; }
         }
       }
     }

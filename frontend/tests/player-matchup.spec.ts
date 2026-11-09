@@ -13,7 +13,11 @@ import {
   COMMANDER_ADAPTED_BUILDS,
   getCommanderAdaptiveBuilds,
   evaluatePlayerCommanderLineupProficiency,
-  inferPlayerLineup
+  inferPlayerLineup,
+  evaluateCommanderBuildSynergy,
+  identifyLineupArchetype,
+  evaluate6PlayerLineupCounters,
+  isAceDuelMatch
 } from '../src/utils/player-matchup'
 
 describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-matchup)', () => {
@@ -370,6 +374,216 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     // 7. 验证胜率均经过熟练度加权与归一化
     const sumProb = result.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
     expect(sumProb).toBeCloseTo(1.0, 2)
+  })
+
+  it('双窗口三维熟练度模型：主要依据近7天战绩推理，同时兼顾全量历史底蕴画像', () => {
+    // 模拟近 7 天对局与历史更早对局
+    const timeMatches = [
+      // 早期更早版本 (超过7天前, 如 10-23)
+      {
+        key: 'old-1',
+        day: '2026-10-23',
+        winnerSlot: 1,
+        seats: [
+          { slot: 1, nickname: '胜天半子嘉誉', commander: '马可', build: '镜猪转吕布', winner: true },
+          { slot: 2, nickname: '梦飞大大', commander: '马可', build: '牺牲李信', winner: false }
+        ]
+      },
+      // 近7天窗口内的对局 (如 11-06, 11-08)
+      {
+        key: 'recent-1',
+        day: '2026-11-06',
+        winnerSlot: 1,
+        seats: [
+          { slot: 1, nickname: '梦飞大大', commander: '马可', build: '成年礼三分登场', winner: true },
+          { slot: 2, nickname: '胜天半子嘉誉', commander: '马可', build: '镜猪转吕布', winner: false }
+        ]
+      },
+      {
+        key: 'recent-2',
+        day: '2026-11-08',
+        winnerSlot: 1,
+        seats: [
+          { slot: 1, nickname: '梦飞大大', commander: '马可', build: '成年礼三分登场', winner: true },
+          { slot: 2, nickname: '胜天半子嘉誉', commander: '马可', build: '镜猪转吕布', winner: false }
+        ]
+      }
+    ]
+
+    // 1. 梦飞在近 7 天内操盘马可出战「成年礼三分登场」2战2胜 (100%胜率)
+    // 根据近7天高权重优先原则，必须评为 5星炉火纯青
+    const mengfeiR7 = evaluatePlayerCommanderLineupProficiency('梦飞大大', '马可', '成年礼三分登场', timeMatches)
+    expect(mengfeiR7.starLevel).toBe(5)
+    expect(mengfeiR7.recent7Matches).toBe(2)
+    expect(mengfeiR7.recent7Wins).toBe(2)
+    expect(mengfeiR7.recent7WinRate).toBe(1.0)
+    expect(mengfeiR7.reasoning).toContain('近7天实战')
+
+    // 2. 嘉誉在近 7 天内虽然未夺冠，但近7天高频出战（2战）且历史底蕴极深（全量3战1冠，权威招牌）
+    // 系统兼顾历史底蕴，绝不误判为 1星生疏初试
+    const jiayuProf = evaluatePlayerCommanderLineupProficiency('胜天半子嘉誉', '马可', '镜猪转吕布', timeMatches)
+    expect(jiayuProf.starLevel).toBeGreaterThanOrEqual(4)
+    expect(jiayuProf.recent7Matches).toBe(2)
+    expect(jiayuProf.lifetimeMatches).toBe(3)
+    expect(jiayuProf.modifier).toBeGreaterThan(0.1)
+
+    // 3. 选手既无近7天战绩，又无历史全量战绩的违和流派 -> 1星生疏初试
+    const strangerProf = evaluatePlayerCommanderLineupProficiency('胜天半子嘉誉', '马可', '纯法五法', timeMatches)
+    expect(strangerProf.starLevel).toBe(1)
+    expect(strangerProf.modifier).toBeLessThan(0)
+    expect(strangerProf.recent7Matches).toBe(0)
+    expect(strangerProf.lifetimeMatches).toBe(0)
+  })
+
+  it('王牌对决实战过滤机制：严格区分王牌赛事（WANXIANG/DIAMOND）与普通排位/娱乐局', () => {
+    // 1. 正向：万象大赛与钻石狂潮为王牌对决正统赛制
+    expect(isAceDuelMatch({ mode: 'WANXIANG', seats: [{}, {}, {}, {}, {}, {}] })).toBe(true)
+    expect(isAceDuelMatch({ mode: 'DIAMOND', seats: [{}, {}, {}, {}, {}, {}] })).toBe(true)
+    expect(isAceDuelMatch({ mode: 'ACE', seats: [{}, {}, {}, {}, {}, {}] })).toBe(true)
+    expect(isAceDuelMatch({ seats: [{}, {}, {}, {}, {}, {}] })).toBe(true) // 默认 6 席王牌对决
+
+    // 2. 负向：严格排除普通排位局、娱乐局或非 6 席赛果
+    expect(isAceDuelMatch({ mode: 'RANK', seats: [{}, {}, {}, {}, {}, {}] })).toBe(false)
+    expect(isAceDuelMatch({ mode: 'CASUAL', seats: [{}, {}, {}, {}, {}, {}] })).toBe(false)
+    expect(isAceDuelMatch({ mode: 'NORMAL', seats: [{}, {}, {}, {}, {}, {}] })).toBe(false)
+    expect(isAceDuelMatch({ seats: [{}, {}, {}] })).toBe(false)
+  })
+
+  it('【棋手 × 阵容】王牌对决高压赛场胜率模型：严格以王牌赛场强度为准，过滤普通局污染', () => {
+    // 构造混合样本：包含王牌对决赛事，以及假冒普通排位局的娱乐数据
+    const matchesSample = [
+      // 王牌对决赛事（万象大赛）：安琪拉·雷霆战机在高压赛场登顶吃鸡
+      {
+        key: 'ace-1',
+        mode: 'WANXIANG',
+        winnerSlot: 1,
+        seats: [
+          { slot: 1, commander: '安琪拉', build: '雷霆战机', winner: true },
+          { slot: 2, commander: '诸葛亮', build: '牺牲李信', winner: false },
+          { slot: 3, commander: '庄小鱼', build: '传统养猪', winner: false },
+          { slot: 4, commander: '马可', build: '三分登场', winner: false },
+          { slot: 5, commander: '白歌', build: '河洛木兰', winner: false },
+          { slot: 6, commander: '嬴律', build: '逐鹿蒙恬', winner: false }
+        ]
+      },
+      {
+        key: 'ace-2',
+        mode: 'DIAMOND',
+        winnerSlot: 1,
+        seats: [
+          { slot: 1, commander: '安琪拉', build: '雷霆战机', winner: true },
+          { slot: 2, commander: '镜', build: '三分登场', winner: false },
+          { slot: 3, commander: '诸葛亮', build: '牺牲李信', winner: false },
+          { slot: 4, commander: '马可', build: '逐鹿蒙犽', winner: false },
+          { slot: 5, commander: '乔汐', build: '日落海倒转', winner: false },
+          { slot: 6, commander: '武凤', build: '逐鹿蒙恬', winner: false }
+        ]
+      },
+      // 普通娱乐局（CASUAL）：诸葛亮牺牲李信在普通低分段偶然获胜，必须被系统自动过滤！
+      {
+        key: 'casual-invalid',
+        mode: 'CASUAL',
+        winnerSlot: 2,
+        seats: [
+          { slot: 1, commander: '安琪拉', build: '雷霆战机', winner: false },
+          { slot: 2, commander: '诸葛亮', build: '牺牲李信', winner: true }
+        ]
+      }
+    ]
+
+    // 1. 安琪拉 + 雷霆战机：王牌对决T0统治级，在王牌快节奏中伤害拉满，获王牌超模评级
+    const anqilaEval = evaluateCommanderBuildSynergy('安琪拉', '雷霆战机', matchesSample)
+    expect(anqilaEval.isAceContext).toBe(true)
+    expect(anqilaEval.smoothedWinRate).toBeGreaterThanOrEqual(0.35)
+    expect(['S', 'A']).toContain(anqilaEval.tier)
+    expect(anqilaEval.scoreModifier).toBeGreaterThan(0.08)
+    expect(anqilaEval.tierLabel).toContain('王牌')
+    expect(anqilaEval.reason).toContain('王牌对决')
+
+    // 2. 玉环 + 日落海倒转：王牌高压锁血神器，贝叶斯先验高
+    const yuhuanEval = evaluateCommanderBuildSynergy('玉环', '日落海倒转', [])
+    expect(yuhuanEval.isAceContext).toBe(true)
+    expect(yuhuanEval.smoothedWinRate).toBeGreaterThanOrEqual(0.35)
+    expect(yuhuanEval.scoreModifier).toBeGreaterThan(0.08)
+    expect(yuhuanEval.tierLabel).toContain('王牌')
+
+    // 3. 诸葛亮 + 牺牲李信：即使在普通娱乐局偶然赢了，但因被过滤，在王牌赛场依然准确识别为高危陷阱！
+    const zhugeEval = evaluateCommanderBuildSynergy('诸葛亮', '牺牲李信', matchesSample)
+    expect(zhugeEval.isAceContext).toBe(true)
+    expect(zhugeEval.sampleWins).toBe(0) // 普通娱乐局的胜场已被严格排除
+    expect(zhugeEval.tier).toBe('C')
+    expect(zhugeEval.scoreModifier).toBeLessThan(0)
+    expect(zhugeEval.tierLabel).toBe('⚠️ 王牌高危陷阱')
+    expect(zhugeEval.reason).toContain('王牌对决高危陷阱')
+  })
+
+  it('【阵容体系 × 六人生态博弈克制】：准确识别体系，两两相生相克并生成对抗矩阵与净胜分', () => {
+    // 1. 验证体系分类识别
+    expect(identifyLineupArchetype('镜猪转吕布').key).toBe('BURST_ASSASSIN')
+    expect(identifyLineupArchetype('传统养猪').key).toBe('SUSTAIN_TANK')
+    expect(identifyLineupArchetype('雷霆战机').key).toBe('MAGIC_AOE')
+    expect(identifyLineupArchetype('成年礼三分登场').key).toBe('RANGED_CARRY')
+    expect(identifyLineupArchetype('日落海倒转').key).toBe('FAST_CYCLE')
+    expect(identifyLineupArchetype('逐鹿蒙恬').key).toBe('BRUISER_MELEE')
+
+    // 2. 模拟 6 人同场对位
+    const testRoster = [
+      { slot: 1, nickname: '刺客玩家', buildName: '镜猪转吕布' }, // BURST_ASSASSIN
+      { slot: 2, nickname: '射手玩家A', buildName: '三分登场' },    // RANGED_CARRY
+      { slot: 3, nickname: '射手玩家B', buildName: '逐鹿蒙犽' },    // RANGED_CARRY
+      { slot: 4, nickname: '肉坦玩家', buildName: '传统养猪' },    // SUSTAIN_TANK
+      { slot: 5, nickname: '法爆机甲', buildName: '雷霆战机' },    // MAGIC_AOE
+      { slot: 6, nickname: '重装战士', buildName: '逐鹿蒙恬' }     // BRUISER_MELEE
+    ]
+
+    const counterEval = evaluate6PlayerLineupCounters(testRoster)
+    expect(counterEval.perPlayer).toHaveLength(6)
+    expect(counterEval.cells).toHaveLength(6)
+
+    // 验证刺客玩家 (#1)：
+    // 克制 2 家射手 (#2, #3)，但被肉坦 (#4) 与战士 (#6) 克制
+    const p1 = counterEval.perPlayer[0]
+    expect(p1.counters.map(c => c.targetSeat)).toContain(2)
+    expect(p1.counters.map(c => c.targetSeat)).toContain(3)
+    expect(p1.counteredBy.map(c => c.targetSeat)).toContain(4)
+    expect(p1.counteredBy.map(c => c.targetSeat)).toContain(6)
+
+    // 验证法爆机甲 (#5)：
+    // 克制肉坦 (#4) 与重装战士 (#6)
+    const p5 = counterEval.perPlayer[4]
+    expect(p5.counters.map(c => c.targetSeat)).toContain(4)
+    expect(p5.counters.map(c => c.targetSeat)).toContain(6)
+    expect(p5.counteredBy.map(c => c.targetSeat)).toContain(1) // 被刺客跳脸秒杀
+
+    // 验证 6 人同场推演 evaluate6PlayerMatchup 完整集成
+    const sim6 = evaluate6PlayerMatchup([
+      { nickname: '刺客玩家', commander: '镜' },
+      { nickname: '射手玩家A', commander: '香香' },
+      { nickname: '射手玩家B', commander: '马可' },
+      { nickname: '肉坦玩家', commander: '庄小鱼' },
+      { nickname: '法爆机甲', commander: '安琪拉' },
+      { nickname: '重装战士', commander: '嬴律' }
+    ])
+
+    // 每个玩家都包含棋手阵容大盘胜率评估与体系克制评估
+    sim6.players.forEach(p => {
+      expect(p.commanderBuildSynergy).toBeDefined()
+      expect(p.commanderBuildModifier).toBeDefined()
+      expect(p.lineupArchetype).toBeDefined()
+      expect(p.lineupCounterScore).toBeDefined()
+      expect(p.lineupCounters).toBeDefined()
+      expect(p.lineupCounteredBy).toBeDefined()
+      expect(p.lineupCounterSummary).toBeTruthy()
+    })
+
+    // 包含 6x6 体系对抗矩阵
+    expect(sim6.lineupMatrix).toBeDefined()
+    expect(sim6.lineupMatrix?.cells).toHaveLength(6)
+    expect(sim6.lineupMatrix?.ecosystemSummary).toBeTruthy()
+
+    // 胜率总和为 1
+    const totalProb = sim6.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
+    expect(totalProb).toBeCloseTo(1.0, 2)
   })
 })
 

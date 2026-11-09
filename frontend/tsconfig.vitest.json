@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "composite": true,
+    "lib": ["ES2023", "DOM"],
+    "types": ["node", "vite/client"],
+    "noUnusedLocals": false
+  },
+  "include": ["tests/**/*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
+}
+

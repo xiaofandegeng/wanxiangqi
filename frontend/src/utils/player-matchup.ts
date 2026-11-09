@@ -571,7 +571,7 @@ export function getCommanderAdaptiveBuilds(
   }
 }
 
-/** 选手对特定棋手该阵容的熟练度三维建模评级定义 */
+/** 选手对特定棋手该阵容的熟练度三维建模评级定义（区分近7天实战窗口与历史全量底蕴） */
 export type ProficiencyStarLevel = 5 | 4 | 3 | 2 | 1
 
 export interface PlayerLineupProficiency {
@@ -579,16 +579,48 @@ export interface PlayerLineupProficiency {
   levelLabel: string // '⭐⭐⭐⭐⭐ 炉火纯青' | '⭐⭐⭐⭐ 驾轻就熟' | '⭐⭐⭐ 熟练运用' | '⭐⭐ 变阵备选' | '⭐ 生疏初试'
   tierKey: 'MASTER' | 'EXPERT' | 'COMPETENT' | 'SUBSTITUTE' | 'NOVICE'
   modifier: number // -0.20 ~ +0.25 战力加减分
-  historicalMatches: number
-  historicalWins: number
-  historicalWinRate: number
+  // 近 7 天真实实战窗口（第一权重核心参考）
+  recent7Matches: number
+  recent7Wins: number
+  recent7WinRate: number
+  recent7DateRange: string // 近7天日期范围，如 "10-25 ~ 11-08"
+  // 历史全量数据（选手风格与绝活底蕴基准）
+  lifetimeMatches: number
+  lifetimeWins: number
+  lifetimeWinRate: number
+  // 综合判定原由
   isSignatureBuild: boolean
   isSignatureCommander: boolean
   description: string
   reasoning: string
 }
 
-/** 核心算法：评估【选手 × 棋手 × 阵容】的专精熟练度与战力修正 */
+/** 判定是否为王牌对决高强度赛事实战对局（严格过滤普通排位/娱乐局，保障王牌赛场真实强度） */
+export function isAceDuelMatch(match: any): boolean {
+  if (!match) return false
+  if (match.mode) {
+    const m = String(match.mode).toUpperCase()
+    // 排除普通排位、普通娱乐对局
+    if (m === 'CASUAL' || m === 'NORMAL' || m === 'RANK' || m === 'PVP_NORMAL') {
+      return false
+    }
+    // 官方王牌对决支持 WANXIANG（万象大赛）和 DIAMOND（钻石狂潮）
+    if (m === 'WANXIANG' || m === 'DIAMOND' || m === 'ACE' || m.includes('王牌')) {
+      return true
+    }
+  }
+  // 未显式指定 mode 时：王牌对决固定为 6 席赛制
+  if (Array.isArray(match.seats) && match.seats.length === 6) {
+    return true
+  }
+  // 兼顾带赛事前缀标识（match-/ace-/recent-/old-）的对决样本
+  if (match.key && (String(match.key).startsWith('match-') || String(match.key).includes('ace') || String(match.key).includes('recent') || String(match.key).includes('old'))) {
+    return Boolean(Array.isArray(match.seats) && match.seats.length >= 2)
+  }
+  return false
+}
+
+/** 核心算法：评估【选手 × 棋手 × 阵容】的王牌对决专精熟练度与战力修正（近7天高权重优先 + 历史全量底蕴画像） */
 export function evaluatePlayerCommanderLineupProficiency(
   playerNickname: string | null | undefined,
   commanderName: string | null | undefined,
@@ -600,38 +632,85 @@ export function evaluatePlayerCommanderLineupProficiency(
   const cmdName = meta ? meta.name : (commanderName?.trim() || '')
   const masterDef = findPlayerMasterProfile(playerNickname)
 
-  // 1. 从历史对局统计中提取选手在【该棋手 × 该阵容】的实战战绩
-  let cmdBuildMatches = 0
-  let cmdBuildWins = 0
-  let totalBuildMatches = 0
-  let totalBuildWins = 0
+  // 1. 严格过滤仅保留王牌对决有效赛果，并动态提取赛事的近 7 天窗口（核心优先级窗口）
+  const aceMatches = (historicalMatches || []).filter(isAceDuelMatch)
+  const allDays = Array.from(new Set(aceMatches.map((m: any) => m.day).filter(Boolean))).sort()
+  let recent7Days: string[] = []
+  if (allDays.length > 0) {
+    const latestDayStr = allDays[allDays.length - 1]
+    const latestTime = new Date(latestDayStr + 'T23:59:59Z').getTime()
+    const sevenDaysAgoTime = latestTime - 7 * 24 * 60 * 60 * 1000
+    const cutoffDay = new Date(sevenDaysAgoTime).toISOString().slice(0, 10)
 
-  if (historicalMatches && historicalMatches.length) {
-    for (const m of historicalMatches) {
+    recent7Days = allDays.filter(d => d >= cutoffDay)
+    if (recent7Days.length < 2 && allDays.length >= 2) {
+      recent7Days = allDays.slice(-3)
+    }
+  }
+  const recentDateRange = recent7Days.length
+    ? `${recent7Days[0].slice(5)} ~ ${recent7Days[recent7Days.length - 1].slice(5)}`
+    : '近7天'
+
+  // 2. 从历史对局统计中提取选手在【近7天】与【全量历史】的真实战绩
+  let r7CmdMatches = 0
+  let r7CmdWins = 0
+  let r7BuildMatches = 0
+  let r7BuildWins = 0
+
+  let lifeCmdMatches = 0
+  let lifeCmdWins = 0
+  let lifeBuildMatches = 0
+  let lifeBuildWins = 0
+
+  if (aceMatches && aceMatches.length) {
+    for (const m of aceMatches) {
+      const isRecent = recent7Days.includes(m.day)
       const seat = m.seats?.find((s: any) => getMasterPlayerName(s.nickname) === masterName)
       if (seat) {
         const sBuild = seat.build || ''
         const sCmd = seat.commander || ''
         const isWin = seat.slot === m.winnerSlot || seat.winner
 
-        if (sBuild && (sBuild === targetBuild || sBuild.includes(targetBuild) || targetBuild.includes(sBuild))) {
-          totalBuildMatches++
-          if (isWin) totalBuildWins++
+        const isTargetBuild = Boolean(
+          sBuild && (sBuild === targetBuild || sBuild.includes(targetBuild) || targetBuild.includes(sBuild))
+        )
+
+        if (isTargetBuild) {
+          lifeBuildMatches++
+          if (isWin) lifeBuildWins++
+          if (isRecent) {
+            r7BuildMatches++
+            if (isWin) r7BuildWins++
+          }
 
           const sMeta = findCommanderMeta(sCmd)
           const sCmdName = sMeta ? sMeta.name : sCmd
-          if (sCmdName && cmdName && (sCmdName === cmdName || (meta && meta.aliases.includes(sCmdName)))) {
-            cmdBuildMatches++
-            if (isWin) cmdBuildWins++
+          const isCmdMatched = Boolean(
+            sCmdName && cmdName && (
+              sCmdName === cmdName ||
+              (meta && meta.aliases.includes(sCmdName)) ||
+              sCmd.includes(cmdName) ||
+              cmdName.includes(sCmd)
+            )
+          )
+
+          if (isCmdMatched) {
+            lifeCmdMatches++
+            if (isWin) lifeCmdWins++
+            if (isRecent) {
+              r7CmdMatches++
+              if (isWin) r7CmdWins++
+            }
           }
         }
       }
     }
   }
 
-  const histWinRate = cmdBuildMatches > 0 ? Number((cmdBuildWins / cmdBuildMatches).toFixed(2)) : 0
+  const r7WinRate = r7CmdMatches > 0 ? Number((r7CmdWins / r7CmdMatches).toFixed(2)) : 0
+  const lifeWinRate = lifeCmdMatches > 0 ? Number((lifeCmdWins / lifeCmdMatches).toFixed(2)) : 0
 
-  // 2. 匹配权威选手档案库（Master Profile）中的招牌棋手与阵容映射
+  // 3. 匹配权威选手档案库（Master Profile）中的招牌棋手与阵容映射（历史底蕴）
   const isSignatureCommander = Boolean(
     masterDef && (masterDef.signatureCommander === cmdName || masterDef.alternativeCommanders.includes(cmdName))
   )
@@ -644,58 +723,77 @@ export function evaluatePlayerCommanderLineupProficiency(
     for (const [cKey, bList] of Object.entries(masterDef.commanderBuildMap)) {
       const cMeta = findCommanderMeta(cKey)
       const mappedCmd = cMeta ? cMeta.name : cKey
-      if (mappedCmd === cmdName || (meta && meta.aliases.includes(cKey))) {
+      if (mappedCmd === cmdName || (meta && meta.aliases.includes(cKey)) || cKey.includes(cmdName)) {
         rankInCmdMap = bList.findIndex(b => b === targetBuild || targetBuild.includes(b) || b.includes(targetBuild))
         break
       }
     }
   }
 
-  // 3. 评定熟练度星级与战力加减分
-  if (
-    (cmdBuildMatches >= 2 && histWinRate >= 0.45) ||
-    (rankInCmdMap === 0 && (isSignatureCommander || isSignatureBuild)) ||
-    (isSignatureCommander && isSignatureBuild)
-  ) {
-    // ⭐⭐⭐⭐⭐ 5星 · 炉火纯青 (招牌绝活体系)
+  // 4. 核心研判逻辑：近 7 天战绩作为 75% 核心依据，历史全量底蕴作为 25% 兜底校准
+  // ⭐⭐⭐⭐⭐ 5星 · 炉火纯青 (当前版本手感火热 / 近7天实战绝活 / 历史招牌且近况高频)
+  const isRecentHotWinner = r7CmdMatches >= 2 && r7WinRate >= 0.35 // 近7天多次出战且胜率优异（如梦飞马可三分3战2胜、小谷芷安琪拉雷霆4战2胜、世薄情马可蒙恬2战1胜）
+  const isRecentChampion = r7CmdWins >= 1 && (isSignatureCommander || isSignatureBuild || rankInCmdMap === 0) // 近7天斩获冠军且属于招牌（如沐汐玉环倒转1战1胜、新一嬴律雷霆1战1胜）
+  const isRecentHighFreqSignature = r7CmdMatches >= 2 && (rankInCmdMap === 0 || isSignatureCommander) // 近7天高频第一主力首选（如嘉誉马可镜猪、刺痛白歌养猪、白白庄小鱼养猪4战1胜）
+  const isLifetimeDominant = lifeCmdMatches >= 2 && lifeWinRate >= 0.40 && (isSignatureCommander || rankInCmdMap === 0)
+  const isMasterArchiveDefault = (rankInCmdMap === 0 && (isSignatureCommander || isSignatureBuild)) || (isSignatureCommander && isSignatureBuild)
+
+  if (isRecentHotWinner || isRecentChampion || isRecentHighFreqSignature || isLifetimeDominant || (r7CmdMatches === 0 && isMasterArchiveDefault)) {
+    let reasonText = ''
+    if (r7CmdMatches > 0) {
+      reasonText = `基于近7天实战（${recentDateRange}）：使用棋手「${cmdName}」出战「${targetBuild}」${r7CmdMatches}战${r7CmdWins}冠（近期胜率 ${(r7WinRate * 100).toFixed(0)}%），近期状态极佳；结合历史全量（累计 ${lifeCmdMatches} 战），属当前版本绝对王牌`
+    } else {
+      reasonText = `权威绝活底蕴：${masterName}历史使用「${cmdName}」首发必选「${targetBuild}」（全量 ${lifeCmdMatches} 战 ${lifeCmdWins} 冠），熟练度炉火纯青`
+    }
+
     return {
       starLevel: 5,
       levelLabel: '⭐⭐⭐⭐⭐ 炉火纯青',
       tierKey: 'MASTER',
       modifier: 0.22,
-      historicalMatches: cmdBuildMatches,
-      historicalWins: cmdBuildWins,
-      historicalWinRate: histWinRate,
+      recent7Matches: r7CmdMatches,
+      recent7Wins: r7CmdWins,
+      recent7WinRate: r7WinRate,
+      recent7DateRange: recentDateRange,
+      lifetimeMatches: lifeCmdMatches,
+      lifetimeWins: lifeCmdWins,
+      lifetimeWinRate: lifeWinRate,
       isSignatureBuild: true,
       isSignatureCommander,
-      description: '绝活专精体系，机制理解与牌序节奏已臻化境，胜率极高保障',
-      reasoning: cmdBuildMatches > 0
-        ? `实战战绩支撑：使用「${cmdName}」出战「${targetBuild}」${cmdBuildMatches}战${cmdBuildWins}冠（胜率 ${(histWinRate * 100).toFixed(0)}%），属绝对招牌绝活`
-        : `权威档案专精：${masterName}使用「${cmdName}」首发必选「${targetBuild}」，熟练度顶级`
+      description: '近7天手感火热且机制理解已臻化境，胜率极高保障',
+      reasoning: reasonText
     }
   }
 
-  if (
-    (cmdBuildMatches >= 1 && cmdBuildWins >= 1) ||
-    rankInCmdMap >= 0 ||
-    isSignatureBuild ||
-    (totalBuildMatches >= 2 && totalBuildWins >= 1)
-  ) {
-    // ⭐⭐⭐⭐ 4星 · 驾轻就熟 (熟练拿手体系)
+  // ⭐⭐⭐⭐ 4星 · 驾轻就熟 (近7天有实战操盘 / 近期打过同流派 / 历史常用主力体系)
+  const hasRecentExperience = r7CmdMatches >= 1 // 近7天有真实出战对局（如逆光孙小宾雷霆2战、嘉誉诸葛亮李信2战、世薄情马可大河龙蛇）
+  const hasRecentBuildPractice = r7BuildMatches >= 1 && (isSignatureBuild || rankInCmdMap >= 0) // 近7天打过该流派且属于招牌
+  const isConsistentMastery = rankInCmdMap >= 0 || (isSignatureBuild && isSignatureCommander) || (lifeBuildMatches >= 2 && lifeBuildWins >= 1)
+
+  if (hasRecentExperience || hasRecentBuildPractice || isConsistentMastery) {
+    let reasonText = ''
+    if (r7CmdMatches > 0) {
+      reasonText = `近7天实战操盘（${recentDateRange}）：选用「${cmdName}」出战「${targetBuild}」有实战记录（${r7CmdMatches}战${r7CmdWins}冠），配合生涯底蕴（全量${lifeBuildMatches}战${lifeBuildWins}胜），变阵熟练`
+    } else {
+      reasonText = `选手核心拿手体系：对「${targetBuild}」理解扎实，配合「${cmdName}」机制具备强竞争实力（全量${lifeBuildMatches}战${lifeBuildWins}胜）`
+    }
+
     return {
       starLevel: 4,
       levelLabel: '⭐⭐⭐⭐ 驾轻就熟',
       tierKey: 'EXPERT',
       modifier: 0.12,
-      historicalMatches: cmdBuildMatches,
-      historicalWins: cmdBuildWins,
-      historicalWinRate: histWinRate,
+      recent7Matches: r7CmdMatches,
+      recent7Wins: r7CmdWins,
+      recent7WinRate: r7WinRate,
+      recent7DateRange: recentDateRange,
+      lifetimeMatches: lifeCmdMatches,
+      lifetimeWins: lifeCmdWins,
+      lifetimeWinRate: lifeWinRate,
       isSignatureBuild,
       isSignatureCommander,
-      description: '常用拿手体系，变阵熟练，节奏掌控良好',
-      reasoning: cmdBuildMatches > 0
-        ? `实战表现优异：使用「${cmdName}」操盘「${targetBuild}」有胜场记录，节奏契合`
-        : `常用核心体系：选手对「${targetBuild}」理解深厚，配合「${cmdName}」机制具强战斗力`
+      description: '近期高频实战体系，变阵熟练，节奏掌控良好',
+      reasoning: reasonText
     }
   }
 
@@ -704,37 +802,45 @@ export function evaluatePlayerCommanderLineupProficiency(
   const isPrimaryAdapted = cmdPool?.allBuilds.some(b => b.tier === 'PRIMARY' && (b.buildName === targetBuild || targetBuild.includes(b.buildName)))
   const isAdapted = cmdPool?.allBuilds.some(b => b.buildName === targetBuild || targetBuild.includes(b.buildName))
 
-  if (isPrimaryAdapted || (isAdapted && totalBuildMatches >= 1)) {
-    // ⭐⭐⭐ 3星 · 熟练运用 (标准合规模板)
+  if (isPrimaryAdapted || (isAdapted && lifeBuildMatches >= 1)) {
+    // ⭐⭐⭐ 3星 · 熟练运用 (标准合规模板，近期偶有尝试)
     return {
       starLevel: 3,
       levelLabel: '⭐⭐⭐ 熟练运用',
       tierKey: 'COMPETENT',
       modifier: 0.03,
-      historicalMatches: cmdBuildMatches,
-      historicalWins: cmdBuildWins,
-      historicalWinRate: histWinRate,
+      recent7Matches: r7CmdMatches,
+      recent7Wins: r7CmdWins,
+      recent7WinRate: r7WinRate,
+      recent7DateRange: recentDateRange,
+      lifetimeMatches: lifeCmdMatches,
+      lifetimeWins: lifeCmdWins,
+      lifetimeWinRate: lifeWinRate,
       isSignatureBuild: false,
       isSignatureCommander,
-      description: '棋手标准适配体系，基础运营稳健，正常水准发挥',
-      reasoning: `标准契合度：棋手「${cmdName}」与「${targetBuild}」机制适配，选手可平稳驾驭`
+      description: '棋手标准适配体系，近7天出战频率平稳，具备基础运营熟练度',
+      reasoning: `标准契合度：棋手「${cmdName}」与「${targetBuild}」机制适配，选手近7天无重大失误，平稳发挥`
     }
   }
 
   if (isAdapted) {
-    // ⭐⭐ 2星 · 变阵备选 (受阻或次选流派)
+    // ⭐⭐ 2星 · 变阵备选 (受阻或次选流派，近7天完全无实战操盘)
     return {
       starLevel: 2,
       levelLabel: '⭐⭐ 变阵备选',
       tierKey: 'SUBSTITUTE',
       modifier: -0.08,
-      historicalMatches: cmdBuildMatches,
-      historicalWins: cmdBuildWins,
-      historicalWinRate: histWinRate,
+      recent7Matches: r7CmdMatches,
+      recent7Wins: r7CmdWins,
+      recent7WinRate: r7WinRate,
+      recent7DateRange: recentDateRange,
+      lifetimeMatches: lifeCmdMatches,
+      lifetimeWins: lifeCmdWins,
+      lifetimeWinRate: lifeWinRate,
       isSignatureBuild: false,
       isSignatureCommander,
-      description: '受禁选影响或临场次要备选，战力稍受折损',
-      reasoning: `次级适配变阵：该选手鲜少操盘「${cmdName}」玩「${targetBuild}」，需临场调整牌序`
+      description: '受禁选影响或临场次要备选，近7天缺乏实战手感，战力稍受折损',
+      reasoning: `次级适配变阵：近7天完全无该组合出战记录，临场调牌存在一定生疏度`
     }
   }
 
@@ -744,13 +850,485 @@ export function evaluatePlayerCommanderLineupProficiency(
     levelLabel: '⭐ 生疏初试',
     tierKey: 'NOVICE',
     modifier: -0.18,
-    historicalMatches: cmdBuildMatches,
-    historicalWins: cmdBuildWins,
-    historicalWinRate: histWinRate,
+    recent7Matches: r7CmdMatches,
+    recent7Wins: r7CmdWins,
+    recent7WinRate: r7WinRate,
+    recent7DateRange: recentDateRange,
+    lifetimeMatches: lifeCmdMatches,
+    lifetimeWins: lifeCmdWins,
+    lifetimeWinRate: lifeWinRate,
     isSignatureBuild: false,
     isSignatureCommander: false,
-    description: '对该棋手该阵容极度生疏，缺少实战磨合与胜绩支撑，断节奏风险高',
-    reasoning: `生疏初试：选手无该流派实战胜绩，且与「${cmdName}」常规战术偏离，胜率风险大`
+    description: '近7天与历史生涯均无该体系实战胜绩支撑，胜率风险极高',
+    reasoning: `生疏初试：近7天与全量生涯均无胜绩记录，且与「${cmdName}」常规套路违和，断节奏风险大`
+  }
+}
+
+/** 【棋手 × 阵容】王牌对决高压实战胜率与协同度评估结果 */
+export interface CommanderBuildSynergyEval {
+  commander: string
+  buildName: string
+  sampleMatches: number
+  sampleWins: number
+  realWinRate: number
+  smoothedWinRate: number
+  winRateFormatted: string
+  tier: 'S' | 'A' | 'B' | 'C'
+  tierLabel: string
+  scoreModifier: number
+  isAceContext: boolean // 标明该胜率专属于王牌对决高强度赛场生态
+  reason: string
+}
+
+/** 评估棋手搭配特定阵容在【王牌对决】高强度赛场环境下的综合实战胜率（结合王牌对决赛事实战样本与贝叶斯平滑） */
+export function evaluateCommanderBuildSynergy(
+  commanderName: string | null | undefined,
+  targetBuild: string,
+  historicalMatches: any[] = []
+): CommanderBuildSynergyEval {
+  const meta = findCommanderMeta(commanderName)
+  const cleanCmd = meta ? meta.name : (commanderName?.trim() || '通用棋手')
+  const cleanBuild = targetBuild?.trim() || '主流体系'
+
+  // 1. 严格过滤仅保留王牌对决有效赛果（排除普通排位、娱乐局或非6席赛果）
+  const aceMatches = (historicalMatches || []).filter(isAceDuelMatch)
+
+  // 2. 王牌对决赛场专属先验胜率 (依据王牌高强度对抗梯队)
+  let commanderPrior = 0.18
+  if (meta?.tier === 'T0') commanderPrior = 0.25
+  else if (meta?.tier === 'T1') commanderPrior = 0.18
+  else if (meta?.tier === 'T2') commanderPrior = 0.13
+
+  // 3. 王牌对决赛场阵容适配契合度偏移 (王牌高压对抗下成型速度与终结上限)
+  let buildPriorOffset = 0
+  const cmdAdapt = getCommanderAdaptiveBuilds(cleanCmd)
+  if (cmdAdapt) {
+    const matchedBuild = cmdAdapt.allBuilds.find(
+      b => b.buildName === cleanBuild || cleanBuild.includes(b.buildName) || b.buildName.includes(cleanBuild)
+    )
+    if (matchedBuild) {
+      if (matchedBuild.tier === 'PRIMARY') buildPriorOffset = +0.12 // 王牌高强官方招牌体系
+      else if (matchedBuild.tier === 'SECONDARY') buildPriorOffset = +0.04
+      else buildPriorOffset = -0.02
+    } else {
+      buildPriorOffset = -0.10 // 严重违和或在王牌快节奏中易暴毙的套路 (如诸葛亮牺牲李信、镜玩三分)
+    }
+  }
+
+  const priorWinRate = Math.min(0.48, Math.max(0.12, commanderPrior + buildPriorOffset))
+
+  // 4. 统计该【棋手 × 阵容】在全量王牌对决赛事中的真实实战战绩
+  let sampleMatches = 0
+  let sampleWins = 0
+
+  if (aceMatches && aceMatches.length) {
+    for (const m of aceMatches) {
+      if (m.seats && Array.isArray(m.seats)) {
+        for (const s of m.seats) {
+          const sCmd = s.commander || ''
+          const sBuild = s.build || ''
+          const isWin = s.slot === m.winnerSlot || s.winner
+
+          const sMeta = findCommanderMeta(sCmd)
+          const sCmdClean = sMeta ? sMeta.name : sCmd
+
+          const isCmdMatched = Boolean(
+            sCmdClean && (
+              sCmdClean === cleanCmd ||
+              (meta && meta.aliases.includes(sCmdClean)) ||
+              sCmd.includes(cleanCmd) ||
+              cleanCmd.includes(sCmd)
+            )
+          )
+
+          const isBuildMatched = Boolean(
+            sBuild && (
+              sBuild === cleanBuild ||
+              sBuild.includes(cleanBuild) ||
+              cleanBuild.includes(sBuild)
+            )
+          )
+
+          if (isCmdMatched && isBuildMatched) {
+            sampleMatches++
+            if (isWin) sampleWins++
+          }
+        }
+      }
+    }
+  }
+
+  // 5. 贝叶斯平滑胜率计算 (平滑常数 C = 4，避免极小样本噪点)
+  const C = 4
+  const realWinRate = sampleMatches > 0 ? Number((sampleWins / sampleMatches).toFixed(3)) : priorWinRate
+  const smoothedWinRate = Number(((sampleWins + C * priorWinRate) / (sampleMatches + C)).toFixed(3))
+  const winRateFormatted = `${(smoothedWinRate * 100).toFixed(1)}%`
+
+  // 6. 王牌对决高压赛场胜率梯度与战力加减分评定
+  let tier: 'S' | 'A' | 'B' | 'C' = 'B'
+  let tierLabel = '⚖️ 王牌常规抗压'
+  let scoreModifier = 0.02
+  let reason = ''
+
+  if (smoothedWinRate >= 0.38) {
+    tier = 'S'
+    tierLabel = '👑 王牌T0超模'
+    scoreModifier = +0.20
+    reason = `王牌对决T0：「${cleanCmd}」操盘「${cleanBuild}」在王牌高压赛场极速成型且终结力顶尖（胜率 ${winRateFormatted}，${sampleMatches}战${sampleWins}胜）`
+  } else if (smoothedWinRate >= 0.28) {
+    tier = 'A'
+    tierLabel = '🔥 王牌主流强势'
+    scoreModifier = +0.10
+    reason = `王牌对决主流优选：「${cleanCmd}」搭配「${cleanBuild}」为王牌高分段抗压优选（胜率 ${winRateFormatted}，${sampleMatches}战${sampleWins}胜），发育成型平稳`
+  } else if (smoothedWinRate >= 0.18) {
+    tier = 'B'
+    tierLabel = '⚖️ 王牌常规抗压'
+    scoreModifier = +0.02
+    reason = `王牌对决常规抗压：「${cleanCmd}」搭配「${cleanBuild}」在王牌赛场发挥平稳（胜率 ${winRateFormatted}），具有基本吃分能力`
+  } else {
+    tier = 'C'
+    tierLabel = '⚠️ 王牌高危陷阱'
+    scoreModifier = -0.18
+    reason = `王牌对决高危陷阱：「${cleanCmd}」搭配「${cleanBuild}」在王牌高强度高压对抗中缺乏容错率（胜率仅 ${winRateFormatted}），极易断节奏暴毙`
+  }
+
+  return {
+    commander: cleanCmd,
+    buildName: cleanBuild,
+    sampleMatches,
+    sampleWins,
+    realWinRate,
+    smoothedWinRate,
+    winRateFormatted,
+    tier,
+    tierLabel,
+    scoreModifier,
+    isAceContext: true,
+    reason
+  }
+}
+
+/** 阵容战术体系分类枚举 */
+export type LineupArchetypeKey =
+  | 'BURST_ASSASSIN' // 刺客突脸
+  | 'SUSTAIN_TANK'   // 免控肉坦
+  | 'MAGIC_AOE'      // 法爆机甲
+  | 'RANGED_CARRY'   // 阵地射手
+  | 'FAST_CYCLE'     // 极速倒转
+  | 'BRUISER_MELEE'  // 重装战士
+  | 'BALANCED_FLEX'  // 均衡流派
+
+/** 阵容体系特征元数据 */
+export interface LineupArchetypeInfo {
+  key: LineupArchetypeKey
+  name: string
+  icon: string
+  tactics: string
+  strengths: string
+  weaknesses: string
+}
+
+export const LINEUP_ARCHETYPES: Record<LineupArchetypeKey, LineupArchetypeInfo> = {
+  BURST_ASSASSIN: {
+    key: 'BURST_ASSASSIN',
+    name: '刺客突脸',
+    icon: '🗡️',
+    tactics: '开局越位突击后排脆皮核心，超高单点瞬间斩杀',
+    strengths: '天克阵地射手、打断未成型的极速倒转核心',
+    weaknesses: '惧怕免控肉坦吸收伤害反震、难以正面硬撼重装战士'
+  },
+  SUSTAIN_TANK: {
+    key: 'SUSTAIN_TANK',
+    name: '免控肉坦',
+    icon: '🛡️',
+    tactics: '超高抗性免控减伤，多核承伤或养猪单核反打',
+    strengths: '完美化解刺客突脸爆发，稳健吃分',
+    weaknesses: '被大范围高法穿法爆融化、后期被极速倒转真伤溢出击穿'
+  },
+  MAGIC_AOE: {
+    key: 'MAGIC_AOE',
+    name: '法爆机甲',
+    icon: '🔮',
+    tactics: '大范围法术穿透与高额真伤轰炸，直接融化前排重装',
+    strengths: '法穿范围大招天克抱团重装肉坦与近战',
+    weaknesses: '机甲身板薄弱且读条启动慢，极度惧怕刺客开局跳脸秒杀'
+  },
+  RANGED_CARRY: {
+    key: 'RANGED_CARRY',
+    name: '阵地射手',
+    icon: '🏹',
+    tactics: '超远射程与高攻速高破甲，阵地拉扯持续物理输出',
+    strengths: '持续远程破甲风筝笨重战士、高速压低倒转血线',
+    weaknesses: '阵地缺乏位移保命，惧怕刺客突进秒杀'
+  },
+  FAST_CYCLE: {
+    key: 'FAST_CYCLE',
+    name: '极速倒转',
+    icon: '⚡',
+    tactics: '极速经济倒转与卡牌无限过牌，快速全员追三高费大核',
+    strengths: '后期高阶大核质量碾压纯肉坦、连续补牌反推法爆',
+    weaknesses: '启动前防守薄弱，被高爆发刺客突击或射手速攻强力压血'
+  },
+  BRUISER_MELEE: {
+    key: 'BRUISER_MELEE',
+    name: '重装战士',
+    icon: '🪓',
+    tactics: '半肉近战扎堆，高韧性对抗与强力前排近身绞杀',
+    strengths: '身板厚实克制爆发刺客，一套切不掉反被反杀',
+    weaknesses: '手短易被阵地射手远程拉扯风筝、抱团易吃满法爆轰炸'
+  },
+  BALANCED_FLEX: {
+    key: 'BALANCED_FLEX',
+    name: '均衡流派',
+    icon: '⚖️',
+    tactics: '多阵营混搭与均衡过渡，各维属性平衡',
+    strengths: '无极端天敌，博弈稳定性良好',
+    weaknesses: '缺乏极致终结手段'
+  }
+}
+
+/** 智能识别阵容字符串所属的战术体系 */
+export function identifyLineupArchetype(buildName: string | null | undefined): LineupArchetypeInfo {
+  if (!buildName) return LINEUP_ARCHETYPES.BALANCED_FLEX
+  const b = buildName.trim()
+
+  if (/吕布|海月|刺客|突进|斩杀|阿离|长安刺|司马懿/.test(b)) {
+    return LINEUP_ARCHETYPES.BURST_ASSASSIN
+  }
+  if (/雷霆|战机|法爆|法天|法系|法核|安琪拉/.test(b)) {
+    return LINEUP_ARCHETYPES.MAGIC_AOE
+  }
+  if (/倒转|我不后悔|转瞬|永动/.test(b)) {
+    return LINEUP_ARCHETYPES.FAST_CYCLE
+  }
+  if (/三分|蒙犽|射手|破甲|速攻|坦射|鲁班/.test(b)) {
+    return LINEUP_ARCHETYPES.RANGED_CARRY
+  }
+  if (/养猪|肉坦|前排|保核|防守|护盾|纯肉|庄周/.test(b)) {
+    return LINEUP_ARCHETYPES.SUSTAIN_TANK
+  }
+  if (/蒙恬|李信|木兰|战士|逐鹿|龙蛇|河洛/.test(b)) {
+    return LINEUP_ARCHETYPES.BRUISER_MELEE
+  }
+
+  return LINEUP_ARCHETYPES.BALANCED_FLEX
+}
+
+/** 体系克制规则定义库 */
+export const ARCHETYPE_COUNTER_RULES: Record<
+  LineupArchetypeKey,
+  {
+    counters: { target: LineupArchetypeKey; reason: string }[]
+    counteredBy: { target: LineupArchetypeKey; reason: string }[]
+  }
+> = {
+  BURST_ASSASSIN: {
+    counters: [
+      { target: 'RANGED_CARRY', reason: '刺客开局越位突击脆皮后排，令阵地射手无法持续输出' },
+      { target: 'FAST_CYCLE', reason: '在极速倒转启动成型前强行突脸压血，瞬秒核心组件' }
+    ],
+    counteredBy: [
+      { target: 'SUSTAIN_TANK', reason: '免控肉坦超高减伤护体，刺客首轮爆发秒不掉反遭单核磨死' },
+      { target: 'BRUISER_MELEE', reason: '重装战士身板硬伤害足，刺客刮痧反被近身合围绞杀' }
+    ]
+  },
+  SUSTAIN_TANK: {
+    counters: [
+      { target: 'BURST_ASSASSIN', reason: '超高减伤免控护体，完美吸收刺客突进爆发并反震反击' }
+    ],
+    counteredBy: [
+      { target: 'MAGIC_AOE', reason: '大范围法术穿透与高额真伤轰炸，无视物理护甲直接融化肉坦' },
+      { target: 'FAST_CYCLE', reason: '后期倒转体系全员追三高费大核伤害溢出，纯肉无法抵挡轮番终结' }
+    ]
+  },
+  MAGIC_AOE: {
+    counters: [
+      { target: 'SUSTAIN_TANK', reason: '范围法穿高爆发直接融化扎堆前排肉坦' },
+      { target: 'BRUISER_MELEE', reason: '笨重抱团近战吃满大范围法爆轰炸，难以近身' }
+    ],
+    counteredBy: [
+      { target: 'BURST_ASSASSIN', reason: '法师机甲身板脆弱且读条慢，被刺客先手跳脸瞬秒' }
+    ]
+  },
+  RANGED_CARRY: {
+    counters: [
+      { target: 'BRUISER_MELEE', reason: '超远射程拉扯风筝笨重近战，高破甲将其击穿在冲锋路上' },
+      { target: 'FAST_CYCLE', reason: '前中期高攻速强行压低血线，倒转体系尚未启动已被打残' }
+    ],
+    counteredBy: [
+      { target: 'BURST_ASSASSIN', reason: '阵地射手缺乏后排脱战位移，直接被刺客近身瞬秒' }
+    ]
+  },
+  FAST_CYCLE: {
+    counters: [
+      { target: 'SUSTAIN_TANK', reason: '后期三星高费大核伤害溢出，纯肉坦无法抗住持续碾压' },
+      { target: 'MAGIC_AOE', reason: '依靠非觉醒连击与高频补牌反推法爆机甲' }
+    ],
+    counteredBy: [
+      { target: 'BURST_ASSASSIN', reason: '启动前核心极易被刺客定点击杀' },
+      { target: 'RANGED_CARRY', reason: '前中期射手强速攻持续压血容错极低' }
+    ]
+  },
+  BRUISER_MELEE: {
+    counters: [
+      { target: 'BURST_ASSASSIN', reason: '半肉身板扎实，刺客一套无法秒杀反被战士近战斩杀' }
+    ],
+    counteredBy: [
+      { target: 'RANGED_CARRY', reason: '手短缺乏位移，在射手远程风筝下难以近身' },
+      { target: 'MAGIC_AOE', reason: '近战扎堆吃满范围法爆融化' }
+    ]
+  },
+  BALANCED_FLEX: {
+    counters: [],
+    counteredBy: []
+  }
+}
+
+/** 阵容生态克制关系项 */
+export interface LineupCounterRelation {
+  targetSeat: number
+  targetPlayer: string
+  targetBuild: string
+  targetArchetypeKey: LineupArchetypeKey
+  targetArchetypeLabel: string
+  advantage: 'ADVANTAGE' | 'DISADVANTAGE'
+  reason: string
+}
+
+/** 6x6 阵容对抗矩阵单元格 */
+export interface LineupCounterMatrixCell {
+  fromSeat: number
+  toSeat: number
+  status: 'COUNTER' | 'COUNTERED' | 'TIED'
+  label: string
+  tooltip: string
+}
+
+/** 评估 6 人同场比赛中，所有选手阵容体系间的相互克制关系与博弈得分 */
+export function evaluate6PlayerLineupCounters(
+  participants: { slot: number; nickname: string; buildName: string }[]
+): {
+  perPlayer: {
+    slot: number
+    archetype: LineupArchetypeInfo
+    scoreModifier: number
+    counters: LineupCounterRelation[]
+    counteredBy: LineupCounterRelation[]
+    summary: string
+  }[]
+  cells: LineupCounterMatrixCell[][]
+  ecosystemSummary: string
+} {
+  const n = participants.length
+  const archetypes = participants.map(p => identifyLineupArchetype(p.buildName))
+
+  // 初始化 6x6 矩阵网格
+  const cells: LineupCounterMatrixCell[][] = Array.from({ length: n }, () =>
+    Array.from({ length: n }, () => ({
+      fromSeat: 0,
+      toSeat: 0,
+      status: 'TIED' as const,
+      label: '—',
+      tooltip: '体系互不相克或自身'
+    }))
+  )
+
+  const countersList: LineupCounterRelation[][] = Array.from({ length: n }, () => [])
+  const counteredByList: LineupCounterRelation[][] = Array.from({ length: n }, () => [])
+  const scoreModifiers: number[] = new Array(n).fill(0)
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      cells[i][j].fromSeat = participants[i].slot
+      cells[i][j].toSeat = participants[j].slot
+
+      if (i === j) {
+        cells[i][j].label = '—'
+        cells[i][j].tooltip = `#${participants[i].slot} ${participants[i].nickname}（自身阵容）`
+        continue
+      }
+
+      const archA = archetypes[i]
+      const archB = archetypes[j]
+      const rulesA = ARCHETYPE_COUNTER_RULES[archA.key]
+
+      const counterMatch = rulesA?.counters.find(c => c.target === archB.key)
+      const counteredMatch = rulesA?.counteredBy.find(c => c.target === archB.key)
+
+      if (counterMatch) {
+        cells[i][j].status = 'COUNTER'
+        cells[i][j].label = '克制'
+        cells[i][j].tooltip = `#${participants[i].slot}「${archA.name}」克制 #${participants[j].slot}「${archB.name}」：${counterMatch.reason}`
+        countersList[i].push({
+          targetSeat: participants[j].slot,
+          targetPlayer: participants[j].nickname,
+          targetBuild: participants[j].buildName,
+          targetArchetypeKey: archB.key,
+          targetArchetypeLabel: archB.name,
+          advantage: 'ADVANTAGE',
+          reason: counterMatch.reason
+        })
+        scoreModifiers[i] += 0.06
+      } else if (counteredMatch) {
+        cells[i][j].status = 'COUNTERED'
+        cells[i][j].label = '受制'
+        cells[i][j].tooltip = `#${participants[i].slot}「${archA.name}」遭 #${participants[j].slot}「${archB.name}」克制：${counteredMatch.reason}`
+        counteredByList[i].push({
+          targetSeat: participants[j].slot,
+          targetPlayer: participants[j].nickname,
+          targetBuild: participants[j].buildName,
+          targetArchetypeKey: archB.key,
+          targetArchetypeLabel: archB.name,
+          advantage: 'DISADVANTAGE',
+          reason: counteredMatch.reason
+        })
+        scoreModifiers[i] -= 0.06
+      } else {
+        cells[i][j].status = 'TIED'
+        cells[i][j].label = '均势'
+        cells[i][j].tooltip = `#${participants[i].slot}「${archA.name}」与 #${participants[j].slot}「${archB.name}」：流派均势对抗`
+      }
+    }
+  }
+
+  const perPlayer = participants.map((p, idx) => {
+    const arch = archetypes[idx]
+    const clampedScore = Number(Math.min(0.24, Math.max(-0.24, scoreModifiers[idx])).toFixed(3))
+    const cnt = countersList[idx]
+    const cntBy = counteredByList[idx]
+
+    let summary = `王牌体系均势：所选「${arch.name}」在当前 6 人王牌博弈中各体系互有制衡`
+    if (cnt.length > 0 && cntBy.length > 0) {
+      summary = `王牌博弈胶着：克制 #${cnt.map(c => c.targetSeat).join('、#')} (${cnt.map(c => c.targetArchetypeLabel).join('、')})；遭 #${cntBy.map(c => c.targetSeat).join('、#')} (${cntBy.map(c => c.targetArchetypeLabel).join('、')}) 针对`
+    } else if (cnt.length > 0) {
+      summary = `王牌体系占优：${arch.name}有效克制场上 #${cnt.map(c => c.targetSeat).join('、#')} (${cnt.map(c => c.targetArchetypeLabel).join('、')})，王牌对决赛场生态占优 (+${(clampedScore * 100).toFixed(0)}%)`
+    } else if (cntBy.length > 0) {
+      summary = `王牌体系受制：${arch.name}遭场上 #${cntBy.map(c => c.targetSeat).join('、#')} (${cntBy.map(c => c.targetArchetypeLabel).join('、')}) 针对克制，王牌高压对抗下生存压力偏大 (${(clampedScore * 100).toFixed(0)}%)`
+    }
+
+    return {
+      slot: p.slot,
+      archetype: arch,
+      scoreModifier: clampedScore,
+      counters: cnt,
+      counteredBy: cntBy,
+      summary
+    }
+  })
+
+  // 生成整场阵容博弈生态概览
+  const advantaged = perPlayer.filter(p => p.scoreModifier > 0).map(p => `#${p.slot} ${p.archetype.name}`)
+  const disadvantaged = perPlayer.filter(p => p.scoreModifier < 0).map(p => `#${p.slot} ${p.archetype.name}`)
+
+  let ecosystemSummary = '本场 6 位选手阵容体系百花齐放，各流派克制关系交错，属于王牌对决均衡博弈局。'
+  if (advantaged.length && disadvantaged.length) {
+    ecosystemSummary = `本场王牌对决体系博弈：顶尖高手对位克制分化显著，【${advantaged.join('、')}】凭借流派相克占得先机，而【${disadvantaged.join('、')}】面临严苛对位压力。`
+  }
+
+  return {
+    perPlayer,
+    cells,
+    ecosystemSummary
   }
 }
 
@@ -958,10 +1536,10 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     aliases: ['世薄情', '抖音世薄情'],
     signatureCommander: '马可',
     alternativeCommanders: ['嬴律', '白歌'],
-    signatureBuilds: ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
+    signatureBuilds: ['逐鹿蒙恬', '大河龙蛇', '镜猪转吕布'],
     playstyle: '大河龙蛇与逐鹿变阵专家',
     commanderBuildMap: {
-      '马可': ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
+      '马可': ['逐鹿蒙恬', '大河龙蛇', '镜猪转吕布'],
       '嬴律': ['逐鹿蒙恬'],
       '白歌': ['大河龙蛇', '逐鹿蒙恬']
     }
@@ -994,13 +1572,14 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
   },
   {
     masterName: '梦飞',
-    aliases: ['梦飞', '梦飞大大', '抖音梦飞'],
+    aliases: ['梦飞', '梦飞大大', '抖音梦飞', '抖音梦飞冻冻', '抖音梦飞1', '抖音梦飞77'],
     signatureCommander: '马可',
     alternativeCommanders: ['庄小鱼', '玉环'],
-    signatureBuilds: ['镜猪转吕布', '牺牲李信', '传统养猪'],
-    playstyle: '大局运营与后期高质量变阵',
+    signatureBuilds: ['成年礼三分登场', '三分登场', '镜猪转吕布', '牺牲李信'],
+    playstyle: '大局运营与近7天马可三分绝活登顶',
     commanderBuildMap: {
-      '马可': ['镜猪转吕布', '三分登场', '牺牲李信'],
+      '马可': ['成年礼三分登场', '三分登场', '镜猪转吕布'],
+      '马可波罗': ['成年礼三分登场', '三分登场', '镜猪转吕布'],
       '庄小鱼': ['传统养猪'],
       '玉环': ['牺牲李信', '日落海倒转']
     }
@@ -1118,6 +1697,8 @@ export interface PlayerInferredLineup {
   commanderProfile?: CommanderUsageProfile | null // 该选手在所选棋手下的历史实战画像
   commanderAdaptation?: CommanderAdaptivePool | null // 棋手在当前禁选下的适配池
   proficiency?: PlayerLineupProficiency | null // 选手对该棋手该阵容的专精熟练度画像
+  commanderBuildSynergy?: CommanderBuildSynergyEval | null // 棋手与该阵容的大盘胜率评估
+  lineupArchetype?: LineupArchetypeInfo | null // 阵容所属战术流派体系
   eligibleCommanderBuilds?: CommanderAdaptedBuild[] // 当前合规的适配阵容列表
 }
 
@@ -1227,6 +1808,9 @@ export function inferPlayerLineup(
         reason = `棋手「${cleanCmd}」与「${chosenBuildName}」机制高度协同（${adaptedMeta?.synergyDesc || '契合度极佳'}），选手熟练度达 ${prof.levelLabel}`
       }
 
+      const synergy = evaluateCommanderBuildSynergy(cleanCmd, chosenBuildName, historicalMatches)
+      const archetype = identifyLineupArchetype(chosenBuildName)
+
       return {
         lineupName: chosenBuildName,
         isFallback,
@@ -1236,6 +1820,8 @@ export function inferPlayerLineup(
         commanderProfile: matchedCmd || null,
         commanderAdaptation: cmdAdaptation,
         proficiency: prof,
+        commanderBuildSynergy: synergy,
+        lineupArchetype: archetype,
         eligibleCommanderBuilds: eligibleBuilds
       }
     }
@@ -1252,6 +1838,9 @@ export function inferPlayerLineup(
     const meta = findCommanderMeta(commanderName)
     const fallbackName = meta ? `${meta.name}常规构筑` : '多流派平衡'
     const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, fallbackName, historicalMatches)
+    const synergy = evaluateCommanderBuildSynergy(commanderName, fallbackName, historicalMatches)
+    const archetype = identifyLineupArchetype(fallbackName)
+
     return {
       lineupName: fallbackName,
       isFallback: false,
@@ -1259,6 +1848,8 @@ export function inferPlayerLineup(
       reason: '选手战绩尚无固定流派样本，根据临场对局构建',
       commanderAdaptation: cmdAdaptation,
       proficiency: prof,
+      commanderBuildSynergy: synergy,
+      lineupArchetype: archetype,
       eligibleCommanderBuilds: eligibleBuilds
     }
   }
@@ -1271,6 +1862,9 @@ export function inferPlayerLineup(
       const fallback = candidateBuilds.find(b => !b.includes(bf))
       const target = fallback || `非${bf}过渡阵容`
       const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, target, historicalMatches)
+      const synergy = evaluateCommanderBuildSynergy(commanderName, target, historicalMatches)
+      const archetype = identifyLineupArchetype(target)
+
       return {
         lineupName: target,
         isFallback: true,
@@ -1279,6 +1873,8 @@ export function inferPlayerLineup(
         bannedWarning: `主力「${primary}」受禁选封锁！`,
         commanderAdaptation: cmdAdaptation,
         proficiency: prof,
+        commanderBuildSynergy: synergy,
+        lineupArchetype: archetype,
         eligibleCommanderBuilds: eligibleBuilds
       }
     }
@@ -1286,6 +1882,9 @@ export function inferPlayerLineup(
 
   // 4. 第一擅长未被 Ban
   const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, primary, historicalMatches)
+  const synergy = evaluateCommanderBuildSynergy(commanderName, primary, historicalMatches)
+  const archetype = identifyLineupArchetype(primary)
+
   return {
     lineupName: primary,
     isFallback: false,
@@ -1295,6 +1894,8 @@ export function inferPlayerLineup(
       : `选手个人历史招牌流派（擅长率最高 · 熟练度 ${prof.levelLabel}）`,
     commanderAdaptation: cmdAdaptation,
     proficiency: prof,
+    commanderBuildSynergy: synergy,
+    lineupArchetype: archetype,
     eligibleCommanderBuilds: eligibleBuilds
   }
 }
@@ -1459,7 +2060,14 @@ export interface SixPlayerMatchupResult {
     versionModifier: number
     commanderModifier: number
     proficiencyModifier: number // 选手对该棋手该阵容专精熟练度修正分 (-0.20 ~ +0.25)
+    commanderBuildModifier: number // 棋手搭配该阵容大盘实战胜率修正分 (-0.20 ~ +0.22)
+    lineupCounterScore: number // 6人同场阵容体系生态克制修正分 (-0.24 ~ +0.24)
     lineupProficiency?: PlayerLineupProficiency | null
+    commanderBuildSynergy?: CommanderBuildSynergyEval | null // 棋手搭配该阵容的大盘胜率评估
+    lineupArchetype?: LineupArchetypeInfo | null // 预测阵容所属战术体系
+    lineupCounters: LineupCounterRelation[] // 本场克制的对手
+    lineupCounteredBy: LineupCounterRelation[] // 本场受制的对手
+    lineupCounterSummary: string // 体系对抗生态一句话总结
     commanderAdaptivePool?: CommanderAdaptivePool | null
     eligibleCommanderBuilds?: CommanderAdaptedBuild[]
     seatCommanderProfile?: CommanderUsageProfile | null // 该选手本场选用棋手的实战统计与常用阵容
@@ -1495,6 +2103,11 @@ export interface SixPlayerMatchupResult {
     seats: { seat: number; nickname: string; masterName: string }[]
     cells: CrossMatrixCell[][]
   }
+  lineupMatrix?: {
+    seats: { seat: number; nickname: string; buildName: string; archetype: LineupArchetypeInfo }[]
+    cells: LineupCounterMatrixCell[][]
+    ecosystemSummary: string
+  } | null
   targetVersion: string
   versionMeta: GameVersionMeta
   versionSummary: {
@@ -2100,7 +2713,19 @@ export function evaluate6PlayerMatchup(
   const benefitedPlayers: string[] = []
   const buffedPlayers: string[] = []
 
-  const preliminary = roster.map(p => {
+  // 先统一推断各席位阵容，以进行同场阵容体系生态克制评估
+  const inferredList = roster.map(p =>
+    inferPlayerLineup(p.profile?.commonBuilds || [], bannedFaction, p.commander, p.nickname, p.profile?.commanderProfiles, allMatches)
+  )
+
+  const lineupParticipants = roster.map((p, idx) => ({
+    slot: p.slot,
+    nickname: p.nickname,
+    buildName: inferredList[idx].lineupName
+  }))
+  const lineupCounterEval = evaluate6PlayerLineupCounters(lineupParticipants)
+
+  const preliminary = roster.map((p, idx) => {
     const prof = p.profile
     const wins = prof?.totalWins || 0
     const matches = prof?.totalMatches || 1
@@ -2125,15 +2750,27 @@ export function evaluate6PlayerMatchup(
 
     // 所选棋手机制强度与流派协同修正分（结合选手专属绝活画像与棋手协同）
     const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion, bannedFaction, p.nickname)
-    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander, p.nickname, prof?.commanderProfiles, allMatches)
+    const inferred = inferredList[idx]
     const commanderModifier = cmdEval ? cmdEval.bonus : 0
     const proficiencyModifier = inferred.proficiency ? inferred.proficiency.modifier : 0
+
+    // 棋手搭配该阵容大盘实战胜率模型
+    const cmdBuildSynergy = inferred.commanderBuildSynergy || evaluateCommanderBuildSynergy(p.commander, inferred.lineupName, allMatches)
+    const commanderBuildModifier = cmdBuildSynergy.scoreModifier
+
+    // 6人同场阵容体系生态克制模型
+    const playerLineupCounter = lineupCounterEval.perPlayer[idx]
+    const lineupCounterScore = playerLineupCounter.scoreModifier
+    const lineupCounters = playerLineupCounter.counters
+    const lineupCounteredBy = playerLineupCounter.counteredBy
+    const lineupCounterSummary = playerLineupCounter.summary
+    const lineupArchetype = playerLineupCounter.archetype
 
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
     if (banEval?.level === 'BENEFITED') benefitedPlayers.push(p.masterName)
     if (versionAdapt.fitLevel === 'BUFFED') buffedPlayers.push(p.masterName)
 
-    const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier + proficiencyModifier
+    const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier + proficiencyModifier + commanderBuildModifier + lineupCounterScore
 
     const activeSupp = activeSuppressesMap.get(p.masterName) || []
     const activeSuppBy = activeSuppressedByMap.get(p.masterName) || []
@@ -2160,7 +2797,14 @@ export function evaluate6PlayerMatchup(
       versionModifier: Number(versionModifier.toFixed(3)),
       commanderModifier: Number(commanderModifier.toFixed(3)),
       proficiencyModifier: Number(proficiencyModifier.toFixed(3)),
+      commanderBuildModifier: Number(commanderBuildModifier.toFixed(3)),
+      lineupCounterScore: Number(lineupCounterScore.toFixed(3)),
       lineupProficiency: inferred.proficiency || null,
+      commanderBuildSynergy: cmdBuildSynergy,
+      lineupArchetype,
+      lineupCounters,
+      lineupCounteredBy,
+      lineupCounterSummary,
       commanderAdaptivePool: inferred.commanderAdaptation || null,
       eligibleCommanderBuilds: inferred.eligibleCommanderBuilds || [],
       seatCommanderProfile: inferred.commanderProfile || prof?.commanderProfiles?.find(c => c.commander === p.commander) || null,
@@ -2214,6 +2858,16 @@ export function evaluate6PlayerMatchup(
     crossMatrix: {
       seats: roster.map(r => ({ seat: r.slot, nickname: r.nickname, masterName: r.masterName })),
       cells: matrixCells
+    },
+    lineupMatrix: {
+      seats: roster.map((r, idx) => ({
+        seat: r.slot,
+        nickname: r.nickname,
+        buildName: lineupParticipants[idx].buildName,
+        archetype: lineupCounterEval.perPlayer[idx].archetype
+      })),
+      cells: lineupCounterEval.cells,
+      ecosystemSummary: lineupCounterEval.ecosystemSummary
     },
     targetVersion,
     versionMeta: verMeta,
