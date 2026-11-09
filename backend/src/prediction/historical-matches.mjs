@@ -4,14 +4,6 @@
 
 export const HISTORICAL_DATE_GROUPS = [
   {
-    day: '2026-11-08',
-    sourceUrl: 'https://www.douyin.com/note/7706018349281729452',
-    title: '万象棋王牌对决1108日胜者一图流与决战夜公报',
-    winners: ['RW侠.晓枫', '抖音EGM小谷芷', '梦飞大大', '白白白白白3', 'EZ拉丁鱼', '世薄情', '抖音妖柒', 'QT新一'],
-    builds: ['日落海倒转', '雷霆战机', '成年礼三分登场', '传统养猪', '日落海倒转', '逐鹿蒙恬', '传统养猪', '雷霆战机'],
-    bans: [null, null, null, null, null, null, '逐鹿', '三分']
-  },
-  {
     day: '2026-11-07',
     sourceUrl: 'https://www.douyin.com/note/7705642819038203175',
     title: '万象棋王牌对决1107日胜者一图流',

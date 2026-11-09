@@ -479,6 +479,35 @@
                             <p class="fit-desc">{{ getPlayerMatchup(p.nickname)!.versionAdaptation!.summary }}</p>
                           </div>
                         </div>
+
+                        <!-- 3. 棋手与常用阵容实战统计 -->
+                        <div class="expand-cmd-col">
+                          <h4>♟️ 【{{ p.nickname }}】棋手使用与常用阵容实战统计</h4>
+                          <p class="muted">根据全量实战赛果，统计该选手选用各棋手的对决次数与常用流派：</p>
+
+                          <div v-if="getPlayerMatchup(p.nickname)?.commanderProfiles?.length" class="cmd-profiles-list">
+                            <div v-for="c in getPlayerMatchup(p.nickname)!.commanderProfiles.slice(0, 5)" :key="c.commander" class="cmd-profile-card">
+                              <div class="cmd-card-head">
+                                <span class="cmd-name">♟️ {{ c.commander }}</span>
+                                <span class="cmd-tier" :class="`tier-${c.tier.toLowerCase()}`">{{ c.tier }}</span>
+                                <span v-if="c.isSignature" class="cmd-sig-tag">招牌本命</span>
+                                <span class="cmd-win-rate">{{ (c.winRate * 100).toFixed(0) }}% 胜率</span>
+                              </div>
+                              <div class="cmd-card-body">
+                                <div class="cmd-stat-line">
+                                  <span>实战 <strong>{{ c.matches }}</strong> 战 <strong>{{ c.wins }}</strong> 冠</span>
+                                  <span class="cmd-fav">偏好：<strong>{{ c.favoriteBuild }}</strong></span>
+                                </div>
+                                <div v-if="c.topBuilds?.length > 1" class="cmd-sub-builds">
+                                  <span v-for="b in c.topBuilds.slice(0, 3)" :key="b.buildName" class="sub-build-chip">
+                                    {{ b.buildName }} ({{ b.matches }}战{{ b.wins }}冠)
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p v-else class="muted">该选手在已转写对局中暂无深度棋手细分记录。</p>
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -1788,7 +1817,7 @@ button,
 
     .expand-panel-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
       padding: 16px;
       background: $bg-canvas;
@@ -1960,6 +1989,113 @@ button,
           font-size: 11.5px;
           color: $text-secondary;
           line-height: 1.45;
+        }
+      }
+    }
+
+    .expand-cmd-col {
+      .cmd-profiles-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .cmd-profile-card {
+        background: #fff;
+        border: 1px solid $border-subtle;
+        border-radius: $radius-sm;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .cmd-card-head {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          .cmd-name {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: $text-primary;
+          }
+
+          .cmd-tier {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+
+            &.tier-t0 {
+              background: #fef2f2;
+              color: #dc2626;
+              border: 1px solid #fecaca;
+            }
+            &.tier-t1 {
+              background: #eff6ff;
+              color: #2563eb;
+              border: 1px solid #bfdbfe;
+            }
+            &.tier-t2 {
+              background: #f8fafc;
+              color: #64748b;
+              border: 1px solid #e2e8f0;
+            }
+          }
+
+          .cmd-sig-tag {
+            font-size: 9.5px;
+            color: #b45309;
+            background: #fef3c7;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+          }
+
+          .cmd-win-rate {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 700;
+            color: $color-primary;
+          }
+        }
+
+        .cmd-card-body {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          font-size: 11px;
+
+          .cmd-stat-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: $text-secondary;
+
+            .cmd-fav {
+              color: #1e293b;
+              strong {
+                color: $color-primary-dark;
+              }
+            }
+          }
+
+          .cmd-sub-builds {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+
+            .sub-build-chip {
+              font-size: 9.5px;
+              background: #f1f5f9;
+              color: #475569;
+              padding: 1px 4px;
+              border-radius: 3px;
+            }
+          }
         }
       }
     }

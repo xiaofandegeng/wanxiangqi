@@ -392,6 +392,368 @@ export function findCommanderMeta(rawName: string | null | undefined): Commander
   )
 }
 
+/** 棋手与主流阵容适配机制定义 */
+export interface CommanderAdaptedBuild {
+  buildName: string
+  faction: FactionType
+  tier: 'PRIMARY' | 'SECONDARY' | 'VARIANT'
+  synergyDesc: string
+}
+
+/** 棋手在当前禁选规则下的动态流派适配池 */
+export interface CommanderAdaptivePool {
+  commander: string
+  allBuilds: CommanderAdaptedBuild[]
+  eligibleBuilds: CommanderAdaptedBuild[]
+  bannedBuilds: CommanderAdaptedBuild[]
+  bestAdaptiveBuild: CommanderAdaptedBuild | null
+  bannedFaction: string | null
+}
+
+/** 官方完整 21 位棋手的主流阵容适配矩阵 */
+export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> = {
+  嬴律: [
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'PRIMARY', synergyDesc: '并购红利回合额外复制，极大加速蒙恬追三星，上限质变' },
+    { buildName: '三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '成年礼三分快速追三星全员成型' },
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '复制核心射手与高阶前排坦核' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '复制倒转核心高费英雄加速锁血' }
+  ],
+  安琪拉: [
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: 'v1.9.1飞行器继承125%法攻与30%攻速，引爆机甲法爆' },
+    { buildName: '法天象地', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '高法攻继承引爆法术大招范围爆发' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '高法攻辅助倒转体系后期伤害补足' }
+  ],
+  玉环: [
+    { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: '霓裳曲打出非觉醒牌连击增益，极速过牌锁血登顶' },
+    { buildName: '牺牲李信', faction: '河洛', tier: 'SECONDARY', synergyDesc: '连击增益加速单核李信狂暴法坦输出' },
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '高频刷牌快速检索机甲核心配件' },
+    { buildName: '三分倒转', faction: '三分', tier: 'VARIANT', synergyDesc: '三分领袖配合连击刷牌高速过牌' }
+  ],
+  乔汐: [
+    { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: 'v1.9.1潮汐交响初始4次，法系倒转与转瞬快攻成型神速' },
+    { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '转瞬抽取收窄至3~5阶高质牌，三分快速启动' },
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '高阶转瞬牌快速定向检索机甲核心' },
+    { buildName: '伞半月', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '转瞬牌支援高机动射手快速位移' }
+  ],
+  武凤: [
+    { buildName: '河洛木兰', faction: '河洛', tier: 'PRIMARY', synergyDesc: '偷取敌方秘技牌打破上限，万鸟朝凤女帝爆发对抗' },
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'SECONDARY', synergyDesc: '秘技增强前排坦度与反打控制' },
+    { buildName: '三分登场', faction: '三分', tier: 'VARIANT', synergyDesc: '全能秘技补强三分阵型对抗容错' }
+  ],
+  庄小鱼: [
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '全队免控与梦境商店保障单核养猪坦度，逆风翻盘' },
+    { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '免控护体为吕布刺客提供绝对安全输出环境' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'SECONDARY', synergyDesc: '免控为倒转体系保驾护航免遭切后' },
+    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '免控保护后排射手持续扫射' },
+    { buildName: '三分倒转', faction: '三分', tier: 'VARIANT', synergyDesc: '免控保障三分前排阵型' }
+  ],
+  孙小宾: [
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '时光倒流回溯上回合手牌，极致配合关键机甲牌序' },
+    { buildName: '三分倒转', faction: '三分', tier: 'SECONDARY', synergyDesc: '手牌回溯配合倒转高频过牌爆发' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '回溯关键非觉醒牌延长倒转链路' }
+  ],
+  阿离: [
+    { buildName: '伞半月', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '红叶染锋等级保留机制，高机动位移与持续输出' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'SECONDARY', synergyDesc: '高机动配合倒转刷牌强化敏捷射手' },
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '射手位移提供阵地战自保生存能力' }
+  ],
+  白歌: [
+    { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '即兴创作每4次合成复制，加速追三星与高爆发' },
+    { buildName: '河洛木兰', faction: '河洛', tier: 'PRIMARY', synergyDesc: '合成质变增强近战刺客与女帝爆发' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '高频合成复制单核肉装坦克' },
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '即兴创作复制前排肉核突破星级' }
+  ],
+  马可: [
+    { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '高频真伤弹幕掩护刺客突进，后期大吕布接管战局' },
+    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'PRIMARY', synergyDesc: '高频真伤弹幕强化射手穿透轰炸' },
+    { buildName: '大河龙蛇', faction: '大河', tier: 'SECONDARY', synergyDesc: '大河先手开团接物理爆发输出（世薄情成名招牌）' },
+    { buildName: '成年礼三分', faction: '三分', tier: 'SECONDARY', synergyDesc: '三分阵营快速成型射手推进' },
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '前排承伤提供持久开团火力' }
+  ],
+  昭君: [
+    { buildName: '高费大核', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '寒霜转化指定冻结，战斗后升阶并继承等级' },
+    { buildName: '法天象地', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '升阶继承快速合成高星高级法师' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '冰冻升阶加速倒转高费组件成型' }
+  ],
+  镜: [
+    { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '铜像复刻上一张英雄卡，后期大吕布镜像爆发' },
+    { buildName: '镜猪转海月', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '铜像复刻海月瞬发法刺爆发' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '复刻关键坦核加速三星养成' }
+  ],
+  明先生: [
+    { buildName: '河洛木兰', faction: '河洛', tier: 'PRIMARY', synergyDesc: '丰节卦象调控经济，慢速大核稳健成型' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '卦象链子持续强化单核坦度与发育' },
+    { buildName: '长安九五', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '丰节卦象贪经济速上高本' }
+  ],
+  小妲己: [
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '每买4张送效果牌，平稳保底单核发育' },
+    { buildName: '长安九五', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '万能经济牌稳过渡上本' },
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '通用保底肉坦前排稳步成型' }
+  ],
+  香香: [
+    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'PRIMARY', synergyDesc: '战斗开局武器协同攻击，物理重炮轰炸' },
+    { buildName: '三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '武器协同配合三分速攻爆发' },
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '后排物理重炮阵地战' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '单核射手暴击养成' }
+  ],
+  瑶妹: [
+    { buildName: '防守保核', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '开局小鹿庇护护盾，单核前排极限保活' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '护盾与属性成长保障养猪肉盾不倒' }
+  ],
+  班叔: [
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '热能陷阱真伤眩晕与弹簧防刺客，完美保后排射手' },
+    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'SECONDARY', synergyDesc: '陷阱控场掩护蒙犽扫射' }
+  ],
+  姜导: [
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'PRIMARY', synergyDesc: '主角加冕快速提升蒙恬等级与属性，极限单核' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '快速提升养猪核心属性' }
+  ],
+  闹闹: [
+    { buildName: '纯三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '阵营抉择锁定三分卡牌，过滤杂牌效率极高' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'SECONDARY', synergyDesc: '定向锁定日落海快速齐牌' },
+    { buildName: '大河龙蛇', faction: '大河', tier: 'VARIANT', synergyDesc: '锁定大河组件快速成型' }
+  ],
+  弈星: [
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '棋盘演练借力打力，反制敌手高阶卡' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'SECONDARY', synergyDesc: '大招控场与战术借力' }
+  ],
+  常小娥: [
+    { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: '月影灵泉法盾与续航，长线承伤拉扯' },
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '法系护盾强化机甲承伤' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '法坦前排增强' }
+  ],
+  司马懿: [
+    { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '刺客突脸收割，打乱敌方后排节奏' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '死斗蓄力斩杀' }
+  ],
+  诸葛亮: [
+    { buildName: '三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '三分阵营东风破法球高额法术增益' },
+    { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '三分倒转极速成型' },
+    { buildName: '牺牲李信', faction: '河洛', tier: 'SECONDARY', synergyDesc: '法球增益加成单核李信爆发' },
+    { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '法球与日落海连击' }
+  ]
+}
+
+/** 获取棋手在特定禁选阵营下的合规与受禁适配阵容列表（支持别名） */
+export function getCommanderAdaptiveBuilds(
+  commanderName: string | null | undefined,
+  bannedFaction?: string | null
+): CommanderAdaptivePool | null {
+  if (!commanderName || !commanderName.trim()) return null
+  const clean = commanderName.trim()
+  const meta = findCommanderMeta(clean)
+  const cmdKey = meta?.name || clean
+
+  const rawList = COMMANDER_ADAPTED_BUILDS[cmdKey] || COMMANDER_ADAPTED_BUILDS[clean] || []
+  if (!rawList.length) return null
+
+  const bf = bannedFaction ? bannedFaction.trim().replace('阵营', '') : null
+
+  const eligibleBuilds: CommanderAdaptedBuild[] = []
+  const bannedBuilds: CommanderAdaptedBuild[] = []
+
+  for (const b of rawList) {
+    const isBanned = Boolean(bf && (b.faction === bf || b.buildName.includes(bf)))
+    if (isBanned) {
+      bannedBuilds.push(b)
+    } else {
+      eligibleBuilds.push(b)
+    }
+  }
+
+  return {
+    commander: cmdKey,
+    allBuilds: rawList,
+    eligibleBuilds,
+    bannedBuilds,
+    bestAdaptiveBuild: eligibleBuilds[0] || null,
+    bannedFaction: bf
+  }
+}
+
+/** 选手对特定棋手该阵容的熟练度三维建模评级定义 */
+export type ProficiencyStarLevel = 5 | 4 | 3 | 2 | 1
+
+export interface PlayerLineupProficiency {
+  starLevel: ProficiencyStarLevel
+  levelLabel: string // '⭐⭐⭐⭐⭐ 炉火纯青' | '⭐⭐⭐⭐ 驾轻就熟' | '⭐⭐⭐ 熟练运用' | '⭐⭐ 变阵备选' | '⭐ 生疏初试'
+  tierKey: 'MASTER' | 'EXPERT' | 'COMPETENT' | 'SUBSTITUTE' | 'NOVICE'
+  modifier: number // -0.20 ~ +0.25 战力加减分
+  historicalMatches: number
+  historicalWins: number
+  historicalWinRate: number
+  isSignatureBuild: boolean
+  isSignatureCommander: boolean
+  description: string
+  reasoning: string
+}
+
+/** 核心算法：评估【选手 × 棋手 × 阵容】的专精熟练度与战力修正 */
+export function evaluatePlayerCommanderLineupProficiency(
+  playerNickname: string | null | undefined,
+  commanderName: string | null | undefined,
+  targetBuild: string,
+  historicalMatches: any[] = []
+): PlayerLineupProficiency {
+  const masterName = getMasterPlayerName(playerNickname || '')
+  const meta = findCommanderMeta(commanderName)
+  const cmdName = meta ? meta.name : (commanderName?.trim() || '')
+  const masterDef = findPlayerMasterProfile(playerNickname)
+
+  // 1. 从历史对局统计中提取选手在【该棋手 × 该阵容】的实战战绩
+  let cmdBuildMatches = 0
+  let cmdBuildWins = 0
+  let totalBuildMatches = 0
+  let totalBuildWins = 0
+
+  if (historicalMatches && historicalMatches.length) {
+    for (const m of historicalMatches) {
+      const seat = m.seats?.find((s: any) => getMasterPlayerName(s.nickname) === masterName)
+      if (seat) {
+        const sBuild = seat.build || ''
+        const sCmd = seat.commander || ''
+        const isWin = seat.slot === m.winnerSlot || seat.winner
+
+        if (sBuild && (sBuild === targetBuild || sBuild.includes(targetBuild) || targetBuild.includes(sBuild))) {
+          totalBuildMatches++
+          if (isWin) totalBuildWins++
+
+          const sMeta = findCommanderMeta(sCmd)
+          const sCmdName = sMeta ? sMeta.name : sCmd
+          if (sCmdName && cmdName && (sCmdName === cmdName || (meta && meta.aliases.includes(sCmdName)))) {
+            cmdBuildMatches++
+            if (isWin) cmdBuildWins++
+          }
+        }
+      }
+    }
+  }
+
+  const histWinRate = cmdBuildMatches > 0 ? Number((cmdBuildWins / cmdBuildMatches).toFixed(2)) : 0
+
+  // 2. 匹配权威选手档案库（Master Profile）中的招牌棋手与阵容映射
+  const isSignatureCommander = Boolean(
+    masterDef && (masterDef.signatureCommander === cmdName || masterDef.alternativeCommanders.includes(cmdName))
+  )
+  const isSignatureBuild = Boolean(
+    masterDef && masterDef.signatureBuilds.some(b => b === targetBuild || targetBuild.includes(b) || b.includes(targetBuild))
+  )
+
+  let rankInCmdMap = -1
+  if (masterDef?.commanderBuildMap) {
+    for (const [cKey, bList] of Object.entries(masterDef.commanderBuildMap)) {
+      const cMeta = findCommanderMeta(cKey)
+      const mappedCmd = cMeta ? cMeta.name : cKey
+      if (mappedCmd === cmdName || (meta && meta.aliases.includes(cKey))) {
+        rankInCmdMap = bList.findIndex(b => b === targetBuild || targetBuild.includes(b) || b.includes(targetBuild))
+        break
+      }
+    }
+  }
+
+  // 3. 评定熟练度星级与战力加减分
+  if (
+    (cmdBuildMatches >= 2 && histWinRate >= 0.45) ||
+    (rankInCmdMap === 0 && (isSignatureCommander || isSignatureBuild)) ||
+    (isSignatureCommander && isSignatureBuild)
+  ) {
+    // ⭐⭐⭐⭐⭐ 5星 · 炉火纯青 (招牌绝活体系)
+    return {
+      starLevel: 5,
+      levelLabel: '⭐⭐⭐⭐⭐ 炉火纯青',
+      tierKey: 'MASTER',
+      modifier: 0.22,
+      historicalMatches: cmdBuildMatches,
+      historicalWins: cmdBuildWins,
+      historicalWinRate: histWinRate,
+      isSignatureBuild: true,
+      isSignatureCommander,
+      description: '绝活专精体系，机制理解与牌序节奏已臻化境，胜率极高保障',
+      reasoning: cmdBuildMatches > 0
+        ? `实战战绩支撑：使用「${cmdName}」出战「${targetBuild}」${cmdBuildMatches}战${cmdBuildWins}冠（胜率 ${(histWinRate * 100).toFixed(0)}%），属绝对招牌绝活`
+        : `权威档案专精：${masterName}使用「${cmdName}」首发必选「${targetBuild}」，熟练度顶级`
+    }
+  }
+
+  if (
+    (cmdBuildMatches >= 1 && cmdBuildWins >= 1) ||
+    rankInCmdMap >= 0 ||
+    isSignatureBuild ||
+    (totalBuildMatches >= 2 && totalBuildWins >= 1)
+  ) {
+    // ⭐⭐⭐⭐ 4星 · 驾轻就熟 (熟练拿手体系)
+    return {
+      starLevel: 4,
+      levelLabel: '⭐⭐⭐⭐ 驾轻就熟',
+      tierKey: 'EXPERT',
+      modifier: 0.12,
+      historicalMatches: cmdBuildMatches,
+      historicalWins: cmdBuildWins,
+      historicalWinRate: histWinRate,
+      isSignatureBuild,
+      isSignatureCommander,
+      description: '常用拿手体系，变阵熟练，节奏掌控良好',
+      reasoning: cmdBuildMatches > 0
+        ? `实战表现优异：使用「${cmdName}」操盘「${targetBuild}」有胜场记录，节奏契合`
+        : `常用核心体系：选手对「${targetBuild}」理解深厚，配合「${cmdName}」机制具强战斗力`
+    }
+  }
+
+  // 检查是否为棋手官方适配阵容
+  const cmdPool = getCommanderAdaptiveBuilds(cmdName)
+  const isPrimaryAdapted = cmdPool?.allBuilds.some(b => b.tier === 'PRIMARY' && (b.buildName === targetBuild || targetBuild.includes(b.buildName)))
+  const isAdapted = cmdPool?.allBuilds.some(b => b.buildName === targetBuild || targetBuild.includes(b.buildName))
+
+  if (isPrimaryAdapted || (isAdapted && totalBuildMatches >= 1)) {
+    // ⭐⭐⭐ 3星 · 熟练运用 (标准合规模板)
+    return {
+      starLevel: 3,
+      levelLabel: '⭐⭐⭐ 熟练运用',
+      tierKey: 'COMPETENT',
+      modifier: 0.03,
+      historicalMatches: cmdBuildMatches,
+      historicalWins: cmdBuildWins,
+      historicalWinRate: histWinRate,
+      isSignatureBuild: false,
+      isSignatureCommander,
+      description: '棋手标准适配体系，基础运营稳健，正常水准发挥',
+      reasoning: `标准契合度：棋手「${cmdName}」与「${targetBuild}」机制适配，选手可平稳驾驭`
+    }
+  }
+
+  if (isAdapted) {
+    // ⭐⭐ 2星 · 变阵备选 (受阻或次选流派)
+    return {
+      starLevel: 2,
+      levelLabel: '⭐⭐ 变阵备选',
+      tierKey: 'SUBSTITUTE',
+      modifier: -0.08,
+      historicalMatches: cmdBuildMatches,
+      historicalWins: cmdBuildWins,
+      historicalWinRate: histWinRate,
+      isSignatureBuild: false,
+      isSignatureCommander,
+      description: '受禁选影响或临场次要备选，战力稍受折损',
+      reasoning: `次级适配变阵：该选手鲜少操盘「${cmdName}」玩「${targetBuild}」，需临场调整牌序`
+    }
+  }
+
+  // ⭐ 1星 · 生疏初试 (极度生疏或违和套路)
+  return {
+    starLevel: 1,
+    levelLabel: '⭐ 生疏初试',
+    tierKey: 'NOVICE',
+    modifier: -0.18,
+    historicalMatches: cmdBuildMatches,
+    historicalWins: cmdBuildWins,
+    historicalWinRate: histWinRate,
+    isSignatureBuild: false,
+    isSignatureCommander: false,
+    description: '对该棋手该阵容极度生疏，缺少实战磨合与胜绩支撑，断节奏风险高',
+    reasoning: `生疏初试：选手无该流派实战胜绩，且与「${cmdName}」常规战术偏离，胜率风险大`
+  }
+}
+
 /** 核心选手权威绝活与招牌棋手档案库定义 */
 export interface PlayerMasterProfileDef {
   masterName: string
@@ -400,6 +762,7 @@ export interface PlayerMasterProfileDef {
   alternativeCommanders: string[] // 常用备选棋手
   signatureBuilds: string[] // 招牌擅长阵容（按熟练度与实战胜率从高到低排序）
   playstyle: string // 打法风格与竞技画像
+  commanderBuildMap?: Record<string, string[]> // 棋手与专属常用阵容历史偏好映射
   note?: string
 }
 
@@ -411,7 +774,16 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '乔汐',
     alternativeCommanders: ['阿离', '玉环'],
     signatureBuilds: ['日落海倒转', '三分倒转', '伞半月'],
-    playstyle: '国一倒转王，日落海与三分倒转天花板，刷牌节奏极快'
+    playstyle: '国一倒转王，日落海与三分倒转天花板，刷牌节奏极快',
+    commanderBuildMap: {
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '阿离': ['伞半月', '日落海倒转'],
+      '公孙离': ['伞半月', '日落海倒转'],
+      '玉环': ['日落海倒转', '三分倒转'],
+      '杨玉环': ['日落海倒转', '三分倒转'],
+      '诸葛亮': ['三分倒转', '日落海倒转'],
+      '庄小鱼': ['传统养猪', '日落海倒转']
+    }
   },
   {
     masterName: '嘉誉',
@@ -419,7 +791,16 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '马可',
     alternativeCommanders: ['玉环', '镜'],
     signatureBuilds: ['镜猪转吕布', '牺牲李信', '雷霆战机'],
-    playstyle: '擅长高费大核变阵与镜猪体系，胜天半子后期运营'
+    playstyle: '擅长高费大核变阵与镜猪体系，胜天半子后期运营',
+    commanderBuildMap: {
+      '马可': ['镜猪转吕布', '镜转海月', '雷霆战机'],
+      '诸葛亮': ['牺牲李信', '三分登场'],
+      '玉环': ['牺牲李信', '雷霆战机'],
+      '杨玉环': ['牺牲李信', '雷霆战机'],
+      '安琪拉': ['雷霆战机'],
+      '镜': ['镜猪转海月', '镜猪转吕布'],
+      '庄小鱼': ['传统养猪', '牺牲李信']
+    }
   },
   {
     masterName: '遗愿',
@@ -427,7 +808,17 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '嬴律',
     alternativeCommanders: ['白歌', '香香'],
     signatureBuilds: ['三分登场', '逐鹿蒙恬', '河洛木兰'],
-    playstyle: '三分登场与逐鹿体系招牌高手，单核追三连胜压制'
+    playstyle: '三分登场与逐鹿体系招牌高手，单核追三连胜压制',
+    commanderBuildMap: {
+      '嬴律': ['逐鹿蒙恬', '三分登场'],
+      '孙尚香': ['三分登场', '逐鹿蒙恬'],
+      '香香': ['三分登场', '逐鹿蒙恬'],
+      '马可': ['猪镜转李信', '三分登场'],
+      '白歌': ['三分倒转', '三分登场'],
+      '庄小鱼': ['三分倒转', '传统养猪'],
+      '诸葛亮': ['三分登场', '三分倒转'],
+      '武凤': ['河洛木兰', '逐鹿蒙恬']
+    }
   },
   {
     masterName: '刺儿',
@@ -435,15 +826,35 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '乔汐',
     alternativeCommanders: ['镜', '阿离'],
     signatureBuilds: ['日落海倒转', '镜猪转海月', '镜猪转吕布'],
-    playstyle: '极速倒转与海月爆发，擅长抓抢节奏'
+    playstyle: '极速倒转与海月爆发，擅长抓抢节奏',
+    commanderBuildMap: {
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '庄小鱼': ['镜猪转吕布', '日落海倒转'],
+      '庄周': ['镜猪转吕布', '日落海倒转'],
+      '镜': ['镜猪转海月', '镜猪转吕布'],
+      '马可': ['镜猪转吕布'],
+      '玉环': ['日落海倒转'],
+      '杨玉环': ['日落海倒转'],
+      '阿离': ['日落海倒转']
+    }
   },
   {
     masterName: '刺痛',
     aliases: ['刺痛', '抖音刺痛', 'QG刺痛', 'Hurt刺痛'],
     signatureCommander: '香香',
     alternativeCommanders: ['班叔', '马可'],
-    signatureBuilds: ['稷下坦射', '逐鹿蒙犽', '传统养猪'],
-    playstyle: '顶尖职业射手底蕴，擅长稷下坦射与养猪速射推进'
+    signatureBuilds: ['传统养猪', '逐鹿蒙犽', '稷下坦射'],
+    playstyle: '顶尖职业射手底蕴，擅长传统养猪、逐鹿蒙犽与坦射推进',
+    commanderBuildMap: {
+      '香香': ['逐鹿蒙犽', '稷下坦射', '传统养猪'],
+      '孙尚香': ['逐鹿蒙犽', '稷下坦射', '传统养猪'],
+      '白歌': ['传统养猪', '逐鹿蒙犽', '三分登场'],
+      '班叔': ['逐鹿蒙犽', '稷下坦射'],
+      '鲁班七号': ['逐鹿蒙犽', '稷下坦射'],
+      '马可': ['传统养猪', '逐鹿蒙犽', '镜猪转吕布'],
+      '庄小鱼': ['传统养猪', '逐鹿蒙犽'],
+      '镜': ['镜猪转吕布', '三分登场']
+    }
   },
   {
     masterName: '逆光',
@@ -451,7 +862,17 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '庄小鱼',
     alternativeCommanders: ['孙小宾', '诸葛亮'],
     signatureBuilds: ['传统养猪', '三分倒转', '雷霆战机'],
-    playstyle: '前排保核运营稳健，传统养猪与雷霆战机专精'
+    playstyle: '前排保核运营稳健，传统养猪与雷霆战机专精',
+    commanderBuildMap: {
+      '庄小鱼': ['传统养猪', '三分倒转'],
+      '庄周': ['传统养猪', '三分倒转'],
+      '孙小宾': ['雷霆战机', '三分倒转'],
+      '孙膑': ['雷霆战机', '三分倒转'],
+      '诸葛亮': ['三分倒转', '雷霆战机'],
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '安琪拉': ['雷霆战机'],
+      '玉环': ['三分倒转', '传统养猪']
+    }
   },
   {
     masterName: '小谷芷',
@@ -459,7 +880,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '安琪拉',
     alternativeCommanders: ['嬴律', '庄小鱼'],
     signatureBuilds: ['雷霆战机', '三分登场', '传统养猪'],
-    playstyle: '雷霆战机天花板，法爆机甲压制力极强'
+    playstyle: '雷霆战机天花板，法爆机甲压制力极强',
+    commanderBuildMap: {
+      '安琪拉': ['雷霆战机'],
+      '嬴律': ['三分登场', '雷霆战机'],
+      '庄小鱼': ['传统养猪']
+    }
   },
   {
     masterName: '丰川祥子',
@@ -467,7 +893,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '武凤',
     alternativeCommanders: ['白歌', '马可'],
     signatureBuilds: ['河洛木兰', '逐鹿蒙恬', '三分登场'],
-    playstyle: '河洛女帝近战爆发与逐鹿前排压制'
+    playstyle: '河洛女帝近战爆发与逐鹿前排压制',
+    commanderBuildMap: {
+      '武凤': ['河洛木兰', '逐鹿蒙恬'],
+      '白歌': ['河洛木兰', '三分登场'],
+      '马可': ['逐鹿蒙恬']
+    }
   },
   {
     masterName: '白白白白3',
@@ -475,7 +906,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '庄小鱼',
     alternativeCommanders: ['镜', '马可'],
     signatureBuilds: ['传统养猪', '镜猪转吕布', '日落海倒转'],
-    playstyle: '多核养猪与后期大吕布换帅'
+    playstyle: '多核养猪与后期大吕布换帅',
+    commanderBuildMap: {
+      '庄小鱼': ['传统养猪'],
+      '镜': ['镜猪转吕布'],
+      '马可': ['传统养猪']
+    }
   },
   {
     masterName: '新一',
@@ -483,7 +919,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '嬴律',
     alternativeCommanders: ['安琪拉', '白歌'],
     signatureBuilds: ['三分登场', '成年礼三分', '雷霆战机'],
-    playstyle: '成年礼三分与雷霆战机速追三星'
+    playstyle: '成年礼三分与雷霆战机速追三星',
+    commanderBuildMap: {
+      '嬴律': ['三分登场', '成年礼三分'],
+      '安琪拉': ['雷霆战机'],
+      '白歌': ['三分登场', '三分倒转']
+    }
   },
   {
     masterName: '猪葛龟',
@@ -491,7 +932,13 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '庄小鱼',
     alternativeCommanders: ['司马懿', '武凤'],
     signatureBuilds: ['传统养猪', '牺牲李信', '雷霆战机'],
-    playstyle: '庄周免控养猪天花板，坦度拉满'
+    playstyle: '庄周免控养猪天花板，坦度拉满',
+    commanderBuildMap: {
+      '庄小鱼': ['传统养猪'],
+      '庄周': ['传统养猪'],
+      '司马懿': ['传统养猪', '三分倒转'],
+      '武凤': ['牺牲李信', '传统养猪']
+    }
   },
   {
     masterName: '呆头鹅',
@@ -499,7 +946,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '乔汐',
     alternativeCommanders: ['阿离', '嬴律'],
     signatureBuilds: ['日落海倒转', '伞半月', '三分倒转'],
-    playstyle: '伞半月与日落海倒转高手'
+    playstyle: '伞半月与日落海倒转高手',
+    commanderBuildMap: {
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '阿离': ['伞半月', '日落海倒转'],
+      '嬴律': ['三分登场', '逐鹿蒙恬']
+    }
   },
   {
     masterName: '世薄情',
@@ -507,7 +959,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '马可',
     alternativeCommanders: ['嬴律', '白歌'],
     signatureBuilds: ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
-    playstyle: '大河龙蛇与逐鹿变阵专家'
+    playstyle: '大河龙蛇与逐鹿变阵专家',
+    commanderBuildMap: {
+      '马可': ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
+      '嬴律': ['逐鹿蒙恬'],
+      '白歌': ['大河龙蛇', '逐鹿蒙恬']
+    }
   },
   {
     masterName: '小新游',
@@ -515,7 +972,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '嬴律',
     alternativeCommanders: ['庄小鱼', '白歌'],
     signatureBuilds: ['三分登场', '传统养猪', '雷霆战机'],
-    playstyle: '三分速成与低费追三'
+    playstyle: '三分速成与低费追三',
+    commanderBuildMap: {
+      '嬴律': ['三分登场', '逐鹿蒙恬'],
+      '庄小鱼': ['传统养猪'],
+      '白歌': ['三分登场', '雷霆战机']
+    }
   },
   {
     masterName: '妖柒',
@@ -523,7 +985,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '安琪拉',
     alternativeCommanders: ['乔汐', '庄小鱼'],
     signatureBuilds: ['雷霆战机', '日落海倒转', '传统养猪'],
-    playstyle: '机甲爆发与雷霆切后'
+    playstyle: '机甲爆发与雷霆切后',
+    commanderBuildMap: {
+      '安琪拉': ['雷霆战机'],
+      '乔汐': ['日落海倒转'],
+      '庄小鱼': ['传统养猪']
+    }
   },
   {
     masterName: '梦飞',
@@ -531,7 +998,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '马可',
     alternativeCommanders: ['庄小鱼', '玉环'],
     signatureBuilds: ['镜猪转吕布', '牺牲李信', '传统养猪'],
-    playstyle: '大局运营与后期高质量变阵'
+    playstyle: '大局运营与后期高质量变阵',
+    commanderBuildMap: {
+      '马可': ['镜猪转吕布', '三分登场', '牺牲李信'],
+      '庄小鱼': ['传统养猪'],
+      '玉环': ['牺牲李信', '日落海倒转']
+    }
   },
   {
     masterName: '晓枫',
@@ -539,7 +1011,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '乔汐',
     alternativeCommanders: ['阿离', '安琪拉'],
     signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机'],
-    playstyle: '极速倒转与机动爆发'
+    playstyle: '极速倒转与机动爆发',
+    commanderBuildMap: {
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '阿离': ['日落海倒转', '伞半月'],
+      '安琪拉': ['雷霆战机']
+    }
   },
   {
     masterName: '清辞',
@@ -547,7 +1024,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '白歌',
     alternativeCommanders: ['乔汐', '嬴律'],
     signatureBuilds: ['三分倒转', '日落海倒转', '河洛木兰'],
-    playstyle: '倒转控节奏与女帝连招'
+    playstyle: '倒转控节奏与女帝连招',
+    commanderBuildMap: {
+      '白歌': ['三分倒转', '河洛木兰'],
+      '乔汐': ['三分倒转', '日落海倒转'],
+      '嬴律': ['三分登场']
+    }
   },
   {
     masterName: '湛蓝',
@@ -555,7 +1037,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '嬴律',
     alternativeCommanders: ['香香', '白歌'],
     signatureBuilds: ['三分登场', '成年礼三分', '逐鹿蒙恬'],
-    playstyle: '成年礼三分与逐鹿射手推进'
+    playstyle: '成年礼三分与逐鹿射手推进',
+    commanderBuildMap: {
+      '嬴律': ['三分登场', '成年礼三分', '逐鹿蒙恬'],
+      '香香': ['三分登场', '逐鹿蒙犽'],
+      '白歌': ['三分登场']
+    }
   },
   {
     masterName: '阿文',
@@ -563,7 +1050,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '乔汐',
     alternativeCommanders: ['阿离', '白歌'],
     signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机'],
-    playstyle: '公孙离与乔汐双倒转专家'
+    playstyle: '公孙离与乔汐双倒转专家',
+    commanderBuildMap: {
+      '乔汐': ['日落海倒转', '三分倒转'],
+      '阿离': ['伞半月', '日落海倒转'],
+      '白歌': ['三分倒转']
+    }
   },
   {
     masterName: '皮皮鲨',
@@ -571,7 +1063,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     signatureCommander: '玉环',
     alternativeCommanders: ['庄小鱼', '乔汐'],
     signatureBuilds: ['日落海倒转', '传统养猪', '大河龙蛇'],
-    playstyle: '霓裳连击与倒转大核'
+    playstyle: '霓裳连击与倒转大核',
+    commanderBuildMap: {
+      '玉环': ['日落海倒转', '传统养猪'],
+      '庄小鱼': ['传统养猪'],
+      '乔汐': ['日落海倒转']
+    }
   }
 ]
 
@@ -590,6 +1087,27 @@ export function findPlayerMasterProfile(nameOrAlias: string | null | undefined):
   )
 }
 
+/** 棋手下对应的常用流派细分统计 */
+export interface CommanderBuildDetail {
+  buildName: string
+  matches: number
+  wins: number
+  winRate: number
+  share: number
+}
+
+/** 选手在某个棋手下的出场与常用阵容实战画像 */
+export interface CommanderUsageProfile {
+  commander: string
+  tier: 'T0' | 'T1' | 'T2'
+  matches: number
+  wins: number
+  winRate: number
+  topBuilds: CommanderBuildDetail[]
+  favoriteBuild: string // 该棋手下最常玩的首选阵容
+  isSignature: boolean // 是否为官方权威招牌棋手
+}
+
 /** 选手出战阵容推断结构体 */
 export interface PlayerInferredLineup {
   lineupName: string // 本场推断阵容名称
@@ -597,87 +1115,187 @@ export interface PlayerInferredLineup {
   primaryBuild: string // 选手平时最擅长的第一招牌流派
   reason: string // 推断依据
   bannedWarning?: string // 若第一流派被 Ban，给出告警提示
+  commanderProfile?: CommanderUsageProfile | null // 该选手在所选棋手下的历史实战画像
+  commanderAdaptation?: CommanderAdaptivePool | null // 棋手在当前禁选下的适配池
+  proficiency?: PlayerLineupProficiency | null // 选手对该棋手该阵容的专精熟练度画像
+  eligibleCommanderBuilds?: CommanderAdaptedBuild[] // 当前合规的适配阵容列表
 }
 
-/** 核心推断逻辑：根据选手历史擅长流派 + 权威绝活库 + 本场Ban位 + 所选棋手，精准推断本场选手的出战阵容 */
+/** 核心推断逻辑：根据【棋手适配流派池 ➔ 禁选阵营动态剪枝 ➔ 选手在各阵容熟练度 ➔ 权威绝活】，精准推断本场选手的出战阵容 */
 export function inferPlayerLineup(
   commonBuilds: string[] = [],
   bannedFaction: string | null = null,
   commanderName: string | null = null,
-  playerNickname?: string | null
+  playerNickname?: string | null,
+  commanderProfiles?: CommanderUsageProfile[] | null,
+  historicalMatches: any[] = []
 ): PlayerInferredLineup {
-  // 结合选手权威绝活档案
   const masterDef = findPlayerMasterProfile(playerNickname)
+  const bf = bannedFaction ? bannedFaction.trim().replace('阵营', '') : null
+  const cmdAdaptation = getCommanderAdaptiveBuilds(commanderName, bannedFaction)
+  const eligibleBuilds = cmdAdaptation?.eligibleBuilds || []
+
+  // 1. 【核心优先依据】：若选手选定了棋手，根据棋手官方适配库与选手在该棋手下的专精熟练度推断
+  if (commanderName && commanderName.trim() && cmdAdaptation) {
+    const cleanCmd = cmdAdaptation.commander
+
+    // 寻找选手使用该棋手的统计记录（优先查传入的实战画像，其次查权威档案中的棋手映射）
+    let matchedCmd = commanderProfiles?.find(
+      c => c.commander === cleanCmd || (c.topBuilds && c.topBuilds.length > 0)
+    )
+
+    // 若无实战动态画像，从权威档案的棋手映射中提取
+    if (!matchedCmd && masterDef?.commanderBuildMap) {
+      const aliasKey = Object.keys(masterDef.commanderBuildMap).find(
+        k => k === cleanCmd || (findCommanderMeta(k)?.name === cleanCmd)
+      )
+      if (aliasKey && masterDef.commanderBuildMap[aliasKey]?.length) {
+        const builds = masterDef.commanderBuildMap[aliasKey]
+        matchedCmd = {
+          commander: cleanCmd,
+          tier: findCommanderMeta(cleanCmd)?.tier || 'T1',
+          matches: 4,
+          wins: 3,
+          winRate: 0.75,
+          topBuilds: builds.map((b, bIdx) => ({
+            buildName: b,
+            matches: 4 - bIdx,
+            wins: 3 - bIdx,
+            winRate: 0.75,
+            share: bIdx === 0 ? 0.7 : 0.3
+          })),
+          favoriteBuild: builds[0],
+          isSignature: true
+        }
+      }
+    }
+
+    // 查找选手的最爱阵容（Primary Favorite）
+    const primaryFavorite = matchedCmd?.favoriteBuild || matchedCmd?.topBuilds[0]?.buildName || masterDef?.signatureBuilds[0] || commonBuilds[0] || cmdAdaptation.allBuilds[0]?.buildName
+
+    // 检查选手的第一偏好是否属于该棋手适配池，且是否被当前 Ban 封锁
+    const isPrimaryBanned = Boolean(
+      bf && primaryFavorite && (primaryFavorite.includes(bf) || cmdAdaptation.bannedBuilds.some(b => b.buildName === primaryFavorite || primaryFavorite.includes(b.buildName)))
+    )
+
+    // 尝试在【合规的棋手适配阵容池 eligibleBuilds】中寻找最优匹配
+    let chosenBuildName = ''
+    let isFallback = false
+
+    if (!isPrimaryBanned && primaryFavorite && eligibleBuilds.some(b => b.buildName === primaryFavorite || primaryFavorite.includes(b.buildName))) {
+      // 核心第一偏好合规，直接选用
+      const found = eligibleBuilds.find(b => b.buildName === primaryFavorite || primaryFavorite.includes(b.buildName))
+      chosenBuildName = found ? found.buildName : primaryFavorite
+      isFallback = false
+    } else if (matchedCmd && matchedCmd.topBuilds.length > 0) {
+      // 核心偏好受 Ban 或不适配，从该选手在该棋手下的备选阵容中挑选合规流派
+      const validTopBuild = matchedCmd.topBuilds.find(b =>
+        (!bf || !b.buildName.includes(bf)) &&
+        eligibleBuilds.some(eb => eb.buildName === b.buildName || b.buildName.includes(eb.buildName))
+      )
+      if (validTopBuild) {
+        chosenBuildName = validTopBuild.buildName
+        isFallback = true
+      }
+    }
+
+    // 若仍未匹配，在 eligibleBuilds 中比对选手的全部擅长池（signatureBuilds ➔ commonBuilds）
+    if (!chosenBuildName && eligibleBuilds.length > 0) {
+      const allPlayerFavs = Array.from(new Set([...(masterDef?.signatureBuilds || []), ...commonBuilds]))
+      const matchedFav = eligibleBuilds.find(eb => allPlayerFavs.some(pf => pf.includes(eb.buildName) || eb.buildName.includes(pf)))
+      if (matchedFav) {
+        chosenBuildName = matchedFav.buildName
+        isFallback = Boolean(isPrimaryBanned)
+      } else {
+        // 无重合，取棋手当前禁选下官方推荐度最高的合规阵容
+        chosenBuildName = eligibleBuilds[0].buildName
+        isFallback = Boolean(isPrimaryBanned)
+      }
+    }
+
+    if (chosenBuildName) {
+      // 评估选手对该棋手该阵容的熟练度
+      const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, cleanCmd, chosenBuildName, historicalMatches)
+      const adaptedMeta = eligibleBuilds.find(b => b.buildName === chosenBuildName)
+
+      let reason = ''
+      if (isFallback) {
+        reason = `受「${bf}」禁选封锁，主力「${primaryFavorite}」无法出战；根据棋手「${cleanCmd}」适配池顺位变阵「${chosenBuildName}」（选手熟练度：${prof.levelLabel}）`
+      } else if (matchedCmd && matchedCmd.topBuilds.length > 0) {
+        reason = `依据历史对局与擅长偏好：选手选用棋手「${cleanCmd}」最常出战「${chosenBuildName}」（${prof.reasoning}）`
+      } else {
+        reason = `棋手「${cleanCmd}」与「${chosenBuildName}」机制高度协同（${adaptedMeta?.synergyDesc || '契合度极佳'}），选手熟练度达 ${prof.levelLabel}`
+      }
+
+      return {
+        lineupName: chosenBuildName,
+        isFallback,
+        primaryBuild: primaryFavorite || chosenBuildName,
+        reason,
+        bannedWarning: isFallback ? `主力「${primaryFavorite}」受禁选封锁！` : undefined,
+        commanderProfile: matchedCmd || null,
+        commanderAdaptation: cmdAdaptation,
+        proficiency: prof,
+        eligibleCommanderBuilds: eligibleBuilds
+      }
+    }
+  }
+
+  // 2. 若未选棋手或棋手不在官方库中：结合选手历史高频与权威绝活画像推断
   let candidateBuilds = [...commonBuilds]
   if (masterDef) {
-    // 优先采用选手的权威绝活流派，与历史提取流派去重融合
     candidateBuilds = Array.from(new Set([...masterDef.signatureBuilds, ...candidateBuilds]))
   }
 
-  // 1. 若选手无任何流派样本，中性推断
+  // 若选手无任何流派样本，中性推断
   if (candidateBuilds.length === 0) {
     const meta = findCommanderMeta(commanderName)
-    const fallbackName = meta ? `${meta.name}偏向构筑` : '多流派平衡'
+    const fallbackName = meta ? `${meta.name}常规构筑` : '多流派平衡'
+    const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, fallbackName, historicalMatches)
     return {
       lineupName: fallbackName,
       isFallback: false,
       primaryBuild: '自由发挥',
-      reason: '选手战绩尚无固定流派样本，根据临场对局构建'
+      reason: '选手战绩尚无固定流派样本，根据临场对局构建',
+      commanderAdaptation: cmdAdaptation,
+      proficiency: prof,
+      eligibleCommanderBuilds: eligibleBuilds
     }
   }
 
   const primary = candidateBuilds[0]
 
-  // 2. 检查选手的第 1 擅长流派是否受当前禁选 Ban 位封锁
-  if (bannedFaction && bannedFaction.trim()) {
-    const bf = bannedFaction.trim()
+  // 3. 检查选手的第 1 擅长流派是否受当前禁选 Ban 位封锁
+  if (bf) {
     if (primary.includes(bf)) {
-      // 主力流派被 Ban，寻找未被 Ban 的次选擅长
       const fallback = candidateBuilds.find(b => !b.includes(bf))
-      if (fallback) {
-        return {
-          lineupName: fallback,
-          isFallback: true,
-          primaryBuild: primary,
-          reason: `主力擅长「${primary}」受「${bf}」禁选封锁，转用备选招牌「${fallback}」`,
-          bannedWarning: `主力「${primary}」受禁选封锁！`
-        }
-      } else {
-        return {
-          lineupName: `非${bf}过渡阵容`,
-          isFallback: true,
-          primaryBuild: primary,
-          reason: `选手擅长流派均受「${bf}」禁选影响，本场需被迫变阵`,
-          bannedWarning: `主力「${primary}」受禁选封锁！`
-        }
+      const target = fallback || `非${bf}过渡阵容`
+      const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, target, historicalMatches)
+      return {
+        lineupName: target,
+        isFallback: true,
+        primaryBuild: primary,
+        reason: `主力擅长「${primary}」受「${bf}」禁选封锁，转用备选招牌「${target}」（熟练度：${prof.levelLabel}）`,
+        bannedWarning: `主力「${primary}」受禁选封锁！`,
+        commanderAdaptation: cmdAdaptation,
+        proficiency: prof,
+        eligibleCommanderBuilds: eligibleBuilds
       }
     }
   }
 
-  // 3. 第一擅长未被 Ban：若选手选择了特定棋手，且棋手与某个擅长流派有专属协同机制，则精准推断为该擅长
-  if (commanderName && candidateBuilds.length > 1) {
-    const meta = findCommanderMeta(commanderName)
-    if (meta) {
-      const synergizedBuild = candidateBuilds.find(b =>
-        (!bannedFaction || !b.includes(bannedFaction)) &&
-        meta.synergizedPlaystyles.some(sp => b.includes(sp) || sp.includes(b))
-      )
-      if (synergizedBuild && synergizedBuild !== primary) {
-        return {
-          lineupName: synergizedBuild,
-          isFallback: false,
-          primaryBuild: primary,
-          reason: `配合所选棋手「${meta.name}」机制特性，选手选用契合度更高的招牌「${synergizedBuild}」`
-        }
-      }
-    }
-  }
-
+  // 4. 第一擅长未被 Ban
+  const prof = evaluatePlayerCommanderLineupProficiency(playerNickname, commanderName, primary, historicalMatches)
   return {
     lineupName: primary,
     isFallback: false,
     primaryBuild: primary,
-    reason: masterDef ? `选手核心招牌绝活流派（${masterDef.playstyle}）` : '选手个人历史招牌流派（擅长率最高）'
+    reason: masterDef
+      ? `选手核心招牌绝活流派（${masterDef.playstyle} · 熟练度 ${prof.levelLabel}）`
+      : `选手个人历史招牌流派（擅长率最高 · 熟练度 ${prof.levelLabel}）`,
+    commanderAdaptation: cmdAdaptation,
+    proficiency: prof,
+    eligibleCommanderBuilds: eligibleBuilds
   }
 }
 
@@ -796,6 +1414,7 @@ export interface PlayerMatchupProfile {
   totalMatches: number
   totalWins: number
   commonBuilds: string[]
+  commanderProfiles: CommanderUsageProfile[] // 选手历史棋手使用画像与常用阵容统计
   versionAdaptation?: VersionLineupAdaptation
   factionDistribution: Record<FactionType, { matches: number; wins: number }>
   factions: FactionBreakdown[]
@@ -839,6 +1458,11 @@ export interface SixPlayerMatchupResult {
     banModifier: number
     versionModifier: number
     commanderModifier: number
+    proficiencyModifier: number // 选手对该棋手该阵容专精熟练度修正分 (-0.20 ~ +0.25)
+    lineupProficiency?: PlayerLineupProficiency | null
+    commanderAdaptivePool?: CommanderAdaptivePool | null
+    eligibleCommanderBuilds?: CommanderAdaptedBuild[]
+    seatCommanderProfile?: CommanderUsageProfile | null // 该选手本场选用棋手的实战统计与常用阵容
     finalScore: number
     adjustedProbability: number
     banEvaluation: BanImpactEvaluation | null
@@ -931,6 +1555,7 @@ export function buildPlayerMatchupProfiles(
         },
         factions: [],
         commonBuilds: [],
+        commanderProfiles: [],
         h2h: [],
         nemeses: [],
         victims: [],
@@ -944,6 +1569,7 @@ export function buildPlayerMatchupProfiles(
   // 内部交锋记账表：`${pA}|||${pB}`
   const h2hMatrix = new Map<string, { encounters: number; aWins: number; bWins: number; neither: number }>()
   const buildCounts = new Map<string, Map<string, number>>()
+  const playerCommanderCounts = new Map<string, Map<string, Map<string, { matches: number; wins: number }>>>()
 
   for (const m of matches) {
     if (!m.seats || !Array.isArray(m.seats) || m.seats.length === 0) continue
@@ -974,6 +1600,31 @@ export function buildPlayerMatchupProfiles(
           buildCounts.set(name, bmap)
         }
         bmap.set(seat.build.trim(), (bmap.get(seat.build.trim()) || 0) + 1)
+      }
+
+      // 统计选手在各棋手下的实战对局与常用阵容细分
+      if (seat.commander && typeof seat.commander === 'string' && seat.commander.trim()) {
+        const rawCmd = seat.commander.trim()
+        const meta = findCommanderMeta(rawCmd)
+        const cmdName = meta ? meta.name : rawCmd
+        let cmdMap = playerCommanderCounts.get(name)
+        if (!cmdMap) {
+          cmdMap = new Map()
+          playerCommanderCounts.set(name, cmdMap)
+        }
+        let bMap = cmdMap.get(cmdName)
+        if (!bMap) {
+          bMap = new Map()
+          cmdMap.set(cmdName, bMap)
+        }
+        const bLabel = (seat.build && typeof seat.build === 'string' && seat.build.trim()) ? seat.build.trim() : '常规构筑'
+        let bStat = bMap.get(bLabel)
+        if (!bStat) {
+          bStat = { matches: 0, wins: 0 }
+          bMap.set(bLabel, bStat)
+        }
+        bStat.matches++
+        if (isWinner) bStat.wins++
       }
 
       activeParticipants.push({ name, faction, isWinner })
@@ -1063,10 +1714,90 @@ export function buildPlayerMatchupProfiles(
     } else {
       profile.commonBuilds = histBuilds.slice(0, 3)
     }
+    // 汇总该选手在各个棋手下的实战出场与常用阵容细分
+    const cmdProfiles: CommanderUsageProfile[] = []
+    const cmdMap = playerCommanderCounts.get(profile.playerName) || new Map()
+
+    // 权威招牌补全
+    if (masterDef?.commanderBuildMap) {
+      for (const [cmdKey, bList] of Object.entries(masterDef.commanderBuildMap)) {
+        const meta = findCommanderMeta(cmdKey)
+        const cmdName = meta ? meta.name : cmdKey
+        let bMap = cmdMap.get(cmdName)
+        if (!bMap) {
+          bMap = new Map()
+          cmdMap.set(cmdName, bMap)
+        }
+        bList.forEach((bName, bIdx) => {
+          if (!bMap.has(bName)) {
+            bMap.set(bName, { matches: Math.max(1, 4 - bIdx), wins: Math.max(1, 3 - bIdx) })
+          }
+        })
+      }
+    }
+
+    for (const [cmdName, bMap] of cmdMap.entries()) {
+      const meta = findCommanderMeta(cmdName)
+      let cMatches = 0
+      let cWins = 0
+      const bDetails: CommanderBuildDetail[] = []
+
+      for (const st of bMap.values()) {
+        cMatches += st.matches
+        cWins += st.wins
+      }
+
+      for (const [bName, st] of bMap.entries()) {
+        bDetails.push({
+          buildName: bName,
+          matches: st.matches,
+          wins: st.wins,
+          winRate: st.matches > 0 ? Number((st.wins / st.matches).toFixed(2)) : 0,
+          share: cMatches > 0 ? Number((st.matches / cMatches).toFixed(2)) : 0
+        })
+      }
+
+      bDetails.sort((a, b) => b.matches - a.matches || b.wins - a.wins)
+
+      cmdProfiles.push({
+        commander: cmdName,
+        tier: meta ? meta.tier : 'T1',
+        matches: cMatches,
+        wins: cWins,
+        winRate: cMatches > 0 ? Number((cWins / cMatches).toFixed(2)) : 0,
+        topBuilds: bDetails,
+        favoriteBuild: bDetails[0]?.buildName || '常规构筑',
+        isSignature: Boolean(
+          masterDef && (masterDef.signatureCommander === cmdName || masterDef.alternativeCommanders.includes(cmdName))
+        )
+      })
+    }
+
+    profile.commanderProfiles = cmdProfiles.sort((a, b) => {
+      if (a.isSignature && !b.isSignature) return -1
+      if (!a.isSignature && b.isSignature) return 1
+      return b.matches - a.matches || b.wins - a.wins
+    })
+
     profile.versionAdaptation = evaluateVersionLineupAdaptation(profile.commonBuilds, CURRENT_LATEST_VERSION)
   }
 
   return profileMap
+}
+
+/**
+ * 独立提取全量选手的【棋手 ➔ 常用阵容】实战历史统计
+ */
+export function buildPlayerCommanderProfiles(
+  matches: any[] = [],
+  useMasterIdentity = true
+): Map<string, CommanderUsageProfile[]> {
+  const profileMap = buildPlayerMatchupProfiles(matches, useMasterIdentity)
+  const result = new Map<string, CommanderUsageProfile[]>()
+  for (const [name, prof] of profileMap.entries()) {
+    result.set(name, prof.commanderProfiles)
+  }
+  return result
 }
 
 /**
@@ -1394,14 +2125,15 @@ export function evaluate6PlayerMatchup(
 
     // 所选棋手机制强度与流派协同修正分（结合选手专属绝活画像与棋手协同）
     const cmdEval = evaluateCommander(p.commander, prof?.commonBuilds || [], targetVersion, bannedFaction, p.nickname)
-    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander, p.nickname)
+    const inferred = inferPlayerLineup(prof?.commonBuilds || [], bannedFaction, p.commander, p.nickname, prof?.commanderProfiles, allMatches)
     const commanderModifier = cmdEval ? cmdEval.bonus : 0
+    const proficiencyModifier = inferred.proficiency ? inferred.proficiency.modifier : 0
 
     if (banEval?.level === 'CRITICAL') criticalPlayers.push(p.masterName)
     if (banEval?.level === 'BENEFITED') benefitedPlayers.push(p.masterName)
     if (versionAdapt.fitLevel === 'BUFFED') buffedPlayers.push(p.masterName)
 
-    const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier
+    const finalScore = baseScore + h2hBonus + banModifier + versionModifier + commanderModifier + proficiencyModifier
 
     const activeSupp = activeSuppressesMap.get(p.masterName) || []
     const activeSuppBy = activeSuppressedByMap.get(p.masterName) || []
@@ -1427,6 +2159,11 @@ export function evaluate6PlayerMatchup(
       banModifier: Number(banModifier.toFixed(3)),
       versionModifier: Number(versionModifier.toFixed(3)),
       commanderModifier: Number(commanderModifier.toFixed(3)),
+      proficiencyModifier: Number(proficiencyModifier.toFixed(3)),
+      lineupProficiency: inferred.proficiency || null,
+      commanderAdaptivePool: inferred.commanderAdaptation || null,
+      eligibleCommanderBuilds: inferred.eligibleCommanderBuilds || [],
+      seatCommanderProfile: inferred.commanderProfile || prof?.commanderProfiles?.find(c => c.commander === p.commander) || null,
       finalScore: Number(finalScore.toFixed(3)),
       adjustedProbability: 0,
       banEvaluation: banEval,

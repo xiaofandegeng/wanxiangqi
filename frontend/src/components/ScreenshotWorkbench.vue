@@ -103,6 +103,7 @@
                 class="seat-input"
                 @focus="activeDropdownSeat = idx"
                 @input="activeDropdownSeat = idx"
+                @blur="onPlayerNameBlur(idx)"
               />
 
               <!-- 模糊联想悬浮下拉列表 -->
@@ -144,23 +145,80 @@
             </select>
           </div>
 
-          <!-- 3. 根据选手擅长推断的本场阵容与棋手协同（阵容由选手擅长决定） -->
+          <!-- 3. 选手历史常用流派池与该棋手历史实战统计 -->
+          <div v-if="p.nickname" class="seat-stats-box">
+            <div class="player-pool-row" :title="`选手核心常用池：${getPlayerBuilds(p.nickname).join('、')}`">
+              <span class="pool-label">常用池：</span>
+              <span v-for="b in getPlayerBuilds(p.nickname).slice(0, 3)" :key="b" class="pool-chip">{{ b }}</span>
+            </div>
+            <div v-if="p.commander && getSeatCommanderProfile(p.nickname, p.commander)" class="commander-stat-row">
+              <span class="cmd-stat-label">📊 棋手偏好：</span>
+              <span class="cmd-stat-val">
+                <strong>{{ getSeatCommanderProfile(p.nickname, p.commander)!.favoriteBuild }}</strong>
+                <small>({{ getSeatCommanderProfile(p.nickname, p.commander)!.matches }}战{{ getSeatCommanderProfile(p.nickname, p.commander)!.wins }}冠 · 胜率{{ (getSeatCommanderProfile(p.nickname, p.commander)!.winRate * 100).toFixed(0) }}%)</small>
+              </span>
+            </div>
+          </div>
+
+          <!-- 4. 根据棋手适配库与选手熟练度推断的本场阵容 -->
           <div v-if="p.nickname" class="seat-inferred-row">
-            <div class="inferred-lineup" :class="{ 'fallback-warning': getSeatInferredLineup(p.nickname, p.commander)?.isFallback }">
+            <div class="inferred-lineup" :class="{ 'fallback-warning': getSeatInferredLineup(p.nickname, p.commander, idx)?.isFallback }">
               <span class="inferred-label">预期阵容：</span>
-              <strong class="inferred-name">{{ getSeatInferredLineup(p.nickname, p.commander)?.lineupName }}</strong>
-              <small v-if="getSeatInferredLineup(p.nickname, p.commander)?.isFallback" class="ban-alert-tag">
+              <strong class="inferred-name">{{ getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName }}</strong>
+              <small v-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.isFallback" class="ban-alert-tag">
                 (主力受Ban变阵)
               </small>
             </div>
+            <!-- 熟练度星级徽章与战力加减分 -->
             <div
-              v-if="p.commander && getSeatSynergy(p.nickname, p.commander)"
+              v-if="getSeatProficiency(p.nickname, p.commander, idx)"
+              class="seat-proficiency-badge"
+              :class="getSeatProficiency(p.nickname, p.commander, idx)!.tierKey.toLowerCase()"
+              :title="getSeatProficiency(p.nickname, p.commander, idx)!.description"
+            >
+              {{ getSeatProficiency(p.nickname, p.commander, idx)!.levelLabel }}
+              <span class="mod-val">({{ getSeatProficiency(p.nickname, p.commander, idx)!.modifier >= 0 ? '+' : '' }}{{ (getSeatProficiency(p.nickname, p.commander, idx)!.modifier * 100).toFixed(0) }}%)</span>
+            </div>
+            <div
+              v-else-if="p.commander && getSeatSynergy(p.nickname, p.commander)"
               class="seat-synergy-tag"
               :class="getSeatSynergy(p.nickname, p.commander)!.level"
               :title="getSeatSynergy(p.nickname, p.commander)!.text"
             >
               {{ getSeatSynergy(p.nickname, p.commander)!.label }}
             </div>
+          </div>
+
+          <!-- 4.5 棋手适配流派池（展示棋手可玩的多套阵容与禁选剔除状态，支持点击切换） -->
+          <div v-if="p.commander && getSeatCommanderAdaptivePool(p.commander)" class="seat-adaptive-pool">
+            <span class="pool-title">♟️ 棋手适配池：</span>
+            <div class="adaptive-chips-wrap">
+              <button
+                v-for="ab in getSeatCommanderAdaptivePool(p.commander)!.allBuilds"
+                :key="ab.buildName"
+                type="button"
+                class="adaptive-chip"
+                :class="{
+                  'is-active': getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName,
+                  'is-banned': isBuildBanned(ab.buildName, ab.faction)
+                }"
+                :disabled="isBuildBanned(ab.buildName, ab.faction)"
+                :title="isBuildBanned(ab.buildName, ab.faction) ? `「${ab.buildName}」受当前禁选阵营封锁` : `【${ab.tier === 'PRIMARY' ? '主推' : '备选'}】${ab.synergyDesc}（点击可指定变阵）`"
+                @click="overrideSeatBuild(idx, ab.buildName)"
+              >
+                {{ ab.buildName }}
+                <span v-if="isBuildBanned(ab.buildName, ab.faction)" class="chip-banned-tag">(已禁)</span>
+                <span v-else-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName" class="chip-active-tag">✓</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            v-if="p.nickname && getSeatInferredLineup(p.nickname, p.commander, idx)?.reason"
+            class="seat-reason-line"
+            :title="getSeatInferredLineup(p.nickname, p.commander, idx)!.reason"
+          >
+            💡 {{ getSeatInferredLineup(p.nickname, p.commander, idx)!.reason }}
           </div>
 
           <!-- 4. 同场克制关系雷达 (直接显出压制谁、被谁克制、胜负分) -->
@@ -336,6 +394,9 @@
             </div>
           </div>
           <div class="reasons-list">
+            <span v-if="topPick.lineupProficiency && topPick.lineupProficiency.modifier > 0" class="reason-tag positive">
+              ⭐ 熟练度专精 {{ topPick.lineupProficiency.levelLabel }} (+{{ (topPick.lineupProficiency.modifier * 100).toFixed(0) }}%)
+            </span>
             <span v-if="topPick.commanderModifier > 0" class="reason-tag positive">
               ♟️ 棋手协同 (+{{ (topPick.commanderModifier * 100).toFixed(0) }}%)
             </span>
@@ -385,6 +446,9 @@
             </div>
           </div>
           <div class="reasons-list">
+            <span v-if="secondPick.lineupProficiency && secondPick.lineupProficiency.modifier > 0" class="reason-tag positive">
+              ⭐ 熟练度专精 {{ secondPick.lineupProficiency.levelLabel }} (+{{ (secondPick.lineupProficiency.modifier * 100).toFixed(0) }}%)
+            </span>
             <span v-if="secondPick.commanderModifier > 0" class="reason-tag positive">
               ♟️ 棋手协同 (+{{ (secondPick.commanderModifier * 100).toFixed(0) }}%)
             </span>
@@ -638,6 +702,9 @@
             <img :src="getPlayerAvatar(p.nickname)" class="player-avatar-mini" alt="" />
             <span class="name">{{ p.nickname }}</span>
             <div class="modifiers-pills">
+              <span v-if="p.proficiencyModifier && p.proficiencyModifier !== 0" class="mod-pill" :class="{ positive: p.proficiencyModifier > 0, negative: p.proficiencyModifier < 0 }">
+                熟练度 {{ p.proficiencyModifier > 0 ? '+' : '' }}{{ (p.proficiencyModifier * 100).toFixed(0) }}%
+              </span>
               <span v-if="p.commanderModifier && p.commanderModifier !== 0" class="mod-pill" :class="{ positive: p.commanderModifier > 0, negative: p.commanderModifier < 0 }">
                 棋手 {{ p.commanderModifier > 0 ? '+' : '' }}{{ (p.commanderModifier * 100).toFixed(0) }}%
               </span>
@@ -679,7 +746,15 @@ import {
   OFFICIAL_COMMANDERS,
   evaluateCommander,
   inferPlayerLineup,
-  type SixPlayerMatchupResult
+  findPlayerMasterProfile,
+  findCommanderMeta,
+  buildPlayerCommanderProfiles,
+  getCommanderAdaptiveBuilds,
+  evaluatePlayerCommanderLineupProficiency,
+  type SixPlayerMatchupResult,
+  type CommanderUsageProfile,
+  type CommanderAdaptivePool,
+  type PlayerLineupProficiency
 } from '../utils/player-matchup'
 import {getPlayerAvatar} from '../utils/player-avatar'
 import {getMasterPlayerName} from '../utils/player-grouping'
@@ -710,31 +785,47 @@ const quickBans = ['', '逐鹿', '三分', '日落海', '河洛', '稷下', '大
 
 // 选手历史招牌/常用棋手数据库映射（全面校准为官方 21 位万象棋正统棋手名）
 const SIGNATURE_COMMANDERS: Record<string, string> = {
-  '梦飞': '嬴律',
-  '梦飞大大': '嬴律',
-  '小谷芷': '嬴律',
-  '抖音EGM小谷芷': '嬴律',
-  '白白白白白3': '嬴律',
-  '丰川祥子': '安琪拉',
+  '梦飞': '马可',
+  '梦飞大大': '马可',
+  '小谷芷': '安琪拉',
+  '抖音EGM小谷芷': '安琪拉',
+  '白白白白白3': '庄小鱼',
+  '白白白白3': '庄小鱼',
+  '丰川祥子': '武凤',
   '新一': '嬴律',
   'QT新一': '嬴律',
   '猪葛龟': '庄小鱼',
   '猪葛龟龟': '庄小鱼',
   '抖音猪葛龟龟': '庄小鱼',
-  '呆头鹅': '嬴律',
-  '遗愿': '白歌',
-  '世薄情': '小妲己',
+  '呆头鹅': '乔汐',
+  '遗愿': '嬴律',
+  'QT电竞披萨鱼': '嬴律',
+  '披萨鱼': '嬴律',
+  'QT披萨鱼遗愿': '嬴律',
+  '胜天半子嘉誉': '马可',
+  '嘉誉': '马可',
+  '刷牌之怪嘉誉': '马可',
+  '抖音刺儿': '乔汐',
+  '刺儿': '乔汐',
+  '抖音刺痛': '香香',
+  '刺痛': '香香',
+  'B站QT逆光': '庄小鱼',
+  '逆光': '庄小鱼',
+  'QT逆光': '庄小鱼',
+  '世薄情': '马可',
   '沐汐': '乔汐',
   'EZ拉丁鱼': '乔汐',
-  '小新游': '乔汐',
-  '抖音小新游': '乔汐',
+  '拉丁鱼': '乔汐',
+  '沐汐诸葛龟版': '乔汐',
+  '小新游': '嬴律',
+  '抖音小新游': '嬴律',
   '妖柒': '安琪拉',
   '抖音妖柒': '安琪拉',
-  '晓枫': '嬴律',
-  'RW侠.晓枫': '嬴律',
-  '清辞': '安琪拉',
-  '武汉 EG清辞': '安琪拉',
-  'EG清辞': '安琪拉',
+  '晓枫': '乔汐',
+  'RW侠.晓枫': '乔汐',
+  '清辞': '白歌',
+  '武汉 EG清辞': '白歌',
+  'EG清辞': '白歌',
   '泪花': '玉环',
   '抖音EG泪花': '玉环',
   '兰陵笑笑笑': '庄小鱼',
@@ -744,6 +835,9 @@ const SIGNATURE_COMMANDERS: Record<string, string> = {
   '皮皮鲨': '玉环',
   '抖音EGM皮皮鲨': '玉环',
   '阿文倒转王': '乔汐',
+  '阿文': '乔汐',
+  '湛蓝': '嬴律',
+  '抖音湛蓝': '嬴律',
   '星光柯基': '小妲己',
   '喵喵虾条': '马可',
   '萌岑': '昭君'
@@ -880,32 +974,128 @@ function getSeatSuggestions(query: string): KnownPlayerItem[] {
 function selectCandidate(idx: number, cand: KnownPlayerItem) {
   players.value[idx].nickname = cand.nickname
   players.value[idx].profileId = ''
-  if (!players.value[idx].commander && cand.signatureCommander) {
-    players.value[idx].commander = cand.signatureCommander
+  const prof = findPlayerMasterProfile(cand.nickname) || findPlayerMasterProfile(cand.masterName)
+  const sigCmd = prof?.signatureCommander || cand.signatureCommander || SIGNATURE_COMMANDERS[cand.nickname] || SIGNATURE_COMMANDERS[cand.masterName]
+  if (sigCmd) {
+    players.value[idx].commander = sigCmd
   }
   activeDropdownSeat.value = null
 }
 
-// 获取选手历史擅长流派列表（从 232 场赛果聚合中提取）
+// 选手昵称输入框失焦或变动时自动带出招牌棋手
+function onPlayerNameBlur(idx: number) {
+  const name = players.value[idx].nickname.trim()
+  if (!name) return
+  if (!players.value[idx].commander) {
+    const prof = findPlayerMasterProfile(name)
+    const sig = prof?.signatureCommander || SIGNATURE_COMMANDERS[name] || SIGNATURE_COMMANDERS[getMasterPlayerName(name)]
+    if (sig) {
+      players.value[idx].commander = sig
+    }
+  }
+}
+
+// 获取选手历史擅长流派列表（结合真实历史对局与权威绝活画像）
 function getPlayerBuilds(nickname: string): string[] {
   if (!nickname) return []
   const master = getMasterPlayerName(nickname)
+  const masterDef = findPlayerMasterProfile(nickname) || findPlayerMasterProfile(master)
   const p = knownPlayersList.value.find(x => x.nickname === nickname || x.masterName === master)
-  return p?.topBuild ? [p.topBuild] : []
+  const histBuild = p?.topBuild ? [p.topBuild] : []
+  if (masterDef) {
+    return Array.from(new Set([...masterDef.signatureBuilds, ...histBuild]))
+  }
+  return histBuild
+}
+
+// 全量选手历史在各个棋手下的使用与常用阵容画像
+const playerCommanderProfilesMap = computed(() => {
+  return buildPlayerCommanderProfiles(catalogMatches.value, true)
+})
+
+// 获取特定选手选用特定棋手时的历史实战偏好与战绩画像
+function getSeatCommanderProfile(nickname: string, commander: string | null): CommanderUsageProfile | null {
+  if (!nickname || !commander) return null
+  const master = getMasterPlayerName(nickname)
+  const profs = playerCommanderProfilesMap.value.get(master) || playerCommanderProfilesMap.value.get(nickname)
+  const cleanCmd = commander.trim()
+  const meta = findCommanderMeta(cleanCmd)
+  const targetName = meta?.name || cleanCmd
+  return profs?.find(c => c.commander === targetName || c.commander === cleanCmd || (meta && meta.aliases.includes(c.commander))) || null
 }
 
 // 核心逻辑：根据选手个人擅长流派 + 本场Ban位 + 所选棋手，推断本场选手的出战阵容
-function getSeatInferredLineup(nickname: string, commander: string | null) {
+function getSeatInferredLineup(nickname: string, commander: string | null, seatIdx?: number) {
   if (!nickname) return null
+  // 1. 若用户手动指定了阵容微调，优先以微调阵容为准
+  if (seatIdx !== undefined && manualBuildOverrides.value[seatIdx]) {
+    const overriddenName = manualBuildOverrides.value[seatIdx]
+    const prof = evaluatePlayerCommanderLineupProficiency(nickname, commander, overriddenName, catalogMatches.value)
+    return {
+      lineupName: overriddenName,
+      isFallback: false,
+      primaryBuild: overriddenName,
+      reason: `手动指定变阵：切换为「${overriddenName}」（选手专精熟练度：${prof.levelLabel}）`,
+      proficiency: prof
+    }
+  }
+  // 2. 若推演引擎已计算，优先直接复用引擎输出
+  if (seatIdx !== undefined && matchupResult.value?.players) {
+    const slot = seatIdx + 1
+    const p = matchupResult.value.players.find(x => x.slot === slot)
+    if (p) return p.inferredLineup
+  }
   const builds = getPlayerBuilds(nickname)
-  return inferPlayerLineup(builds, bannedFaction.value || null, commander)
+  const master = getMasterPlayerName(nickname)
+  const profs = playerCommanderProfilesMap.value.get(master) || playerCommanderProfilesMap.value.get(nickname)
+  return inferPlayerLineup(builds, bannedFaction.value || null, commander, nickname, profs, catalogMatches.value)
+}
+
+// 选手对当前所选棋手该阵容的专精熟练度
+function getSeatProficiency(nickname: string, commander: string | null, seatIdx?: number): PlayerLineupProficiency | null {
+  if (!nickname) return null
+  if (seatIdx !== undefined && manualBuildOverrides.value[seatIdx]) {
+    const overriddenName = manualBuildOverrides.value[seatIdx]
+    return evaluatePlayerCommanderLineupProficiency(nickname, commander, overriddenName, catalogMatches.value)
+  }
+  if (seatIdx !== undefined && matchupResult.value?.players) {
+    const slot = seatIdx + 1
+    const p = matchupResult.value.players.find(x => x.slot === slot)
+    if (p?.lineupProficiency) return p.lineupProficiency
+  }
+  const inferred = getSeatInferredLineup(nickname, commander, seatIdx)
+  if (!inferred?.lineupName) return null
+  return evaluatePlayerCommanderLineupProficiency(nickname, commander, inferred.lineupName, catalogMatches.value)
+}
+
+// 获取席位所选棋手的适配阵容池（在当前Ban位下的状态）
+function getSeatCommanderAdaptivePool(commander: string | null): CommanderAdaptivePool | null {
+  if (!commander) return null
+  return getCommanderAdaptiveBuilds(commander, bannedFaction.value || null)
+}
+
+// 检查某个阵容是否被当前 Ban 封锁
+function isBuildBanned(buildName: string, faction?: string): boolean {
+  if (!bannedFaction.value || !bannedFaction.value.trim()) return false
+  const bf = bannedFaction.value.trim().replace('阵营', '')
+  return Boolean((faction && faction === bf) || buildName.includes(bf))
+}
+
+// 用户手动指定切换某个席位的实战阵容（用于微调变阵测算）
+const manualBuildOverrides = ref<Record<number, string>>({})
+function overrideSeatBuild(seatIdx: number, buildName: string) {
+  if (manualBuildOverrides.value[seatIdx] === buildName) {
+    delete manualBuildOverrides.value[seatIdx]
+  } else {
+    manualBuildOverrides.value[seatIdx] = buildName
+  }
 }
 
 // 选手+棋手协同度计算标签（基于选手推断阵容与棋手机制评估）
 function getSeatSynergy(nickname: string, commander: string) {
   if (!nickname || !commander) return null
   const builds = getPlayerBuilds(nickname)
-  const cmd = evaluateCommander(commander, builds, version.value || CURRENT_LATEST_VERSION, bannedFaction.value || null)
+  const cmd = evaluateCommander(commander, builds, version.value || CURRENT_LATEST_VERSION, bannedFaction.value || null, nickname)
   if (!cmd) return null
   if (cmd.synergyLevel === 'PERFECT') {
     return { level: 'perfect', label: `🔥 协同暴涨 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
@@ -914,6 +1104,13 @@ function getSeatSynergy(nickname: string, commander: string) {
     return { level: 'good', label: `✨ 契合良好 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
   }
   return { level: 'neutral', label: `平稳增幅 (+${(cmd.bonus * 100).toFixed(0)}%)`, text: cmd.summary }
+}
+
+// 席位克制雷达数据提取（供 6 席卡片直接展示压制谁、被谁克制）
+function getSeatMatchupInfo(seatIdx: number) {
+  if (!matchupResult.value) return null
+  const slot = seatIdx + 1
+  return matchupResult.value.players.find(p => p.slot === slot) || null
 }
 
 // 极速模式：一键批量填入名单（支持模糊纠偏与招牌棋手自动匹配）
@@ -936,13 +1133,20 @@ function applyBatchPaste() {
     if (matched) {
       players.value[i].nickname = matched.nickname
       players.value[i].profileId = ''
-      if (!players.value[i].commander && matched.signatureCommander) {
-        players.value[i].commander = matched.signatureCommander
+      const prof = findPlayerMasterProfile(matched.nickname) || findPlayerMasterProfile(matched.masterName)
+      const sig = prof?.signatureCommander || matched.signatureCommander || SIGNATURE_COMMANDERS[matched.nickname] || SIGNATURE_COMMANDERS[matched.masterName]
+      if (sig) {
+        players.value[i].commander = sig
       }
       matchedSummaries.push(`${token} → ${matched.nickname}`)
     } else {
       players.value[i].nickname = token
       players.value[i].profileId = ''
+      const prof = findPlayerMasterProfile(token)
+      const sig = prof?.signatureCommander || SIGNATURE_COMMANDERS[token]
+      if (sig) {
+        players.value[i].commander = sig
+      }
     }
   }
 
@@ -961,8 +1165,10 @@ function addStarPlayer(name: string) {
   if (emptyIdx !== -1) {
     players.value[emptyIdx].nickname = name
     players.value[emptyIdx].profileId = ''
-    if (!players.value[emptyIdx].commander && SIGNATURE_COMMANDERS[name]) {
-      players.value[emptyIdx].commander = SIGNATURE_COMMANDERS[name]
+    const prof = findPlayerMasterProfile(name)
+    const sigCmd = prof?.signatureCommander || SIGNATURE_COMMANDERS[name]
+    if (sigCmd) {
+      players.value[emptyIdx].commander = sigCmd
     }
   }
 }
@@ -982,6 +1188,7 @@ function clearAllSeats() {
   }
   batchPasteText.value = ''
   batchFeedback.value = ''
+  manualBuildOverrides.value = {}
 }
 
 // 实时计算同场克制、禁选阵营与所选棋手影响 (双核：选手+棋手毫秒级响应)
@@ -1011,7 +1218,9 @@ const secondPick = computed(() => rankedPlayers.value[1] || null)
 // 高危避坑选手 (被Ban严重受制或被苦主克制)
 const highRiskPlayers = computed(() => {
   if (!matchupResult.value?.players) return []
-  return matchupResult.value.players.filter(p => p.banEvaluation?.level === 'CRITICAL' || p.suppressedBy.length >= 2)
+  return matchupResult.value.players.filter(
+    p => p.banEvaluation?.level === 'CRITICAL' || (p.activeSuppressedBy && p.activeSuppressedBy.length >= 1) || p.suppressedBy.length >= 2
+  )
 })
 
 // 全局粘贴监听 (在网页按 Ctrl+V / Cmd+V 截屏秒识别)
@@ -1544,6 +1753,68 @@ onUnmounted(() => {
         }
       }
 
+      .seat-stats-box {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        background: #f8fafc;
+        border: 1px dashed $border-subtle;
+        border-radius: 4px;
+        padding: 4px 6px;
+        font-size: 10px;
+
+        .player-pool-row {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          flex-wrap: wrap;
+
+          .pool-label {
+            color: $text-secondary;
+            font-size: 9.5px;
+            flex-shrink: 0;
+          }
+
+          .pool-chip {
+            background: #e2e8f0;
+            color: #334155;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 9px;
+            white-space: nowrap;
+          }
+        }
+
+        .commander-stat-row {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          flex-wrap: wrap;
+
+          .cmd-stat-label {
+            color: $color-primary;
+            font-weight: 600;
+            font-size: 9.5px;
+            flex-shrink: 0;
+          }
+
+          .cmd-stat-val {
+            color: #1e293b;
+            font-size: 9.5px;
+
+            strong {
+              color: $color-primary-dark;
+              margin-right: 2px;
+            }
+
+            small {
+              color: $text-muted;
+              font-size: 9px;
+            }
+          }
+        }
+      }
+
       .seat-inferred-row {
         display: flex;
         flex-direction: column;
@@ -1580,6 +1851,133 @@ onUnmounted(() => {
             font-weight: 600;
           }
         }
+
+        .seat-proficiency-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          font-size: 9.5px;
+          font-weight: 700;
+          padding: 1.5px 6px;
+          border-radius: 3px;
+          line-height: 1.2;
+          width: fit-content;
+
+          .mod-val {
+            font-weight: 800;
+            opacity: 0.9;
+          }
+
+          &.master {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+          }
+
+          &.expert {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+          }
+
+          &.competent {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+          }
+
+          &.substitute {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+          }
+
+          &.novice {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+          }
+        }
+      }
+
+      .seat-adaptive-pool {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 4px;
+        padding: 3px 5px;
+
+        .pool-title {
+          font-size: 9.5px;
+          color: #64748b;
+          font-weight: 600;
+        }
+
+        .adaptive-chips-wrap {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 3px;
+
+          .adaptive-chip {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            padding: 1px 4px;
+            font-size: 9.5px;
+            color: #334155;
+            cursor: pointer;
+            line-height: 1.2;
+            transition: all 0.15s ease;
+
+            &:hover:not(:disabled) {
+              border-color: $color-primary;
+              color: $color-primary;
+            }
+
+            &.is-active {
+              background: $color-primary;
+              color: #fff;
+              border-color: $color-primary;
+              font-weight: 700;
+
+              .chip-active-tag {
+                margin-left: 2px;
+                font-weight: 800;
+              }
+            }
+
+            &.is-banned {
+              background: #f1f5f9;
+              color: #94a3b8;
+              border-color: #e2e8f0;
+              text-decoration: line-through;
+              cursor: not-allowed;
+              opacity: 0.7;
+
+              .chip-banned-tag {
+                font-size: 8.5px;
+                color: #ef4444;
+                margin-left: 1px;
+                text-decoration: none;
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+
+      .seat-reason-line {
+        font-size: 9.5px;
+        color: #475569;
+        background: #f1f5f9;
+        border-radius: 3px;
+        padding: 2px 4px;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .seat-synergy-tag {
@@ -1605,6 +2003,252 @@ onUnmounted(() => {
         &.neutral {
           background: $bg-subtle;
           color: $text-secondary;
+        }
+      }
+
+      .seat-h2h-row {
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        .h2h-tag-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          line-height: 1.3;
+
+          .tag-label {
+            font-weight: 700;
+            flex-shrink: 0;
+          }
+
+          .tag-body {
+            flex: 1;
+            margin: 0 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            .opp-badge {
+              margin-right: 3px;
+              font-weight: 600;
+            }
+          }
+
+          .tag-score {
+            font-weight: 800;
+            font-size: 9.5px;
+            flex-shrink: 0;
+          }
+
+          &.suppress {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            .tag-score {
+              color: #059669;
+            }
+          }
+
+          &.nemesis {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            .tag-score {
+              color: #dc2626;
+            }
+          }
+
+          &.neutral {
+            background: $bg-subtle;
+            color: $text-secondary;
+            border: 1px solid $border-subtle;
+            justify-content: flex-start;
+            gap: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .h2h-matrix-board {
+    margin-top: 14px;
+    background: $bg-surface;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-md;
+    padding: 14px 18px;
+    box-shadow: $shadow-sm;
+
+    .matrix-board-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+
+      .board-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .title-icon {
+          font-size: 14px;
+        }
+
+        strong {
+          font-size: 13.5px;
+          color: $text-primary;
+          font-weight: 700;
+        }
+
+        .title-sub {
+          font-size: 11px;
+          color: $text-secondary;
+          margin-left: 6px;
+        }
+      }
+    }
+
+    .suppression-chains-flow {
+      margin-bottom: 12px;
+      background: #fff;
+      border: 1px solid $border-subtle;
+      border-radius: $radius-sm;
+      padding: 10px 14px;
+
+      .chain-flow-title {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: $text-secondary;
+        margin-bottom: 8px;
+      }
+
+      .chain-tags-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .chain-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: #f0fdf4;
+          border: 1px solid #bbf7d0;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 11px;
+
+          .winner-tag {
+            font-weight: 700;
+            color: #15803d;
+          }
+
+          .chain-arrow {
+            font-size: 10px;
+            color: #16a34a;
+            font-weight: 600;
+          }
+
+          .loser-tag {
+            font-weight: 600;
+            color: #b91c1c;
+            background: #fef2f2;
+            padding: 1px 6px;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+          }
+        }
+      }
+    }
+
+    .chain-empty-tip {
+      font-size: 11.5px;
+      color: $text-secondary;
+      padding: 8px 12px;
+      background: $bg-subtle;
+      border-radius: $radius-sm;
+      margin-bottom: 10px;
+    }
+
+    .cross-table-wrap {
+      overflow-x: auto;
+
+      .cross-h2h-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+        text-align: center;
+
+        th, td {
+          border: 1px solid $border-subtle;
+          padding: 6px 8px;
+        }
+
+        thead th {
+          background: $bg-subtle;
+          font-weight: 700;
+          color: $text-primary;
+          white-space: nowrap;
+        }
+
+        .corner-th {
+          font-size: 10.5px;
+          color: $text-secondary;
+          width: 120px;
+        }
+
+        .row-seat-th {
+          background: $bg-subtle;
+          font-weight: 700;
+          color: $text-primary;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        .h2h-cell {
+          font-weight: 700;
+          cursor: default;
+          transition: background-color 0.15s ease;
+
+          &.win {
+            background: #dcfce7;
+            color: #15803d;
+          }
+
+          &.lose {
+            background: #fee2e2;
+            color: #b91c1c;
+          }
+
+          &.tied {
+            background: #fef9c3;
+            color: #a16207;
+          }
+
+          &.none {
+            background: #fff;
+            color: #9ca3af;
+            font-weight: normal;
+          }
+        }
+      }
+
+      .table-legend {
+        display: flex;
+        gap: 16px;
+        margin-top: 8px;
+        font-size: 10.5px;
+
+        .legend-item {
+          font-weight: 600;
+
+          &.win { color: #15803d; }
+          &.lose { color: #b91c1c; }
+          &.tied { color: #a16207; }
+          &.none { color: #9ca3af; }
         }
       }
     }

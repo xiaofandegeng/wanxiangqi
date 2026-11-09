@@ -8,6 +8,7 @@ export const KNOWN_PLAYERS: readonly string[] = [
   '沐小呆',
   'YK丶',
   'WE葫芦呼噜',
+  'RW侠.晓枫',
   'QT鱼沐汐0丶7版',
   'QT萌岑',
   'QT电竞披萨鱼',

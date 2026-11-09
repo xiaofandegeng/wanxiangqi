@@ -9,7 +9,11 @@ import {
   getVersionByDate,
   evaluateVersionLineupAdaptation,
   evaluateCommander,
-  OFFICIAL_COMMANDERS
+  OFFICIAL_COMMANDERS,
+  COMMANDER_ADAPTED_BUILDS,
+  getCommanderAdaptiveBuilds,
+  evaluatePlayerCommanderLineupProficiency,
+  inferPlayerLineup
 } from '../src/utils/player-matchup'
 
 describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-matchup)', () => {
@@ -211,6 +215,161 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(yiyuanWithCmd.commanderEvaluation?.tier).toBe('T1')
     expect(yiyuanWithCmd.commanderModifier).toBeGreaterThan(0)
     expect(OFFICIAL_COMMANDERS.length).toBe(21)
+  })
+
+  it('用户真实战局 6 席位推演：精准排除脏词、输出各选手招牌阵容与交锋克制矩阵', () => {
+    const battleParticipants = [
+      { nickname: '沐汐', commander: '乔汐' },
+      { nickname: '胜天半子嘉誉', commander: '马可' },
+      { nickname: 'QT电竞披萨鱼', commander: '嬴律' },
+      { nickname: '抖音刺儿', commander: '乔汐' },
+      { nickname: '抖音刺痛', commander: '香香' },
+      { nickname: 'B站QT逆光', commander: '庄小鱼' }
+    ]
+
+    const result = evaluate6PlayerMatchup(battleParticipants, null, mockMatches)
+
+    expect(result.players.length).toBe(6)
+
+    // 1. 验证沐汐阵容绝非“我不后悔”，而是权威招牌“日落海倒转”
+    const muxi = result.players.find(p => p.nickname === '沐汐')!
+    expect(muxi).toBeDefined()
+    expect(muxi.inferredLineup.lineupName).toBe('日落海倒转')
+    expect(muxi.inferredLineup.lineupName).not.toContain('我不后悔')
+
+    // 2. 验证嘉誉招牌为镜猪转吕布
+    const jiayu = result.players.find(p => p.nickname === '胜天半子嘉誉')!
+    expect(jiayu.inferredLineup.lineupName).toBe('镜猪转吕布')
+
+    // 3. 验证刺痛招牌为逐鹿蒙犽或坦射
+    const citong = result.players.find(p => p.nickname === '抖音刺痛')!
+    expect(['逐鹿蒙犽', '稷下坦射']).toContain(citong.inferredLineup.lineupName)
+
+    // 4. 验证逆光招牌为传统养猪
+    const niguang = result.players.find(p => p.nickname === 'B站QT逆光')!
+    expect(niguang.inferredLineup.lineupName).toBe('传统养猪')
+
+    // 5. 验证披萨鱼(遗愿)与所选棋手嬴律协同出战逐鹿蒙恬或主力三分
+    const yiyuan = result.players.find(p => p.nickname === 'QT电竞披萨鱼')!
+    expect(['逐鹿蒙恬', '三分登场']).toContain(yiyuan.inferredLineup.lineupName)
+
+    // 6. 验证同场交手矩阵与压制链结构完整性
+    expect(result.crossMatrix).toBeDefined()
+    expect(result.crossMatrix.seats.length).toBe(6)
+    expect(result.crossMatrix.cells.length).toBe(6)
+    expect(result.suppressionChains).toBeDefined()
+
+    // 7. 每位选手的克制信息和席位均已就绪
+    result.players.forEach(p => {
+      expect(p.slot).toBeGreaterThanOrEqual(1)
+      expect(p.slot).toBeLessThanOrEqual(6)
+      expect(p.h2hSummary).toBeDefined()
+      expect(Array.isArray(p.activeSuppresses)).toBe(true)
+      expect(Array.isArray(p.activeSuppressedBy)).toBe(true)
+    })
+  })
+
+  it('棋手主流适配阵容库完整定义，且在 Ban 位下能够动态剪枝合规流派', () => {
+    // 1. 21位棋手适配库校验
+    expect(Object.keys(COMMANDER_ADAPTED_BUILDS).length).toBeGreaterThanOrEqual(20)
+    expect(COMMANDER_ADAPTED_BUILDS['马可'].length).toBeGreaterThanOrEqual(3)
+    expect(COMMANDER_ADAPTED_BUILDS['玉环'].length).toBeGreaterThanOrEqual(3)
+
+    // 2. 马可在未禁选时的流派池
+    const makeNoBan = getCommanderAdaptiveBuilds('马可', null)!
+    expect(makeNoBan).toBeDefined()
+    expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '镜猪转吕布')).toBe(true)
+    expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(true)
+    expect(makeNoBan.bannedBuilds.length).toBe(0)
+
+    // 3. 当禁用【大河阵营】时，马可的「大河龙蛇」被精确剪枝剔除
+    const makeBanDahe = getCommanderAdaptiveBuilds('马可', '大河')!
+    expect(makeBanDahe.bannedBuilds.some(b => b.buildName === '大河龙蛇')).toBe(true)
+    expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(false)
+    expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '镜猪转吕布')).toBe(true)
+
+    // 4. 当禁用【三分阵营】时，诸葛亮的「三分登场」与「三分倒转」被排除，顺位推荐「牺牲李信」
+    const zhugeBanSanfen = getCommanderAdaptiveBuilds('诸葛亮', '三分')!
+    expect(zhugeBanSanfen.bannedBuilds.length).toBeGreaterThanOrEqual(2)
+    expect(zhugeBanSanfen.eligibleBuilds.some(b => b.buildName.includes('三分'))).toBe(false)
+    expect(zhugeBanSanfen.bestAdaptiveBuild?.buildName).toBe('牺牲李信')
+  })
+
+  it('选手在同一个棋手下玩不同阵容的专精熟练度差异明显，且对战力进行真实加减修正', () => {
+    // 1. 嘉誉用马可：玩「镜猪转吕布」为 5星炉火纯青 (+0.22)
+    const jiayuJingzhu = evaluatePlayerCommanderLineupProficiency('嘉誉', '马可', '镜猪转吕布')
+    expect(jiayuJingzhu.starLevel).toBe(5)
+    expect(jiayuJingzhu.tierKey).toBe('MASTER')
+    expect(jiayuJingzhu.modifier).toBeGreaterThan(0.2)
+    expect(jiayuJingzhu.levelLabel).toContain('炉火纯青')
+
+    // 2. 世薄情用马可：玩「大河龙蛇」为 5星炉火纯青 (+0.22)
+    const boqingDahe = evaluatePlayerCommanderLineupProficiency('世薄情', '马可', '大河龙蛇')
+    expect(boqingDahe.starLevel).toBe(5)
+    expect(boqingDahe.modifier).toBeGreaterThan(0.2)
+
+    // 3. 刺痛用香香：玩「逐鹿蒙犽」为 5星炉火纯青；玩生疏流派扣分
+    const citongZhulu = evaluatePlayerCommanderLineupProficiency('刺痛', '香香', '逐鹿蒙犽')
+    expect(citongZhulu.starLevel).toBe(5)
+    expect(citongZhulu.modifier).toBeGreaterThan(0.2)
+
+    // 4. 选手选了该棋手非擅长的生疏流派，受到扣分惩罚
+    const citongShushou = evaluatePlayerCommanderLineupProficiency('刺痛', '香香', '六法女帝')
+    expect(citongShushou.starLevel).toBeLessThanOrEqual(2)
+    expect(citongShushou.modifier).toBeLessThan(0)
+  })
+
+  it('用户实战对局真实还原：针对截图中的 6 席位与大河禁选，输出精准推导阵容与熟练度加权胜率', () => {
+    // 用户实际对局截图场景：
+    // #1 沐汐 (玉环) -> 日落海倒转（绝非“我不后悔”）
+    // #2 嘉誉 (玉环) -> 牺牲李信（绝活李信）
+    // #3 披萨鱼 (马可) -> 猪镜转李信/逐鹿蒙恬（绝非全员三分登场）
+    // #4 刺儿 (庄小鱼) -> 镜猪转吕布（绝非三分登场）
+    // #5 刺痛 (白歌) -> 传统养猪（绝非三分登场）
+    // #6 逆光 (孙小宾) -> 雷霆战机
+    // 本场禁选阵营：大河阵营
+    const userSeats = [
+      { nickname: '沐汐', commander: '玉环' },
+      { nickname: '胜天半子嘉誉', commander: '玉环' },
+      { nickname: 'QT电竞披萨鱼', commander: '马可' },
+      { nickname: '抖音刺儿', commander: '庄小鱼' },
+      { nickname: '抖音刺痛', commander: '白歌' },
+      { nickname: 'B站QT逆光', commander: '孙小宾' }
+    ]
+
+    const result = evaluate6PlayerMatchup(userSeats, '大河', mockMatches)
+
+    // 1. 验证沐汐(玉环)推断为日落海倒转，熟练度5星炉火纯青
+    const muxi = result.players[0]
+    expect(muxi.inferredLineup.lineupName).toBe('日落海倒转')
+    expect(muxi.lineupProficiency?.starLevel).toBe(5)
+    expect(muxi.proficiencyModifier).toBeGreaterThan(0.2)
+
+    // 2. 验证嘉誉(玉环)推断为牺牲李信（绝活），熟练度5星
+    const jiayu = result.players[1]
+    expect(jiayu.inferredLineup.lineupName).toBe('牺牲李信')
+    expect(jiayu.lineupProficiency?.starLevel).toBe(5)
+
+    // 3. 验证披萨鱼(马可)推断为猪镜转李信或逐鹿蒙恬，排除大河龙蛇
+    const pizza = result.players[2]
+    expect(['猪镜转李信', '逐鹿蒙恬', '镜猪转吕布']).toContain(pizza.inferredLineup.lineupName)
+    expect(pizza.inferredLineup.lineupName).not.toBe('大河龙蛇')
+
+    // 4. 验证刺儿(庄小鱼)推断为镜猪转吕布，绝非三分登场
+    const cier = result.players[3]
+    expect(cier.inferredLineup.lineupName).toBe('镜猪转吕布')
+
+    // 5. 验证刺痛(白歌)推断为传统养猪，绝非三分登场
+    const citong = result.players[4]
+    expect(citong.inferredLineup.lineupName).toBe('传统养猪')
+
+    // 6. 验证逆光(孙小宾)推断为雷霆战机
+    const niguang = result.players[5]
+    expect(niguang.inferredLineup.lineupName).toBe('雷霆战机')
+
+    // 7. 验证胜率均经过熟练度加权与归一化
+    const sumProb = result.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
+    expect(sumProb).toBeCloseTo(1.0, 2)
   })
 })
 
