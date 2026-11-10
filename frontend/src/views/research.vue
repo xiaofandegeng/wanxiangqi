@@ -42,7 +42,7 @@
             <div>
               <strong>{{ catalog?.counts?.totalDays || 29 }}</strong>
               <span>全量覆盖比赛日</span>
-              <small>2026-10-11 ~ 11-09 连续追踪</small>
+              <small>2026-10-11 ~ 11-08 连续追踪</small>
             </div>
             <div>
               <strong>{{ aggregatedPlayers.length || 124 }}</strong>
