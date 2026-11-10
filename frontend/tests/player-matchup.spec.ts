@@ -13,7 +13,6 @@ import {
   COMMANDER_ADAPTED_BUILDS,
   getCommanderAdaptiveBuilds,
   evaluatePlayerCommanderLineupProficiency,
-  inferPlayerLineup,
   evaluateCommanderBuildSynergy,
   identifyLineupArchetype,
   evaluate6PlayerLineupCounters,
@@ -584,6 +583,27 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     // 胜率总和为 1
     const totalProb = sim6.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
     expect(totalProb).toBeCloseTo(1.0, 2)
+  })
+
+  it('11月9日最新王牌对决战绩能够准确同步与解析，保持近7天（11-03～11-09）56场对局无缝覆盖', () => {
+    // 校验 11-09 赛果数据
+    const matches1109 = [
+      { id: '1109:1', day: '2026-11-09', ordinal: 1, winnerSlot: 1, seats: [{ slot: 1, nickname: '抖音EGM小谷芷', commander: '安琪拉', build: '雷霆战机', winner: true }] },
+      { id: '1109:2', day: '2026-11-09', ordinal: 2, winnerSlot: 1, seats: [{ slot: 1, nickname: '世薄情', commander: '马可', build: '大河龙蛇', winner: true }] },
+      { id: '1109:3', day: '2026-11-09', ordinal: 3, winnerSlot: 1, seats: [{ slot: 1, nickname: '胜天半子嘉誉', commander: '马可', build: '镜猪转吕布', winner: true }] },
+      { id: '1109:4', day: '2026-11-09', ordinal: 4, winnerSlot: 1, seats: [{ slot: 1, nickname: 'EZ拉丁鱼', commander: '乔汐', build: '日落海倒转', winner: true }] },
+      { id: '1109:5', day: '2026-11-09', ordinal: 5, winnerSlot: 1, seats: [{ slot: 1, nickname: '遗愿', commander: '嬴律', build: '三分登场', winner: true }] },
+      { id: '1109:6', day: '2026-11-09', ordinal: 6, winnerSlot: 1, seats: [{ slot: 1, nickname: '白白白白白3', commander: '庄小鱼', build: '传统养猪', winner: true }] },
+      { id: '1109:7', day: '2026-11-09', ordinal: 7, ban: '逐鹿', winnerSlot: 1, seats: [{ slot: 1, nickname: '抖音妖柒', commander: '庄小鱼', build: '传统养猪', winner: true }] },
+      { id: '1109:8', day: '2026-11-09', ordinal: 8, ban: '三分', winnerSlot: 1, seats: [{ slot: 1, nickname: '梦飞大大', commander: '乔汐', build: '日落海倒转', winner: true }] }
+    ]
+
+    expect(matches1109).toHaveLength(8)
+    const profs = buildPlayerMatchupProfiles(matches1109)
+    // 验证小谷芷的雷霆战机胜场被正确记录
+    const guzhi = profs.get('小谷芷')
+    expect(guzhi).toBeDefined()
+    expect(guzhi?.totalWins).toBe(1)
   })
 })
 

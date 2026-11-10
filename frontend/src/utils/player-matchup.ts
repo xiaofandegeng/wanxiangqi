@@ -425,9 +425,9 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
   ],
   玉环: [
     { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: '霓裳曲打出非觉醒牌连击增益，极速过牌锁血登顶' },
+    { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '三分领袖配合连击刷牌高速过牌' },
     { buildName: '牺牲李信', faction: '河洛', tier: 'SECONDARY', synergyDesc: '连击增益加速单核李信狂暴法坦输出' },
-    { buildName: '雷霆战机', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '高频刷牌快速检索机甲核心配件' },
-    { buildName: '三分倒转', faction: '三分', tier: 'VARIANT', synergyDesc: '三分领袖配合连击刷牌高速过牌' }
+    { buildName: '雷霆战机', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '高频刷牌快速检索机甲核心配件' }
   ],
   乔汐: [
     { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: 'v1.9.1潮汐交响初始4次，法系倒转与转瞬快攻成型神速' },
@@ -444,8 +444,8 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
     { buildName: '传统养猪', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '全队免控与梦境商店保障单核养猪坦度，逆风翻盘' },
     { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '免控护体为吕布刺客提供绝对安全输出环境' },
     { buildName: '日落海倒转', faction: '日落海', tier: 'SECONDARY', synergyDesc: '免控为倒转体系保驾护航免遭切后' },
-    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '免控保护后排射手持续扫射' },
-    { buildName: '三分倒转', faction: '三分', tier: 'VARIANT', synergyDesc: '免控保障三分前排阵型' }
+    { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'SECONDARY', synergyDesc: '免控保障蒙恬反伤阵型屹立不倒' },
+    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '免控保护后排射手持续扫射' }
   ],
   孙小宾: [
     { buildName: '雷霆战机', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '时光倒流回溯上回合手牌，极致配合关键机甲牌序' },
@@ -464,10 +464,12 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
     { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '即兴创作复制前排肉核突破星级' }
   ],
   马可: [
+    { buildName: '猪镜转李信', faction: '河洛', tier: 'PRIMARY', synergyDesc: '真伤弹幕配合李信霸体爆发，极速破阵清场' },
     { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '高频真伤弹幕掩护刺客突进，后期大吕布接管战局' },
     { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'PRIMARY', synergyDesc: '高频真伤弹幕强化射手穿透轰炸' },
     { buildName: '大河龙蛇', faction: '大河', tier: 'SECONDARY', synergyDesc: '大河先手开团接物理爆发输出（世薄情成名招牌）' },
-    { buildName: '成年礼三分', faction: '三分', tier: 'SECONDARY', synergyDesc: '三分阵营快速成型射手推进' },
+    { buildName: '传统养猪', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '真伤单核拉满，养猪防守反击' },
+    { buildName: '成年礼三分', faction: '三分', tier: 'VARIANT', synergyDesc: '三分阵营快速成型射手推进' },
     { buildName: '稷下坦射', faction: '通用/其他', tier: 'VARIANT', synergyDesc: '前排承伤提供持久开团火力' }
   ],
   昭君: [
@@ -1391,9 +1393,9 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
       '嬴律': ['逐鹿蒙恬', '三分登场'],
       '孙尚香': ['三分登场', '逐鹿蒙恬'],
       '香香': ['三分登场', '逐鹿蒙恬'],
-      '马可': ['猪镜转李信', '三分登场'],
-      '白歌': ['三分倒转', '三分登场'],
-      '庄小鱼': ['三分倒转', '传统养猪'],
+      '马可': ['猪镜转李信', '镜猪转吕布', '逐鹿蒙恬'],
+      '白歌': ['三分倒转', '逐鹿蒙恬'],
+      '庄小鱼': ['镜猪转吕布', '传统养猪'],
       '诸葛亮': ['三分登场', '三分倒转'],
       '武凤': ['河洛木兰', '逐鹿蒙恬']
     }
@@ -1426,12 +1428,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     commanderBuildMap: {
       '香香': ['逐鹿蒙犽', '稷下坦射', '传统养猪'],
       '孙尚香': ['逐鹿蒙犽', '稷下坦射', '传统养猪'],
-      '白歌': ['传统养猪', '逐鹿蒙犽', '三分登场'],
+      '白歌': ['传统养猪', '逐鹿蒙犽'],
       '班叔': ['逐鹿蒙犽', '稷下坦射'],
       '鲁班七号': ['逐鹿蒙犽', '稷下坦射'],
       '马可': ['传统养猪', '逐鹿蒙犽', '镜猪转吕布'],
       '庄小鱼': ['传统养猪', '逐鹿蒙犽'],
-      '镜': ['镜猪转吕布', '三分登场']
+      '镜': ['镜猪转吕布']
     }
   },
   {
@@ -1721,8 +1723,9 @@ export function inferPlayerLineup(
     const cleanCmd = cmdAdaptation.commander
 
     // 寻找选手使用该棋手的统计记录（优先查传入的实战画像，其次查权威档案中的棋手映射）
+    const cmdMeta = findCommanderMeta(cleanCmd)
     let matchedCmd = commanderProfiles?.find(
-      c => c.commander === cleanCmd || (c.topBuilds && c.topBuilds.length > 0)
+      c => c.commander === cleanCmd || (cmdMeta && cmdMeta.aliases.includes(c.commander))
     )
 
     // 若无实战动态画像，从权威档案的棋手映射中提取
@@ -1801,7 +1804,9 @@ export function inferPlayerLineup(
 
       let reason = ''
       if (isFallback) {
-        reason = `受「${bf}」禁选封锁，主力「${primaryFavorite}」无法出战；根据棋手「${cleanCmd}」适配池顺位变阵「${chosenBuildName}」（选手熟练度：${prof.levelLabel}）`
+        reason = bf
+          ? `受「${bf}」禁选封锁，主力「${primaryFavorite}」无法出战；根据棋手「${cleanCmd}」适配池顺位变阵「${chosenBuildName}」（选手熟练度：${prof.levelLabel}）`
+          : `主力偏好「${primaryFavorite}」与棋手「${cleanCmd}」不适配；根据棋手适配池顺位选用「${chosenBuildName}」（选手熟练度：${prof.levelLabel}）`
       } else if (matchedCmd && matchedCmd.topBuilds.length > 0) {
         reason = `依据历史对局与擅长偏好：选手选用棋手「${cleanCmd}」最常出战「${chosenBuildName}」（${prof.reasoning}）`
       } else {
