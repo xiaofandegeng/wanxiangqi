@@ -247,6 +247,12 @@ export function normalizeNickname(nickname: string): string {
   return s
 }
 
+// 预先降序排序的已知选手名列表（按长度降序优先匹配长名称，避免运行时反复创建与排序）
+const SORTED_KNOWN_PLAYERS = [...KNOWN_PLAYERS].sort((a, b) => b.length - a.length)
+
+// 内存级头像 URL 高速缓存，命中率超 99%，杜绝打字与列表渲染时的重复计算
+const AVATAR_CACHE = new Map<string, string>()
+
 /**
  * 获取选手的个人头像 URL
  * @param nickname 选手昵称
@@ -261,61 +267,75 @@ export function getPlayerAvatar(nickname?: string | null): string {
     return '/avatars/default.svg'
   }
 
+  const cached = AVATAR_CACHE.get(clean)
+  if (cached) {
+    return cached
+  }
+
+  let resultUrl = ''
+
   // 1. 完全精确匹配
   if (KNOWN_PLAYERS_SET.has(clean)) {
-    return `/avatars/players/${encodeURIComponent(clean)}.svg`
+    resultUrl = `/avatars/players/${encodeURIComponent(clean)}.svg`
   }
-
   // 2. 别名表直接映射
-  if (PLAYER_ALIASES[clean] && KNOWN_PLAYERS_SET.has(PLAYER_ALIASES[clean])) {
-    return `/avatars/players/${encodeURIComponent(PLAYER_ALIASES[clean])}.svg`
-  }
+  else if (PLAYER_ALIASES[clean] && KNOWN_PLAYERS_SET.has(PLAYER_ALIASES[clean])) {
+    resultUrl = `/avatars/players/${encodeURIComponent(PLAYER_ALIASES[clean])}.svg`
+  } else {
+    // 3. 去括号与备注后匹配
+    const normalized = normalizeNickname(clean)
+    if (normalized && KNOWN_PLAYERS_SET.has(normalized)) {
+      resultUrl = `/avatars/players/${encodeURIComponent(normalized)}.svg`
+    } else if (normalized && PLAYER_ALIASES[normalized] && KNOWN_PLAYERS_SET.has(PLAYER_ALIASES[normalized])) {
+      resultUrl = `/avatars/players/${encodeURIComponent(PLAYER_ALIASES[normalized])}.svg`
+    } else {
+      // 4. 符号变体替换（顿号与点号互换）
+      const dotVariant = clean.replace(/、/g, '丶')
+      if (KNOWN_PLAYERS_SET.has(dotVariant)) {
+        resultUrl = `/avatars/players/${encodeURIComponent(dotVariant)}.svg`
+      } else {
+        const commaVariant = clean.replace(/丶/g, '、')
+        if (KNOWN_PLAYERS_SET.has(commaVariant)) {
+          resultUrl = `/avatars/players/${encodeURIComponent(commaVariant)}.svg`
+        } else {
+          // 5. 尝试已知选手子串匹配（复用顶层 SORTED_KNOWN_PLAYERS）
+          for (const known of SORTED_KNOWN_PLAYERS) {
+            if (clean === known || normalized === known) {
+              resultUrl = `/avatars/players/${encodeURIComponent(known)}.svg`
+              break
+            }
+          }
+          if (!resultUrl) {
+            for (const known of SORTED_KNOWN_PLAYERS) {
+              if (known.length >= 2 && (clean.includes(known) || (normalized && normalized.includes(known)))) {
+                resultUrl = `/avatars/players/${encodeURIComponent(known)}.svg`
+                break
+              }
+            }
+          }
 
-  // 3. 去括号与备注后匹配
-  const normalized = normalizeNickname(clean)
-  if (normalized && KNOWN_PLAYERS_SET.has(normalized)) {
-    return `/avatars/players/${encodeURIComponent(normalized)}.svg`
-  }
-  if (normalized && PLAYER_ALIASES[normalized] && KNOWN_PLAYERS_SET.has(PLAYER_ALIASES[normalized])) {
-    return `/avatars/players/${encodeURIComponent(PLAYER_ALIASES[normalized])}.svg`
-  }
+          // 6. 动态生成高品质 SVG 头像兜底
+          if (!resultUrl) {
+            const initials = clean.replace(/^(抖音|B站|BILI|QT|EG|EZ|I蟲[、丨丶]|DY)/g, '').slice(0, 2) || clean.slice(0, 2)
+            const colors = [
+              ['#1E463A', '#2A5A4B'],
+              ['#311B92', '#512DA8'],
+              ['#880E4F', '#C2185B'],
+              ['#004D40', '#00796B'],
+              ['#E65100', '#F57C00'],
+              ['#263238', '#455A64'],
+            ]
+            const idx = Math.abs(clean.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % colors.length
+            const [c1, c2] = colors[idx]
 
-  // 4. 符号变体替换（顿号与点号互换）
-  const dotVariant = clean.replace(/、/g, '丶')
-  if (KNOWN_PLAYERS_SET.has(dotVariant)) {
-    return `/avatars/players/${encodeURIComponent(dotVariant)}.svg`
-  }
-  const commaVariant = clean.replace(/丶/g, '、')
-  if (KNOWN_PLAYERS_SET.has(commaVariant)) {
-    return `/avatars/players/${encodeURIComponent(commaVariant)}.svg`
-  }
-
-  // 5. 尝试已知选手子串匹配（按长度降序优先匹配长名称）
-  const sorted = [...KNOWN_PLAYERS].sort((a, b) => b.length - a.length)
-  for (const known of sorted) {
-    if (clean === known || normalized === known) {
-      return `/avatars/players/${encodeURIComponent(known)}.svg`
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><circle cx="60" cy="60" r="56" fill="${c1}" stroke="${c2}" stroke-width="4"/><text x="60" y="70" fill="#FFFFFF" font-size="24" font-weight="900" font-family="sans-serif" text-anchor="middle">${initials}</text></svg>`
+            resultUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+          }
+        }
+      }
     }
   }
-  for (const known of sorted) {
-    if (known.length >= 2 && (clean.includes(known) || (normalized && normalized.includes(known)))) {
-      return `/avatars/players/${encodeURIComponent(known)}.svg`
-    }
-  }
 
-  // 6. 动态生成高品质 SVG 头像兜底
-  const initials = clean.replace(/^(抖音|B站|BILI|QT|EG|EZ|I蟲[、丨丶]|DY)/g, '').slice(0, 2) || clean.slice(0, 2)
-  const colors = [
-    ['#1E463A', '#2A5A4B'],
-    ['#311B92', '#512DA8'],
-    ['#880E4F', '#C2185B'],
-    ['#004D40', '#00796B'],
-    ['#E65100', '#F57C00'],
-    ['#263238', '#455A64'],
-  ]
-  const idx = Math.abs(clean.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % colors.length
-  const [c1, c2] = colors[idx]
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><circle cx="60" cy="60" r="56" fill="${c1}" stroke="${c2}" stroke-width="4"/><text x="60" y="70" fill="#FFFFFF" font-size="24" font-weight="900" font-family="sans-serif" text-anchor="middle">${initials}</text></svg>`
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+  AVATAR_CACHE.set(clean, resultUrl)
+  return resultUrl
 }

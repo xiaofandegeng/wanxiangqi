@@ -108,12 +108,12 @@
 
               <!-- 模糊联想悬浮下拉列表 -->
               <div
-                v-if="activeDropdownSeat === idx && getSeatSuggestions(p.nickname).length"
+                v-if="activeDropdownSeat === idx && activeSeatSuggestions.length"
                 class="autocomplete-dropdown"
               >
                 <div class="dropdown-header">匹配历史战绩选手（点击直接填入）：</div>
                 <div
-                  v-for="cand in getSeatSuggestions(p.nickname)"
+                  v-for="cand in activeSeatSuggestions"
                   :key="cand.nickname"
                   class="dropdown-item"
                   @mousedown.prevent="selectCandidate(idx, cand)"
@@ -125,8 +125,7 @@
                       <span v-if="cand.masterName !== cand.nickname" class="cand-master">({{ cand.masterName }})</span>
                     </div>
                     <small class="cand-stats">
-                      {{ cand.wins }} 冠 · 常用：{{ cand.topBuild || '多流派' }}
-                      <span v-if="cand.signatureCommander" class="cand-cmd-tag">· 招牌棋手: {{ cand.signatureCommander }}</span>
+                      {{ cand.wins }} 冠 · 常用流派：{{ cand.topBuild || '多流派' }}
                     </small>
                   </div>
                 </div>
@@ -896,7 +895,7 @@ import {
   evaluateCommanderBuildSynergy,
   type CommanderBuildSynergyEval
 } from '../utils/player-matchup'
-import {getPlayerAvatar} from '../utils/player-avatar'
+import {getPlayerAvatar, PLAYER_ALIASES, normalizeNickname} from '../utils/player-avatar'
 import {getMasterPlayerName} from '../utils/player-grouping'
 
 // 标签切换：实战极速推演 vs 传统截图审计
@@ -923,65 +922,8 @@ const starPlayers = [
 ]
 const quickBans = ['', '逐鹿', '三分', '日落海', '河洛', '稷下', '大河']
 
-// 选手历史招牌/常用棋手数据库映射（全面校准为官方 21 位万象棋正统棋手名）
-const SIGNATURE_COMMANDERS: Record<string, string> = {
-  '梦飞': '马可',
-  '梦飞大大': '马可',
-  '小谷芷': '安琪拉',
-  '抖音EGM小谷芷': '安琪拉',
-  '白白白白白3': '庄小鱼',
-  '白白白白3': '庄小鱼',
-  '丰川祥子': '武凤',
-  '新一': '嬴律',
-  'QT新一': '嬴律',
-  '猪葛龟': '庄小鱼',
-  '猪葛龟龟': '庄小鱼',
-  '抖音猪葛龟龟': '庄小鱼',
-  '呆头鹅': '乔汐',
-  '遗愿': '嬴律',
-  'QT电竞披萨鱼': '嬴律',
-  '披萨鱼': '嬴律',
-  'QT披萨鱼遗愿': '嬴律',
-  '胜天半子嘉誉': '马可',
-  '嘉誉': '马可',
-  '刷牌之怪嘉誉': '马可',
-  '抖音刺儿': '乔汐',
-  '刺儿': '乔汐',
-  '抖音刺痛': '香香',
-  '刺痛': '香香',
-  'B站QT逆光': '庄小鱼',
-  '逆光': '庄小鱼',
-  'QT逆光': '庄小鱼',
-  '世薄情': '马可',
-  '沐汐': '乔汐',
-  'EZ拉丁鱼': '乔汐',
-  '拉丁鱼': '乔汐',
-  '沐汐诸葛龟版': '乔汐',
-  '小新游': '嬴律',
-  '抖音小新游': '嬴律',
-  '妖柒': '安琪拉',
-  '抖音妖柒': '安琪拉',
-  '晓枫': '乔汐',
-  'RW侠.晓枫': '乔汐',
-  '清辞': '白歌',
-  '武汉 EG清辞': '白歌',
-  'EG清辞': '白歌',
-  '泪花': '玉环',
-  '抖音EG泪花': '玉环',
-  '兰陵笑笑笑': '庄小鱼',
-  '事后诸葛亮': '白歌',
-  '抖音搜索北念': '嬴律',
-  '北念': '嬴律',
-  '皮皮鲨': '玉环',
-  '抖音EGM皮皮鲨': '玉环',
-  '阿文倒转王': '乔汐',
-  '阿文': '乔汐',
-  '湛蓝': '嬴律',
-  '抖音湛蓝': '嬴律',
-  '星光柯基': '小妲己',
-  '喵喵虾条': '马可',
-  '萌岑': '昭君'
-}
+// 选手每局出战棋手由实机对局画面与 Ban 位动态决定，严禁硬编码单选绑定覆盖
+
 
 interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
@@ -1004,17 +946,31 @@ const hasDuplicates=computed(()=>{const names=players.value.map(p=>p.nickname.no
 function candidates(name:string){const ids=new Set(draft.value?.ocr.rows.find(r=>r.rawText===name)?.candidates.map(c=>c.id)||[]);const q=normalize(name);return profiles.value.filter(p=>!q||normalize(p.nickname).includes(q)||q.includes(normalize(p.nickname))||ids.has(p.id))}
 function selectFile(event:Event){file.value=(event.target as HTMLInputElement).files?.[0]||null;draft.value=null;result.value=null;evidenceId.value='';confirmed.value=false}
 async function read(){if(!file.value)return;busy.value=true;error.value='';draft.value=null;result.value=null;confirmed.value=false
- try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:SIGNATURE_COMMANDERS[draft.value?.ocr.rows[i]?.rawText||'']||'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
+ try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
 async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
 watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
 
 export interface KnownPlayerItem {
   nickname: string
   masterName: string
+  cleanNick: string
+  cleanMaster: string
+  strippedNick: string
   wins: number
   matches: number
   topBuild: string
-  signatureCommander: string
+}
+
+// 统一清洗函数：去除空白与所有标点符号并转小写
+function cleanPlayerToken(str: string): string {
+  return (str || '').trim().toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '')
+}
+
+// 剥除常见平台/战队前缀（如抖音、快手、B站、EG、EZ、QT、有局等）
+const PLATFORM_PREFIX_RE = /^(抖音|快手|b站|bilibili|bili|斗鱼|虎牙|egm|eg|ez|qt|rw侠\.?|dy|we|i蟲[、丨丶]?|胜天半子|有局[、丨|]?)/i
+
+function stripPlayerPrefix(str: string): string {
+  return str.replace(PLATFORM_PREFIX_RE, '').trim()
 }
 
 // 基于全量真实赛果构建的可检索选手知识库 (190 账号)
@@ -1060,79 +1016,177 @@ const knownPlayersList = computed<KnownPlayerItem[]>(() => {
   const result: KnownPlayerItem[] = []
   for (const item of map.values()) {
     const topBuild = Object.entries(item.builds).sort((a, b) => b[1] - a[1])[0]?.[0] || ''
-    const sigCmd = SIGNATURE_COMMANDERS[item.nickname] || SIGNATURE_COMMANDERS[item.masterName] || ''
     result.push({
       nickname: item.nickname,
       masterName: item.masterName,
+      cleanNick: cleanPlayerToken(item.nickname),
+      cleanMaster: cleanPlayerToken(item.masterName),
+      strippedNick: cleanPlayerToken(stripPlayerPrefix(item.nickname)),
       wins: item.wins,
       matches: item.matches,
-      topBuild,
-      signatureCommander: sigCmd
+      topBuild
     })
   }
 
   return result.sort((a, b) => b.wins - a.wins || b.matches - a.matches)
 })
 
-// 模糊查找匹配选手（支持纯小名、去平台前缀、首字母或模糊包含）
+// 高性能多级哈希快速查找索引（支持 cleanNick, cleanMaster, strippedNick, 静态别名 O(1) 短路检索）
+const playerSearchIndex = computed(() => {
+  const list = knownPlayersList.value
+  const exactMap = new Map<string, KnownPlayerItem>()
+
+  // 1. 优先建立全量精准键索引（高胜场排前，胜场高的优先录入）
+  for (const item of list) {
+    if (item.cleanNick && !exactMap.has(item.cleanNick)) {
+      exactMap.set(item.cleanNick, item)
+    }
+    if (item.strippedNick && !exactMap.has(item.strippedNick)) {
+      exactMap.set(item.strippedNick, item)
+    }
+    if (item.cleanMaster && !exactMap.has(item.cleanMaster)) {
+      exactMap.set(item.cleanMaster, item)
+    }
+  }
+
+  // 2. 结合 PLAYER_ALIASES 静态别名表（如 小琳谷芷 -> EGM小谷芷, 梦飞大大 -> 抖音梦飞 等）
+  for (const [alias, target] of Object.entries(PLAYER_ALIASES)) {
+    const cleanAlias = cleanPlayerToken(alias)
+    if (!exactMap.has(cleanAlias)) {
+      const targetItem = exactMap.get(cleanPlayerToken(target))
+      if (targetItem) {
+        exactMap.set(cleanAlias, targetItem)
+      }
+    }
+  }
+
+  return { list, exactMap }
+})
+
+// 极速模糊查找匹配选手（多级哈希 O(1) 短路 + 前缀匹配 + 预编译子串过滤）
 function resolveFuzzyPlayer(token: string): KnownPlayerItem | null {
-  const q = token.trim().toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '')
+  const q = cleanPlayerToken(token)
   if (!q) return null
 
-  // 1. 精确匹配
-  const exact = knownPlayersList.value.find(p => p.nickname.toLowerCase() === q)
+  const { list, exactMap } = playerSearchIndex.value
+
+  // 1. O(1) 精确匹配（包含原名、主号名、去平台前缀名、静态别名）
+  const exact = exactMap.get(q)
   if (exact) return exact
 
-  // 2. 去除前缀匹配
-  const candidates = knownPlayersList.value.filter(p => {
-    const nick = p.nickname.toLowerCase()
-    const master = p.masterName.toLowerCase()
-    const stripped = nick.replace(/^(抖音|快手|b站|斗鱼|虎牙|egm|eg|ez|qt|rw侠\.?)/i, '')
-    return nick.includes(q) || master.includes(q) || stripped.includes(q) || q.includes(master) || q.includes(stripped)
-  })
-
-  return candidates[0] || null
-}
-
-// 席位输入框的下拉联想匹配列表
-function getSeatSuggestions(query: string): KnownPlayerItem[] {
-  const q = (query || '').trim().toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '')
-  if (!q) {
-    return knownPlayersList.value.slice(0, 6)
+  // 2. 去平台前缀后再查 O(1)
+  const strippedQ = cleanPlayerToken(stripPlayerPrefix(token))
+  if (strippedQ && strippedQ !== q) {
+    const strippedExact = exactMap.get(strippedQ)
+    if (strippedExact) return strippedExact
   }
-  return knownPlayersList.value
-    .filter(p => {
-      const nick = p.nickname.toLowerCase()
-      const master = p.masterName.toLowerCase()
-      const stripped = nick.replace(/^(抖音|快手|b站|斗鱼|虎牙|egm|eg|ez|qt|rw侠\.?)/i, '')
-      return nick.includes(q) || master.includes(q) || stripped.includes(q)
-    })
-    .slice(0, 8)
+
+  // 3. 规范化去括号与作者注记后查 O(1)
+  const normalized = cleanPlayerToken(normalizeNickname(token))
+  if (normalized && normalized !== q) {
+    const normExact = exactMap.get(normalized)
+    if (normExact) return normExact
+  }
+
+  // 4. 前缀匹配（startsWith 优先级高于普通包含，优先匹配高胜场）
+  for (const item of list) {
+    if (item.strippedNick.startsWith(q) || item.cleanNick.startsWith(q) || item.cleanMaster.startsWith(q)) {
+      return item
+    }
+  }
+
+  // 5. 子串双向包含匹配（直接比对预清洗字段，无正则无二次转换）
+  for (const item of list) {
+    if (
+      item.cleanNick.includes(q) ||
+      item.cleanMaster.includes(q) ||
+      item.strippedNick.includes(q) ||
+      q.includes(item.cleanMaster) ||
+      (item.strippedNick.length >= 2 && q.includes(item.strippedNick))
+    ) {
+      return item
+    }
+  }
+
+  return null
 }
 
-// 点击下拉候选直接填入
+// 联想结果内存 LRU / Map 缓存，大幅减轻键盘快速敲击时的重复过滤
+const suggestionsCache = new Map<string, KnownPlayerItem[]>()
+
+// 席位输入框的下拉联想匹配列表（带打分加权与缓存）
+function getSeatSuggestions(query: string): KnownPlayerItem[] {
+  const q = cleanPlayerToken(query)
+  const { list } = playerSearchIndex.value
+
+  if (!q) {
+    return list.slice(0, 6)
+  }
+
+  const cached = suggestionsCache.get(q)
+  if (cached) return cached
+
+  const strippedQ = cleanPlayerToken(stripPlayerPrefix(query))
+  const scored: { item: KnownPlayerItem; score: number }[] = []
+
+  for (const item of list) {
+    let score = 0
+    // 完全一致
+    if (item.strippedNick === q || item.cleanNick === q || item.cleanMaster === q) {
+      score += 100
+    } else if (strippedQ && (item.strippedNick === strippedQ || item.cleanNick === strippedQ)) {
+      score += 90
+    }
+    // 前缀匹配
+    else if (item.strippedNick.startsWith(q) || item.cleanNick.startsWith(q)) {
+      score += 70
+    } else if (item.cleanMaster.startsWith(q)) {
+      score += 50
+    }
+    // 包含匹配
+    else if (item.strippedNick.includes(q) || item.cleanNick.includes(q)) {
+      score += 30
+    } else if (item.cleanMaster.includes(q)) {
+      score += 20
+    } else if (q.includes(item.cleanMaster) || (item.strippedNick.length >= 2 && q.includes(item.strippedNick))) {
+      score += 15
+    }
+
+    if (score > 0) {
+      scored.push({ item, score })
+    }
+  }
+
+  scored.sort((a, b) => b.score - a.score || b.item.wins - a.item.wins || b.item.matches - a.item.matches)
+  const result = scored.slice(0, 8).map(s => s.item)
+
+  if (suggestionsCache.size > 200) {
+    suggestionsCache.clear()
+  }
+  suggestionsCache.set(q, result)
+
+  return result
+}
+
+// 当前获得焦点的席位联想建议列表（模板单次求值与响应式复用）
+const activeSeatSuggestions = computed<KnownPlayerItem[]>(() => {
+  if (activeDropdownSeat.value === null) return []
+  const seat = players.value[activeDropdownSeat.value]
+  if (!seat) return []
+  return getSeatSuggestions(seat.nickname)
+})
+
+// 点击下拉候选直接填入（只记录选手昵称，出战棋手保留用户自主选择或截图画面）
 function selectCandidate(idx: number, cand: KnownPlayerItem) {
   players.value[idx].nickname = cand.nickname
   players.value[idx].profileId = ''
-  const prof = findPlayerMasterProfile(cand.nickname) || findPlayerMasterProfile(cand.masterName)
-  const sigCmd = prof?.signatureCommander || cand.signatureCommander || SIGNATURE_COMMANDERS[cand.nickname] || SIGNATURE_COMMANDERS[cand.masterName]
-  if (sigCmd) {
-    players.value[idx].commander = sigCmd
-  }
   activeDropdownSeat.value = null
 }
 
-// 选手昵称输入框失焦或变动时自动带出招牌棋手
+// 选手昵称输入框失焦（不篡改棋手，尊重对局画面实际）
 function onPlayerNameBlur(idx: number) {
   const name = players.value[idx].nickname.trim()
   if (!name) return
-  if (!players.value[idx].commander) {
-    const prof = findPlayerMasterProfile(name)
-    const sig = prof?.signatureCommander || SIGNATURE_COMMANDERS[name] || SIGNATURE_COMMANDERS[getMasterPlayerName(name)]
-    if (sig) {
-      players.value[idx].commander = sig
-    }
-  }
 }
 
 // 获取选手历史擅长流派列表（结合真实历史对局与权威绝活画像）
@@ -1297,20 +1351,10 @@ function applyBatchPaste() {
     if (matched) {
       players.value[i].nickname = matched.nickname
       players.value[i].profileId = ''
-      const prof = findPlayerMasterProfile(matched.nickname) || findPlayerMasterProfile(matched.masterName)
-      const sig = prof?.signatureCommander || matched.signatureCommander || SIGNATURE_COMMANDERS[matched.nickname] || SIGNATURE_COMMANDERS[matched.masterName]
-      if (sig) {
-        players.value[i].commander = sig
-      }
       matchedSummaries.push(`${token} → ${matched.nickname}`)
     } else {
       players.value[i].nickname = token
       players.value[i].profileId = ''
-      const prof = findPlayerMasterProfile(token)
-      const sig = prof?.signatureCommander || SIGNATURE_COMMANDERS[token]
-      if (sig) {
-        players.value[i].commander = sig
-      }
     }
   }
 
@@ -1321,7 +1365,7 @@ function applyBatchPaste() {
   }
 }
 
-// 极速模式：快捷点选明星选手
+// 极速模式：快捷点选明星选手（仅填入选手，不篡改棋手）
 function addStarPlayer(name: string) {
   const existing = players.value.findIndex(p => p.nickname === name)
   if (existing !== -1) return
@@ -1329,11 +1373,6 @@ function addStarPlayer(name: string) {
   if (emptyIdx !== -1) {
     players.value[emptyIdx].nickname = name
     players.value[emptyIdx].profileId = ''
-    const prof = findPlayerMasterProfile(name)
-    const sigCmd = prof?.signatureCommander || SIGNATURE_COMMANDERS[name]
-    if (sigCmd) {
-      players.value[emptyIdx].commander = sigCmd
-    }
   }
 }
 

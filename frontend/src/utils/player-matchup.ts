@@ -392,6 +392,381 @@ export function findCommanderMeta(rawName: string | null | undefined): Commander
   )
 }
 
+/** 棋手立绘与皮肤变体识别档案定义 */
+export interface CommanderSkinVariant {
+  commander: string
+  skinName: string
+  isDefault: boolean
+  visualClues: string[] // 视觉关键线索（发色、发饰、帽子、衣着特征）
+  description: string
+}
+
+/** 官方完整 21 位棋手全量皮肤图鉴与视觉线索库 */
+export const COMMANDER_SKIN_VARIANTS: readonly CommanderSkinVariant[] = [
+  // 1. 马可
+  {
+    commander: '马可',
+    skinName: '滑板少年',
+    isDefault: false,
+    visualClues: ['棒球帽', '鸭舌帽', '滑板少年', '反戴帽子', '金发碎发', '红白运动卫衣'],
+    description: '深色棒球帽反戴/微偏、金黄色碎发阳光少年脸（丰川祥子实战同款）'
+  },
+  {
+    commander: '马可',
+    skinName: '经典牛仔',
+    isDefault: true,
+    visualClues: ['黑色渔夫帽', '水桶帽', '双手比枪', '双枪牛仔'],
+    description: '黑色渔夫帽/水桶帽、金黄碎发、红白运动夹克'
+  },
+
+  // 2. 嬴律
+  {
+    commander: '嬴律',
+    skinName: '优雅恋人',
+    isDefault: false,
+    visualClues: ['银白短发', '偏分刘海', '冷峻凤眼', '立领黑大衣', '现代西装', '黑色手套'],
+    description: '银白色偏分短发、暗红内搭衬衣外披黑色现代西装大衣、黑色半指手套（小琳谷芷、搜流儿实战同款）'
+  },
+  {
+    commander: '嬴律',
+    skinName: '黑金帝冕',
+    isDefault: true,
+    visualClues: ['金黑帝冕', '玄色帝袍', '古风秦帝'],
+    description: '君临天下玄黑金纹秦王古风帝袍'
+  },
+
+  // 3. 镜
+  {
+    commander: '镜',
+    skinName: '无限追猎 / 暗影机能',
+    isDefault: false,
+    visualClues: ['银灰短发', '幽蓝眼眸', '机甲耳饰', '几何发饰', '金属紧身战斗服'],
+    description: '利落银灰超短发、幽蓝眼瞳、金属机甲耳饰、冷艳女刺客（嘉誉、甜卷大王、下雨了下雨了同款）'
+  },
+  {
+    commander: '镜',
+    skinName: '经典破镜',
+    isDefault: true,
+    visualClues: ['黑白灰机能服', '碎镜碎片'],
+    description: '黑白灰极简机能战斗服、银短发'
+  },
+
+  // 4. 安琪拉
+  {
+    commander: '安琪拉',
+    skinName: '薄荷假期',
+    isDefault: false,
+    visualClues: ['青蓝短发', '薄荷绿短发', '细框眼镜', '黑框眼镜', '白色立领', '眼镜妹', '学霸风'],
+    description: '青浅蓝/薄荷绿微卷短发、戴细框黑眼镜、白色高领清新度假学霸风（抖音EG碎碎圆圆实战同款）'
+  },
+  {
+    commander: '安琪拉',
+    skinName: '经典雷霆',
+    isDefault: true,
+    visualClues: ['亮粉红双马尾', '大红色猫耳眼镜', '粉黑机甲战斗服'],
+    description: '亮粉红色巨型双马尾长发、红色猫耳眼镜与机甲战斗服（Yk丶实战同款）'
+  },
+
+  // 5. 阿离 (公孙离)
+  {
+    commander: '阿离',
+    skinName: '碎光执事 / 枫糖兔耳',
+    isDefault: false,
+    visualClues: ['暖橙短发', '长兔耳发带', '双马尾丝带', '执事礼服', '宝石蓝晶伞'],
+    description: '暖橙色系灵动双马尾、长长兔耳造型发饰（有局丨白兔、雾与散声慢慢实战同款）'
+  },
+  {
+    commander: '阿离',
+    skinName: '经典纸伞',
+    isDefault: true,
+    visualClues: ['暖橙中长发', '修长橙色大兔耳', '元气红裙'],
+    description: '暖橙长发配修长兔耳、元气红裙与枫叶折伞'
+  },
+
+  // 6. 武凤
+  {
+    commander: '武凤',
+    skinName: '璇玑·紫微 / 盛世女帝',
+    isDefault: false,
+    visualClues: ['深黑高盘发', '金簪步摇', '凤冠', '朱红金纹凤袍', '凤眼红唇'],
+    description: '墨黑浓发高盘发髻、金簪步摇垂坠、凤仪红袍霸气女皇（抖音湛蓝实战同款）'
+  },
+  {
+    commander: '武凤',
+    skinName: '经典神鸟',
+    isDefault: true,
+    visualClues: ['米白立领西装', '深黑干练短发', '右手托金鸟', '凤凰'],
+    description: '米白色立领西装风华服、干练短发、右手托金色神鸟凤凰'
+  },
+
+  // 7. 玉环 (杨玉环)
+  {
+    commander: '玉环',
+    skinName: '幻彩音阶 / 盛唐国色',
+    isDefault: false,
+    visualClues: ['深棕大卷长发', '水滴花钿', '金玉耳坠', '温婉侧颜', '盛唐仕女'],
+    description: '丰盈大卷长发如瀑、额心点缀水滴钿花、典雅端庄贵妃（EZ拉丁鱼、B站东方朔实战同款）'
+  },
+  {
+    commander: '玉环',
+    skinName: '经典音律',
+    isDefault: true,
+    visualClues: ['绿色休闲夹克', '微卷长发披肩', '手抱电琵琶'],
+    description: '深茶色微卷长发、绿色休闲夹克、手抱白底黑弦科技电琵琶'
+  },
+
+  // 8. 乔汐 (大乔)
+  {
+    commander: '乔汐',
+    skinName: '行鲤绯梦 / 纯白贝雷帽',
+    isDefault: false,
+    visualClues: ['冰蓝短发', '纯白贝雷帽', '毛绒兜帽', '软萌萝莉'],
+    description: '顺滑冰蓝短发、纯白色毛绒软萌贝雷帽、冰雪斗篷（WE葫芦呼噜实战同款）'
+  },
+  {
+    commander: '乔汐',
+    skinName: '经典行鲤',
+    isDefault: true,
+    visualClues: ['深棕单侧长麻花辫', '红黄白连衣小斗篷', '手持玻璃水杯'],
+    description: '深棕色单侧单麻花长辫、红黄白连衣小斗篷、手拿水杯'
+  },
+
+  // 9. 庄小鱼 (庄周)
+  {
+    commander: '庄小鱼',
+    skinName: '梦境遨游 / 奇妙幻梦',
+    isDefault: false,
+    visualClues: ['青绿卷发', '浅绿睡衣', '微闭双眼', '睡眼惺忪', '小帽子'],
+    description: '青翠色微卷蓬松乱发、半睡半醒瞌睡少年脸、浅绿睡衣（B站小祥、小优律实战同款）'
+  },
+  {
+    commander: '庄小鱼',
+    skinName: '经典鲨鱼卫衣',
+    isDefault: true,
+    visualClues: ['蓝色怪兽卫衣', '鲨鱼大嘴连帽衫', '青翠遮眼顺发'],
+    description: '青翠色顺滑短发遮住半眼、身穿蓝色大恐龙/鲨鱼张嘴连帽卫衣'
+  },
+
+  // 10. 孙小宾 (孙膑)
+  {
+    commander: '孙小宾',
+    skinName: '时光漫步 / 时光机甲',
+    isDefault: false,
+    visualClues: ['栗棕齐刘海', '大圆眼', '天蓝耳饰', '少年机械服'],
+    description: '栗棕色齐刘海正太脸、双耳带有天蓝色科技耳饰（小宇13实战同款）'
+  },
+  {
+    commander: '孙小宾',
+    skinName: '经典怀表',
+    isDefault: true,
+    visualClues: ['金黄色短发', '浅蓝科技大耳机', '胸前金色大怀表', '背带裤', '机械剪刀翼'],
+    description: '金黄色短发、头戴浅蓝科技大耳机、胸前挂金色大怀表、背带裤机械剪刀'
+  },
+
+  // 11. 白歌 (李白)
+  {
+    commander: '白歌',
+    skinName: '墨世龙尘 (典藏)',
+    isDefault: false,
+    visualClues: ['雪白长发披肩', '青色长发带', '水墨剑侠', '黑白水墨龙'],
+    description: '典藏级水墨风独行剑仙、飘逸雪白披肩长发、青长发带、墨龙环绕'
+  },
+  {
+    commander: '白歌',
+    skinName: '经典书生',
+    isDefault: true,
+    visualClues: ['棕红短发小少年', '白色立领汉服衬衣', '手握书卷卷轴'],
+    description: '棕红发色小书生、白色汉服立领衬衣、手持卷轴书册、阳光英武'
+  },
+
+  // 12. 瑶妹 (瑶)
+  {
+    commander: '瑶妹',
+    skinName: '棉云甜梦 (星选)',
+    isDefault: false,
+    visualClues: ['粉色棉云睡衣', '云朵耳饰', '小鹿玩偶'],
+    description: '星选级粉白棉云甜美睡衣造型、梦幻小鹿'
+  },
+  {
+    commander: '瑶妹',
+    skinName: '朝露晓升 (珍品传说)',
+    isDefault: false,
+    visualClues: ['朝露神光', '日月行者', '神圣小鹿', '流金幻彩'],
+    description: '日月行者系列珍品传说、高规格神圣流光金芒与神圣小鹿'
+  },
+  {
+    commander: '瑶妹',
+    skinName: '经典小鹿',
+    isDefault: true,
+    visualClues: ['粉色卷发', '浅蓝小鹿角棒球帽', '怀抱紫色小鹿玩偶', '背包遮阳帽'],
+    description: '粉色卷发、浅蓝小鹿角遮阳帽、怀抱紫色小鹿玩偶、背着背包'
+  },
+
+  // 13. 明先生 (明世隐)
+  {
+    commander: '明先生',
+    skinName: '璇玑·浑天',
+    isDefault: false,
+    visualClues: ['紫金发冠', '神秘星宿长链', '浑天仪卦象', '暗紫玄袍'],
+    description: '紫金高冠、神秘星宿长链卦象、深邃莫测'
+  },
+  {
+    commander: '明先生',
+    skinName: '经典卦师',
+    isDefault: true,
+    visualClues: ['银白及腰如雪长发', '额间朱砂印', '白底红边玄道长袍'],
+    description: '银白及腰如雪长发、额间一道朱砂红印、白底红边玄奥长袍'
+  },
+
+  // 14. 姜导 (姜子牙)
+  {
+    commander: '姜导',
+    skinName: '风雅假期 / 睡眠艺术',
+    isDefault: false,
+    visualClues: ['导演遮阳帽', '花衬衫度假装', '睡衣艺术袍'],
+    description: '休闲度假遮阳帽风、大胡子老学者艺术睡袍'
+  },
+  {
+    commander: '姜导',
+    skinName: '经典名导',
+    isDefault: true,
+    visualClues: ['灰白蓬松卷发胡须', '圆框墨镜', '深绿西装浅棕大衣', '老顽童'],
+    description: '灰白蓬松卷发与大胡子、圆框墨镜、深绿西装浅棕大衣老顽童导演'
+  },
+
+  // 15. 小妲己
+  {
+    commander: '小妲己',
+    skinName: '海盐橙花',
+    isDefault: false,
+    visualClues: ['清凉海滩装', '橙花发饰', '海盐蓝裙', '夏日短裙'],
+    description: '清凉橙花夏日海滩风裙装、毛茸茸大尾巴'
+  },
+  {
+    commander: '小妲己',
+    skinName: '经典萌狐',
+    isDefault: true,
+    visualClues: ['暖金色长狐狸耳', '金色短发', '金色抹胸短裙', '大狐尾'],
+    description: '暖金色大狐狸耳朵、金色短发、金色修身礼服、毛茸茸大狐尾'
+  },
+
+  // 16. 香香 (孙尚香)
+  {
+    commander: '香香',
+    skinName: '蔷薇恋人 / 红粉春樱',
+    isDefault: false,
+    visualClues: ['粉黑蔷薇发带', '粉黑机甲短裙', '重装重炮'],
+    description: '粉黑蔷薇专属发带与重装涂装'
+  },
+  {
+    commander: '香香',
+    skinName: '经典机甲运动',
+    isDefault: true,
+    visualClues: ['墨绿色长双马尾', '荧光绿发饰', '荧光绿黑冲锋衣', '双手比枪'],
+    description: '墨绿色高扎长双马尾、荧光绿黑拼色运动冲锋衣、帅气比枪'
+  },
+
+  // 17. 常小娥 (嫦娥)
+  {
+    commander: '常小娥',
+    skinName: '月中素娥 (中秋珍品传说)',
+    isDefault: false,
+    visualClues: ['金桂玉兔流苏', '月华霓裳', '仙子绫罗', '明月神光'],
+    description: '中秋珍品传说、月华流光飘带、金桂玉兔流苏'
+  },
+  {
+    commander: '常小娥',
+    skinName: '经典飞吻仙子',
+    isDefault: true,
+    visualClues: ['浅紫白如瀑长发', '双小包包发髻', '白色无袖轻纱', '飞吻手势'],
+    description: '浅紫白色如瀑长发、双小包包发髻、白色无袖轻纱、侧身回眸飞吻'
+  },
+
+  // 18. 昭君 (王昭君)
+  {
+    commander: '昭君',
+    skinName: '冰霜雪女 / 奇妙幻想',
+    isDefault: false,
+    visualClues: ['冰蓝水晶长发', '水晶发簪', '冰雪披风长裙'],
+    description: '冰蓝长发水晶发簪、纯白优雅长裙'
+  },
+  {
+    commander: '昭君',
+    skinName: '经典冬日学妹',
+    isDefault: true,
+    visualClues: ['青蓝顺发齐肩', '米白毛线帽', '浅蓝围巾', '米色羽绒棉服', '怀抱书卷'],
+    description: '青蓝色齐肩发、米白毛线帽、浅蓝围巾、米色羽绒服、怀抱书本冬日学妹'
+  },
+
+  // 19. 班叔 (鲁班大师)
+  {
+    commander: '班叔',
+    skinName: '重装工匠',
+    isDefault: false,
+    visualClues: ['机械护目镜', '重型工装铠甲', '重型机械扳手'],
+    description: '重装机械工匠工业铠甲风格'
+  },
+  {
+    commander: '班叔',
+    skinName: '经典科技大叔',
+    isDefault: true,
+    visualClues: ['银灰短发', '细框眼镜', '浅灰风衣大褂', '背后巨大机械圆环'],
+    description: '银灰短发、细框眼镜、浅灰风衣长袍、背后巨大机械科技圆环装置'
+  },
+
+  // 20. 弈星
+  {
+    commander: '弈星',
+    skinName: '万物之道',
+    isDefault: false,
+    visualClues: ['天元水墨汉服', '素雅青衫黑发', '棋子长发簪', '黑白棋道流光'],
+    description: '天元墨韵古代儒雅汉服、棋道流光神采'
+  },
+  {
+    commander: '弈星',
+    skinName: '经典棋盘格纹',
+    isDefault: true,
+    visualClues: ['墨黑长发半扎披肩', '黑白棋盘格纹风衣', '胸前蓝光条纹', '清雅棋士'],
+    description: '墨黑长发半扎披肩、黑白棋盘格纹风衣、蓝光能量条纹'
+  },
+
+  // 21. 闹闹
+  {
+    commander: '闹闹',
+    skinName: '气泡橘子 (战令限定)',
+    isDefault: false,
+    visualClues: ['橙色气泡果汁涂装', '萌趣太阳镜', '夏日短裤'],
+    description: '赛季战令限定气泡橙汁涂装、萌趣太阳镜'
+  },
+  {
+    commander: '闹闹',
+    skinName: '经典太空小兽',
+    isDefault: true,
+    visualClues: ['紫色大耳朵外星小兽', '龙猫造型', '绿色防风镜', '紫色宇航拉链服'],
+    description: '紫色大耳朵外星小龙猫造型、头戴绿色墨镜、身穿紫色拉链宇航服'
+  }
+]
+
+/**
+ * 将视觉线索、皮肤别称或棋手输入，归一化解析为官方标准棋手名
+ */
+export function resolveCommanderFromSkin(clueOrName: string | null | undefined): string | null {
+  if (!clueOrName || !clueOrName.trim()) return null
+  const clean = clueOrName.trim()
+  const directMeta = findCommanderMeta(clean)
+  if (directMeta) return directMeta.name
+
+  for (const variant of COMMANDER_SKIN_VARIANTS) {
+    if (variant.skinName.includes(clean) || clean.includes(variant.skinName)) {
+      return variant.commander
+    }
+    if (variant.visualClues.some(c => clean.includes(c) || c.includes(clean))) {
+      return variant.commander
+    }
+  }
+  return null
+}
+
 /** 棋手与主流阵容适配机制定义 */
 export interface CommanderAdaptedBuild {
   buildName: string
@@ -1456,14 +1831,14 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
   },
   {
     masterName: '小谷芷',
-    aliases: ['小谷芷', 'EGM小谷芷', '抖音EGM小谷芷', '小琳谷芷'],
-    signatureCommander: '安琪拉',
-    alternativeCommanders: ['嬴律', '庄小鱼'],
-    signatureBuilds: ['雷霆战机', '三分登场', '传统养猪'],
-    playstyle: '雷霆战机天花板，法爆机甲压制力极强',
+    aliases: ['小谷芷', 'EGM小谷芷', '抖音EGM小谷芷', '小琳谷芷', '抖音EG碎碎圆圆'],
+    signatureCommander: '嬴律',
+    alternativeCommanders: ['安琪拉', '庄小鱼'],
+    signatureBuilds: ['三分登场', '雷霆战机', '传统养猪'],
+    playstyle: '顶尖多面手，嬴律三分速成与安琪拉法爆机甲双绝活',
     commanderBuildMap: {
-      '安琪拉': ['雷霆战机'],
       '嬴律': ['三分登场', '雷霆战机'],
+      '安琪拉': ['雷霆战机'],
       '庄小鱼': ['传统养猪']
     }
   },
@@ -1576,12 +1951,13 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     masterName: '梦飞',
     aliases: ['梦飞', '梦飞大大', '抖音梦飞', '抖音梦飞冻冻', '抖音梦飞1', '抖音梦飞77'],
     signatureCommander: '马可',
-    alternativeCommanders: ['庄小鱼', '玉环'],
-    signatureBuilds: ['成年礼三分登场', '三分登场', '镜猪转吕布', '牺牲李信'],
-    playstyle: '大局运营与近7天马可三分绝活登顶',
+    alternativeCommanders: ['白歌', '庄小鱼', '玉环'],
+    signatureBuilds: ['成年礼三分登场', '三分登场', '日落海倒转', '镜猪转吕布', '牺牲李信'],
+    playstyle: '大局运营扎实，马可三分登顶与白歌灵活变阵',
     commanderBuildMap: {
       '马可': ['成年礼三分登场', '三分登场', '镜猪转吕布'],
       '马可波罗': ['成年礼三分登场', '三分登场', '镜猪转吕布'],
+      '白歌': ['成年礼三分登场', '日落海倒转'],
       '庄小鱼': ['传统养猪'],
       '玉环': ['牺牲李信', '日落海倒转']
     }
@@ -1615,11 +1991,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
   {
     masterName: '湛蓝',
     aliases: ['湛蓝', '抖音湛蓝'],
-    signatureCommander: '嬴律',
-    alternativeCommanders: ['香香', '白歌'],
-    signatureBuilds: ['三分登场', '成年礼三分', '逐鹿蒙恬'],
-    playstyle: '成年礼三分与逐鹿射手推进',
+    signatureCommander: '武凤',
+    alternativeCommanders: ['嬴律', '香香', '白歌'],
+    signatureBuilds: ['河洛木兰', '三分登场', '成年礼三分', '逐鹿蒙恬'],
+    playstyle: '擅长武凤河洛爆发突脸与嬴律三分推进',
     commanderBuildMap: {
+      '武凤': ['河洛木兰', '逐鹿蒙恬'],
       '嬴律': ['三分登场', '成年礼三分', '逐鹿蒙恬'],
       '香香': ['三分登场', '逐鹿蒙犽'],
       '白歌': ['三分登场']
@@ -1629,11 +2006,12 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     masterName: '阿文',
     aliases: ['阿文', 'EZ阿文', '抖音EZ阿文', '阿文倒转王'],
     signatureCommander: '乔汐',
-    alternativeCommanders: ['阿离', '白歌'],
-    signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机'],
-    playstyle: '公孙离与乔汐双倒转专家',
+    alternativeCommanders: ['嬴律', '阿离', '白歌'],
+    signatureBuilds: ['日落海倒转', '三分倒转', '雷霆战机', '三分登场'],
+    playstyle: '公孙离与乔汐极速倒转，兼修嬴律速攻',
     commanderBuildMap: {
       '乔汐': ['日落海倒转', '三分倒转'],
+      '嬴律': ['三分登场', '日落海倒转'],
       '阿离': ['伞半月', '日落海倒转'],
       '白歌': ['三分倒转']
     }

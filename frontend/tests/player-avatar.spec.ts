@@ -63,4 +63,17 @@ describe('选手头像系统 (player-avatar)', () => {
     expect(unknownAvatar).toMatch(/^data:image\/svg\+xml;utf8,/)
     expect(decodeURIComponent(unknownAvatar)).toContain('<svg')
   })
+
+  it('头像缓存机制正常工作，重复调用微秒级极速响应', () => {
+    const t0 = performance.now()
+    for (let i = 0; i < 1000; i++) {
+      getPlayerAvatar('胜天半子嘉誉')
+      getPlayerAvatar('抖音EZ、色彩')
+      getPlayerAvatar('小琳谷芷')
+      getPlayerAvatar('未知选手XYZ')
+    }
+    const t1 = performance.now()
+    // 4000 次查询总耗时远小于 30ms
+    expect(t1 - t0).toBeLessThan(30)
+  })
 })
