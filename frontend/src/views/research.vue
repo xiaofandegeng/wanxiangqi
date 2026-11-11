@@ -120,9 +120,15 @@
                   </div>
                 </div>
                 <div class="seats-preview-pills">
-                  <span v-for="s in m.seats" :key="s.slot" class="seat-pill" :class="{ isWinner: s.winner }">
-                    {{ s.nickname }} ({{ s.build }})
-                  </span>
+                  <template v-if="m.matchType === 'winner_snapshot'">
+                    <span class="seat-pill isWinner">{{ m.winnerNickname }} ({{ m.winnerBuild }})</span>
+                    <span class="seat-pill snapshot-hint">其余 5 席公报未披露（待录入）</span>
+                  </template>
+                  <template v-else>
+                    <span v-for="s in m.seats" :key="s.slot" class="seat-pill" :class="{ isWinner: s.winner }">
+                      {{ s.nickname }} ({{ s.commander ? s.commander + ' · ' : '' }}{{ s.build }})
+                    </span>
+                  </template>
                 </div>
               </div>
             </div>
@@ -244,6 +250,7 @@
                     <tr>
                       <th>席位</th>
                       <th>选手</th>
+                      <th>出战棋手</th>
                       <th>所选流派阵容</th>
                       <th>对局结果</th>
                     </tr>
@@ -252,24 +259,35 @@
                     <tr v-for="s in m.seats" :key="s.slot" :class="{ 'row-winner': s.winner }">
                       <td>第 {{ s.slot }} 席</td>
                       <td class="player-cell">
-                        <img :src="getPlayerAvatar(s.nickname)" class="player-inline-avatar" alt="" />
-                        <div class="player-inline-meta">
-                          <div class="player-name-row">
-                            <span class="player-name">{{ s.nickname }}</span>
-                            <span
-                              v-if="getMasterPlayerName(s.nickname) !== s.nickname"
-                              class="master-alias-pill"
-                              :title="`该账号实际隶属选手：${getMasterPlayerName(s.nickname)}`"
-                            >
-                              {{ getMasterPlayerName(s.nickname) }}
-                            </span>
+                        <template v-if="s.nickname && !s.nickname.startsWith('席位') && s.nickname !== '待转写'">
+                          <img :src="getPlayerAvatar(s.nickname)" class="player-inline-avatar" alt="" />
+                          <div class="player-inline-meta">
+                            <div class="player-name-row">
+                              <span class="player-name">{{ s.nickname }}</span>
+                              <span
+                                v-if="getMasterPlayerName(s.nickname) !== s.nickname"
+                                class="master-alias-pill"
+                                :title="`该账号实际隶属选手：${getMasterPlayerName(s.nickname)}`"
+                              >
+                                {{ getMasterPlayerName(s.nickname) }}
+                              </span>
+                            </div>
                           </div>
-                        </div>
+                        </template>
+                        <span v-else class="text-muted placeholder-cell">未转写（仅胜者一图流公报）</span>
                       </td>
-                      <td>{{ s.build }}</td>
+                      <td class="commander-cell">
+                        <span v-if="s.commander" class="commander-badge">♟️ {{ s.commander }}</span>
+                        <span v-else class="text-muted">-</span>
+                      </td>
+                      <td>
+                        <span v-if="s.build && s.build !== '对位参战'">{{ s.build }}</span>
+                        <span v-else class="text-muted">-</span>
+                      </td>
                       <td>
                         <strong v-if="s.winner" class="winner-crown">👑 登顶胜者（{{ m.winnerBuild }}）</strong>
-                        <span v-else class="text-muted">对位参战</span>
+                        <span v-else-if="m.matchType === 'winner_snapshot' || s.nickname.startsWith('席位')" class="text-muted">公报未披露</span>
+                        <span v-else class="result-not-winner">未登顶</span>
                       </td>
                     </tr>
                   </tbody>
@@ -919,7 +937,7 @@ const filteredCatalogMatches = computed(() => {
       m.ban || '',
       m.winnerBuild,
       m.winnerNickname || '',
-      ...m.seats.map(s => `${s.nickname} ${s.build}`)
+      ...m.seats.map(s => `${s.nickname} ${s.commander || ''} ${s.build}`)
     ].join(' ').toLowerCase()
     return text.includes(q)
   })
@@ -1544,6 +1562,12 @@ button,
         color: #B45309;
         font-weight: 600;
       }
+
+      &.snapshot-hint {
+        opacity: 0.7;
+        font-style: italic;
+        background: rgba($border-subtle, 0.4);
+      }
     }
   }
 }
@@ -1995,6 +2019,35 @@ button,
     font-size: 11px;
     border-radius: $radius-sm;
     white-space: nowrap;
+  }
+
+  .commander-cell {
+    white-space: nowrap;
+  }
+
+  .commander-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: $radius-full;
+    background: rgba($color-primary, 0.08);
+    color: $color-primary;
+    border: 1px solid rgba($color-primary, 0.15);
+  }
+
+  .result-not-winner {
+    font-size: 12.5px;
+    color: $text-secondary;
+    font-weight: 500;
+  }
+
+  .placeholder-cell {
+    font-size: 12px;
+    font-style: italic;
+    color: $text-muted;
   }
 
   .player-expand-detail-row {
