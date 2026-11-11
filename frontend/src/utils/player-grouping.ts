@@ -144,7 +144,19 @@ export const MASTER_PLAYER_GROUPS: readonly MasterPlayerGroup[] = [
   // 65. 龙傲天
   { masterName: '龙傲天', aliases: ['龙傲天', '抖音龙傲天'], note: '选手龙傲天' },
   // 66. 晓枫（RW侠战队职业选手）
-  { masterName: '晓枫', aliases: ['晓枫', 'RW侠.晓枫', 'RW侠晓枫', 'RW晓枫'], note: 'RW侠战队选手 / S1赛事冠军' }
+  { masterName: '晓枫', aliases: ['晓枫', 'RW侠.晓枫', 'RW侠晓枫', 'RW晓枫'], note: 'RW侠战队选手 / S1赛事冠军' },
+  // 67. 白兔（有局战队）
+  { masterName: '白兔', aliases: ['白兔', '有局｜白兔', '有局|白兔', '有局丨白兔', '有局白兔'], note: '有局战队 / 全国第十阿离 / 伞半月夺冠选手' },
+  // 68. 碎碎圆圆（EG战队）
+  { masterName: '碎碎圆圆', aliases: ['碎碎圆圆', '抖音EG碎碎圆圆', 'EG碎碎圆圆', '碎碎'], note: 'EG战队核心 / 全国第二玉环 / 倒转与雷霆高手' },
+  // 69. 风喵喵
+  { masterName: '风喵喵', aliases: ['风喵喵', '抖音风喵喵', '风喵'], note: '高分段倒转高手 / 白歌即兴创作三分倒转' },
+  // 70. 心机猫
+  { masterName: '心机猫', aliases: ['心机猫', '冷酷心机小猫', '心机小猫', '冷酷心机猫'], note: '高分段选手 / 嬴律逐鹿蒙恬与雷霆机甲' },
+  // 71. 月影孤冰
+  { masterName: '月影孤冰', aliases: ['月影孤冰', '抖音月影孤冰', '月影'], note: '稳健防守保核 / 小妲己传统养猪' },
+  // 72. Yk
+  { masterName: 'Yk', aliases: ['Yk丶', 'Yk', 'YK丶', 'YK', 'yk', 'yk丶'], note: '高爆发法刺与孙小宾牌序回溯' }
 ]
 
 const ALIAS_TO_MASTER_MAP = new Map<string, MasterPlayerGroup>()

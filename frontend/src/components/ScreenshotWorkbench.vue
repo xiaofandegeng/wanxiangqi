@@ -159,15 +159,55 @@
             </div>
           </div>
 
-          <!-- 4. 根据棋手适配库与选手熟练度推断的本场阵容 -->
-          <div v-if="p.nickname" class="seat-inferred-row">
+          <!-- 4. 棋手适配流派池（展示棋手可玩的多套阵容与禁选剔除状态，支持点击切换变阵） -->
+          <div v-if="p.commander && getSeatCommanderAdaptivePool(p.commander)" class="seat-adaptive-pool">
+            <div class="pool-header-row">
+              <span class="pool-title">♟️ 棋手适配池：</span>
+              <button
+                v-if="manualBuildOverrides[idx]"
+                type="button"
+                class="reset-override-btn"
+                title="清除手动变阵，恢复系统智能推断"
+                @click="resetSeatBuild(idx)"
+              >
+                🔄 恢复智能推断
+              </button>
+            </div>
+            <div class="adaptive-chips-wrap">
+              <button
+                v-for="ab in getSeatCommanderAdaptivePool(p.commander)!.allBuilds"
+                :key="ab.buildName"
+                type="button"
+                class="adaptive-chip"
+                :class="{
+                  'is-locked': manualBuildOverrides[idx] === ab.buildName,
+                  'is-active': getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName && !manualBuildOverrides[idx],
+                  'is-banned': isBuildBanned(ab.buildName, ab.faction)
+                }"
+                :disabled="isBuildBanned(ab.buildName, ab.faction)"
+                :title="isBuildBanned(ab.buildName, ab.faction) ? `「${ab.buildName}」受当前禁选阵营封锁` : `【${ab.tier === 'PRIMARY' ? '主推' : '备选'}】${ab.synergyDesc}（点击可指定变阵）`"
+                @click="overrideSeatBuild(idx, ab.buildName)"
+              >
+                {{ ab.buildName }}
+                <span v-if="isBuildBanned(ab.buildName, ab.faction)" class="chip-banned-tag">(已禁)</span>
+                <span v-else-if="manualBuildOverrides[idx] === ab.buildName" class="chip-locked-tag">🔒 已锁定</span>
+                <span v-else-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName" class="chip-active-tag">★ 推荐</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4.1 最终出战阵容与战力研判（紧随适配池下方联动展示） -->
+          <div v-if="p.nickname" class="seat-inferred-row" :class="{ 'is-recalculated': lastRecalculatedSeat === idx }">
             <div class="inferred-lineup" :class="{ 'fallback-warning': getSeatInferredLineup(p.nickname, p.commander, idx)?.isFallback }">
-              <span class="inferred-label">预期阵容：</span>
+              <span class="inferred-label">出战阵容：</span>
               <strong class="inferred-name">{{ getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName }}</strong>
-              <small v-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.isFallback" class="ban-alert-tag">
+              <small v-if="manualBuildOverrides[idx]" class="mode-tag locked-tag">🔒 手动锁定</small>
+              <small v-else-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.isFallback" class="ban-alert-tag">
                 (主力受Ban变阵)
               </small>
+              <small v-else class="mode-tag auto-tag">★ 智能推断</small>
             </div>
+
             <!-- 熟练度星级徽章与战力加减分 -->
             <div
               v-if="getSeatProficiency(p.nickname, p.commander, idx)"
@@ -207,36 +247,19 @@
             </div>
           </div>
 
-          <!-- 4.5 棋手适配流派池（展示棋手可玩的多套阵容与禁选剔除状态，支持点击切换） -->
-          <div v-if="p.commander && getSeatCommanderAdaptivePool(p.commander)" class="seat-adaptive-pool">
-            <span class="pool-title">♟️ 棋手适配池：</span>
-            <div class="adaptive-chips-wrap">
-              <button
-                v-for="ab in getSeatCommanderAdaptivePool(p.commander)!.allBuilds"
-                :key="ab.buildName"
-                type="button"
-                class="adaptive-chip"
-                :class="{
-                  'is-active': getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName,
-                  'is-banned': isBuildBanned(ab.buildName, ab.faction)
-                }"
-                :disabled="isBuildBanned(ab.buildName, ab.faction)"
-                :title="isBuildBanned(ab.buildName, ab.faction) ? `「${ab.buildName}」受当前禁选阵营封锁` : `【${ab.tier === 'PRIMARY' ? '主推' : '备选'}】${ab.synergyDesc}（点击可指定变阵）`"
-                @click="overrideSeatBuild(idx, ab.buildName)"
-              >
-                {{ ab.buildName }}
-                <span v-if="isBuildBanned(ab.buildName, ab.faction)" class="chip-banned-tag">(已禁)</span>
-                <span v-else-if="getSeatInferredLineup(p.nickname, p.commander, idx)?.lineupName === ab.buildName" class="chip-active-tag">✓</span>
-              </button>
-            </div>
-          </div>
-
+          <!-- 4.3 变阵理由或机制协同依据 -->
           <div
             v-if="p.nickname && getSeatInferredLineup(p.nickname, p.commander, idx)?.reason"
             class="seat-reason-line"
+            :class="{ 'is-locked-reason': !!manualBuildOverrides[idx] }"
             :title="getSeatInferredLineup(p.nickname, p.commander, idx)!.reason"
           >
             💡 {{ getSeatInferredLineup(p.nickname, p.commander, idx)!.reason }}
+          </div>
+
+          <!-- 4.4 获胜概率实时重算动态提示胶囊 -->
+          <div v-if="lastRecalculatedSeat === idx" class="seat-recalc-pill">
+            ⚡ 获胜概率与同场克制已实时重算！
           </div>
 
           <!-- 4.3 阵容体系与六人同场生态克制雷达 (王牌高压赛场) -->
@@ -636,7 +659,12 @@
           <small>融合历史真实胜率 + 所选棋手协同 + 两两克制矩阵 + Ban位冲击 + 最新版本修正</small>
         </div>
         <div class="bars-container">
-          <div v-for="(p, pIdx) in rankedPlayers" :key="p.nickname" class="player-bar-row">
+          <div
+            v-for="(p, pIdx) in rankedPlayers"
+            :key="p.nickname"
+            class="player-bar-row"
+            :class="{ 'is-just-updated': lastRecalculatedSeat !== null && p.slot === lastRecalculatedSeat + 1 }"
+          >
             <span class="bar-rank">#{{ pIdx + 1 }}</span>
             <img :src="getPlayerAvatar(p.nickname)" class="bar-avatar" alt="" />
             <div class="bar-player-col">
@@ -897,6 +925,7 @@ import {
 } from '../utils/player-matchup'
 import {getPlayerAvatar, PLAYER_ALIASES, normalizeNickname} from '../utils/player-avatar'
 import {getMasterPlayerName} from '../utils/player-grouping'
+import {applyMatchPatches} from '../utils/match-storage'
 
 // 标签切换：实战极速推演 vs 传统截图审计
 const activeTab = ref<'instant' | 'audit'>('instant')
@@ -1221,7 +1250,13 @@ function getSeatCommanderProfile(nickname: string, commander: string | null): Co
 // 核心逻辑：根据选手个人擅长流派 + 本场Ban位 + 所选棋手，推断本场选手的出战阵容
 function getSeatInferredLineup(nickname: string, commander: string | null, seatIdx?: number) {
   if (!nickname) return null
-  // 1. 若用户手动指定了阵容微调，优先以微调阵容为准
+  // 1. 若推演引擎已计算，优先直接复用引擎输出（已无缝融合手动指定变阵与生态克制）
+  if (seatIdx !== undefined && matchupResult.value?.players) {
+    const slot = seatIdx + 1
+    const p = matchupResult.value.players.find(x => x.slot === slot)
+    if (p) return p.inferredLineup
+  }
+  // 2. 若推演引擎尚未就绪，但用户手动指定了阵容微调
   if (seatIdx !== undefined && manualBuildOverrides.value[seatIdx]) {
     const overriddenName = manualBuildOverrides.value[seatIdx]
     const prof = evaluatePlayerCommanderLineupProficiency(nickname, commander, overriddenName, catalogMatches.value)
@@ -1232,12 +1267,6 @@ function getSeatInferredLineup(nickname: string, commander: string | null, seatI
       reason: `手动指定变阵：切换为「${overriddenName}」（选手专精熟练度：${prof.levelLabel}）`,
       proficiency: prof
     }
-  }
-  // 2. 若推演引擎已计算，优先直接复用引擎输出
-  if (seatIdx !== undefined && matchupResult.value?.players) {
-    const slot = seatIdx + 1
-    const p = matchupResult.value.players.find(x => x.slot === slot)
-    if (p) return p.inferredLineup
   }
   const builds = getPlayerBuilds(nickname)
   const master = getMasterPlayerName(nickname)
@@ -1275,13 +1304,42 @@ function isBuildBanned(buildName: string, faction?: string): boolean {
   return Boolean((faction && faction === bf) || buildName.includes(bf))
 }
 
-// 用户手动指定切换某个席位的实战阵容（用于微调变阵测算）
+// 用户手动指定切换某个席位的实战阵容（用于微调变阵测算，响应式触发全局推演重算）
 const manualBuildOverrides = ref<Record<number, string>>({})
+const lastRecalculatedSeat = ref<number | null>(null)
+let recalcTimer: ReturnType<typeof setTimeout> | null = null
+
+function triggerRecalcAnimation(seatIdx: number) {
+  lastRecalculatedSeat.value = seatIdx
+  if (recalcTimer) clearTimeout(recalcTimer)
+  recalcTimer = setTimeout(() => {
+    if (lastRecalculatedSeat.value === seatIdx) {
+      lastRecalculatedSeat.value = null
+    }
+  }, 1600)
+}
+
 function overrideSeatBuild(seatIdx: number, buildName: string) {
-  if (manualBuildOverrides.value[seatIdx] === buildName) {
-    delete manualBuildOverrides.value[seatIdx]
-  } else {
-    manualBuildOverrides.value[seatIdx] = buildName
+  manualBuildOverrides.value = {
+    ...manualBuildOverrides.value,
+    [seatIdx]: buildName
+  }
+  // 同时同步更新至选手当时已知玩法，确保双向状态一致
+  if (players.value[seatIdx]) {
+    players.value[seatIdx].visiblePlan = buildName
+  }
+  triggerRecalcAnimation(seatIdx)
+}
+
+function resetSeatBuild(seatIdx: number) {
+  if (manualBuildOverrides.value[seatIdx]) {
+    const next = { ...manualBuildOverrides.value }
+    delete next[seatIdx]
+    manualBuildOverrides.value = next
+    if (players.value[seatIdx]) {
+      players.value[seatIdx].visiblePlan = ''
+    }
+    triggerRecalcAnimation(seatIdx)
   }
 }
 
@@ -1382,6 +1440,11 @@ function removeSeat(idx: number) {
   players.value[idx].profileId = ''
   players.value[idx].commander = ''
   players.value[idx].visiblePlan = ''
+  if (manualBuildOverrides.value[idx]) {
+    const copy = { ...manualBuildOverrides.value }
+    delete copy[idx]
+    manualBuildOverrides.value = copy
+  }
 }
 
 // 极速模式：全部清空
@@ -1394,16 +1457,24 @@ function clearAllSeats() {
   manualBuildOverrides.value = {}
 }
 
-// 实时计算同场克制、禁选阵营与所选棋手影响 (双核：选手+棋手毫秒级响应)
-const matchupResult=computed<SixPlayerMatchupResult|null>(()=>{
- const valid=players.value.filter(p=>p.nickname&&p.nickname.trim())
- if(valid.length<2)return null
- return evaluate6PlayerMatchup(
-   valid.map(p=>({nickname:p.nickname,commander:p.commander||null})),
-   bannedFaction.value,
-   catalogMatches.value,
-   version.value||CURRENT_LATEST_VERSION
- )
+// 实时计算同场克制、禁选阵营与所选棋手影响 (双核：选手+棋手毫秒级响应，支持手动指定阵容实时联动重算)
+const matchupResult = computed<SixPlayerMatchupResult | null>(() => {
+  const valid = players.value
+    .map((p, idx) => ({
+      nickname: p.nickname,
+      commander: p.commander || null,
+      customBuild: manualBuildOverrides.value[idx] || null
+    }))
+    .filter(p => p.nickname && p.nickname.trim())
+
+  if (valid.length < 2) return null
+
+  return evaluate6PlayerMatchup(
+    valid,
+    bannedFaction.value,
+    catalogMatches.value,
+    version.value || CURRENT_LATEST_VERSION
+  )
 })
 
 // 排序后的推演阵营
@@ -1458,7 +1529,7 @@ onMounted(async()=>{
  try{
   const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[]}>('catalog')
   profiles.value=cat.players||[]
-  catalogMatches.value=cat.matches||[]
+  catalogMatches.value=applyMatchPatches(cat.matches||[])
  }catch(e){error.value=e instanceof Error?e.message:'档案加载失败'}
 })
 
@@ -2053,6 +2124,26 @@ onUnmounted(() => {
             border-radius: 3px;
             font-weight: 600;
           }
+
+          .mode-tag {
+            font-size: 8.5px;
+            padding: 0.5px 4px;
+            border-radius: 3px;
+            font-weight: 700;
+            line-height: 1.2;
+
+            &.locked-tag {
+              background: #fef3c7;
+              color: #b45309;
+              border: 1px solid #fde68a;
+            }
+
+            &.auto-tag {
+              background: #eff6ff;
+              color: #1d4ed8;
+              border: 1px solid #bfdbfe;
+            }
+          }
         }
 
         .seat-proficiency-badge {
@@ -2191,10 +2282,33 @@ onUnmounted(() => {
         border-radius: 4px;
         padding: 3px 5px;
 
-        .pool-title {
-          font-size: 9.5px;
-          color: #64748b;
-          font-weight: 600;
+        .pool-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .pool-title {
+            font-size: 9.5px;
+            color: #64748b;
+            font-weight: 600;
+          }
+
+          .reset-override-btn {
+            font-size: 8.5px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+            border-radius: 2px;
+            padding: 0 4px;
+            cursor: pointer;
+            line-height: 1.4;
+            transition: all 0.15s ease;
+
+            &:hover {
+              background: #dbeafe;
+              border-color: #93c5fd;
+            }
+          }
         }
 
         .adaptive-chips-wrap {
@@ -2216,6 +2330,19 @@ onUnmounted(() => {
             &:hover:not(:disabled) {
               border-color: $color-primary;
               color: $color-primary;
+            }
+
+            &.is-locked {
+              background: #d97706;
+              color: #fff;
+              border-color: #b45309;
+              font-weight: 700;
+              box-shadow: 0 1px 2px rgba(217, 119, 6, 0.3);
+
+              .chip-locked-tag {
+                margin-left: 2px;
+                font-weight: 800;
+              }
             }
 
             &.is-active {
@@ -2260,6 +2387,30 @@ onUnmounted(() => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        &.is-locked-reason {
+          background: #fef3c7;
+          color: #92400e;
+          font-weight: 600;
+        }
+      }
+
+      .seat-recalc-pill {
+        font-size: 9px;
+        color: #15803d;
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        border-radius: 3px;
+        padding: 2px 6px;
+        text-align: center;
+        font-weight: 700;
+        animation: pulse-recalc 0.35s ease-in-out;
+      }
+
+      @keyframes pulse-recalc {
+        0% { transform: scale(0.96); opacity: 0.6; }
+        50% { transform: scale(1.03); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
       }
 
       .seat-lineup-radar-row {
@@ -3158,6 +3309,14 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+
+      &.is-just-updated {
+        background: #fef9c3;
+        box-shadow: 0 0 0 2px #facc15;
+      }
 
       .bar-rank {
         font-size: 12px;

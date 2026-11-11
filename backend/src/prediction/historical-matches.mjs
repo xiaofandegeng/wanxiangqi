@@ -4,6 +4,14 @@
 
 export const HISTORICAL_DATE_GROUPS = [
   {
+    day: '2026-11-09',
+    sourceUrl: 'https://www.douyin.com/note/7706380000000000000',
+    title: '万象棋王牌对决1109实战赛果 (实机核验前3场完赛)',
+    winners: ['胜天半子嘉誉', '丰川祥子', '有局｜白兔'],
+    builds: ['镜猪转李信', '逐鹿蒙犽', '伞半月'],
+    bans: ['逐鹿', '大河', '三分']
+  },
+  {
     day: '2026-11-07',
     sourceUrl: 'https://www.douyin.com/note/7705642819038203175',
     title: '万象棋王牌对决1107日胜者一图流',

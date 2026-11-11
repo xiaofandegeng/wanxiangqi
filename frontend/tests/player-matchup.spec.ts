@@ -585,5 +585,39 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     const totalProb = sim6.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
     expect(totalProb).toBeCloseTo(1.0, 2)
   })
+
+  it('支持 customBuild 手动指定变阵并实时联动重算概率与克制关系', () => {
+    // 默认推断
+    const baseResult = evaluate6PlayerMatchup([
+      { nickname: '抖音EGM小谷芷', commander: '小妲己' },
+      { nickname: 'QT新一', commander: '白歌' },
+      { nickname: '世薄情', commander: '小妲己' },
+      { nickname: 'YK丶', commander: '孙小宾' },
+      { nickname: '冷酷心机小猫', commander: '嬴律' },
+      { nickname: '风喵喵', commander: '白歌' }
+    ])
+
+    const seat6Base = baseResult.players[5]
+    expect(seat6Base.inferredLineup.lineupName).toBe('三分倒转')
+
+    // 变阵：将席位 6 风喵喵手动切换为「逐鹿蒙恬」
+    const customResult = evaluate6PlayerMatchup([
+      { nickname: '抖音EGM小谷芷', commander: '小妲己' },
+      { nickname: 'QT新一', commander: '白歌' },
+      { nickname: '世薄情', commander: '小妲己' },
+      { nickname: 'YK丶', commander: '孙小宾' },
+      { nickname: '冷酷心机小猫', commander: '嬴律' },
+      { nickname: '风喵喵', commander: '白歌', customBuild: '逐鹿蒙恬' }
+    ])
+
+    const seat6Custom = customResult.players[5]
+    expect(seat6Custom.inferredLineup.lineupName).toBe('逐鹿蒙恬')
+    // 预期战力与概率应重新计算产生差异
+    expect(seat6Custom.adjustedProbability).not.toBe(seat6Base.adjustedProbability)
+    expect(seat6Custom.finalScore).not.toBe(seat6Base.finalScore)
+    // 概率归一化依然保持为 1.0
+    const totalProb = customResult.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
+    expect(totalProb).toBeCloseTo(1.0, 2)
+  })
 })
 

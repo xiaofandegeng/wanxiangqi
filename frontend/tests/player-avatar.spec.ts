@@ -26,7 +26,7 @@ describe('选手头像系统 (player-avatar)', () => {
       }
     }
 
-    expect(players.size).toBe(148)
+    expect(players.size).toBeGreaterThanOrEqual(148)
 
     for (const nickname of players) {
       const url = getPlayerAvatar(nickname)

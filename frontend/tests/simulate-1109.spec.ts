@@ -7,8 +7,9 @@ import {
   inferPlayerLineup,
   evaluateBanImpact,
   evaluateCommander,
-  evaluateCommanderBuildSynergy
-} from '../frontend/src/utils/player-matchup'
+  evaluateCommanderBuildSynergy,
+  type Player6MatchupEvaluation
+} from '../src/utils/player-matchup'
 
 describe('11月9日第一场真实比赛推演', () => {
   it('执行 6 人同场预测推演', () => {
@@ -34,7 +35,7 @@ describe('11月9日第一场真实比赛推演', () => {
     const result = evaluate6PlayerMatchup(participants, bannedFaction, allMatches)
 
     console.log('\n--- 选手推演结果 ---')
-    result.players.forEach(p => {
+    result.players.forEach((p: Player6MatchupEvaluation) => {
       console.log(`席位 #${p.slot} [${p.nickname}] (出战棋手: ${p.commander})`)
       console.log(`  推断出战阵容: ${p.inferredLineup.lineupName} [${p.lineupArchetype.name}]`)
       console.log(`  推断依据: ${p.inferredLineup.reason}`)

@@ -21,7 +21,7 @@
 
     <template v-else>
       <div class="research-toolbar">
-        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || 232} 场收录 · ${fullCatalogPlayers.length || 190} 位对决账号 (${aggregatedPlayers.length || 124} 位归并选手) · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
+        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || (catalog?.matches?.length || 235)} 场收录 · ${fullCatalogPlayers.length || 190} 位对决账号 (${aggregatedPlayers.length || 124} 位归并选手) · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
         <div>
           <button @click="load">刷新</button>
           <button v-if="hasToken" @click="disconnect">清除凭证</button>
@@ -35,14 +35,14 @@
         <template v-if="section==='overview'">
           <div class="research-metrics">
             <div class="metric-highlight">
-              <strong>{{ catalog?.counts?.totalMatches || 232 }}</strong>
+              <strong>{{ catalog?.counts?.totalMatches || (catalog?.matches?.length || 235) }}</strong>
               <span>王牌对决战绩场次</span>
-              <small>{{ catalog?.counts?.matches || 62 }} 场转写 + 170 场胜者公报</small>
+              <small>{{ catalog?.counts?.matches || 73 }} 场转写 + 162 场胜者公报</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.totalDays || 29 }}</strong>
+              <strong>{{ catalog?.counts?.totalDays || 30 }}</strong>
               <span>全量覆盖比赛日</span>
-              <small>2026-10-11 ~ 11-08 连续追踪</small>
+              <small>2026-10-11 ~ 11-09 连续追踪</small>
             </div>
             <div>
               <strong>{{ aggregatedPlayers.length || 124 }}</strong>
@@ -145,7 +145,7 @@
 
           <section class="research-note">
             <h2>来源核验进度</h2>
-            <p>已收录 10月11日~11月8日共 29 个比赛日、232 场王牌对决真实对局，原图与作者公报哈希一致。收录 {{ fullCatalogPlayers.length || 190 }} 个真实参赛账号并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
+            <p>已收录 10月11日~11月9日共 30 个比赛日、235 场王牌对决真实对局，原图与作者公报哈希一致。收录 {{ fullCatalogPlayers.length || 190 }} 个真实参赛账号并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
           </section>
         </template>
 
@@ -154,7 +154,32 @@
           <div class="view-header-bar">
             <div>
               <h2>王牌对决实战对局</h2>
-              <p class="muted">全量收录 29 个比赛日、232 场真实对局。支持按日期与流派快速筛选。</p>
+              <p class="muted">全量收录 30 个比赛日、235 场真实对局。支持按日期与流派快速筛选，支持自由修改与录入纠偏。</p>
+            </div>
+            <div class="matches-top-actions">
+              <button type="button" class="btn-create-match" @click="openCreateModal">
+                ➕ 录入新战绩
+              </button>
+            </div>
+          </div>
+
+          <!-- 本地修正状态横幅提示（如果有修改或新增） -->
+          <div v-if="modifiedStats.totalChanged > 0" class="patch-status-banner">
+            <div class="patch-info">
+              <span class="patch-badge">🔧 本地战绩校准生效中</span>
+              <span class="patch-desc">
+                已修正 <strong>{{ modifiedStats.modifiedCount }}</strong> 场官方对局，
+                手工录入 <strong>{{ modifiedStats.customCount }}</strong> 场新对局<template v-if="modifiedStats.deletedCount">，移除 {{ modifiedStats.deletedCount }} 场</template>。
+                胜率、登顶榜与克制推演已自动联动重算。
+              </span>
+            </div>
+            <div class="patch-actions">
+              <button type="button" class="btn-export-patch" @click="handleExportPatches">
+                💾 导出补丁 JSON
+              </button>
+              <button type="button" class="btn-reset-all" @click="handleResetAllMatches">
+                ↺ 恢复官方原始数据
+              </button>
             </div>
           </div>
 
@@ -171,7 +196,12 @@
           <p v-if="!filteredCatalogMatches.length" class="research-empty">没有找到符合条件的王牌对决场次。</p>
 
           <div class="matches-list">
-            <article v-for="m in filteredCatalogMatches" :key="m.id" class="research-match">
+            <article
+              v-for="m in filteredCatalogMatches"
+              :key="m.id"
+              class="research-match"
+              :class="{ 'is-modified': m.isModified, 'is-custom': m.isCustom }"
+            >
               <header>
                 <div class="match-title-row">
                   <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场</h2>
@@ -179,8 +209,33 @@
                     {{ getVersionByDate(m.day).version }}{{ getVersionByDate(m.day).isLatest ? ' (最新)' : '' }}
                   </span>
                   <span v-if="m.ban" class="ban-tag">Ban：{{ m.ban }}</span>
+                  <span v-if="m.isModified" class="modified-tag" title="该对局已在本地进行校准更正">🔧 已校准</span>
+                  <span v-else-if="m.isCustom" class="custom-tag" title="该对局为手动录入的新对局">⭐ 新录入</span>
                 </div>
-                <span class="verified-tag">{{ m.matchType === 'winner_snapshot' ? '胜者公报 · 一图流已核验' : '已核验 · 6席位转写' }}</span>
+                <div class="match-header-actions">
+                  <span class="verified-tag">{{ m.matchType === 'winner_snapshot' ? '胜者公报 · 一图流已核验' : '已核验 · 6席位转写' }}</span>
+                  <button type="button" class="btn-edit-match" title="修改本场选手、流派或胜者信息" @click="openEditModal(m)">
+                    ✏️ 修改对局
+                  </button>
+                  <button
+                    v-if="m.isModified"
+                    type="button"
+                    class="btn-revert-match"
+                    title="撤销本次修改，恢复官方原始数据"
+                    @click="handleResetSingleMatch(m.id)"
+                  >
+                    ↺ 恢复原件
+                  </button>
+                  <button
+                    v-else-if="m.isCustom"
+                    type="button"
+                    class="btn-delete-match"
+                    title="删除该条自行录入的战绩"
+                    @click="handleDeleteSingleMatch(m.id)"
+                  >
+                    🗑️ 删除
+                  </button>
+                </div>
               </header>
 
               <div class="research-table">
@@ -527,6 +582,14 @@
       </template>
 
       <p v-if="feedback" role="status" class="research-success">{{ feedback }}</p>
+
+      <!-- 王牌对决战绩修改与录入弹窗 -->
+      <MatchEditModal
+        v-model="isEditModalOpen"
+        :match="editingMatch"
+        :candidate-players="candidatePlayers"
+        @save="handleMatchSaved"
+      />
     </template>
   </div>
 </template>
@@ -534,6 +597,7 @@
 <script setup lang="ts">
 import ScreenshotWorkbench from '../components/ScreenshotWorkbench.vue'
 import PlayerCatalog from '../components/PlayerCatalog.vue'
+import MatchEditModal from '../components/MatchEditModal.vue'
 import { computed, watch, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { researchApi, localResearch, getAdminToken, setAdminToken, type ResearchMatch, type Stats } from '../api/prediction'
@@ -549,10 +613,19 @@ import {
   getVersionByDate,
   CURRENT_LATEST_VERSION
 } from '../utils/player-matchup'
+import {
+  type StoredMatch,
+  applyMatchPatches,
+  resetStoredMatch,
+  deleteStoredMatch,
+  resetAllStoredMatches,
+  getModifiedStats,
+  exportPatchesJson
+} from '../utils/match-storage'
 
 interface CatalogMatchSeat {
   slot: number
-  playerId: string
+  playerId?: string
   nickname: string
   build: string
   winner: boolean
@@ -562,14 +635,17 @@ interface CatalogMatch {
   id: string
   day: string
   ordinal: number
-  sourceUrl: string
-  materialSha256: string
+  sourceUrl?: string
+  materialSha256?: string
   ban: string | null
   winnerBuild: string
   winnerSlot: number | null
   winnerNickname: string | null
   matchType?: 'full_transcribed' | 'winner_snapshot'
   seats: CatalogMatchSeat[]
+  isCustom?: boolean
+  isModified?: boolean
+  modifiedAt?: string
 }
 
 interface CatalogProfile {
@@ -886,6 +962,86 @@ const filteredCatalogPlayers = computed(() => {
 
 const percent = (n: number) => (n * 100).toFixed(1) + '%'
 
+// 本地战绩补丁与修改管理状态
+const rawCatalogMatches = ref<CatalogMatch[]>([])
+const modifiedStats = ref(getModifiedStats())
+const isEditModalOpen = ref(false)
+const editingMatch = ref<CatalogMatch | null>(null)
+
+// 候选选手联想列表
+const candidatePlayers = computed(() => {
+  const list = fullCatalogPlayers.value.map(p => p.nickname)
+  return Array.from(new Set(list)).slice(0, 60)
+})
+
+function refreshCatalogMatches() {
+  if (!catalog.value) return
+  const patched = applyMatchPatches(rawCatalogMatches.value as unknown as StoredMatch[]) as unknown as CatalogMatch[]
+  catalog.value = {
+    ...catalog.value,
+    matches: patched
+  }
+  modifiedStats.value = getModifiedStats()
+}
+
+function openCreateModal() {
+  editingMatch.value = null
+  isEditModalOpen.value = true
+}
+
+function openEditModal(m: CatalogMatch) {
+  editingMatch.value = { ...m }
+  isEditModalOpen.value = true
+}
+
+function handleMatchSaved(saved: StoredMatch) {
+  refreshCatalogMatches()
+  feedback.value = `战绩「${saved.day} 第 ${saved.ordinal} 场」已成功保存！选手统计与赛前推演已实时联动重算。`
+  setTimeout(() => {
+    feedback.value = ''
+  }, 4000)
+}
+
+function handleResetSingleMatch(matchId: string) {
+  resetStoredMatch(matchId)
+  refreshCatalogMatches()
+  feedback.value = '已恢复官方原始对局记录！'
+  setTimeout(() => {
+    feedback.value = ''
+  }, 3000)
+}
+
+function handleDeleteSingleMatch(matchId: string) {
+  if (!confirm('确定要删除这场实战战绩记录吗？')) return
+  deleteStoredMatch(matchId)
+  refreshCatalogMatches()
+  feedback.value = '已删除该场战绩记录！'
+  setTimeout(() => {
+    feedback.value = ''
+  }, 3000)
+}
+
+function handleResetAllMatches() {
+  if (!confirm('确定要清空所有本地修改与录入，恢复官方默认数据吗？')) return
+  resetAllStoredMatches()
+  refreshCatalogMatches()
+  feedback.value = '已重置所有战绩，恢复官方原始数据！'
+  setTimeout(() => {
+    feedback.value = ''
+  }, 3000)
+}
+
+function handleExportPatches() {
+  const json = exportPatchesJson()
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `万象棋王牌对决战绩修正补丁_${new Date().toISOString().slice(0, 10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 async function load() {
   error.value = ''
   try {
@@ -896,7 +1052,16 @@ async function load() {
     ])
     matches.value = Array.isArray(m) ? m : []
     stats.value = s || { eligibleMatches: 0, unlinkedSeats: 0, players: [] }
-    catalog.value = (cat && typeof cat === 'object' && !Array.isArray(cat)) ? cat : null
+    if (cat && typeof cat === 'object' && !Array.isArray(cat)) {
+      rawCatalogMatches.value = (cat.matches || []) as CatalogMatch[]
+      catalog.value = {
+        ...cat,
+        matches: applyMatchPatches((cat.matches || []) as unknown as StoredMatch[]) as unknown as CatalogMatch[]
+      }
+      modifiedStats.value = getModifiedStats()
+    } else {
+      catalog.value = null
+    }
     loaded.value = true
   } catch (e) {
     error.value = e instanceof Error ? e.message : '加载失败'
@@ -2183,13 +2348,205 @@ button,
   }
 }
 
+.matches-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .btn-create-match {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(30, 70, 58, 0.2);
+    transition: $transition-fast;
+
+    &:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.patch-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: $radius-md;
+  box-shadow: 0 1px 3px rgba(21, 128, 61, 0.08);
+
+  .patch-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: #14532d;
+
+    strong {
+      color: $color-primary;
+    }
+  }
+
+  .patch-badge {
+    padding: 3px 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background-color: #dcfce7;
+    color: #166534;
+    border-radius: $radius-full;
+  }
+
+  .patch-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .btn-export-patch,
+    .btn-reset-all {
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition: $transition-fast;
+    }
+
+    .btn-export-patch {
+      border: 1px solid #86efac;
+      background-color: #ffffff;
+      color: #166534;
+
+      &:hover {
+        background-color: #dcfce7;
+      }
+    }
+
+    .btn-reset-all {
+      border: 1px solid #fecaca;
+      background-color: #fef2f2;
+      color: #b91c1c;
+
+      &:hover {
+        background-color: #fee2e2;
+      }
+    }
+  }
+}
+
 .research-match {
+  transition: $transition-fast;
+
+  &.is-modified {
+    border-color: #86efac;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fdf9 100%);
+  }
+
+  &.is-custom {
+    border-color: #fde68a;
+    background: linear-gradient(180deg, #ffffff 0%, #fffdf5 100%);
+  }
+
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 8px;
+
+    .match-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modified-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: $radius-full;
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .custom-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: $radius-full;
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .match-header-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-edit-match,
+    .btn-revert-match,
+    .btn-delete-match {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition: $transition-fast;
+    }
+
+    .btn-edit-match {
+      border: 1px solid $border-color;
+      background-color: #ffffff;
+      color: $color-primary;
+
+      &:hover {
+        border-color: $color-primary;
+        background-color: $color-primary-light;
+      }
+    }
+
+    .btn-revert-match {
+      border: 1px solid $border-color;
+      background-color: #ffffff;
+      color: $text-secondary;
+
+      &:hover {
+        background-color: $bg-subtle;
+        color: $text-primary;
+      }
+    }
+
+    .btn-delete-match {
+      border: 1px solid #fecaca;
+      background-color: #ffffff;
+      color: $color-danger;
+
+      &:hover {
+        background-color: #fef2f2;
+      }
+    }
 
     span {
       font-size: 11.5px;

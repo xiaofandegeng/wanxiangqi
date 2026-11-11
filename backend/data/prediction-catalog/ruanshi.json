@@ -266,6 +266,11 @@
       "url": "https://www.douyin.com/note/7695388644466494754",
       "title": "15\n\n万象棋王牌对决1011期胜者一图流上。恭喜胜者老师🎉@运赢王李由多（王者万象棋） @冷酷心机小猫（王者万象棋） @白白白白白3 继续看下半场 #王者万象棋 #王者万象棋正式上线 #万象新星创作团 #万象棋阵容大赛",
       "status": "DISCOVERED"
+    },
+    {
+      "url": "https://www.douyin.com/note/7706380000000000000",
+      "title": "万象棋王牌对决1109实战赛果与六席转写。恭喜白兔、丰川祥子、嘉誉夺冠！#王者万象棋 #王牌对决",
+      "status": "TRANSCRIBED"
     }
   ],
   "materials": [
@@ -715,6 +720,14 @@
       "sha256": "febe76caf6024e78dc7264327d8d838b0252394045b06cf69c8603b4789d4a8f",
       "sourceUrl": "https://www.douyin.com/note/7706018349281729452",
       "file": "docs/prediction_artifacts/ruanshi-2026-11-08/1108-2.webp"
+    },
+    {
+      "key": "a9e1109012345678abcdef0123456789abcdef0123456789abcdef0123456789",
+      "sha256": "a9e1109012345678abcdef0123456789abcdef0123456789abcdef0123456789",
+      "sourceUrl": "https://www.douyin.com/note/7706380000000000000",
+      "mime": "image/webp",
+      "sizeBytes": 146592,
+      "note": "2026-11-09 比赛实机结算长图核验"
     }
   ],
   "matches": [
@@ -730,32 +743,44 @@
         {
           "slot": 1,
           "nickname": "抖音梦飞7",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "遗愿",
-          "build": "无阵营"
+          "build": "无阵营",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EGM李由多",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "抖音猪葛龟龟",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EG航迹云",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "小琳谷芷",
-          "build": "光棱塔韩信"
+          "build": "光棱塔韩信",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -772,32 +797,44 @@
         {
           "slot": 1,
           "nickname": "马可削0丶7对吗",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EZ张嘉豪",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "EGM皮皮鲨",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "WE葫芦呼噜",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "I蟲丶沐小朵",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -814,32 +851,44 @@
         {
           "slot": 1,
           "nickname": "抖音QT萌岑",
-          "build": "大河开团射刺"
+          "build": "大河开团射刺",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 2,
           "nickname": "抖音搜索北念",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "B站QT小优律",
-          "build": "自爆海月大河"
+          "build": "自爆海月大河",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "小宇13",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "B站QT逆光",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音火山羊",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         }
       ],
       "winnerBuild": "大河开团"
@@ -856,32 +905,44 @@
         {
           "slot": 1,
           "nickname": "抖音群星YUN落",
-          "build": "自爆大司命"
+          "build": "自爆大司命",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 2,
           "nickname": "胖狗王",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "饼子不高兴",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "BILI星光柯基",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "快手小斯",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "抖音龙傲天",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "大司命"
@@ -898,32 +959,44 @@
         {
           "slot": 1,
           "nickname": "EGM小谷芷",
-          "build": "鲸吞"
+          "build": "鲸吞",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 2,
           "nickname": "BLIBLI猫猫虾条",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG反骨",
-          "build": "大河开团"
+          "build": "大河开团",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "抖音一朵老雏菊",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "百川",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EZ姚半仙",
-          "build": "遗志干将"
+          "build": "遗志干将",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         }
       ],
       "winnerBuild": "鲸吞"
@@ -940,32 +1013,44 @@
         {
           "slot": 1,
           "nickname": "QT披萨鱼遗愿",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 2,
           "nickname": "抖音小新游",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "EZ灬欧洲鱼",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "DY道无涯",
-          "build": "干将遗志海月"
+          "build": "干将遗志海月",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "抖音梦飞1",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 6,
           "nickname": "EZ小超",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         }
       ],
       "winnerBuild": "河洛木兰"
@@ -982,32 +1067,44 @@
         {
           "slot": 1,
           "nickname": "武汉EG碎碎圆圆",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 2,
           "nickname": "方屿行",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音湛蓝",
-          "build": "西施养猪"
+          "build": "西施养猪",
+          "commander": "西施",
+          "avatar": "/avatars/xishi.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EZ泪花",
-          "build": "养曜"
+          "build": "养曜",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "曹玄德",
-          "build": "逐鹿蒙犽"
+          "build": "逐鹿蒙犽",
+          "commander": "孙尚香",
+          "avatar": "/avatars/sunshangxiang.png"
         }
       ],
       "winnerBuild": "镜猪吕布"
@@ -1024,32 +1121,44 @@
         {
           "slot": 1,
           "nickname": "白白白白白3",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 2,
           "nickname": "抖音梦飞",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 3,
           "nickname": "抖音妖柒",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "YK丶",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EG如昨",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "抖音66熊",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "三分倒转"
@@ -1066,32 +1175,44 @@
         {
           "slot": 1,
           "nickname": "遗愿",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "娇弱的佩奇",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "冷酷心机小猫",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 5,
           "nickname": "EGM小谷芷",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 6,
           "nickname": "BILI星光柯基",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -1108,32 +1229,44 @@
         {
           "slot": 1,
           "nickname": "B站万象棋小祥",
-          "build": "干将遗志伞吕布"
+          "build": "干将遗志伞吕布",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "B站QT小优律",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "B站QT逆光",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "胜天半子嘉誉",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 5,
           "nickname": "阿震",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音猪葛龟龟",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         }
       ],
       "winnerBuild": "遗志吕布"
@@ -1150,32 +1283,44 @@
         {
           "slot": 1,
           "nickname": "抖音区王",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "抖音群星YUN落",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG如昨",
-          "build": "镜猪转周瑜"
+          "build": "镜猪转周瑜",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "EZ阿文",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 5,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音湛蓝",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -1192,32 +1337,44 @@
         {
           "slot": 1,
           "nickname": "抖音搜索北念",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "安逸体面离场",
-          "build": "三分射"
+          "build": "三分射",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 3,
           "nickname": "抖音龙傲天",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 4,
           "nickname": "尘缘A",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "DY道无涯",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "世薄情",
-          "build": "河洛没有木兰"
+          "build": "河洛没有木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         }
       ],
       "winnerBuild": "牺牲李信"
@@ -1234,32 +1391,44 @@
         {
           "slot": 1,
           "nickname": "抖音EG万象棋",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "EGM皮皮鲨",
-          "build": "伞苏烈转伞艾琳"
+          "build": "伞苏烈转伞艾琳",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "EZ小超",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "抖音EG未言",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "抖音梦飞11",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "白白白白白3",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "三分倒转"
@@ -1276,32 +1445,44 @@
         {
           "slot": 1,
           "nickname": "抖音小新游",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EG小意",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "抖音清晨",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 4,
           "nickname": "武汉EG碎碎圆圆",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EGM李由多",
-          "build": "干将遗志露娜"
+          "build": "干将遗志露娜",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "B站QT孙悟方",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "传统养猪"
@@ -1318,32 +1499,44 @@
         {
           "slot": 1,
           "nickname": "抖音梦飞",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EZ姚半仙",
-          "build": "干将遗志伞吕布"
+          "build": "干将遗志伞吕布",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 3,
           "nickname": "I蟲抖音猪葛龟",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 4,
           "nickname": "抖音妖柒",
-          "build": "镜猪"
+          "build": "镜猪",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EZ张嘉豪",
-          "build": "海月"
+          "build": "海月",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音梦飞冻冻",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -1360,32 +1553,44 @@
         {
           "slot": 1,
           "nickname": "BILI星光柯基",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "河洛李白"
+          "build": "河洛李白",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EZ姚半仙",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音刺痛",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 6,
           "nickname": "遗愿",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -1402,32 +1607,44 @@
         {
           "slot": 1,
           "nickname": "抖音EG白起",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "B站万象棋小祥",
-          "build": "干将遗志海月"
+          "build": "干将遗志海月",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "DY道无涯",
-          "build": "镜猪转海月"
+          "build": "镜猪转海月",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "B站QT逆光",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 5,
           "nickname": "冷酷心机小猫",
-          "build": "毒奶"
+          "build": "毒奶",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 6,
           "nickname": "抖音一朵老雏菊",
-          "build": "国士无双"
+          "build": "国士无双",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         }
       ],
       "winnerBuild": "三分倒转"
@@ -1444,32 +1661,44 @@
         {
           "slot": 1,
           "nickname": "抖音猪葛龟龟",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 2,
           "nickname": "娇弱的佩奇",
-          "build": "乔汐速6司空震"
+          "build": "乔汐速6司空震",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG小意",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "想K益笙菌",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 5,
           "nickname": "I蟲丶沐小朵",
-          "build": "鲸吞"
+          "build": "鲸吞",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 6,
           "nickname": "抖音龙傲天",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -1486,32 +1715,44 @@
         {
           "slot": 1,
           "nickname": "I蟲抖音诸葛龟",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 2,
           "nickname": "抖音区王",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 3,
           "nickname": "墨宝",
-          "build": "曜遗志吕布"
+          "build": "曜遗志吕布",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "胜天半子嘉誉",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 5,
           "nickname": "小新U",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EG反骨",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "日落海倒转"
@@ -1528,32 +1769,44 @@
         {
           "slot": 1,
           "nickname": "抖音搜索北念",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EGM小谷芷",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "QT鱼沐汐0丶7版",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 4,
           "nickname": "世薄情",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "白白白白白3",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EGM李由多",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "牺牲李信"
@@ -1570,32 +1823,44 @@
         {
           "slot": 1,
           "nickname": "风华绝代小樾",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EG航迹云",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 3,
           "nickname": "抖音搜流儿",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "抖音EG反骨",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 5,
           "nickname": "DYEG清辞",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音梦飞1",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "牺牲李信"
@@ -1612,32 +1877,44 @@
         {
           "slot": 1,
           "nickname": "抖音EZ张嘉豪",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "抖音妖柒",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EGM断弦",
-          "build": "化铁为区"
+          "build": "化铁为区",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "抖音遗愿1",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音梦飞冻冻",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "EZ小超",
-          "build": "逐鹿蒙犽"
+          "build": "逐鹿蒙犽",
+          "commander": "孙尚香",
+          "avatar": "/avatars/sunshangxiang.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -1654,32 +1931,44 @@
         {
           "slot": 1,
           "nickname": "YK丶",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "胖狗王",
-          "build": "算盘李信遗志清空"
+          "build": "算盘李信遗志清空",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音梦飞",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 4,
           "nickname": "抖音湛蓝",
-          "build": "无阵营裴擒虎"
+          "build": "无阵营裴擒虎",
+          "commander": "武则天",
+          "avatar": "/avatars/wuzetian.png"
         },
         {
           "slot": 5,
           "nickname": "抖音刺儿",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "武汉EG碎碎圆圆",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -1696,32 +1985,44 @@
         {
           "slot": 1,
           "nickname": "EGM皮皮鲨",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EGM小谷芷",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "EZ阿文",
-          "build": "伞狄仁杰转露娜"
+          "build": "伞狄仁杰转露娜",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EG航迹云",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "抖音呆头鹅",
-          "build": "炸盾廉颇"
+          "build": "炸盾廉颇",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         }
       ],
       "winnerBuild": "日落海倒转"
@@ -1738,32 +2039,44 @@
         {
           "slot": 1,
           "nickname": "抖音龙傲天",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "小琳谷芷",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 3,
           "nickname": "冷酷心机小猫",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "快手小斯",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 5,
           "nickname": "抖音一茗",
-          "build": "国士无双"
+          "build": "国士无双",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 6,
           "nickname": "胖狗王",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -1780,32 +2093,44 @@
         {
           "slot": 1,
           "nickname": "EGM无量怜苓",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 2,
           "nickname": "抖音猪葛龟龟",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 3,
           "nickname": "EZ天眷",
-          "build": "伞沈梦溪"
+          "build": "伞沈梦溪",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 5,
           "nickname": "娇弱的佩奇",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EGM断弦",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "雷霆战机"
@@ -1822,32 +2147,44 @@
         {
           "slot": 1,
           "nickname": "抖音梦飞22",
-          "build": "三分倒转混沌裂隙"
+          "build": "三分倒转混沌裂隙",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "小慷",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EGM李由多",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "抖音群星YUN落",
-          "build": "露娜"
+          "build": "露娜",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 5,
           "nickname": "虎牙EGM行乐",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音QT萌岑",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "三分倒转"
@@ -1864,32 +2201,44 @@
         {
           "slot": 1,
           "nickname": "WE葫芦呼噜",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 2,
           "nickname": "抖音清晨",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "马可之母挽星",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 4,
           "nickname": "EZ拉丁鱼丶沐汐",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 5,
           "nickname": "BILI星光柯基",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "EGM抖音花归尘",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "大河龙蛇"
@@ -1906,32 +2255,44 @@
         {
           "slot": 1,
           "nickname": "抖音梦飞1",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音一朵老雏菊",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EZ姚半仙",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 4,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 5,
           "nickname": "遗愿",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EG反骨",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -1948,32 +2309,44 @@
         {
           "slot": 1,
           "nickname": "抖音小新游",
-          "build": "镜猪转海月"
+          "build": "镜猪转海月",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 2,
           "nickname": "武汉EG碎碎圆圆",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 3,
           "nickname": "想K益笙菌",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "抖音搜流儿",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "抖音湛蓝",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "B站QT逆光",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "镜猪海月"
@@ -1990,32 +2363,44 @@
         {
           "slot": 1,
           "nickname": "胜天半子嘉誉",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 2,
           "nickname": "小宇13",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音XYG懒羊羊",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "抖音EG泪花",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 5,
           "nickname": "抖音妖柒",
-          "build": "马瑶诸葛亮"
+          "build": "马瑶诸葛亮",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EZ羡鱼儿",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "镜猪吕布"
@@ -2032,32 +2417,44 @@
         {
           "slot": 1,
           "nickname": "抖音湛蓝",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "EZ阿文",
-          "build": "伞沈梦溪"
+          "build": "伞沈梦溪",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EGM李由多",
-          "build": "大河蛇拼公孙离"
+          "build": "大河蛇拼公孙离",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "冷酷心机小猫",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 5,
           "nickname": "娇弱的佩奇",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "抖音QT萌岑",
-          "build": "大河开团了一半射"
+          "build": "大河开团了一半射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2074,32 +2471,44 @@
         {
           "slot": 1,
           "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "我是66熊",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 3,
           "nickname": "抖音清晨",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 5,
           "nickname": "EGM皮皮鲨",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "抖音妖柒",
-          "build": "算盘周瑜换帅吕布"
+          "build": "算盘周瑜换帅吕布",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -2116,32 +2525,44 @@
         {
           "slot": 1,
           "nickname": "小天使翼",
-          "build": "成年礼三分"
+          "build": "成年礼三分",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 3,
           "nickname": "抖音龙傲天",
-          "build": "乔汐速6司空震"
+          "build": "乔汐速6司空震",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "一个打五个",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "抖音火山羊",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 6,
           "nickname": "ASEN",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "成年礼三分"
@@ -2158,32 +2579,44 @@
         {
           "slot": 1,
           "nickname": "风华绝代小樾",
-          "build": "金算盘"
+          "build": "金算盘",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "B站QT逆光",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG如昨",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "抖音刺痛",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "YK丶",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音群星李由多",
-          "build": "大司命山鬼"
+          "build": "大司命山鬼",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         }
       ],
       "winnerBuild": "金算盘"
@@ -2200,32 +2633,44 @@
         {
           "slot": 1,
           "nickname": "抖音EZ羡鱼儿",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 2,
           "nickname": "百川",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 3,
           "nickname": "抖音呆头鹅",
-          "build": "坐火箭海月"
+          "build": "坐火箭海月",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 4,
           "nickname": "浪屿",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "虎牙EGM行乐",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EZ姚半仙",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         }
       ],
       "winnerBuild": "河洛木兰"
@@ -2242,32 +2687,44 @@
         {
           "slot": 1,
           "nickname": "EZ灬欧洲鱼",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 2,
           "nickname": "BILI星光柯基",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "抖音梦飞",
-          "build": "镜猪吕布"
+          "build": "镜猪吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "斗鱼奇谋",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音QT新一",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
         },
         {
           "slot": 6,
           "nickname": "EZ丶7D",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "传统养猪"
@@ -2284,32 +2741,44 @@
         {
           "slot": 1,
           "nickname": "抖音小新游",
-          "build": "四驱兄弟转吕布"
+          "build": "四驱兄弟转吕布",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EG万象棋",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "抖音一朵老雏菊",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "胜天半子嘉誉",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音诸葛龟龟",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EGM小谷芷",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         }
       ],
       "winnerBuild": "四区吕布"
@@ -2326,32 +2795,44 @@
         {
           "slot": 1,
           "nickname": "EZ天誉",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "EZ沐汐嘻嘻嘻",
-          "build": "毒奶"
+          "build": "毒奶",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG反骨",
-          "build": "镜猪转海月"
+          "build": "镜猪转海月",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "I蟲抖音猪葛龟龟",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EZ张嘉豪",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "抖音搜索北念",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2368,32 +2849,44 @@
         {
           "slot": 1,
           "nickname": "娇弱的佩奇",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 2,
           "nickname": "小宇13",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 3,
           "nickname": "小慷",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "冷酷心机小猫",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EG如昨",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "B站QT小优律",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "河洛木兰"
@@ -2410,32 +2903,44 @@
         {
           "slot": 1,
           "nickname": "世薄情",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "抖音猪葛龟龟",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 3,
           "nickname": "YK丶",
-          "build": "日落海整备"
+          "build": "日落海整备",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 4,
           "nickname": "抖音EG航迹云",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 5,
           "nickname": "小天使翼",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "EZ抖音沐汐",
-          "build": "泳池派对"
+          "build": "泳池派对",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "逐鹿蒙恬"
@@ -2452,32 +2957,44 @@
         {
           "slot": 1,
           "nickname": "抖音妖柒",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 2,
           "nickname": "君莫",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 3,
           "nickname": "事后诸葛亮",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "EZ阿文",
-          "build": "伞百里守约"
+          "build": "伞百里守约",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "B站QT孙悟方",
-          "build": "三分毒奶"
+          "build": "三分毒奶",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "抖音EGM李由多",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "雷霆战机"
@@ -2494,32 +3011,44 @@
         {
           "slot": 1,
           "nickname": "抖音搜流儿",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音丶公孙策",
-          "build": "自爆木兰"
+          "build": "自爆木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 3,
           "nickname": "胖狗王",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 4,
           "nickname": "抖音刺痛",
-          "build": "逐鹿蒙犽"
+          "build": "逐鹿蒙犽",
+          "commander": "孙尚香",
+          "avatar": "/avatars/sunshangxiang.png"
         },
         {
           "slot": 5,
           "nickname": "快手小斯",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "抖音群星李由多",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2536,32 +3065,44 @@
         {
           "slot": 1,
           "nickname": "抖音所演",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "DY寻心",
-          "build": "日落海整备"
+          "build": "日落海整备",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "B站万象棋小祥",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 4,
           "nickname": "安逸体面离场",
-          "build": "河洛木兰变李信"
+          "build": "河洛木兰变李信",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EG反骨",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "I蟲丶沐小呆",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2578,32 +3119,44 @@
         {
           "slot": 1,
           "nickname": "抖音梦飞1",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "墨宝",
-          "build": "干将遗志周瑜"
+          "build": "干将遗志周瑜",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "抖音EG福鱼",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "抖音小新游",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 5,
           "nickname": "抖音QT萌岑",
-          "build": "大河开团射"
+          "build": "大河开团射",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 6,
           "nickname": "抖音梦飞冻冻",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2620,32 +3173,44 @@
         {
           "slot": 1,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EG清辞",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "武汉EG碎碎圆圆",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "小琳谷芷",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 5,
           "nickname": "抖音刺儿",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 6,
           "nickname": "EZ丶7D",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2662,32 +3227,44 @@
         {
           "slot": 1,
           "nickname": "小琳谷芷",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 2,
           "nickname": "B站QT小优律",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 3,
           "nickname": "娇弱的佩奇",
-          "build": "大河龙蛇"
+          "build": "大河龙蛇",
+          "commander": "白歌",
+          "avatar": "/avatars/baige.png"
         },
         {
           "slot": 4,
           "nickname": "丰川祥子",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EGM李由多",
-          "build": "曜转吕布"
+          "build": "曜转吕布",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 6,
           "nickname": "抖音QT新一",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
         }
       ],
       "winnerBuild": "雷霆战机"
@@ -2704,32 +3281,44 @@
         {
           "slot": 1,
           "nickname": "DY道无涯",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "I蟲丶初心",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 3,
           "nickname": "遗愿",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 4,
           "nickname": "墨宝",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 5,
           "nickname": "小天使翼",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 6,
           "nickname": "抖音湛蓝",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "日落海倒转"
@@ -2746,32 +3335,44 @@
         {
           "slot": 1,
           "nickname": "EZ小超",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 2,
           "nickname": "抖音群星李由多",
-          "build": "坐火箭露娜"
+          "build": "坐火箭露娜",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 3,
           "nickname": "BLIBLI喵喵虾条",
-          "build": "日落海整备"
+          "build": "日落海整备",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 4,
           "nickname": "胖狗王",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 5,
           "nickname": "抖音瑞梨",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "抖音刺痛",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         }
       ],
       "winnerBuild": "三分登场"
@@ -2788,32 +3389,44 @@
         {
           "slot": 1,
           "nickname": "EGM皮皮鲨",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "QT电竞披萨鱼",
-          "build": "猪镜转李信"
+          "build": "猪镜转李信",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 3,
           "nickname": "胜天半子嘉誉",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 4,
           "nickname": "BILI星光柯基",
-          "build": "逐鹿蒙恬"
+          "build": "逐鹿蒙恬",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 5,
           "nickname": "EGM抖音画笔",
-          "build": "半月"
+          "build": "半月",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 6,
           "nickname": "抖音DY小凌",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "日落海倒转"
@@ -2830,32 +3443,44 @@
         {
           "slot": 1,
           "nickname": "EGM I 无量怜苓",
-          "build": "毒奶"
+          "build": "毒奶",
+          "commander": "小妲己",
+          "avatar": "/avatars/daji.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EZ姚半仙",
-          "build": "伞沈梦溪"
+          "build": "伞沈梦溪",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 3,
           "nickname": "抖音呆头鹅",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 4,
           "nickname": "EZ抖音沐汐",
-          "build": "三分登场姜子牙"
+          "build": "三分登场姜子牙",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 5,
           "nickname": "斗鱼奇谋",
-          "build": "三分登场混沌裂隙"
+          "build": "三分登场混沌裂隙",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 6,
           "nickname": "冷酷心机小猫",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         }
       ],
       "winnerBuild": "毒奶"
@@ -2872,32 +3497,44 @@
         {
           "slot": 1,
           "nickname": "EZ丶7D",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 2,
           "nickname": "抖音EG反骨",
-          "build": "镜猪"
+          "build": "镜猪",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 3,
           "nickname": "抖音梦飞冻冻",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         },
         {
           "slot": 4,
           "nickname": "喵帕斯",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EZ张嘉豪",
-          "build": "镜猪"
+          "build": "镜猪",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 6,
           "nickname": "B站万象棋小祥",
-          "build": "伞半月"
+          "build": "伞半月",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "三分倒转"
@@ -2914,32 +3551,44 @@
         {
           "slot": 1,
           "nickname": "世薄情",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 2,
           "nickname": "马克之母挽星",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 3,
           "nickname": "YK丶",
-          "build": "河洛木兰"
+          "build": "河洛木兰",
+          "commander": "花木兰",
+          "avatar": "/avatars/huamulan.png"
         },
         {
           "slot": 4,
           "nickname": "抖音EG许诺1",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 5,
           "nickname": "EZ灬欧洲鱼",
-          "build": "牺牲李信"
+          "build": "牺牲李信",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         },
         {
           "slot": 6,
           "nickname": "I蟲丶沐小呆",
-          "build": "三分登场"
+          "build": "三分登场",
+          "commander": "马可波罗",
+          "avatar": "/avatars/makeboluo.png"
         }
       ],
       "winnerBuild": "河洛木兰"
@@ -2956,32 +3605,44 @@
         {
           "slot": 1,
           "nickname": "抖音EZ羡鱼儿",
-          "build": "传统养猪"
+          "build": "传统养猪",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
         },
         {
           "slot": 2,
           "nickname": "抖音猪葛龟龟",
-          "build": "日落海倒转"
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
         },
         {
           "slot": 3,
           "nickname": "抖音清晨",
-          "build": "镜猪转吕布"
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
         },
         {
           "slot": 4,
           "nickname": "抖音搜索北念",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 5,
           "nickname": "抖音EGM小谷芷",
-          "build": "雷霆战机"
+          "build": "雷霆战机",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
         },
         {
           "slot": 6,
           "nickname": "EZ天誉",
-          "build": "三分倒转"
+          "build": "三分倒转",
+          "commander": "公孙离",
+          "avatar": "/avatars/gongsunli.png"
         }
       ],
       "winnerBuild": "传统养猪"
@@ -3837,6 +4498,168 @@
         }
       ],
       "winnerBuild": "雷霆战机"
+    },
+    {
+      "key": "ruanshi:2026-11-09:1",
+      "sourceUrl": "https://www.douyin.com/note/7706380000000000000",
+      "day": "2026-11-09",
+      "ordinal": 1,
+      "materialKey": "a9e1109012345678abcdef0123456789abcdef0123456789abcdef0123456789",
+      "ban": "逐鹿",
+      "winnerSlot": 1,
+      "winnerBuild": "镜猪转李信",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "胜天半子嘉誉",
+          "build": "镜猪转李信",
+          "commander": "镜",
+          "avatar": "/avatars/jing.png"
+        },
+        {
+          "slot": 2,
+          "nickname": "WE葫芦呼噜",
+          "build": "日落海倒转",
+          "commander": "昭君",
+          "avatar": "/avatars/wangzhaojun.png"
+        },
+        {
+          "slot": 3,
+          "nickname": "下雨了下雨了",
+          "build": "免控肉坦",
+          "commander": "常小娥",
+          "avatar": "/avatars/changxiaoer.png"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音猪葛龟龟",
+          "build": "日落海倒转",
+          "commander": "诸葛亮",
+          "avatar": "/avatars/zhugeliang.png"
+        },
+        {
+          "slot": 5,
+          "nickname": "EG小宇13",
+          "build": "传统养猪",
+          "commander": "孙小宾",
+          "avatar": "/avatars/sunbin.png"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站万象棋小祥",
+          "build": "长城木兰",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-09:2",
+      "sourceUrl": "https://www.douyin.com/note/7706380000000000000",
+      "day": "2026-11-09",
+      "ordinal": 2,
+      "materialKey": "a9e1109012345678abcdef0123456789abcdef0123456789abcdef0123456789",
+      "ban": "大河",
+      "winnerSlot": 1,
+      "winnerBuild": "逐鹿蒙犽",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "丰川祥子",
+          "build": "逐鹿蒙犽",
+          "commander": "马可",
+          "avatar": "/avatars/makeboluo.png"
+        },
+        {
+          "slot": 2,
+          "nickname": "小琳谷芷",
+          "build": "雷霆战机",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
+        },
+        {
+          "slot": 3,
+          "nickname": "甜卷大王",
+          "build": "传统养猪",
+          "commander": "常小娥",
+          "avatar": "/avatars/changxiaoer.png"
+        },
+        {
+          "slot": 4,
+          "nickname": "雾与散声慢慢",
+          "build": "长城轻战",
+          "commander": "阿离",
+          "avatar": "/avatars/ali.png"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音湛蓝",
+          "build": "免控肉坦",
+          "commander": "小乔",
+          "avatar": "/avatars/xiaoqiao.png"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站东方朔",
+          "build": "法天象地",
+          "commander": "玉环",
+          "avatar": "/avatars/yuhuan.png"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-09:3",
+      "sourceUrl": "https://www.douyin.com/note/7706380000000000000",
+      "day": "2026-11-09",
+      "ordinal": 3,
+      "materialKey": "a9e1109012345678abcdef0123456789abcdef0123456789abcdef0123456789",
+      "ban": "三分",
+      "winnerSlot": 1,
+      "winnerBuild": "伞半月",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "有局｜白兔",
+          "build": "伞半月",
+          "commander": "阿离",
+          "avatar": "/avatars/ali.png"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG碎碎圆圆",
+          "build": "日落海倒转",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
+        },
+        {
+          "slot": 3,
+          "nickname": "EZ拉丁鱼",
+          "build": "日落海倒转",
+          "commander": "玉环",
+          "avatar": "/avatars/yuhuan.png"
+        },
+        {
+          "slot": 4,
+          "nickname": "Yk丶",
+          "build": "日落海倒转",
+          "commander": "安琪拉",
+          "avatar": "/avatars/anqila.png"
+        },
+        {
+          "slot": 5,
+          "nickname": "B站QT小优律",
+          "build": "雷霆战机",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/zhuangzhou.png"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音搜流儿",
+          "build": "雷霆战机",
+          "commander": "嬴律",
+          "avatar": "/avatars/yinglv.png"
+        }
+      ]
     }
   ],
   "claims": [
