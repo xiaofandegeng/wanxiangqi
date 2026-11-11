@@ -13,7 +13,6 @@ import {
   COMMANDER_ADAPTED_BUILDS,
   getCommanderAdaptiveBuilds,
   evaluatePlayerCommanderLineupProficiency,
-  inferPlayerLineup,
   evaluateCommanderBuildSynergy,
   identifyLineupArchetype,
   evaluate6PlayerLineupCounters,
@@ -292,11 +291,11 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(false)
     expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '镜猪转吕布')).toBe(true)
 
-    // 4. 当禁用【三分阵营】时，诸葛亮的「三分登场」与「三分倒转」被排除，顺位推荐「牺牲李信」
-    const zhugeBanSanfen = getCommanderAdaptiveBuilds('诸葛亮', '三分')!
-    expect(zhugeBanSanfen.bannedBuilds.length).toBeGreaterThanOrEqual(2)
-    expect(zhugeBanSanfen.eligibleBuilds.some(b => b.buildName.includes('三分'))).toBe(false)
-    expect(zhugeBanSanfen.bestAdaptiveBuild?.buildName).toBe('牺牲李信')
+    // 4. 当禁用【三分阵营】时，白歌的「三分倒转」被排除，顺位推荐「河洛木兰」
+    const baigeBanSanfen = getCommanderAdaptiveBuilds('白歌', '三分')!
+    expect(baigeBanSanfen.bannedBuilds.length).toBeGreaterThanOrEqual(1)
+    expect(baigeBanSanfen.eligibleBuilds.some(b => b.buildName.includes('三分'))).toBe(false)
+    expect(baigeBanSanfen.bestAdaptiveBuild?.buildName).toBe('河洛木兰')
   })
 
   it('选手在同一个棋手下玩不同阵容的专精熟练度差异明显，且对战力进行真实加减修正', () => {
@@ -618,6 +617,87 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     // 概率归一化依然保持为 1.0
     const totalProb = customResult.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
     expect(totalProb).toBeCloseTo(1.0, 2)
+  })
+
+  it('6席位全量对局链路：准确聚合所有席位出战棋手与流派，形成真实历史胜率、常用阵容并优化赛前推演', () => {
+    // 构造一场包含 6 位真实选手的对局，每位选手均指定出战棋手与实战流派
+    const full6SeatMatch = {
+      id: 'ruanshi_test_full_6',
+      day: '2026-11-09',
+      ordinal: 99,
+      winnerSlot: 1,
+      winnerBuild: '逐鹿蒙恬',
+      seats: [
+        { slot: 1, nickname: '测试选手A', commander: '嬴律', build: '逐鹿蒙恬', winner: true },
+        { slot: 2, nickname: '测试选手B', commander: '白歌', build: '三分倒转', winner: false },
+        { slot: 3, nickname: '测试选手C', commander: '小妲己', build: '传统养猪', winner: false },
+        { slot: 4, nickname: '测试选手D', commander: '安琪拉', build: '雷霆战机', winner: false },
+        { slot: 5, nickname: '测试选手E', commander: '镜', build: '镜猪转吕布', winner: false },
+        { slot: 6, nickname: '测试选手F', commander: '乔汐', build: '日落海倒转', winner: false },
+        // 混入占位符，应被自动过滤
+        { slot: 7, nickname: '席位2', commander: '小妲己', build: '三分倒转', winner: false }
+      ]
+    }
+
+    const profileMap = buildPlayerMatchupProfiles([full6SeatMatch], false)
+
+    // 1. 验证占位符彻底被过滤，未生成假选手画像
+    expect(profileMap.has('席位2')).toBe(false)
+
+    // 2. 验证所有 6 席位真实选手均成功聚合历史数据
+    const pA = profileMap.get('测试选手A')!
+    const pB = profileMap.get('测试选手B')!
+    expect(pA).toBeDefined()
+    expect(pB).toBeDefined()
+
+    // 选手A 夺冠：1战1胜
+    expect(pA.totalMatches).toBe(1)
+    expect(pA.totalWins).toBe(1)
+    // 选手B 未夺冠：1战0胜，分母真实累加，胜率真实反映为 0
+    expect(pB.totalMatches).toBe(1)
+    expect(pB.totalWins).toBe(0)
+
+    // 3. 验证选手出战棋手与流派准确记录
+    expect(pA.commanderProfiles).toHaveLength(1)
+    expect(pA.commanderProfiles[0].commander).toBe('嬴律')
+    expect(pA.commanderProfiles[0].favoriteBuild).toBe('逐鹿蒙恬')
+    expect(pA.commanderProfiles[0].matches).toBe(1)
+    expect(pA.commanderProfiles[0].wins).toBe(1)
+
+    expect(pB.commanderProfiles[0].commander).toBe('白歌')
+    expect(pB.commanderProfiles[0].favoriteBuild).toBe('三分倒转')
+    expect(pB.commanderProfiles[0].matches).toBe(1)
+    expect(pB.commanderProfiles[0].wins).toBe(0)
+
+    // 4. 验证推演引擎使用 6 席位数据计算贝叶斯平滑胜率与专属棋手加权
+    const sixParticipants = [
+      { nickname: '测试选手A', commander: '嬴律' },
+      { nickname: '测试选手B', commander: '白歌' },
+      { nickname: '测试选手C', commander: '小妲己' },
+      { nickname: '测试选手D', commander: '安琪拉' },
+      { nickname: '测试选手E', commander: '镜' },
+      { nickname: '测试选手F', commander: '乔汐' }
+    ]
+
+    const simResult = evaluate6PlayerMatchup(sixParticipants, null, [full6SeatMatch])
+    expect(simResult.players).toHaveLength(6)
+
+    const simA = simResult.players.find(p => p.nickname === '测试选手A')!
+    const simB = simResult.players.find(p => p.nickname === '测试选手B')!
+
+    // 选手A（1战1胜）贝叶斯平滑胜率为 (1 + 0.5) / (1 + 3) = 0.375，高于基准 0.167
+    expect(simA.smoothedWinRate).toBe(0.375)
+    expect(simA.baseScore).toBeGreaterThan(0)
+    // 选手A 使用嬴律战绩 1战1胜，享有专属棋手加权
+    expect(simA.personalCmdModifier).toBeGreaterThan(0)
+
+    // 选手B（1战0胜）贝叶斯平滑胜率为 (0 + 0.5) / (1 + 3) = 0.125，低于基准 0.167
+    expect(simB.smoothedWinRate).toBe(0.125)
+    expect(simB.baseScore).toBeLessThan(0)
+
+    // 最终概率归一化闭环
+    const totalSimProb = simResult.players.reduce((sum, p) => sum + p.adjustedProbability, 0)
+    expect(totalSimProb).toBeCloseTo(1.0, 2)
   })
 })
 

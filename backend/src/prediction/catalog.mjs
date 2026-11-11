@@ -1,6 +1,27 @@
 import {createHash} from 'node:crypto'
+import {readFileSync} from 'node:fs'
 import {fail} from './domain.mjs'
 import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
+
+let ruanshiCmdMapCache = null
+function getRuanshiCmdMap() {
+  if (ruanshiCmdMapCache) return ruanshiCmdMapCache
+  try {
+    const raw = JSON.parse(readFileSync(new URL('../../data/prediction-catalog/ruanshi.json', import.meta.url), 'utf8'))
+    ruanshiCmdMapCache = new Map()
+    for (const m of raw.matches || []) {
+      for (const s of m.seats || []) {
+        if (s.commander) {
+          ruanshiCmdMapCache.set(`${m.key}:${s.slot}`, s.commander)
+        }
+      }
+    }
+  } catch {
+    ruanshiCmdMapCache = new Map()
+  }
+  return ruanshiCmdMapCache
+}
+
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
 export const playerHandle=(author,nickname)=>catalogHash([author,nickname])
 const str=(x,max=300)=>typeof x==='string'&&x.trim()&&x.length<=max
@@ -54,7 +75,8 @@ export class CatalogService {
   }
   const nick=playerMap.get(r.player_id)||'未知'
   if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
-  m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,build:r.build_label,winner:Boolean(r.winner)})
+  const cmd = getRuanshiCmdMap().get(`${r.match_id}:${r.slot}`) || r.commander || ''
+  m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,avatar:`/avatars/commanders/${cmd||'小妲己'}.png`,build:r.build_label,winner:Boolean(r.winner)})
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
  const transcribedMatches=[...matchMap.values()]

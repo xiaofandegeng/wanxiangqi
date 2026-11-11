@@ -135,6 +135,20 @@
                 </div>
 
                 <div class="seat-field">
+                  <label :for="`player-cmd-${idx}`" class="field-sub-label">♟️ 出战棋手</label>
+                  <select
+                    :id="`player-cmd-${idx}`"
+                    v-model="seat.commander"
+                    class="form-select cmd-select"
+                  >
+                    <option value="">智能匹配 / 招牌</option>
+                    <option v-for="cmd in OFFICIAL_COMMANDERS" :key="cmd.name" :value="cmd.name">
+                      {{ cmd.name }} ({{ cmd.tier }})
+                    </option>
+                  </select>
+                </div>
+
+                <div class="seat-field">
                   <label :for="`player-build-${idx}`" class="field-sub-label">实战流派阵容</label>
                   <input
                     :id="`player-build-${idx}`"
@@ -187,6 +201,7 @@ import {
   type StoredSeat,
   saveStoredMatch
 } from '../utils/match-storage'
+import { OFFICIAL_COMMANDERS, findPlayerMasterProfile } from '../utils/player-matchup'
 
 const props = defineProps<{
   modelValue: boolean
@@ -272,6 +287,7 @@ watch(
           return {
             slot: i + 1,
             nickname: s?.nickname || '',
+            commander: s?.commander || '',
             build: s?.build || '三分倒转',
             winner: isWinner,
             playerId: s?.playerId
@@ -292,6 +308,7 @@ watch(
         seats: Array.from({ length: 6 }, (_, i) => ({
           slot: i + 1,
           nickname: '',
+          commander: '',
           build: QUICK_BUILDS[i % QUICK_BUILDS.length] || '三分倒转',
           winner: i === 0
         }))
@@ -375,13 +392,22 @@ function handleSubmit() {
     winnerBuild: winner.build.trim(),
     winnerSlot: winner.slot,
     winnerNickname: winner.nickname.trim(),
-    seats: formData.value.seats.map(s => ({
-      slot: s.slot,
-      playerId: s.playerId,
-      nickname: s.nickname.trim(),
-      build: s.build.trim(),
-      winner: Boolean(s.winner)
-    })),
+    seats: formData.value.seats.map(s => {
+      let cmd = (s.commander || '').trim()
+      if (!cmd) {
+        const masterDef = findPlayerMasterProfile(s.nickname)
+        cmd = masterDef?.signatureCommander || '小妲己'
+      }
+      return {
+        slot: s.slot,
+        playerId: s.playerId,
+        nickname: s.nickname.trim(),
+        commander: cmd,
+        avatar: `/avatars/default.svg`,
+        build: s.build.trim(),
+        winner: Boolean(s.winner)
+      }
+    }),
     sourceUrl: formData.value.sourceUrl,
     materialSha256: formData.value.materialSha256,
     matchType: formData.value.matchType || 'full_transcribed',
@@ -561,6 +587,12 @@ function handleSubmit() {
   &:focus {
     outline: none;
     border-color: $color-primary;
+  }
+
+  &.cmd-select {
+    font-weight: 600;
+    color: $color-primary-dark;
+    background-color: #fbfdfc;
   }
 }
 

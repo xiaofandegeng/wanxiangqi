@@ -154,7 +154,8 @@
               <span class="cmd-stat-label">📊 棋手偏好：</span>
               <span class="cmd-stat-val">
                 <strong>{{ getSeatCommanderProfile(p.nickname, p.commander)!.favoriteBuild }}</strong>
-                <small>({{ getSeatCommanderProfile(p.nickname, p.commander)!.matches }}战{{ getSeatCommanderProfile(p.nickname, p.commander)!.wins }}冠 · 胜率{{ (getSeatCommanderProfile(p.nickname, p.commander)!.winRate * 100).toFixed(0) }}%)</small>
+                <small v-if="getSeatCommanderProfile(p.nickname, p.commander)!.matches > 0">({{ getSeatCommanderProfile(p.nickname, p.commander)!.matches }}战{{ getSeatCommanderProfile(p.nickname, p.commander)!.wins }}冠 · 胜率{{ (getSeatCommanderProfile(p.nickname, p.commander)!.winRate * 100).toFixed(0) }}%)</small>
+                <small v-else class="cmd-pending-stat">(权威底蕴 · 实战待收录)</small>
               </span>
             </div>
           </div>
@@ -241,7 +242,7 @@
                 <span class="comb-tier-tag">{{ getSeatCommanderBuildSynergy(idx)!.tierLabel }}</span>
               </div>
               <div class="comb-stat-row">
-                <span class="comb-sample">王牌实战: {{ getSeatCommanderBuildSynergy(idx)!.sampleMatches }}战{{ getSeatCommanderBuildSynergy(idx)!.sampleWins }}胜</span>
+                <span class="comb-sample">{{ getSeatCommanderBuildSynergy(idx)!.sampleMatches > 0 ? `王牌实战: ${getSeatCommanderBuildSynergy(idx)!.sampleMatches}战${getSeatCommanderBuildSynergy(idx)!.sampleWins}胜` : '王牌实战: 待新样本收录' }}</span>
                 <span class="comb-mod">({{ getSeatCommanderBuildSynergy(idx)!.scoreModifier >= 0 ? '+' : '' }}{{ (getSeatCommanderBuildSynergy(idx)!.scoreModifier * 100).toFixed(0) }}%)</span>
               </div>
             </div>

@@ -210,6 +210,7 @@ export interface AggregatedPlayerProfile {
   observedWins: number
   builds: { label: string; observations: number; winsForSourceLabel: number }[]
   commonBuilds: string[]
+  commanders?: { name: string; observations: number; wins: number }[]
   claims: any[]
   history: any[]
   linkedAccounts: string[]
@@ -269,6 +270,20 @@ export function aggregateCatalogPlayers(rawPlayers: any[]): AggregatedPlayerProf
     if (Array.isArray(p.history)) {
       agg.history.push(...p.history)
     }
+
+    // 合并出战棋手统计
+    if (Array.isArray(p.commanders)) {
+      if (!agg.commanders) agg.commanders = []
+      for (const cmd of p.commanders) {
+        const existingCmd = agg.commanders.find(c => c.name === cmd.name)
+        if (existingCmd) {
+          existingCmd.observations += cmd.observations || 0
+          existingCmd.wins += cmd.wins || 0
+        } else {
+          agg.commanders.push({ ...cmd })
+        }
+      }
+    }
   }
 
   // 整理每个选手的 builds 和 commonBuilds
@@ -278,6 +293,9 @@ export function aggregateCatalogPlayers(rawPlayers: any[]): AggregatedPlayerProf
       .filter(b => b.observations >= 2 && agg.observedMatches > 0 && b.observations / agg.observedMatches >= 0.3)
       .map(b => b.label)
     agg.commonBuilds = common.length ? common : agg.builds.slice(0, 2).map(b => b.label)
+    if (agg.commanders) {
+      agg.commanders.sort((a, b) => b.observations - a.observations || b.wins - a.wins)
+    }
   }
 
   return [...map.values()]

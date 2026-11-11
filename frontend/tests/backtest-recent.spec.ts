@@ -111,7 +111,7 @@ describe('最近战绩回测：评估预测机制准确率与偏差分析', () =
         const isWinner = p.slot === match.winnerSlot ? '👑【实际胜者】' : '  '
         console.log(`${isWinner} 席位#${p.slot} [${p.nickname}] (出战棋手:${p.commander}) -> 胜率:${(p.adjustedProbability*100).toFixed(1)}% | 最终分:${p.finalScore}`)
         console.log(`     基础分(胜率):${p.baseScore} | H2H:${p.h2hBonus} | Ban:${p.banModifier} | 棋手:${p.commanderModifier} | 熟练度:${p.proficiencyModifier} | 棋手协同:${p.commanderBuildModifier} | 体系对抗:${p.lineupCounterScore}`)
-        console.log(`     推断阵容:${p.inferredLineup.lineupName} [${p.lineupArchetype.name}] | 推断依据:${p.inferredLineup.reason}`)
+        console.log(`     推断阵容:${p.inferredLineup.lineupName} [${p.lineupArchetype?.name || '通用'}] | 推断依据:${p.inferredLineup.reason}`)
       })
     }
   })

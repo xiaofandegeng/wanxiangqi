@@ -8,6 +8,8 @@ export interface StoredSeat {
   nickname: string
   build: string
   winner: boolean
+  commander?: string
+  avatar?: string
 }
 
 export interface StoredMatch {

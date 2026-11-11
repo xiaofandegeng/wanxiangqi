@@ -546,11 +546,13 @@
                                 <span class="cmd-name">♟️ {{ c.commander }}</span>
                                 <span class="cmd-tier" :class="`tier-${c.tier.toLowerCase()}`">{{ c.tier }}</span>
                                 <span v-if="c.isSignature" class="cmd-sig-tag">招牌本命</span>
-                                <span class="cmd-win-rate">{{ (c.winRate * 100).toFixed(0) }}% 胜率</span>
+                                <span v-if="c.matches > 0" class="cmd-win-rate">{{ (c.winRate * 100).toFixed(0) }}% 胜率</span>
+                                <span v-else class="cmd-win-rate text-muted">权威底蕴</span>
                               </div>
                               <div class="cmd-card-body">
                                 <div class="cmd-stat-line">
-                                  <span>实战 <strong>{{ c.matches }}</strong> 战 <strong>{{ c.wins }}</strong> 冠</span>
+                                  <span v-if="c.matches > 0">实战 <strong>{{ c.matches }}</strong> 战 <strong>{{ c.wins }}</strong> 冠</span>
+                                  <span v-else class="text-muted">权威招牌 (实战待收录)</span>
                                   <span class="cmd-fav">偏好：<strong>{{ c.favoriteBuild }}</strong></span>
                                 </div>
                                 <div v-if="c.topBuilds?.length > 1" class="cmd-sub-builds">
@@ -627,6 +629,8 @@ interface CatalogMatchSeat {
   slot: number
   playerId?: string
   nickname: string
+  commander?: string
+  avatar?: string
   build: string
   winner: boolean
 }
@@ -656,6 +660,7 @@ interface CatalogProfile {
   observedWins: number
   builds: { label: string; observations: number; winsForSourceLabel: number }[]
   commonBuilds: string[]
+  commanders?: { name: string; observations: number; wins: number }[]
   claims: any[]
   history: any[]
   linkedAccounts?: string[]
@@ -743,6 +748,7 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
     author: string
     history: any[]
     buildsMap: Map<string, { label: string; observations: number; winsForSourceLabel: number; winsOnSelectedBuild: number }>
+    commandersMap: Map<string, { name: string; observations: number; wins: number }>
     claims: any[]
   }>()
 
@@ -754,6 +760,7 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
       author: p.author || '软柿',
       history: [],
       buildsMap: new Map(),
+      commandersMap: new Map(),
       claims: p.claims || []
     })
   }
@@ -770,17 +777,19 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
           author: '软柿',
           history: [],
           buildsMap: new Map(),
+          commandersMap: new Map(),
           claims: []
         }
         profileMap.set(s.nickname, p)
       }
 
-      const isWinner = Boolean(s.winner)
+      const isWinner = Boolean(s.winner) || (m.winnerSlot !== undefined && m.winnerSlot !== null && s.slot === m.winnerSlot)
       p.history.push({
         matchId: m.id,
         day: m.day,
         ordinal: m.ordinal,
         slot: s.slot,
+        commander: s.commander,
         build: s.build,
         rank: isWinner ? 1 : null,
         winnerBuild: isWinner ? m.winnerBuild : null,
@@ -800,6 +809,19 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
           b.winsOnSelectedBuild++
         }
       }
+
+      if (s.commander && typeof s.commander === 'string' && s.commander.trim()) {
+        const cmdName = s.commander.trim()
+        let cStat = p.commandersMap.get(cmdName)
+        if (!cStat) {
+          cStat = { name: cmdName, observations: 0, wins: 0 }
+          p.commandersMap.set(cmdName, cStat)
+        }
+        cStat.observations++
+        if (isWinner) {
+          cStat.wins++
+        }
+      }
     }
   }
 
@@ -810,6 +832,8 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
       ...b,
       observedWinShare: b.observations ? b.winsForSourceLabel / b.observations : 0
     })).sort((a, b) => b.observations - a.observations)
+
+    const commanders = [...p.commandersMap.values()].sort((a, b) => b.observations - a.observations || b.wins - a.wins)
 
     const observedWins = p.history.filter(h => h.rank === 1).length
     const commonBuilds = p.history.length >= 3
@@ -824,6 +848,7 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
       observedWins,
       builds,
       commonBuilds,
+      commanders,
       claims: p.claims,
       history: p.history
     })

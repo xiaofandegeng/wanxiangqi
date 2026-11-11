@@ -3,11 +3,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 import {
   evaluate6PlayerMatchup,
-  buildPlayerMatchupProfiles,
-  inferPlayerLineup,
-  evaluateBanImpact,
-  evaluateCommander,
-  evaluateCommanderBuildSynergy,
   type Player6MatchupEvaluation
 } from '../src/utils/player-matchup'
 
@@ -22,7 +17,7 @@ describe('11月9日第一场真实比赛推演', () => {
       { slot: 1, nickname: '胜天半子嘉誉', commander: '镜' },
       { slot: 2, nickname: 'WE葫芦呼噜', commander: '乔汐' },
       { slot: 3, nickname: '下雨了下雨了', commander: '常小娥' },
-      { slot: 4, nickname: '抖音猪葛龟龟', commander: '诸葛亮' },
+      { slot: 4, nickname: '抖音猪葛龟龟', commander: '乔汐' },
       { slot: 5, nickname: '小宇13', commander: '孙小宾' },
       { slot: 6, nickname: 'B站万象棋小祥', commander: '庄小鱼' }
     ]
