@@ -3137,7 +3137,7 @@
       "day": "2026-10-28",
       "ordinal": 3,
       "materialKey": "5da630abd872359939beae28f58abe967030c6606d50d7be76d9b6edb3cff613",
-      "ban": "逐鹿",
+      "ban": null,
       "winnerSlot": 1,
       "seats": [
         {
@@ -4160,8 +4160,8 @@
           "slot": 1,
           "nickname": "抖音妖柒",
           "build": "传统养猪",
-          "commander": "马可",
-          "avatar": "/avatars/commanders/马可.png",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/commanders/庄小鱼.png",
           "winner": true
         },
         {
@@ -4227,8 +4227,8 @@
           "slot": 2,
           "nickname": "抖音EG如昨",
           "build": "传统养猪",
-          "commander": "马可",
-          "avatar": "/avatars/commanders/马可.png",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/commanders/庄小鱼.png",
           "winner": false
         },
         {
@@ -4345,7 +4345,7 @@
         {
           "slot": 2,
           "nickname": "I蟲、沐小朵",
-          "build": "传统养猪",
+          "build": "雷霆战机",
           "commander": "孙小宾",
           "avatar": "/avatars/commanders/孙小宾.png",
           "winner": false
@@ -4812,8 +4812,8 @@
           "slot": 1,
           "nickname": "抖音妖柒",
           "build": "传统养猪",
-          "commander": "安琪拉",
-          "avatar": "/avatars/commanders/安琪拉.png",
+          "commander": "庄小鱼",
+          "avatar": "/avatars/commanders/庄小鱼.png",
           "winner": true
         },
         {
@@ -4827,7 +4827,7 @@
         {
           "slot": 3,
           "nickname": "抖音小新游",
-          "build": "传统养猪",
+          "build": "三分登场",
           "commander": "嬴律",
           "avatar": "/avatars/commanders/嬴律.png",
           "winner": false
@@ -4948,7 +4948,7 @@
         {
           "slot": 3,
           "nickname": "下雨了下雨了",
-          "build": "传统养猪",
+          "build": "日落海倒转",
           "commander": "常小娥",
           "avatar": "/avatars/commanders/常小娥.png",
           "winner": false
@@ -4964,7 +4964,7 @@
         {
           "slot": 5,
           "nickname": "EG小宇13",
-          "build": "传统养猪",
+          "build": "日落海倒转",
           "commander": "孙小宾",
           "avatar": "/avatars/commanders/孙小宾.png",
           "winner": false
@@ -4972,7 +4972,7 @@
         {
           "slot": 6,
           "nickname": "B站万象棋小祥",
-          "build": "河洛木兰",
+          "build": "传统养猪",
           "commander": "庄小鱼",
           "avatar": "/avatars/commanders/庄小鱼.png",
           "winner": false
@@ -5008,9 +5008,9 @@
         {
           "slot": 3,
           "nickname": "甜卷大王",
-          "build": "传统养猪",
-          "commander": "常小娥",
-          "avatar": "/avatars/commanders/常小娥.png",
+          "build": "镜猪转吕布",
+          "commander": "镜",
+          "avatar": "/avatars/commanders/镜.png",
           "winner": false
         },
         {
@@ -5024,15 +5024,15 @@
         {
           "slot": 5,
           "nickname": "抖音湛蓝",
-          "build": "大河龙蛇",
-          "commander": "白歌",
-          "avatar": "/avatars/commanders/白歌.png",
+          "build": "毒奶",
+          "commander": "武凤",
+          "avatar": "/avatars/commanders/武凤.png",
           "winner": false
         },
         {
           "slot": 6,
           "nickname": "B站东方朔",
-          "build": "雷霆战机",
+          "build": "河洛木兰",
           "commander": "玉环",
           "avatar": "/avatars/commanders/玉环.png",
           "winner": false

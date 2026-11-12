@@ -248,9 +248,9 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     const citong = result.players.find(p => p.nickname === '抖音刺痛')!
     expect(['逐鹿蒙犽', '稷下坦射']).toContain(citong.inferredLineup.lineupName)
 
-    // 4. 验证逆光招牌为传统养猪
+    // 4. 验证逆光(庄小鱼)推断为多彩古币（奇妙幻梦经济流，坚决排除违和的传统养猪）
     const niguang = result.players.find(p => p.nickname === 'B站QT逆光')!
-    expect(niguang.inferredLineup.lineupName).toBe('传统养猪')
+    expect(niguang.inferredLineup.lineupName).toBe('多彩古币')
 
     // 5. 验证披萨鱼(遗愿)与所选棋手嬴律协同出战逐鹿蒙恬或主力三分
     const yiyuan = result.players.find(p => p.nickname === 'QT电竞披萨鱼')!
@@ -327,9 +327,9 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     // #1 沐汐 (玉环) -> 日落海倒转（绝非“我不后悔”）
     // #2 嘉誉 (玉环) -> 牺牲李信（绝活李信）
     // #3 披萨鱼 (马可) -> 猪镜转李信/逐鹿蒙恬（绝非全员三分登场）
-    // #4 刺儿 (庄小鱼) -> 镜猪转吕布（绝非三分登场）
+    // #4 刺儿 (庄小鱼) -> 多彩古币（梦境经济大核，绝非养猪或三分登场）
     // #5 刺痛 (白歌) -> 传统养猪（绝非三分登场）
-    // #6 逆光 (孙小宾) -> 雷霆战机
+    // #6 逆光 (孙小宾) -> 三分登场（牌序回溯速攻，绝非雷霆战机或倒转）
     // 本场禁选阵营：大河阵营
     const userSeats = [
       { nickname: '沐汐', commander: '玉环' },
@@ -358,17 +358,17 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(['猪镜转李信', '逐鹿蒙恬', '镜猪转吕布']).toContain(pizza.inferredLineup.lineupName)
     expect(pizza.inferredLineup.lineupName).not.toBe('大河龙蛇')
 
-    // 4. 验证刺儿(庄小鱼)推断为镜猪转吕布，绝非三分登场
+    // 4. 验证刺儿(庄小鱼)推断为多彩古币，绝非违和的镜猪或养猪
     const cier = result.players[3]
-    expect(cier.inferredLineup.lineupName).toBe('镜猪转吕布')
+    expect(cier.inferredLineup.lineupName).toBe('多彩古币')
 
     // 5. 验证刺痛(白歌)推断为传统养猪，绝非三分登场
     const citong = result.players[4]
     expect(citong.inferredLineup.lineupName).toBe('传统养猪')
 
-    // 6. 验证逆光(孙小宾)推断为雷霆战机
+    // 6. 验证逆光(孙小宾)推断为三分登场，绝非雷霆战机或倒转
     const niguang = result.players[5]
-    expect(niguang.inferredLineup.lineupName).toBe('雷霆战机')
+    expect(niguang.inferredLineup.lineupName).toBe('三分登场')
 
     // 7. 验证胜率均经过熟练度加权与归一化
     const sumProb = result.players.reduce((sum, p) => sum + p.adjustedProbability, 0)

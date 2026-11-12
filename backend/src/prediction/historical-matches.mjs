@@ -189,15 +189,16 @@ function inferWinnerCommander(winner, build) {
   if (w.includes('湛蓝')) return '武凤'
   if (b.includes('雷霆') || b.includes('战机')) return '安琪拉'
   if (b.includes('三分')) {
+    if (w.includes('梦飞') || w.includes('龙傲天') || w.includes('小宇')) return '马可'
     if (w.includes('遗愿') || w.includes('小谷芷') || w.includes('心机猫')) return '嬴律'
     return '白歌'
   }
   if (b.includes('日落海') || (b.includes('倒转') && !b.includes('三分'))) {
-    if (w.includes('玉环') || w.includes('碎碎')) return '玉环'
+    if (w.includes('玉环') || w.includes('碎碎') || w.includes('阿文')) return '玉环'
     return '乔汐'
   }
-  if (b.includes('养猪') || b.includes('古币')) {
-    return '庄小鱼'
+  if (b.includes('大河')) {
+    return '白歌'
   }
   if (b.includes('逐鹿') || b.includes('蒙恬') || b.includes('蒙犽')) {
     if (w.includes('世薄情')) return '小妲己'
@@ -205,12 +206,17 @@ function inferWinnerCommander(winner, build) {
     return '嬴律'
   }
   if (b.includes('木兰') || b.includes('河洛')) {
+    if (w.includes('东方朔')) return '玉环'
     if (w.includes('遗愿')) return '武凤'
     return '明先生'
   }
-  if (b.includes('伞半月') || b.includes('白兔')) return '阿离'
+  if (b.includes('伞半月') || b.includes('白兔') || b.includes('小祥')) return '阿离'
   if (b.includes('镜猪') || b.includes('李信') || b.includes('海月')) return '镜'
-  if (b.includes('胜天半子') || b.includes('大河')) return '马可'
+  if (b.includes('养猪')) {
+    if (w.includes('刺痛')) return '白歌'
+    if (w.includes('嘉誉')) return '镜'
+    return '小妲己'
+  }
   return '小妲己'
 }
 
