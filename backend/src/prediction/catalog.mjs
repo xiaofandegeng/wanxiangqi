@@ -95,7 +95,7 @@ export class CatalogService {
     playerId: playerHandle('软柿', s.nickname),
     nickname: s.nickname,
     commander: s.commander || '',
-    avatar: s.avatar || `/avatars/commanders/${s.commander || '小妲己'}.png`,
+    avatar: s.commander ? (s.avatar || `/avatars/commanders/${s.commander}.png`) : null,
     build: s.build,
     winner: Boolean(s.winner)
    }))
@@ -115,7 +115,7 @@ export class CatalogService {
    existingSeat.playerId = r.player_id
    if (!existingSeat.nickname || existingSeat.nickname === '未知') existingSeat.nickname = nick
   } else {
-   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,avatar:`/avatars/commanders/${cmd||'小妲己'}.png`,build:r.build_label,winner:Boolean(r.winner)})
+   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,avatar:cmd ? `/avatars/commanders/${cmd}.png` : null,build:r.build_label,winner:Boolean(r.winner)})
   }
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
@@ -126,7 +126,7 @@ export class CatalogService {
  const profiles=players.rows.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
  const allPlayerMap=new Map()
  for(const p of profiles){allPlayerMap.set(p.nickname,{...p,history:[...p.history],buildsMap:new Map(p.builds.map(b=>[b.label,{...b}])),commandersMap:new Map()})}
- for(const m of matches){
+ for(const m of transcribedMatches){
   for(const s of m.seats){
    if(!s.nickname||s.nickname.startsWith('席位'))continue
    let p=allPlayerMap.get(s.nickname)
@@ -139,6 +139,7 @@ export class CatalogService {
    p.history.push({matchId:m.id,day:m.day,ordinal:m.ordinal,slot:s.slot,build:s.build,commander:s.commander,rank:isWinner?1:null,winnerBuild:isWinner?m.winnerBuild:null,sourceUrl:m.sourceUrl,materialSha256:m.materialSha256})
    p.observedMatches++
    if(isWinner)p.observedWins++
+   if(s.build && s.build!=='UNKNOWN'){
    let b=p.buildsMap.get(s.build)
    if(!b){
     b={label:s.build,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0}
@@ -150,6 +151,7 @@ export class CatalogService {
     if(s.build===m.winnerBuild)b.winsOnSelectedBuild++
    }
    b.observedWinShare=b.winsForSourceLabel/b.observations
+   }
    if(s.commander&&s.commander.trim()){
     const cName=s.commander.trim()
     let cStat=p.commandersMap.get(cName)

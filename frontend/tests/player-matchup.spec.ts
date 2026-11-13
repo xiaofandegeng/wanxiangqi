@@ -278,20 +278,27 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(COMMANDER_ADAPTED_BUILDS['马可'].length).toBeGreaterThanOrEqual(3)
     expect(COMMANDER_ADAPTED_BUILDS['玉环'].length).toBeGreaterThanOrEqual(3)
 
-    // 2. 马可在未禁选时的流派池
+    // 2. 马可在未禁选时的流派池（三分登场、稷下坦射、镜猪转吕布）
     const makeNoBan = getCommanderAdaptiveBuilds('马可', null)!
     expect(makeNoBan).toBeDefined()
+    expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '三分登场')).toBe(true)
+    expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '稷下坦射')).toBe(true)
     expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '镜猪转吕布')).toBe(true)
-    expect(makeNoBan.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(true)
     expect(makeNoBan.bannedBuilds.length).toBe(0)
 
-    // 3. 当禁用【大河阵营】时，马可的「大河龙蛇」被精确剪枝剔除
-    const makeBanDahe = getCommanderAdaptiveBuilds('马可', '大河')!
-    expect(makeBanDahe.bannedBuilds.some(b => b.buildName === '大河龙蛇')).toBe(true)
-    expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(false)
-    expect(makeBanDahe.eligibleBuilds.some(b => b.buildName === '镜猪转吕布')).toBe(true)
+    // 3. 当禁用【三分阵营】时，马可的「三分登场」被精确剪枝剔除，顺位推荐「稷下坦射」/「镜猪转吕布」
+    const makeBanSanfen = getCommanderAdaptiveBuilds('马可', '三分')!
+    expect(makeBanSanfen.bannedBuilds.some(b => b.buildName === '三分登场')).toBe(true)
+    expect(makeBanSanfen.eligibleBuilds.some(b => b.buildName === '三分登场')).toBe(false)
+    expect(makeBanSanfen.eligibleBuilds.some(b => b.buildName === '稷下坦射')).toBe(true)
 
-    // 4. 当禁用【三分阵营】时，白歌的「三分倒转」被排除，顺位推荐「河洛木兰」
+    // 4. 当禁用【大河阵营】时，白歌的「大河龙蛇」被精确剪枝剔除
+    const baigeBanDahe = getCommanderAdaptiveBuilds('白歌', '大河')!
+    expect(baigeBanDahe.bannedBuilds.some(b => b.buildName === '大河龙蛇')).toBe(true)
+    expect(baigeBanDahe.eligibleBuilds.some(b => b.buildName === '大河龙蛇')).toBe(false)
+    expect(baigeBanDahe.eligibleBuilds.some(b => b.buildName === '河洛木兰')).toBe(true)
+
+    // 5. 当禁用【三分阵营】时，白歌的「三分倒转」被排除，顺位推荐「河洛木兰」
     const baigeBanSanfen = getCommanderAdaptiveBuilds('白歌', '三分')!
     expect(baigeBanSanfen.bannedBuilds.length).toBeGreaterThanOrEqual(1)
     expect(baigeBanSanfen.eligibleBuilds.some(b => b.buildName.includes('三分'))).toBe(false)
@@ -306,8 +313,8 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
     expect(jiayuJingzhu.modifier).toBeGreaterThan(0.2)
     expect(jiayuJingzhu.levelLabel).toContain('炉火纯青')
 
-    // 2. 世薄情用马可：玩「大河龙蛇」为 5星炉火纯青 (+0.22)
-    const boqingDahe = evaluatePlayerCommanderLineupProficiency('世薄情', '马可', '大河龙蛇')
+    // 2. 世薄情用白歌：玩「大河龙蛇」为 5星炉火纯青 (+0.22)
+    const boqingDahe = evaluatePlayerCommanderLineupProficiency('世薄情', '白歌', '大河龙蛇')
     expect(boqingDahe.starLevel).toBe(5)
     expect(boqingDahe.modifier).toBeGreaterThan(0.2)
 

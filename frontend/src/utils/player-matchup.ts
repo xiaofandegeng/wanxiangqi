@@ -380,15 +380,13 @@ export const OFFICIAL_COMMANDERS: readonly CommanderMeta[] = [
   }
 ]
 
-/** 查找或模糊解析棋手档案 */
+/** 按完整名称或别名查找棋手档案 */
 export function findCommanderMeta(rawName: string | null | undefined): CommanderMeta | undefined {
   if (!rawName || !rawName.trim()) return undefined
   const clean = rawName.trim()
   return OFFICIAL_COMMANDERS.find(c =>
     c.name === clean ||
-    c.aliases.includes(clean) ||
-    clean.includes(c.name) ||
-    c.aliases.some(a => clean.includes(a))
+    c.aliases.includes(clean)
   )
 }
 
@@ -756,15 +754,10 @@ export function resolveCommanderFromSkin(clueOrName: string | null | undefined):
   const directMeta = findCommanderMeta(clean)
   if (directMeta) return directMeta.name
 
-  for (const variant of COMMANDER_SKIN_VARIANTS) {
-    if (variant.skinName.includes(clean) || clean.includes(variant.skinName)) {
-      return variant.commander
-    }
-    if (variant.visualClues.some(c => clean.includes(c) || c.includes(clean))) {
-      return variant.commander
-    }
-  }
-  return null
+  const candidates = new Set(COMMANDER_SKIN_VARIANTS
+    .filter(v => v.skinName === clean || v.visualClues.includes(clean))
+    .map(v => v.commander))
+  return candidates.size === 1 ? [...candidates][0]! : null
 }
 
 /** 棋手与主流阵容适配机制定义 */
@@ -801,8 +794,10 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
   ],
   玉环: [
     { buildName: '日落海倒转', faction: '日落海', tier: 'PRIMARY', synergyDesc: '霓裳曲打出非觉醒牌连击增益，极速过牌锁血登顶' },
+    { buildName: '日落海司空震', faction: '日落海', tier: 'PRIMARY', synergyDesc: '指法连击加速日落海司空震与法系大核成长' },
+    { buildName: '河洛司空震', faction: '河洛', tier: 'PRIMARY', synergyDesc: '霓裳曲回血与连击增益支援河洛司空震雷霆法爆（东方朔实战出战）' },
     { buildName: '三分倒转', faction: '三分', tier: 'PRIMARY', synergyDesc: '三分领袖配合连击刷牌高速过牌' },
-    { buildName: '河洛木兰', faction: '河洛', tier: 'SECONDARY', synergyDesc: '霓裳曲回血与连击增益支援河洛轻战与司空震爆发' },
+    { buildName: '河洛木兰', faction: '河洛', tier: 'SECONDARY', synergyDesc: '霓裳曲回血与连击增益支援河洛轻战与木兰爆发' },
     { buildName: '牺牲李信', faction: '河洛', tier: 'SECONDARY', synergyDesc: '连击增益加速单核李信狂暴法坦输出' }
   ],
   乔汐: [
@@ -812,7 +807,7 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
   ],
   武凤: [
     { buildName: '河洛木兰', faction: '河洛', tier: 'PRIMARY', synergyDesc: '偷取敌方秘技牌打破上限，万鸟朝凤女帝爆发对抗' },
-    { buildName: '毒奶', faction: '通用/其他', tier: 'SECONDARY', synergyDesc: '偷取秘技配合蔡文姬长线回血消耗拉扯' },
+    { buildName: '三分毒奶', faction: '三分', tier: 'SECONDARY', synergyDesc: '偷取秘技配合蔡文姬长线回血消耗拉扯' },
     { buildName: '逐鹿蒙恬', faction: '逐鹿', tier: 'SECONDARY', synergyDesc: '秘技增强前排坦度与反打控制' },
     { buildName: '三分登场', faction: '三分', tier: 'VARIANT', synergyDesc: '全能秘技补强三分阵型对抗容错' }
   ],
@@ -824,7 +819,8 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
     { buildName: '三分登场', faction: '三分', tier: 'SECONDARY', synergyDesc: '时光倒流回溯关键战术手牌，辅助三分速攻' }
   ],
   阿离: [
-    { buildName: '伞半月', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '红叶染锋等级保留机制，高机动位移与持续输出，公孙离唯一招牌本命' },
+    { buildName: '伞公孙离', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '红叶染锋等级保留机制，单核自绑伞位移突进与极速普攻爆发（雾与散声慢慢实战同款）' },
+    { buildName: '伞半月', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '绑伞海月法坦承伤，阿离后排收割，经典双核' },
     { buildName: '三分倒转', faction: '三分', tier: 'SECONDARY', synergyDesc: '高机动配合倒转刷牌' },
     { buildName: '日落海倒转', faction: '日落海', tier: 'VARIANT', synergyDesc: '特定对局下的倒转过渡' }
   ],
@@ -839,10 +835,9 @@ export const COMMANDER_ADAPTED_BUILDS: Record<string, CommanderAdaptedBuild[]> =
   马可: [
     { buildName: '三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '漫游步法能量汲取增伤，全场高频出牌爆发，绝对主力核心（实战70%出场率）' },
     { buildName: '成年礼三分登场', faction: '三分', tier: 'PRIMARY', synergyDesc: '梦飞大大招牌，成年礼高爆发' },
+    { buildName: '稷下坦射', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '漫游步法位移增伤，稷下重坦廉颇墨子抗伤掩护蒙犽持续轰炸（丰川祥子实战夺冠）' },
     { buildName: '镜猪转吕布', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '漫游步法积累能量，为大吕布一刀清场提供超高额增伤' },
-    { buildName: '成年礼三分', faction: '三分', tier: 'SECONDARY', synergyDesc: '成年礼快速成型三分阵型推进' },
-    { buildName: '大河龙蛇', faction: '大河', tier: 'VARIANT', synergyDesc: '世薄情实战大河变阵' },
-    { buildName: '逐鹿蒙犽', faction: '逐鹿', tier: 'VARIANT', synergyDesc: '大河被禁等特定对局下的射手变阵打工（丰川祥子实战出战）' }
+    { buildName: '成年礼三分', faction: '三分', tier: 'SECONDARY', synergyDesc: '成年礼快速成型三分阵型推进' }
   ],
   昭君: [
     { buildName: '高费大核', faction: '通用/其他', tier: 'PRIMARY', synergyDesc: '寒霜转化指定冻结，战斗后升阶并继承等级' },
@@ -959,7 +954,7 @@ export interface PlayerLineupProficiency {
 
 /** 判定是否为王牌对决高强度赛事实战对局（严格过滤普通排位/娱乐局，保障王牌赛场真实强度） */
 export function isAceDuelMatch(match: any): boolean {
-  if (!match) return false
+  if (!match || match.matchType === 'winner_snapshot') return false
   if (match.mode) {
     const m = String(match.mode).toUpperCase()
     // 排除普通排位、普通娱乐对局
@@ -1833,13 +1828,14 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     masterName: '丰川祥子',
     aliases: ['丰川祥子', '祥子'],
     signatureCommander: '武凤',
-    alternativeCommanders: ['白歌', '马可'],
-    signatureBuilds: ['河洛木兰', '逐鹿蒙恬', '三分登场'],
-    playstyle: '河洛女帝近战爆发与逐鹿前排压制',
+    alternativeCommanders: ['白歌', '马可', '嬴律'],
+    signatureBuilds: ['河洛木兰', '逐鹿蒙恬', '三分登场', '稷下坦射'],
+    playstyle: '河洛女帝近战爆发、嬴律逐鹿前排压制与马可稷下坦射轰炸',
     commanderBuildMap: {
       '武凤': ['河洛木兰', '逐鹿蒙恬'],
       '白歌': ['河洛木兰', '三分登场'],
-      '马可': ['逐鹿蒙恬', '逐鹿蒙犽']
+      '嬴律': ['逐鹿蒙恬'],
+      '马可': ['三分登场', '稷下坦射']
     }
   },
   {
@@ -1897,14 +1893,14 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
   {
     masterName: '世薄情',
     aliases: ['世薄情', '抖音世薄情'],
-    signatureCommander: '马可',
-    alternativeCommanders: ['嬴律', '白歌'],
-    signatureBuilds: ['逐鹿蒙恬', '大河龙蛇', '镜猪转吕布'],
-    playstyle: '大河龙蛇与逐鹿变阵专家',
+    signatureCommander: '白歌',
+    alternativeCommanders: ['嬴律', '马可'],
+    signatureBuilds: ['大河龙蛇', '逐鹿蒙恬', '镜猪转吕布'],
+    playstyle: '白歌大河龙蛇与嬴律逐鹿前排变阵专家',
     commanderBuildMap: {
-      '马可': ['逐鹿蒙恬', '大河龙蛇', '镜猪转吕布'],
+      '白歌': ['大河龙蛇', '逐鹿蒙恬'],
       '嬴律': ['逐鹿蒙恬'],
-      '白歌': ['大河龙蛇', '逐鹿蒙恬']
+      '马可': ['三分登场', '镜猪转吕布']
     }
   },
   {
@@ -1978,10 +1974,10 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     aliases: ['湛蓝', '抖音湛蓝'],
     signatureCommander: '武凤',
     alternativeCommanders: ['嬴律', '香香', '白歌'],
-    signatureBuilds: ['河洛木兰', '毒奶', '三分登场', '成年礼三分', '逐鹿蒙恬'],
-    playstyle: '擅长武凤河洛爆发突脸、毒奶消耗拉扯与嬴律三分推进',
+    signatureBuilds: ['河洛木兰', '三分毒奶', '三分登场', '成年礼三分', '逐鹿蒙恬'],
+    playstyle: '擅长武凤河洛爆发突脸、三分毒奶消耗拉扯与嬴律三分推进',
     commanderBuildMap: {
-      '武凤': ['河洛木兰', '毒奶', '逐鹿蒙恬'],
+      '武凤': ['河洛木兰', '三分毒奶', '逐鹿蒙恬'],
       '嬴律': ['三分登场', '成年礼三分', '逐鹿蒙恬'],
       '香香': ['三分登场', '逐鹿蒙犽'],
       '白歌': ['三分登场']
@@ -1992,10 +1988,10 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     aliases: ['东方朔', 'B站东方朔'],
     signatureCommander: '玉环',
     alternativeCommanders: ['白歌', '乔汐'],
-    signatureBuilds: ['河洛木兰', '日落海倒转', '雷霆战机'],
-    playstyle: 'B站顶尖策略选手，擅长玉环盛唐回血河洛轻战与倒转运营',
+    signatureBuilds: ['河洛司空震', '河洛木兰', '日落海倒转', '雷霆战机'],
+    playstyle: 'B站顶尖策略选手，擅长玉环盛唐回血河洛轻战与司空震爆发',
     commanderBuildMap: {
-      '玉环': ['河洛木兰', '日落海倒转'],
+      '玉环': ['河洛司空震', '河洛木兰', '日落海倒转'],
       '白歌': ['河洛木兰']
     }
   },
@@ -2096,10 +2092,10 @@ export const PLAYER_MASTER_PROFILES: readonly PlayerMasterProfileDef[] = [
     aliases: ['雾与散声慢慢'],
     signatureCommander: '阿离',
     alternativeCommanders: ['乔汐', '玉环'],
-    signatureBuilds: ['伞半月', '日落海倒转'],
-    playstyle: '尧天机动突进与高敏捷持续输出',
+    signatureBuilds: ['伞公孙离', '伞半月', '日落海倒转'],
+    playstyle: '尧天机动突进、伞公孙离单核爆杀与高敏捷持续输出',
     commanderBuildMap: {
-      '阿离': ['伞半月', '日落海倒转'],
+      '阿离': ['伞公孙离', '伞半月', '日落海倒转'],
       '乔汐': ['日落海倒转'],
       '玉环': ['日落海倒转']
     }

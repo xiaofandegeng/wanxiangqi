@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
@@ -13,12 +13,12 @@ describe('11月9日第二场真实比赛精确推演 (纠偏棋手后)', () => {
     const allMatches = catalog.matches
 
     // 用户权威指正的 6 位选手与真实出战棋手：
-    // #1 丰川祥子: 马可
-    // #2 小琳谷芷: 嬴律
-    // #3 甜卷大王: 镜
-    // #4 雾与散声慢慢: 阿离
-    // #5 抖音湛蓝: 武凤
-    // #6 B站东方朔: 玉环
+    // #1 丰川祥子: 马可 (实战流派: 稷下坦射)
+    // #2 小琳谷芷: 嬴律 (实战流派: 雷霆战机)
+    // #3 甜卷大王: 镜   (实战流派: 镜猪转吕布)
+    // #4 雾与散声慢慢: 阿离 (实战流派: 伞公孙离)
+    // #5 抖音湛蓝: 武凤 (实战流派: 三分毒奶)
+    // #6 B站东方朔: 玉环 (实战流派: 河洛司空震)
     const participants = [
       { slot: 1, nickname: '丰川祥子', commander: '马可' },
       { slot: 2, nickname: '小琳谷芷', commander: '嬴律' },
@@ -33,6 +33,20 @@ describe('11月9日第二场真实比赛精确推演 (纠偏棋手后)', () => {
     console.log('=== 11-09 第 2 场精确推演 (Ban: 大河) ===')
 
     const result = evaluate6PlayerMatchup(participants, bannedFaction, allMatches)
+
+    expect(result.players.length).toBe(6)
+    
+    // 校验前两名战力综合预测与选手推断
+    const p1 = result.players.find(p => p.slot === 1)!
+    const p4 = result.players.find(p => p.slot === 4)!
+    const p5 = result.players.find(p => p.slot === 5)!
+    const p6 = result.players.find(p => p.slot === 6)!
+
+    expect(['三分登场', '稷下坦射']).toContain(p1.inferredLineup.lineupName)
+    expect(p4.inferredLineup.lineupName).toBe('伞公孙离')
+    expect(p5.inferredLineup.lineupName).toBe('三分毒奶')
+    expect(p6.inferredLineup.lineupName).toBe('河洛司空震')
+    expect(p1.adjustedProbability).toBeGreaterThan(0.25)
 
     console.log('\n--- 选手推演结果 ---')
     result.players.forEach((p: Player6MatchupEvaluation) => {
