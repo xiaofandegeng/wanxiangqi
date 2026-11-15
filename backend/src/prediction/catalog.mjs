@@ -1,3 +1,4 @@
+import {buildStatistics} from './build-stats.mjs'
 import {createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
 import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
@@ -132,6 +133,7 @@ export class CatalogService {
    sources:sources.rowCount
   },
   matches,
+  buildStatistics:buildStatistics(transcribedMatches),
   players:profiles,
   allPlayers,
   sources:sources.rows,

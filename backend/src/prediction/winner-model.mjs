@@ -1,11 +1,14 @@
 import {createHash} from 'node:crypto'
-import {CANDIDATES,trainContextModel,predictContext} from './context-model.mjs'
-export const MODEL_VERSION='source-roster-luce-l2-v1'
+import {CANDIDATES,FULL_CONTEXT_ID,trainContextModel,predictContext,contextFeatures} from './context-model.mjs'
+export const MODEL_VERSION='source-roster-context-3d-v4'
+// Chosen against actual winners in the pre-November-8 rolling replay.
+const FULL_CONFIG={...CANDIDATES.find(candidate=>candidate.id===FULL_CONTEXT_ID),halfLife:3,lambda:8}
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
  const grouped=new Map()
- for(const p of catalog.players)for(const h of p.history||[]){const g=grouped.get(h.matchId)||{id:h.matchId,day:h.day,seats:[]};g.seats.push({id:p.id,winner:h.rank===1});grouped.set(h.matchId,g)}
+ const matches=new Map((catalog.matches||[]).map(match=>[match.id,match]))
+ for(const p of catalog.players)for(const h of p.history||[]){const g=grouped.get(h.matchId)||{id:h.matchId,day:h.day,ban:matches.get(h.matchId)?.ban??null,seats:[]};g.seats.push({id:p.id,winner:h.rank===1,build:h.build??null});grouped.set(h.matchId,g)}
  return [...grouped.values()].filter(g=>g.seats.length===6&&new Set(g.seats.map(s=>s.id)).size===6&&g.seats.filter(s=>s.winner).length===1).sort((a,b)=>a.day.localeCompare(b.day)||a.id.localeCompare(b.id))
 }
 export function trainWinnerModel(games){
@@ -23,23 +26,55 @@ export function trainWinnerModel(games){
 }
 export const predictWinner=(model,ids)=>softmax(ids.map(id=>model.parameters[id]||0))
 export function metric(probabilities,g){const y=g.seats.map(s=>s.winner?1:0),max=Math.max(...probabilities),ties=probabilities.map((p,i)=>({p,i})).filter(x=>Math.abs(x.p-max)<1e-12);return {logLoss:-Math.log(Math.max(1e-15,probabilities[y.indexOf(1)])),brier:probabilities.reduce((s,p,i)=>s+(p-y[i])**2,0),top1Credit:ties.some(t=>y[t.i])?1/ties.length:0}}
-export function chronologicalDiagnostic(games){
+export function chronologicalDiagnostic(games, config=null){
  const rows=[]
  for(const day of [...new Set(games.map(g=>g.day))].sort()){
   const train=games.filter(g=>g.day<day),test=games.filter(g=>g.day===day);if(!train.length)continue
-  const model=trainWinnerModel(train)
-  for(const g of test)rows.push({day,matchId:g.id,trainingMatches:train.length,model:metric(predictWinner(model,g.seats.map(s=>s.id)),g),uniform:metric(g.seats.map(()=>1/6),g)})
+  const model=config?trainContextModel(train,day,config):trainWinnerModel(train)
+  for(const game of test){
+   const probabilities=config?predictContext(model,train,game):predictWinner(model,game.seats.map(seat=>seat.id))
+   const top=game.seats.filter((_,index)=>Math.abs(probabilities[index]-Math.max(...probabilities))<1e-12)
+   rows.push({day,matchId:game.id,trainingMatches:train.length,strictHit:top.length===1&&top[0].winner,model:metric(probabilities,game),uniform:metric(game.seats.map(()=>1/6),game)})
+  }
  }
  const average=key=>rows.length?Object.fromEntries(['logLoss','brier','top1Credit'].map(m=>[m,rows.reduce((s,r)=>s+r[key][m],0)/rows.length])):null
  const model=average('model'),uniform=average('uniform')
- return {kind:'RETROSPECTIVE_DAY_SPLIT_NOT_AVAILABILITY_REPLAY',conclusion:!model?'NO_EVALUATION':model.logLoss<uniform.logLoss&&model.brier<uniform.brier?'LOWER_ERRORS_IN_THIS_SAMPLE':'NOT_BEATING_UNIFORM',evaluatedMatches:rows.length,model,uniform,rows,notice:'按比赛日仅以前日赛果训练；材料为事后采集，不证明历史当时已可获得，也不是独立校准集。并列最高按1/并列人数计命中，避免作者把冠军排第一导致虚假准确率。'}
+ return {kind:'RETROSPECTIVE_DAY_SPLIT_NOT_AVAILABILITY_REPLAY',conclusion:!model?'NO_EVALUATION':model.logLoss<uniform.logLoss&&model.brier<uniform.brier?'LOWER_ERRORS_IN_THIS_SAMPLE':'NOT_BEATING_UNIFORM',evaluatedMatches:rows.length,strictHits:rows.filter(row=>row.strictHit).length,model,uniform,rows,notice:'按比赛日仅以前日赛果训练；材料为事后采集，不证明历史当时已可获得，也不是独立校准集。并列最高按1/并列人数计命中，避免作者把冠军排第一导致虚假准确率。'}
 }
-export function experimentalWinnerEstimate(catalog,roster,cutoff){
+export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
  const day=new Date(Date.parse(cutoff)+8*3600000).toISOString().slice(0,10)
- const games=catalogGames(catalog).filter(g=>g.day<day),canonical=games.map(g=>({...g,seats:[...g.seats].sort((a,b)=>a.id.localeCompare(b.id))})),model=trainWinnerModel(games)
- const probabilities=predictWinner(model,roster.map(p=>p.profileId||'__UNSEEN__'))
- const recentModel=trainContextModel(games,day,CANDIDATES.find(c=>c.id==='recent-player'))
- const recentProbabilities=predictContext(recentModel,games,{day,seats:roster.map(p=>({id:p.profileId||'__UNSEEN__'}))})
- const challenger={status:'SHADOW_ONLY',modelVersion:recentModel.version,variant:'recent-player',halfLifeDays:7,converged:recentModel.converged,trainingMatches:games.length,players:roster.map((p,i)=>({profileId:p.profileId,nickname:p.nickname,probability:recentProbabilities[i]})),notice:'近期衰减候选仅供对照，未替代主概率；历史窗口内优势尚未通过后续新比赛验证。'}
- return {challenger,status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',modelVersion:MODEL_VERSION,config:CONFIG,computedBy:'BACKEND_DETERMINISTIC_PROGRAM',calibrated:false,cutoff,trainingMatches:games.length,trainingMatchIds:games.map(g=>g.id),dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),parameters:model.parameters,iterations:model.iterations,players:roster.map((p,i)=>({profileId:p.profileId,nickname:p.nickname,probability:probabilities[i],coldStart:!p.profileId||!(p.profileId in model.parameters)})),diagnostic:chronologicalDiagnostic(games),notice:'仅来源昵称的实验模型，模式/版本/账号归属未完整核实；未知选手使用零强度先验。只学习同场冠军标签，不使用席位编号、赛后阵容、作者评价或返奖率；未校准，不用于自动分配钻石。'}
+ const games=catalogGames(catalog).filter(game=>game.day<day)
+ const canonical=games.map(game=>({...game,seats:[...game.seats].sort((a,b)=>a.id.localeCompare(b.id))}))
+ const ids=roster.map(player=>player.profileId||'__UNSEEN__')
+ const target={day,ban:aceContext?.bannedFaction??null,seats:ids.map(id=>({id}))}
+ const choices=aceContext?.players.map(player=>({commander:player.commander,plan:player.visiblePlan}))
+ const model=trainContextModel(games,day,FULL_CONFIG)
+ const probabilities=predictContext(model,games,target,choices)
+ const features=contextFeatures(games,target,FULL_CONFIG,choices)
+ return {
+  status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',
+  modelVersion:MODEL_VERSION,
+  config:{...FULL_CONFIG,halfLifeDays:FULL_CONFIG.halfLife},
+  computedBy:'BACKEND_DETERMINISTIC_PROGRAM',
+  calibrated:false,
+  cutoff,
+  trainingMatches:games.length,
+  trainingMatchIds:games.map(game=>game.id),
+  dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),
+  parameters:model.parameters,
+  iterations:model.iterations,
+  players:roster.map((player,index)=>({
+   profileId:player.profileId,
+   nickname:player.nickname,
+   probability:probabilities[index],
+   coldStart:!player.profileId||!Object.hasOwn(model.parameters,`player:${player.profileId}`)
+  })),
+  signals:features.map(row=>({
+   ban:(row.sameBanForm??0)*(model.parameters.sameBanForm??0),
+   opponents:(row.playerMatchup??0)*(model.parameters.playerMatchup??0),
+   contention:Object.entries(row).filter(([name])=>name.startsWith('contention:')).reduce((sum,[name,value])=>sum+value*(model.parameters[name]??0),0)
+  })),
+  diagnostic:chronologicalDiagnostic(games,FULL_CONFIG),
+  notice:'综合模型按近期战绩、同禁用表现、同场交手和同玩法竞争计算。缺少历史样本的特征贡献为零。结果为未校准的实验概率。'
+ }
 }

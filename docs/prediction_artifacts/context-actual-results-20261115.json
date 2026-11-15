@@ -1,0 +1,2147 @@
+{
+  "version": "context-actual-results-v2",
+  "database": "wanxiangqi_prediction_dev",
+  "start": "2026-11-08",
+  "end": "2026-11-14",
+  "dataHash": "6836e6e250c84e8d993e1ade44390518a67b6d7f7384ec3fd3050d4706e4c223",
+  "selectionRule": "按11月8日前逐日预测的唯一首选命中数选参数，命中数相同时取对数损失较低者。每场只根据当日之前的赛果训练。",
+  "coverage": {
+    "games": 103,
+    "week": 41,
+    "priorEvidenceCommanderSeats": 0
+  },
+  "selected": {
+    "config": {
+      "id": "priority-contention",
+      "history": true,
+      "priority": true,
+      "matchups": true,
+      "builds": true,
+      "contention": true,
+      "halfLife": 3,
+      "lambda": 8
+    },
+    "matches": 54,
+    "strictHits": 8,
+    "strictAccuracy": 0.14814814814814814,
+    "top1Credit": 0.16975308641975306,
+    "logLoss": 1.7925588864691318,
+    "brier": 0.8336134185143342
+  },
+  "validation": [
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 3,
+        "lambda": 8
+      },
+      "matches": 54,
+      "strictHits": 8,
+      "strictAccuracy": 0.14814814814814814,
+      "top1Credit": 0.16975308641975306,
+      "logLoss": 1.7925588864691318,
+      "brier": 0.8336134185143342
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 3,
+        "lambda": 0.5
+      },
+      "matches": 54,
+      "strictHits": 7,
+      "strictAccuracy": 0.12962962962962962,
+      "top1Credit": 0.16358024691358022,
+      "logLoss": 1.8174562247750503,
+      "brier": 0.8440672832858236
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 3,
+        "lambda": 2
+      },
+      "matches": 54,
+      "strictHits": 6,
+      "strictAccuracy": 0.1111111111111111,
+      "top1Credit": 0.14506172839506173,
+      "logLoss": 1.795720166719957,
+      "brier": 0.8348067430455863
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 7,
+        "lambda": 8
+      },
+      "matches": 54,
+      "strictHits": 5,
+      "strictAccuracy": 0.09259259259259259,
+      "top1Credit": 0.12654320987654322,
+      "logLoss": 1.7952157380776683,
+      "brier": 0.8345194422755475
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 7,
+        "lambda": 2
+      },
+      "matches": 54,
+      "strictHits": 5,
+      "strictAccuracy": 0.09259259259259259,
+      "top1Credit": 0.12654320987654322,
+      "logLoss": 1.8042121588483766,
+      "brier": 0.8378376143258507
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 14,
+        "lambda": 2
+      },
+      "matches": 54,
+      "strictHits": 5,
+      "strictAccuracy": 0.09259259259259259,
+      "top1Credit": 0.12654320987654322,
+      "logLoss": 1.809448561174032,
+      "brier": 0.839729357002085
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 7,
+        "lambda": 0.5
+      },
+      "matches": 54,
+      "strictHits": 5,
+      "strictAccuracy": 0.09259259259259259,
+      "top1Credit": 0.12037037037037036,
+      "logLoss": 1.8436136508380443,
+      "brier": 0.8542067902790463
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 14,
+        "lambda": 8
+      },
+      "matches": 54,
+      "strictHits": 4,
+      "strictAccuracy": 0.07407407407407407,
+      "top1Credit": 0.10185185185185185,
+      "logLoss": 1.796797093529302,
+      "brier": 0.8350608606546033
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 28,
+        "lambda": 8
+      },
+      "matches": 54,
+      "strictHits": 4,
+      "strictAccuracy": 0.07407407407407407,
+      "top1Credit": 0.09259259259259259,
+      "logLoss": 1.7977642577611979,
+      "brier": 0.8353927852986835
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 28,
+        "lambda": 2
+      },
+      "matches": 54,
+      "strictHits": 4,
+      "strictAccuracy": 0.07407407407407407,
+      "top1Credit": 0.10802469135802469,
+      "logLoss": 1.81270294351737,
+      "brier": 0.8409141589642163
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 14,
+        "lambda": 0.5
+      },
+      "matches": 54,
+      "strictHits": 3,
+      "strictAccuracy": 0.05555555555555555,
+      "top1Credit": 0.08333333333333333,
+      "logLoss": 1.8584377818780622,
+      "brier": 0.8600968826362502
+    },
+    {
+      "config": {
+        "id": "priority-contention",
+        "history": true,
+        "priority": true,
+        "matchups": true,
+        "builds": true,
+        "contention": true,
+        "halfLife": 28,
+        "lambda": 0.5
+      },
+      "matches": 54,
+      "strictHits": 3,
+      "strictAccuracy": 0.05555555555555555,
+      "top1Credit": 0.08333333333333333,
+      "logLoss": 1.8671357357082141,
+      "brier": 0.8635323676798287
+    }
+  ],
+  "actualResults": {
+    "matches": 41,
+    "strictHits": 10,
+    "strictAccuracy": 0.24390243902439024,
+    "top1Credit": 0.25609756097560976,
+    "logLoss": 1.792474152932223,
+    "brier": 0.8335817644540285
+  },
+  "rows": [
+    {
+      "id": "ruanshi:2026-11-08:1",
+      "day": "2026-11-08",
+      "ordinal": 1,
+      "ban": "日落海",
+      "trainingMatches": 62,
+      "actual": "抖音所演II",
+      "actualProbability": 0.16669213722476683,
+      "actualRank": 2,
+      "predicted": [
+        "快手小斯"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7916066575557523,
+        "brier": 0.8332874496646032,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "小琳谷芷",
+          "probability": 0.16606151539709368
+        },
+        {
+          "nickname": "快手小斯",
+          "probability": 0.16859838757476572
+        },
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.1659085271914527
+        },
+        {
+          "nickname": "YK、",
+          "probability": 0.16669213722476683
+        },
+        {
+          "nickname": "羡慕无机盐",
+          "probability": 0.16604729538715418
+        },
+        {
+          "nickname": "抖音所演II",
+          "probability": 0.16669213722476683
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:2",
+      "day": "2026-11-08",
+      "ordinal": 2,
+      "ban": "河洛",
+      "trainingMatches": 62,
+      "actual": "抖音猪葛龟龟",
+      "actualProbability": 0.16311463698667023,
+      "actualRank": 5,
+      "predicted": [
+        "B站QT小优律"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.813302030974235,
+        "brier": 0.840507033626635,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "WE葫芦呼噜",
+          "probability": 0.16103848793641043
+        },
+        {
+          "nickname": "抖音猪葛龟龟",
+          "probability": 0.16311463698667023
+        },
+        {
+          "nickname": "EZ拉丁鱼",
+          "probability": 0.16718698475188543
+        },
+        {
+          "nickname": "抖音呆头鹅",
+          "probability": 0.1696491790140652
+        },
+        {
+          "nickname": "B站QT小优律",
+          "probability": 0.16968591240408007
+        },
+        {
+          "nickname": "抖音EG小意",
+          "probability": 0.16932479890688884
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:3",
+      "day": "2026-11-08",
+      "ordinal": 3,
+      "ban": "三分",
+      "trainingMatches": 62,
+      "actual": "丰川祥子",
+      "actualProbability": 0.16870593132585862,
+      "actualRank": 1,
+      "predicted": [
+        "丰川祥子"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.7795981310331115,
+        "brier": 0.8292731592683895,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音QT新一",
+          "probability": 0.16843068893187352
+        },
+        {
+          "nickname": "丰川祥子",
+          "probability": 0.16870593132585862
+        },
+        {
+          "nickname": "抖音EG碎碎圆圆",
+          "probability": 0.1664350835508169
+        },
+        {
+          "nickname": "下雨了下雨了",
+          "probability": 0.16570967107855678
+        },
+        {
+          "nickname": "DY道无涯",
+          "probability": 0.16352941396588982
+        },
+        {
+          "nickname": "B站QT孙悟方",
+          "probability": 0.1671892111470043
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:4",
+      "day": "2026-11-08",
+      "ordinal": 4,
+      "ban": "日落海",
+      "trainingMatches": 62,
+      "actual": "冷酷心机兰兰",
+      "actualProbability": 0.1681633129930682,
+      "actualRank": 1,
+      "predicted": [
+        "冷酷心机兰兰",
+        "布布打劫钻石版"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7828196706140023,
+        "brier": 0.830358735979771,
+        "top1Credit": 0.5
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "I蟲、沐小朵",
+          "probability": 0.1674279908146805
+        },
+        {
+          "nickname": "白白白白白3",
+          "probability": 0.16321384069598432
+        },
+        {
+          "nickname": "冷酷心机兰兰",
+          "probability": 0.1681633129930682
+        },
+        {
+          "nickname": "布布打劫钻石版",
+          "probability": 0.1681633129930682
+        },
+        {
+          "nickname": "抖音EGM皮皮鲨",
+          "probability": 0.16742907248700262
+        },
+        {
+          "nickname": "BLIBLI喵喵虾条",
+          "probability": 0.16560247001619618
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:5",
+      "day": "2026-11-08",
+      "ordinal": 5,
+      "ban": "河洛",
+      "trainingMatches": 62,
+      "actual": "抖音搜流儿",
+      "actualProbability": 0.162377240231073,
+      "actualRank": 6,
+      "predicted": [
+        "抖音妖柒"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8178330074363662,
+        "brier": 0.8419387971688375,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EZ非洲鱼",
+          "probability": 0.16704852940487844
+        },
+        {
+          "nickname": "抖音妖柒",
+          "probability": 0.16942864214941333
+        },
+        {
+          "nickname": "EG小宇13",
+          "probability": 0.16704852940487844
+        },
+        {
+          "nickname": "抖音搜流儿",
+          "probability": 0.162377240231073
+        },
+        {
+          "nickname": "若夜",
+          "probability": 0.16704852940487844
+        },
+        {
+          "nickname": "桉",
+          "probability": 0.16704852940487844
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:6",
+      "day": "2026-11-08",
+      "ordinal": 6,
+      "ban": "大河",
+      "trainingMatches": 62,
+      "actual": "抖音梦飞冻冻",
+      "actualProbability": 0.17312715204299253,
+      "actualRank": 1,
+      "predicted": [
+        "抖音梦飞冻冻"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.753728971544551,
+        "brier": 0.8205737218977442,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "事后诸葛亮",
+          "probability": 0.16855581958822494
+        },
+        {
+          "nickname": "抖音EGM小谷芷",
+          "probability": 0.17265034514069535
+        },
+        {
+          "nickname": "抖音搜索北念",
+          "probability": 0.15947978133264157
+        },
+        {
+          "nickname": "娇弱的佩奇",
+          "probability": 0.1643306002860865
+        },
+        {
+          "nickname": "抖音梦飞冻冻",
+          "probability": 0.17312715204299253
+        },
+        {
+          "nickname": "抖音群星YUN落",
+          "probability": 0.16185630160935904
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:7",
+      "day": "2026-11-08",
+      "ordinal": 7,
+      "ban": "大河",
+      "trainingMatches": 62,
+      "actual": "B站QT逆光",
+      "actualProbability": 0.1695996731984745,
+      "actualRank": 1,
+      "predicted": [
+        "B站QT逆光"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.7743144825219779,
+        "brier": 0.8275014141058774,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "沐汐猪葛龟版",
+          "probability": 0.16622884813050554
+        },
+        {
+          "nickname": "B站QT逆光",
+          "probability": 0.1695996731984745
+        },
+        {
+          "nickname": "抖音刺儿",
+          "probability": 0.16837572158299663
+        },
+        {
+          "nickname": "抖音刺痛",
+          "probability": 0.1670605448118414
+        },
+        {
+          "nickname": "QT电竞披萨鱼",
+          "probability": 0.16678134353526186
+        },
+        {
+          "nickname": "胜天半子嘉誉",
+          "probability": 0.16195386874092002
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:8",
+      "day": "2026-11-08",
+      "ordinal": 8,
+      "ban": "三分",
+      "trainingMatches": 62,
+      "actual": "I蟲猪葛龟龟",
+      "actualProbability": 0.16619825255014792,
+      "actualRank": 4,
+      "predicted": [
+        "虎牙EGM行乐"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.794573910754764,
+        "brier": 0.834283697744052,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音一茗",
+          "probability": 0.16753572942792305
+        },
+        {
+          "nickname": "DY棒教练",
+          "probability": 0.16547387231314753
+        },
+        {
+          "nickname": "斗鱼奇谋",
+          "probability": 0.16819415855491737
+        },
+        {
+          "nickname": "虎牙EGM行乐",
+          "probability": 0.16836480322128672
+        },
+        {
+          "nickname": "I蟲猪葛龟龟",
+          "probability": 0.16619825255014792
+        },
+        {
+          "nickname": "抖音龙傲天",
+          "probability": 0.16423318393257735
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:1",
+      "day": "2026-11-09",
+      "ordinal": 1,
+      "ban": "逐鹿",
+      "trainingMatches": 70,
+      "actual": "胜天半子嘉誉",
+      "actualProbability": 0.16385247927884322,
+      "actualRank": 5,
+      "predicted": [
+        "抖音猪葛龟龟"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8087887725581804,
+        "brier": 0.8392540673953235,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "WE葫芦呼噜",
+          "probability": 0.1579753716193555
+        },
+        {
+          "nickname": "抖音猪葛龟龟",
+          "probability": 0.1810216432944658
+        },
+        {
+          "nickname": "B站万象棋小祥",
+          "probability": 0.16569601827048813
+        },
+        {
+          "nickname": "下雨了下雨了",
+          "probability": 0.1654737846664616
+        },
+        {
+          "nickname": "EG小宇13",
+          "probability": 0.16598070287038574
+        },
+        {
+          "nickname": "胜天半子嘉誉",
+          "probability": 0.16385247927884322
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:2",
+      "day": "2026-11-09",
+      "ordinal": 2,
+      "ban": "大河",
+      "trainingMatches": 70,
+      "actual": "丰川祥子",
+      "actualProbability": 0.18269588462120534,
+      "actualRank": 1,
+      "predicted": [
+        "丰川祥子"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.6999323411873686,
+        "brier": 0.8015896227099762,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "小琳谷芷",
+          "probability": 0.16152485821958618
+        },
+        {
+          "nickname": "雾与散声慢慢",
+          "probability": 0.16355210227949876
+        },
+        {
+          "nickname": "抖音湛蓝",
+          "probability": 0.16507929817938038
+        },
+        {
+          "nickname": "丰川祥子",
+          "probability": 0.18269588462120534
+        },
+        {
+          "nickname": "B站东方朔",
+          "probability": 0.1635957544208307
+        },
+        {
+          "nickname": "甜卷大王",
+          "probability": 0.16355210227949876
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:3",
+      "day": "2026-11-09",
+      "ordinal": 3,
+      "ban": "三分",
+      "trainingMatches": 70,
+      "actual": "有局丨白兔",
+      "actualProbability": 0.16443517334039628,
+      "actualRank": 4,
+      "predicted": [
+        "抖音搜流儿"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8052388694849417,
+        "brier": 0.8378687151845841,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "有局丨白兔",
+          "probability": 0.16443517334039628
+        },
+        {
+          "nickname": "抖音EG碎碎圆圆",
+          "probability": 0.1640439143146027
+        },
+        {
+          "nickname": "EZ拉丁鱼",
+          "probability": 0.167095356680013
+        },
+        {
+          "nickname": "YK、",
+          "probability": 0.16347890766834314
+        },
+        {
+          "nickname": "抖音搜流儿",
+          "probability": 0.17372985157415305
+        },
+        {
+          "nickname": "B站QT小优律",
+          "probability": 0.1672167964224917
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:4",
+      "day": "2026-11-09",
+      "ordinal": 4,
+      "ban": "大河",
+      "trainingMatches": 70,
+      "actual": "抖音EZ阿文",
+      "actualProbability": 0.16608839040108297,
+      "actualRank": 4,
+      "predicted": [
+        "遗愿"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7952351600429828,
+        "brier": 0.8345709057655242,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音月影孤冰",
+          "probability": 0.16759651163068393
+        },
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.16608839040108297
+        },
+        {
+          "nickname": "抖音EZ、色彩",
+          "probability": 0.16751762831736403
+        },
+        {
+          "nickname": "抖音EGM皮皮鲨",
+          "probability": 0.16582809031615736
+        },
+        {
+          "nickname": "抖音梦飞1",
+          "probability": 0.16022660255370438
+        },
+        {
+          "nickname": "遗愿",
+          "probability": 0.17274277678100725
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:5",
+      "day": "2026-11-09",
+      "ordinal": 5,
+      "ban": "大河",
+      "trainingMatches": 70,
+      "actual": "EZ姚半仙",
+      "actualProbability": 0.16740295290634014,
+      "actualRank": 2,
+      "predicted": [
+        "抖音DY小凌"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7873514812595215,
+        "brier": 0.8318999738238436,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EG万象棋",
+          "probability": 0.1613725008301975
+        },
+        {
+          "nickname": "985第一环",
+          "probability": 0.16740295290634014
+        },
+        {
+          "nickname": "抖音DY小凌",
+          "probability": 0.16975833050109576
+        },
+        {
+          "nickname": "抖音遗愿",
+          "probability": 0.16740295290634014
+        },
+        {
+          "nickname": "EZ姚半仙",
+          "probability": 0.16740295290634014
+        },
+        {
+          "nickname": "BLIBLI喵喵虾条",
+          "probability": 0.16666030994968645
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:6",
+      "day": "2026-11-09",
+      "ordinal": 6,
+      "ban": "三分",
+      "trainingMatches": 70,
+      "actual": "抖音小新游",
+      "actualProbability": 0.1571415339559756,
+      "actualRank": 6,
+      "predicted": [
+        "EGM抖音画笔"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8506083895665943,
+        "brier": 0.8524943702478094,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "武林高手清辞",
+          "probability": 0.1685039195787042
+        },
+        {
+          "nickname": "EZ将我意",
+          "probability": 0.1685039195787042
+        },
+        {
+          "nickname": "EGM抖音画笔",
+          "probability": 0.16963856342891132
+        },
+        {
+          "nickname": "抖音小新游",
+          "probability": 0.1571415339559756
+        },
+        {
+          "nickname": "桉",
+          "probability": 0.16770814387900052
+        },
+        {
+          "nickname": "抖音EG尼采",
+          "probability": 0.1685039195787042
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:7",
+      "day": "2026-11-09",
+      "ordinal": 7,
+      "ban": "日落海",
+      "trainingMatches": 70,
+      "actual": "豪气冲天糕糕",
+      "actualProbability": 0.16171493845118673,
+      "actualRank": 5,
+      "predicted": [
+        "B站QT逆光"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8219201329235397,
+        "brier": 0.8435439724944401,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EGM小谷芷",
+          "probability": 0.17127680459624317
+        },
+        {
+          "nickname": "B站QT逆光",
+          "probability": 0.1806837400117269
+        },
+        {
+          "nickname": "豪气冲天糕糕",
+          "probability": 0.16171493845118673
+        },
+        {
+          "nickname": "抖音一茗",
+          "probability": 0.16253776859871316
+        },
+        {
+          "nickname": "虎牙EGM行乐",
+          "probability": 0.16296923642612024
+        },
+        {
+          "nickname": "羡慕无机盐",
+          "probability": 0.16081751191600988
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:8",
+      "day": "2026-11-09",
+      "ordinal": 8,
+      "ban": "逐鹿",
+      "trainingMatches": 70,
+      "actual": "抖音梦飞77",
+      "actualProbability": 0.16695429913201942,
+      "actualRank": 5,
+      "predicted": [
+        "抖音清晨"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.790035161908635,
+        "brier": 0.8329412294992076,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "LERO滴谷芷",
+          "probability": 0.1670946601731443
+        },
+        {
+          "nickname": "抖音EG泪花",
+          "probability": 0.17018768540519613
+        },
+        {
+          "nickname": "抖音搜索北念",
+          "probability": 0.1554058815797755
+        },
+        {
+          "nickname": "抖音梦飞77",
+          "probability": 0.16695429913201942
+        },
+        {
+          "nickname": "抖音清晨",
+          "probability": 0.1732628135367203
+        },
+        {
+          "nickname": "辰风慕雨",
+          "probability": 0.1670946601731443
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:1",
+      "day": "2026-11-10",
+      "ordinal": 1,
+      "ban": "大河",
+      "trainingMatches": 78,
+      "actual": "抖音EZ阿文",
+      "actualProbability": 0.15608753097595127,
+      "actualRank": 5,
+      "predicted": [
+        "胜天半子嘉誉"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8573383330884146,
+        "brier": 0.8554611887559164,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.15608753097595127
+        },
+        {
+          "nickname": "抖音EG碎碎圆圆",
+          "probability": 0.16562706306562922
+        },
+        {
+          "nickname": "EZ拉丁鱼",
+          "probability": 0.16660440073086594
+        },
+        {
+          "nickname": "抖音刺痛",
+          "probability": 0.1761838147067763
+        },
+        {
+          "nickname": "DY道无涯",
+          "probability": 0.14820807286826282
+        },
+        {
+          "nickname": "胜天半子嘉誉",
+          "probability": 0.18728911765251455
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:2",
+      "day": "2026-11-10",
+      "ordinal": 2,
+      "ban": "河洛",
+      "trainingMatches": 78,
+      "actual": "小琳谷芷",
+      "actualProbability": 0.1718086314627165,
+      "actualRank": 2,
+      "predicted": [
+        "丰川祥子"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7613740293510995,
+        "brier": 0.8245294752446427,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "小琳谷芷",
+          "probability": 0.1718086314627165
+        },
+        {
+          "nickname": "EZ灬欧洲鱼",
+          "probability": 0.14876356449578781
+        },
+        {
+          "nickname": "丰川祥子",
+          "probability": 0.19511648589990388
+        },
+        {
+          "nickname": "下雨了下雨了",
+          "probability": 0.16766723285858223
+        },
+        {
+          "nickname": "985第一环",
+          "probability": 0.1678994062336791
+        },
+        {
+          "nickname": "BLIBLI喵喵虾条",
+          "probability": 0.1487446790493304
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:3",
+      "day": "2026-11-10",
+      "ordinal": 3,
+      "ban": "逐鹿",
+      "trainingMatches": 78,
+      "actual": "有局丨白兔",
+      "actualProbability": 0.17499744486520322,
+      "actualRank": 2,
+      "predicted": [
+        "遗愿"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7429839059354826,
+        "brier": 0.8172771985853465,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "有局丨白兔",
+          "probability": 0.17499744486520322
+        },
+        {
+          "nickname": "蒜香",
+          "probability": 0.16618620407270104
+        },
+        {
+          "nickname": "DY寻心",
+          "probability": 0.17149615238529328
+        },
+        {
+          "nickname": "猫爷",
+          "probability": 0.16618620407270104
+        },
+        {
+          "nickname": "抖音群星YUN落",
+          "probability": 0.14577135216466494
+        },
+        {
+          "nickname": "遗愿",
+          "probability": 0.1753626424394365
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:4",
+      "day": "2026-11-10",
+      "ordinal": 4,
+      "ban": "大河",
+      "trainingMatches": 78,
+      "actual": "我不是高手18",
+      "actualProbability": 0.16555948323600142,
+      "actualRank": 3,
+      "predicted": [
+        "抖音一朵老雏菊"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.798424733415963,
+        "brier": 0.8355625546137638,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "我不是高手18",
+          "probability": 0.16555948323600142
+        },
+        {
+          "nickname": "QIQQQ",
+          "probability": 0.16555948323600142
+        },
+        {
+          "nickname": "抖音一朵老雏菊",
+          "probability": 0.16914950821069719
+        },
+        {
+          "nickname": "比特",
+          "probability": 0.16555948323600142
+        },
+        {
+          "nickname": "抖音WG棒教练",
+          "probability": 0.16555948323600142
+        },
+        {
+          "nickname": "抖音EGM皮皮鲨",
+          "probability": 0.168612558845297
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:5",
+      "day": "2026-11-10",
+      "ordinal": 5,
+      "ban": "逐鹿",
+      "trainingMatches": 78,
+      "actual": "问鼎巅峰年年",
+      "actualProbability": 0.17036858383814438,
+      "actualRank": 4,
+      "predicted": [
+        "抖音清晨"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7697910487316735,
+        "brier": 0.8269844374167422,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EGM断弦",
+          "probability": 0.1727291512185375
+        },
+        {
+          "nickname": "抖音搜索北念",
+          "probability": 0.14540842824202085
+        },
+        {
+          "nickname": "小慷",
+          "probability": 0.17689519204780876
+        },
+        {
+          "nickname": "抖音清晨",
+          "probability": 0.18225165622346076
+        },
+        {
+          "nickname": "问鼎巅峰年年",
+          "probability": 0.17036858383814438
+        },
+        {
+          "nickname": "娇弱的佩奇",
+          "probability": 0.15234698843002784
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:6",
+      "day": "2026-11-10",
+      "ordinal": 6,
+      "ban": "日落海",
+      "trainingMatches": 78,
+      "actual": "抖音所演II",
+      "actualProbability": 0.15542508250113113,
+      "actualRank": 5,
+      "predicted": [
+        "抖音梦飞77"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.861591448016961,
+        "brier": 0.8563774526692778,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音湛蓝",
+          "probability": 0.15298458405333476
+        },
+        {
+          "nickname": "抖音梦飞77",
+          "probability": 0.1809151732779805
+        },
+        {
+          "nickname": "EZ将我意",
+          "probability": 0.17100812394540515
+        },
+        {
+          "nickname": "抖音、区王",
+          "probability": 0.17148462646411955
+        },
+        {
+          "nickname": "抖音所演II",
+          "probability": 0.15542508250113113
+        },
+        {
+          "nickname": "抖音梦飞1",
+          "probability": 0.1681824097580288
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:7",
+      "day": "2026-11-10",
+      "ordinal": 7,
+      "ban": "河洛",
+      "trainingMatches": 78,
+      "actual": "抖音EGM小谷芷",
+      "actualProbability": 0.17154213279890718,
+      "actualRank": 1,
+      "predicted": [
+        "抖音EGM小谷芷"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.7629263702518048,
+        "brier": 0.823643897606457,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EGM小谷芷",
+          "probability": 0.17154213279890718
+        },
+        {
+          "nickname": "抖音QT新一",
+          "probability": 0.169932311745726
+        },
+        {
+          "nickname": "风喵喵",
+          "probability": 0.16401495500595964
+        },
+        {
+          "nickname": "YK、",
+          "probability": 0.16312974056180626
+        },
+        {
+          "nickname": "自信纯真小猫",
+          "probability": 0.16401495500595964
+        },
+        {
+          "nickname": "桉",
+          "probability": 0.16736590488164127
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:8",
+      "day": "2026-11-10",
+      "ordinal": 8,
+      "ban": "逐鹿",
+      "trainingMatches": 78,
+      "actual": "抖音梦飞久迁",
+      "actualProbability": 0.1630529521050524,
+      "actualRank": 4,
+      "predicted": [
+        "抖音猪葛龟龟"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8136802713906113,
+        "brier": 0.8416240390105965,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "B站QT逆光",
+          "probability": 0.17721404984409006
+        },
+        {
+          "nickname": "WE葫芦呼噜",
+          "probability": 0.14728683949920696
+        },
+        {
+          "nickname": "白白白白白3",
+          "probability": 0.15243122186834338
+        },
+        {
+          "nickname": "抖音猪葛龟龟",
+          "probability": 0.18155517000883478
+        },
+        {
+          "nickname": "抖音梦飞久迁",
+          "probability": 0.1630529521050524
+        },
+        {
+          "nickname": "抖音梦飞冻冻",
+          "probability": 0.17845976667447236
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:1",
+      "day": "2026-11-11",
+      "ordinal": 1,
+      "ban": "三分",
+      "trainingMatches": 86,
+      "actual": "抖音MG棒教练",
+      "actualProbability": 0.14738032304879561,
+      "actualRank": 4,
+      "predicted": [
+        "抖音EZ阿文"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.914738801701083,
+        "brier": 0.8763619381622273,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音湛蓝",
+          "probability": 0.14486353550018344
+        },
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.22141890225456268
+        },
+        {
+          "nickname": "抖音猪葛龟龟",
+          "probability": 0.17280974922689477
+        },
+        {
+          "nickname": "抖音MG棒教练",
+          "probability": 0.14738032304879561
+        },
+        {
+          "nickname": "BLIBLI喵喵虾条",
+          "probability": 0.14303608069960633
+        },
+        {
+          "nickname": "遗愿",
+          "probability": 0.17049140926995715
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:3",
+      "day": "2026-11-11",
+      "ordinal": 3,
+      "ban": "大河",
+      "trainingMatches": 86,
+      "actual": "B站万象棋小祥",
+      "actualProbability": 0.15419887535619275,
+      "actualRank": 2,
+      "predicted": [
+        "有局丨白兔"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8695121112894093,
+        "brier": 0.8640174914043097,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "有局丨白兔",
+          "probability": 0.23586578970912872
+        },
+        {
+          "nickname": "B站万象棋小祥",
+          "probability": 0.15419887535619275
+        },
+        {
+          "nickname": "小暖贴贴",
+          "probability": 0.1524838337336696
+        },
+        {
+          "nickname": "好事又来到",
+          "probability": 0.1524838337336696
+        },
+        {
+          "nickname": "BILI终岁无时闲",
+          "probability": 0.1524838337336696
+        },
+        {
+          "nickname": "辉夜7CC",
+          "probability": 0.1524838337336696
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:4",
+      "day": "2026-11-11",
+      "ordinal": 4,
+      "ban": "大河",
+      "trainingMatches": 86,
+      "actual": "无缺OVO",
+      "actualProbability": 0.16719319650917494,
+      "actualRank": 2,
+      "predicted": [
+        "DY道无涯"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7886052698940258,
+        "brier": 0.8323032595125375,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "无缺OVO",
+          "probability": 0.16719319650917494
+        },
+        {
+          "nickname": "QVVVQ",
+          "probability": 0.16719319650917494
+        },
+        {
+          "nickname": "白龙",
+          "probability": 0.16719319650917494
+        },
+        {
+          "nickname": "I蟲、初心",
+          "probability": 0.16719319650917494
+        },
+        {
+          "nickname": "DY道无涯",
+          "probability": 0.1687488151182787
+        },
+        {
+          "nickname": "抖音、区王",
+          "probability": 0.16247839884502152
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:5",
+      "day": "2026-11-11",
+      "ordinal": 5,
+      "ban": "大河",
+      "trainingMatches": 86,
+      "actual": "抖音搜流儿",
+      "actualProbability": 0.20047084298312284,
+      "actualRank": 1,
+      "predicted": [
+        "抖音搜流儿"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.6070864643408085,
+        "brier": 0.7672422225048288,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "好运且慕名",
+          "probability": 0.162607451294171
+        },
+        {
+          "nickname": "抖音EG夜阳",
+          "probability": 0.162607451294171
+        },
+        {
+          "nickname": "幕后",
+          "probability": 0.162607451294171
+        },
+        {
+          "nickname": "抖音搜流儿",
+          "probability": 0.20047084298312284
+        },
+        {
+          "nickname": "抖音EGM皮皮鲨",
+          "probability": 0.14909935184019318
+        },
+        {
+          "nickname": "好运且丝绸",
+          "probability": 0.162607451294171
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:6",
+      "day": "2026-11-11",
+      "ordinal": 6,
+      "ban": "日落海",
+      "trainingMatches": 86,
+      "actual": "小宁来也",
+      "actualProbability": 0.1452819860054894,
+      "actualRank": 4,
+      "predicted": [
+        "抖音小新游"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.9290786940306202,
+        "brier": 0.8795410242026307,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "我不是高手18",
+          "probability": 0.19211482426524976
+        },
+        {
+          "nickname": "抖音梦飞77",
+          "probability": 0.17651765976798778
+        },
+        {
+          "nickname": "左熠熠熠熠",
+          "probability": 0.1452819860054894
+        },
+        {
+          "nickname": "抖音小新游",
+          "probability": 0.19999203726366793
+        },
+        {
+          "nickname": "自信纯真小猫",
+          "probability": 0.14081150669211565
+        },
+        {
+          "nickname": "小宁来也",
+          "probability": 0.1452819860054894
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:1",
+      "day": "2026-11-13",
+      "ordinal": 1,
+      "ban": null,
+      "trainingMatches": 91,
+      "actual": "丰川祥子",
+      "actualProbability": 0.18888887882732264,
+      "actualRank": 1,
+      "predicted": [
+        "丰川祥子"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.6665963795411658,
+        "brier": 0.789536295629277,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音QT新一",
+          "probability": 0.15951993580732682
+        },
+        {
+          "nickname": "丰川祥子",
+          "probability": 0.18888887882732264
+        },
+        {
+          "nickname": "下雨了下雨了",
+          "probability": 0.15706422458470437
+        },
+        {
+          "nickname": "抖音CC",
+          "probability": 0.1650631250747452
+        },
+        {
+          "nickname": "抖音七七尾小九",
+          "probability": 0.1650631250747452
+        },
+        {
+          "nickname": "阿震",
+          "probability": 0.16440071063115577
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:2",
+      "day": "2026-11-13",
+      "ordinal": 2,
+      "ban": "河洛",
+      "trainingMatches": 91,
+      "actual": "EZ、小九7D版",
+      "actualProbability": 0.16621799451688768,
+      "actualRank": 2,
+      "predicted": [
+        "小琳谷芷"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.794455132163542,
+        "brier": 0.8344730147741527,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "小琳谷芷",
+          "probability": 0.1801982221339073
+        },
+        {
+          "nickname": "BILI猫猫雪团",
+          "probability": 0.16621799451688768
+        },
+        {
+          "nickname": "雾与散声慢慢",
+          "probability": 0.163545472097486
+        },
+        {
+          "nickname": "抖音清晨",
+          "probability": 0.16052434875531268
+        },
+        {
+          "nickname": "DY道无涯",
+          "probability": 0.16329596797951873
+        },
+        {
+          "nickname": "EZ、小九7D版",
+          "probability": 0.16621799451688768
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:3",
+      "day": "2026-11-13",
+      "ordinal": 3,
+      "ban": "大河",
+      "trainingMatches": 91,
+      "actual": "EZ灬欧洲鱼",
+      "actualProbability": 0.16257300834954697,
+      "actualRank": 5,
+      "predicted": [
+        "抖音EZ阿文"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8166280959582926,
+        "brier": 0.8417615853368003,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "EZ灬欧洲鱼",
+          "probability": 0.16257300834954697
+        },
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.18023765906839126
+        },
+        {
+          "nickname": "最后在孕一把",
+          "probability": 0.16382981631146806
+        },
+        {
+          "nickname": "好运不赔光",
+          "probability": 0.16382981631146806
+        },
+        {
+          "nickname": "小暖贴贴",
+          "probability": 0.16187726944005676
+        },
+        {
+          "nickname": "遗愿",
+          "probability": 0.1676524305190688
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:4",
+      "day": "2026-11-13",
+      "ordinal": 4,
+      "ban": "河洛",
+      "trainingMatches": 91,
+      "actual": "抖音、区王",
+      "actualProbability": 0.15306972167564728,
+      "actualRank": 6,
+      "predicted": [
+        "抖音搜流儿"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8768617641616974,
+        "brier": 0.8616223221030571,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "EZ拉丁鱼",
+          "probability": 0.16482142197656377
+        },
+        {
+          "nickname": "抖音搜流儿",
+          "probability": 0.18628005237288978
+        },
+        {
+          "nickname": "小宁来也",
+          "probability": 0.18381724637140914
+        },
+        {
+          "nickname": "娇弱的佩奇",
+          "probability": 0.15542242495412886
+        },
+        {
+          "nickname": "抖音、区王",
+          "probability": 0.15306972167564728
+        },
+        {
+          "nickname": "抖音群星YUN落",
+          "probability": 0.15658913264936128
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:5",
+      "day": "2026-11-13",
+      "ordinal": 5,
+      "ban": "逐鹿",
+      "trainingMatches": 91,
+      "actual": "抖音湛蓝",
+      "actualProbability": 0.1585347158768057,
+      "actualRank": 6,
+      "predicted": [
+        "抖音EGM小谷芷"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8417816820339317,
+        "brier": 0.8503666613108375,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音EGM小谷芷",
+          "probability": 0.19148593422689308
+        },
+        {
+          "nickname": "抖音湛蓝",
+          "probability": 0.1585347158768057
+        },
+        {
+          "nickname": "抖音刺痛",
+          "probability": 0.15945684830390133
+        },
+        {
+          "nickname": "抖音EG航迹云",
+          "probability": 0.1652181465523126
+        },
+        {
+          "nickname": "抖音WG棒教练",
+          "probability": 0.16194868823623368
+        },
+        {
+          "nickname": "猫爷",
+          "probability": 0.16335566680385358
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:6",
+      "day": "2026-11-13",
+      "ordinal": 6,
+      "ban": "日落海",
+      "trainingMatches": 91,
+      "actual": "I蟲、初心",
+      "actualProbability": 0.16186892534621347,
+      "actualRank": 4,
+      "predicted": [
+        "B站万象棋小祥"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8209683740512421,
+        "brier": 0.8434678782001939,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音猪葛龟龟",
+          "probability": 0.1651616046371966
+        },
+        {
+          "nickname": "B站万象棋小祥",
+          "probability": 0.18736445753298325
+        },
+        {
+          "nickname": "I蟲、初心",
+          "probability": 0.16186892534621347
+        },
+        {
+          "nickname": "EG小宇13",
+          "probability": 0.16074577507918916
+        },
+        {
+          "nickname": "985第一环",
+          "probability": 0.15974465709904503
+        },
+        {
+          "nickname": "抖音EZ嘉誉",
+          "probability": 0.16511458030537243
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:7",
+      "day": "2026-11-13",
+      "ordinal": 7,
+      "ban": "日落海",
+      "trainingMatches": 91,
+      "actual": "LERO谷芷",
+      "actualProbability": 0.16069902052002744,
+      "actualRank": 5,
+      "predicted": [
+        "EZ姚半仙"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.828222101341082,
+        "brier": 0.8456429957638433,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "LERO谷芷",
+          "probability": 0.16069902052002744
+        },
+        {
+          "nickname": "抖音EG泪花",
+          "probability": 0.17068968937948953
+        },
+        {
+          "nickname": "BILI星光柯基",
+          "probability": 0.16210558687535784
+        },
+        {
+          "nickname": "抖音EZ、色彩",
+          "probability": 0.1564184352323485
+        },
+        {
+          "nickname": "抖音妖柒",
+          "probability": 0.1697334661425679
+        },
+        {
+          "nickname": "EZ姚半仙",
+          "probability": 0.18035380185020877
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:8",
+      "day": "2026-11-13",
+      "ordinal": 8,
+      "ban": "日落海",
+      "trainingMatches": 91,
+      "actual": "抖音小新游",
+      "actualProbability": 0.18096259675463391,
+      "actualRank": 1,
+      "predicted": [
+        "抖音小新游"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.7094649168353562,
+        "brier": 0.805012915648391,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "胖狗王刺痛版",
+          "probability": 0.1649879899641893
+        },
+        {
+          "nickname": "抖音小新游",
+          "probability": 0.18096259675463391
+        },
+        {
+          "nickname": "自信纯真小猫",
+          "probability": 0.16015523026342043
+        },
+        {
+          "nickname": "抖音遗愿",
+          "probability": 0.16230433253237594
+        },
+        {
+          "nickname": "抖音梦飞1",
+          "probability": 0.1666018605211911
+        },
+        {
+          "nickname": "抖音搜小意",
+          "probability": 0.1649879899641893
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:1",
+      "day": "2026-11-14",
+      "ordinal": 1,
+      "ban": "逐鹿",
+      "trainingMatches": 99,
+      "actual": "抖音EZ阿文",
+      "actualProbability": 0.18048032395305996,
+      "actualRank": 1,
+      "predicted": [
+        "抖音EZ阿文"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.7121335157213724,
+        "brier": 0.8061758247832636,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音湛蓝",
+          "probability": 0.1745437780670592
+        },
+        {
+          "nickname": "抖音EZ阿文",
+          "probability": 0.18048032395305996
+        },
+        {
+          "nickname": "抖音妖柒",
+          "probability": 0.16761475111149468
+        },
+        {
+          "nickname": "抖音道无涯",
+          "probability": 0.1587896726582556
+        },
+        {
+          "nickname": "阿震",
+          "probability": 0.15454032511204657
+        },
+        {
+          "nickname": "遗愿",
+          "probability": 0.16403114909808386
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:2",
+      "day": "2026-11-14",
+      "ordinal": 2,
+      "ban": "逐鹿",
+      "trainingMatches": 99,
+      "actual": "B站QT小优律",
+      "actualProbability": 0.16010466913927432,
+      "actualRank": 5,
+      "predicted": [
+        "B站万象棋小祥"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8319274955116946,
+        "brier": 0.8470497861296367,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "小琳谷芷",
+          "probability": 0.1788455213640832
+        },
+        {
+          "nickname": "BILI猫猫雪团",
+          "probability": 0.16051231339688365
+        },
+        {
+          "nickname": "十连六之人",
+          "probability": 0.1641025815190966
+        },
+        {
+          "nickname": "B站万象棋小祥",
+          "probability": 0.18148043071822942
+        },
+        {
+          "nickname": "B站QT小优律",
+          "probability": 0.16010466913927432
+        },
+        {
+          "nickname": "抖音EGM皮皮鲨",
+          "probability": 0.15495448386243268
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:3",
+      "day": "2026-11-14",
+      "ordinal": 3,
+      "ban": "大河",
+      "trainingMatches": 99,
+      "actual": "抖音搜天眷",
+      "actualProbability": 0.16135827350567328,
+      "actualRank": 3,
+      "predicted": [
+        "抖音、区王"
+      ],
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.8241280850360024,
+        "brier": 0.8447199447390638,
+        "top1Credit": 0
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "抖音搜天眷",
+          "probability": 0.16135827350567328
+        },
+        {
+          "nickname": "北念且好运",
+          "probability": 0.16135827350567328
+        },
+        {
+          "nickname": "抖音刺痛",
+          "probability": 0.1540892932510445
+        },
+        {
+          "nickname": "小宁来也",
+          "probability": 0.1788337134289761
+        },
+        {
+          "nickname": "抖音、区王",
+          "probability": 0.18534154999858019
+        },
+        {
+          "nickname": "抖音群星YUN落",
+          "probability": 0.15901889631005278
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:4",
+      "day": "2026-11-14",
+      "ordinal": 4,
+      "ban": "大河",
+      "trainingMatches": 99,
+      "actual": "丰川祥子",
+      "actualProbability": 0.19705861132830338,
+      "actualRank": 1,
+      "predicted": [
+        "丰川祥子"
+      ],
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.6242540750612664,
+        "brier": 0.774210071930764,
+        "top1Credit": 1
+      },
+      "converged": true,
+      "probabilities": [
+        {
+          "nickname": "事后诸葛亮",
+          "probability": 0.15628100568773123
+        },
+        {
+          "nickname": "DOUYIN小猪柒宝",
+          "probability": 0.15806184648986724
+        },
+        {
+          "nickname": "丰川祥子",
+          "probability": 0.19705861132830338
+        },
+        {
+          "nickname": "DY棒教练",
+          "probability": 0.15503410046020646
+        },
+        {
+          "nickname": "抖音搜流儿",
+          "probability": 0.18126858117970662
+        },
+        {
+          "nickname": "猫爷",
+          "probability": 0.1522958548541851
+        }
+      ]
+    }
+  ],
+  "limitations": "11月8–14日为此前分析过的历史窗口。禁用来自赛果原图，阵容竞争使用此前玩法推估。缺少历史赛前棋手证据。"
+}

@@ -16,14 +16,23 @@ test('资料样本只接收完整六人唯一冠军，记录可复算的参数�
  const r=experimentalWinnerEstimate(catalog,roster,'2026-01-02');assert.equal(r.calibrated,false);assert.equal(r.computedBy,'BACKEND_DETERMINISTIC_PROGRAM');assert.equal(r.dataHash.length,64);assert.deepEqual(r.trainingMatchIds,['a']);assert.equal(r.players.length,6);assert.equal(experimentalWinnerEstimate(catalog,roster,'2026-01-01T00:00:00Z').trainingMatches,0)
 })
 
-test('分析结果保留主概率并附上同名单的近期模型对照',()=>{
- const g=game('a','2026-01-01','A')
- const roster=g.seats.map(s=>({profileId:s.id,nickname:s.id}))
- const catalog={players:g.seats.map(s=>({id:s.id,history:[{matchId:g.id,day:g.day,rank:s.winner?1:null}]}))}
- const result=experimentalWinnerEstimate(catalog,roster,'2026-01-02')
- assert.deepEqual(result.players.map(p=>p.probability),predictWinner(trainWinnerModel([g]),roster.map(p=>p.profileId)))
- assert.equal(result.challenger.status,'SHADOW_ONLY')
- assert.equal(result.challenger.converged,true)
- assert.deepEqual(result.challenger.players.map(p=>p.profileId),roster.map(p=>p.profileId))
- assert.ok(Math.abs(result.challenger.players.reduce((sum,p)=>sum+p.probability,0)-1)<1e-12)
+test('综合实验预测使用当场禁用、同场交手和已确认的玩法',()=>{
+ const games=Array.from({length:6},(_,i)=>game('g'+i,'2026-01-0'+(i+1),'A'))
+ const roster=games[0].seats.map(seat=>({profileId:seat.id,nickname:seat.id}))
+ const catalog={
+  matches:games.map(g=>({id:g.id,ban:'河洛'})),
+  players:roster.map((player,index)=>({
+   id:player.profileId,
+   history:games.map(g=>({matchId:g.id,day:g.day,rank:index===0?1:null,build:index<2?'三分倒转':'逐鹿嬴政'}))
+  }))
+ }
+ const context={bannedFaction:'河洛',players:roster.map((_,index)=>({visiblePlan:index<2?'三分倒转':'逐鹿嬴政'}))}
+ const result=experimentalWinnerEstimate(catalog,roster,'2026-01-07',context)
+ assert.equal(result.modelVersion,'source-roster-context-3d-v4')
+ assert.equal(result.diagnostic.strictHits,5)
+ for(const signal of ['ban','opponents','contention']) assert.ok(Math.abs(result.signals[0][signal])>1e-8,signal)
+ assert.ok(result.players[0].probability>result.players[1].probability)
+ const changed=experimentalWinnerEstimate(catalog,roster,'2026-01-07',{...context,bannedFaction:'日落海'})
+ assert.equal(changed.signals[0].ban,0)
+ assert.notEqual(changed.players[0].probability,result.players[0].probability)
 })

@@ -26,7 +26,7 @@ export function assessRoster(catalog,input,draft){
  if(rows.some(r=>!r.profileId))blockers.push('UNMATCHED_PLAYER')
  if(catalog.sources.some(s=>s.status!=='TRANSCRIBED'))blockers.push('INCOMPLETE_SOURCE_COVERAGE')
  if(draft.ocr.phaseHint==='POSTMATCH_INDICATORS')blockers.push('SCREENSHOT_HAS_POSTMATCH_INDICATORS')
- const model=input.experimentalProbability===true&&draft.ocr.phaseHint!=='POSTMATCH_INDICATORS'?experimentalWinnerEstimate(catalog,rows,draft.featureCutoff):null
+ const model=input.experimentalProbability===true&&draft.ocr.phaseHint!=='POSTMATCH_INDICATORS'?experimentalWinnerEstimate(catalog,rows,draft.featureCutoff,aceContext):null
  if(model)rows.forEach((row,i)=>{row.probability=model.players[i].probability})
  return {model,aceContext,status:model?'EXPERIMENTAL_PROBABILITIES':'DATA_AUDIT_ONLY',phase:'PREMATCH',featureCutoff:draft.featureCutoff,calibrated:false,players:rows,blockers,coverage:{...catalog.counts,transcribedSources:catalog.sources.filter(s=>s.status==='TRANSCRIBED').length},allocation:{status:'ABSTAIN',unit:'VIRTUAL_GAME_POINTS_ONLY',reserveRatio:1,players:rows.map(p=>({nickname:p.nickname,ratio:0})),reason:'身份、历史模式版本、赛果核验和时间回测校准尚未完成，不从未经校准的比例生成投比。'},notice:model?'概率由后端同场冠军模型计算，属于未校准实验估计；来源样本、模式版本与账号身份仍有缺口，不生成自动投比。':'当前显示第三方来源样本统计，不是六人同场的获胜概率。玩家选择需人工确认；仅使用截图时已知的棋手、禁用和玩法，赛后成型阵容不倒填；返奖率与获胜概率分别记录。'}
 }

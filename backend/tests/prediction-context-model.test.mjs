@@ -27,3 +27,17 @@ test('棋手和计划只接受带证据且早于开赛的输入',()=>{
  g.seats[0].prematch.observedAt=g.startsAt;assert.deepEqual(knownChoice(g,g.seats[0]),{})
  delete g.seats[0].prematch.evidenceId;assert.deepEqual(knownChoice(g,g.seats[0]),{})
 })
+test('优先模型按历史夺冠和同禁用表现打分，双方均未夺冠时不判交手胜负',()=>{
+ const cfg=CANDIDATES.find(c=>c.id==='priority-full')
+ const old=game('old','2026-01-01')
+ const target=game('current','2026-01-02')
+ const f=contextFeatures([old],target,cfg)
+ assert.ok(f[0].championCount>f[1].championCount)
+ assert.ok(f[0].sameBanForm>f[1].sameBanForm)
+ assert.ok(f[0].playerMatchup>0)
+ assert.ok(f[1].playerMatchup<0)
+ const otherRoster={...target,seats:target.seats.slice(1).concat({id:'x'})}
+ assert.equal(contextFeatures([old],otherRoster,cfg)[0].playerMatchup,0)
+ assert.equal(contextFeatures([old],{...target,ban:'河洛'},cfg)[0].sameBanForm,0)
+ assert.equal(f[0].playerCommanderChampions,undefined)
+})
