@@ -1,7 +1,9 @@
+import {fieldFeatures} from './field-features.mjs'
 import {normalizeLabel} from './build-stats.mjs'
 
 // Offline challenger. All result-derived features use strictly earlier dates.
 export const CONTEXT_VERSION='historical-context-softmax-v1'
+export const FIELD_CONFIG=Object.freeze({id:'field-context',field:true,halfLife:14,lambda:4})
 export const FULL_CONTEXT_ID='priority-contention'
 export const CANDIDATES=Object.freeze([
  {id:'player-only',history:false,builds:false,halfLife:Infinity},
@@ -43,6 +45,7 @@ function matchup(history, own, rivals, identify) {
 export function contextFeatures(history,game,config,confirmedChoices=[]){
  const choices=new Map(game.seats.map((seat,index)=>[seat,confirmedChoices[index]??knownChoice(game,seat)]))
  const past=history.filter(g=>g.day<game.day)
+ if(config.field)return fieldFeatures(past,game,choices,knownChoice)
  const distributions=new Map()
  if(config.contention) for(const seat of game.seats){
   const plan=normalizeLabel(choices.get(seat).plan)
@@ -120,15 +123,20 @@ export function contextFeatures(history,game,config,confirmedChoices=[]){
 export function trainContextModel(history,day,config){
  const games=history.filter(g=>g.day<day)
  const examples=games.map(g=>({features:contextFeatures(games,g,config),winner:g.seats.findIndex(s=>s.winner),weight:Math.pow(2,-age(day,g.day)/config.halfLife)}))
- const names=[...new Set(examples.flatMap(e=>e.features.flatMap(Object.keys)))].sort(),index=new Map(names.map((s,i)=>[s,i])),weights=names.map(()=>0)
- const sparse=examples.map(e=>({...e,features:e.features.map(f=>Object.entries(f).map(([k,v])=>[index.get(k),v]))}))
+ const names=[...new Set(examples.flatMap(e=>e.features.flatMap(Object.keys)))].filter(key=>key!=='baseScore').sort()
+ const index=new Map(names.map((name,i)=>[name,i])),weights=names.map(()=>0)
+ const sparse=examples.map(example=>({
+  ...example,
+  offsets:example.features.map(row=>row.baseScore??0),
+  features:example.features.map(row=>Object.entries(row).filter(([key])=>index.has(key)).map(([key,value])=>[index.get(key),value]))
+ }))
  const lambda=config.lambda??2
  const step=1/(lambda+sparse.reduce((sum,e)=>sum+e.weight*Math.max(...e.features.map(f=>f.reduce((a,[,v])=>a+v*v,0))),0))
  let iterations=0,gradientMax=Infinity
  for(let epoch=0;epoch<4000;epoch++){
   const grad=weights.map(x=>lambda*x)
   for(const e of sparse){
-   const p=softmax(e.features.map(f=>f.reduce((a,[i,v])=>a+weights[i]*v,0)))
+   const p=softmax(e.features.map((row,seat)=>row.reduce((score,[i,value])=>score+weights[i]*value,e.offsets[seat])))
    e.features.forEach((f,j)=>f.forEach(([i,v])=>{grad[i]+=e.weight*(p[j]-Number(j===e.winner))*v}))
   }
   gradientMax=Math.max(0,...grad.map(Math.abs))
@@ -142,6 +150,6 @@ export function predictContext(model,history,game,confirmedChoices){
  if(game.day!==model.day)throw Error('Model cutoff must match prediction day')
  const features=contextFeatures(history.filter(g=>model.trainingIds.includes(g.id)),game,model.config,confirmedChoices)
  const scoreScale=model.config.scoreScale??1
- const scores=features.map(row=>Object.entries(row).reduce((sum,[key,value])=>sum+(model.parameters[key]??0)*value,0))
+ const scores=features.map(({baseScore=0,...row})=>Object.entries(row).reduce((sum,[key,value])=>sum+(model.parameters[key]??0)*value,baseScore))
  return softmax(scores.map(score=>score*scoreScale))
 }

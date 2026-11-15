@@ -1,8 +1,6 @@
 import {createHash} from 'node:crypto'
-import {CANDIDATES,FULL_CONTEXT_ID,trainContextModel,predictContext,contextFeatures} from './context-model.mjs'
-export const MODEL_VERSION='source-roster-context-3d-v5'
-// Chosen against actual winners in the pre-November-8 rolling replay.
-const FULL_CONFIG={...CANDIDATES.find(candidate=>candidate.id===FULL_CONTEXT_ID),halfLife:3,lambda:8,scoreScale:1.25}
+import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures} from './context-model.mjs'
+export const MODEL_VERSION='source-roster-field-v6'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
@@ -48,13 +46,13 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
  const ids=roster.map(player=>player.profileId||'__UNSEEN__')
  const target={day,ban:aceContext?.bannedFaction??null,seats:ids.map(id=>({id}))}
  const choices=aceContext?.players.map(player=>({commander:player.commander,plan:player.visiblePlan}))
- const model=trainContextModel(games,day,FULL_CONFIG)
+ const model=trainContextModel(games,day,FIELD_CONFIG)
  const probabilities=predictContext(model,games,target,choices)
- const features=contextFeatures(games,target,FULL_CONFIG,choices)
+ const features=contextFeatures(games,target,FIELD_CONFIG,choices)
  return {
   status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',
   modelVersion:MODEL_VERSION,
-  config:{...FULL_CONFIG,halfLifeDays:FULL_CONFIG.halfLife},
+  config:{...FIELD_CONFIG,halfLifeDays:FIELD_CONFIG.halfLife},
   computedBy:'BACKEND_DETERMINISTIC_PROGRAM',
   calibrated:false,
   cutoff,
@@ -69,12 +67,16 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
    probability:probabilities[index],
    coldStart:!player.profileId||!Object.hasOwn(model.parameters,`player:${player.profileId}`)
   })),
-  signals:features.map(row=>({
-   ban:(row.sameBanForm??0)*(model.parameters.sameBanForm??0),
-   opponents:(row.playerMatchup??0)*(model.parameters.playerMatchup??0),
-   contention:Object.entries(row).filter(([name])=>name.startsWith('contention:')).reduce((sum,[name,value])=>sum+value*(model.parameters[name]??0),0)
-  })),
-  diagnostic:chronologicalDiagnostic(games,FULL_CONFIG),
-  notice:'综合模型按近期战绩、同禁用表现、同场交手和同玩法竞争计算。将六人综合评分差放大 25% 后归一。结果为未校准的实验概率。'
+  signals:features.map(row=>{
+   const contribution=(...names)=>names.reduce((sum,name)=>sum+(row[name]??0)*(model.parameters[name]??0),0)
+   return {
+    ban:contribution('sameBanForm','commanderUnderBan','buildUnderBan'),
+    opponents:contribution('playerMatchup','commanderMatchup'),
+    buildFit:contribution('buildFit'),
+    contention:contribution('buildContention')
+   }
+  }),
+  diagnostic:chronologicalDiagnostic(games,FIELD_CONFIG),
+  notice:'综合模型根据近期夺冠、禁用条件、对手强弱和阵容竞争重新排序。已确认玩法优先，无确认时按历史玩法分布估算。结果为未校准的实验概率。'
  }
 }
