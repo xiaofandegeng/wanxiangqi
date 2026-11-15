@@ -141,5 +141,7 @@ export function trainContextModel(history,day,config){
 export function predictContext(model,history,game,confirmedChoices){
  if(game.day!==model.day)throw Error('Model cutoff must match prediction day')
  const features=contextFeatures(history.filter(g=>model.trainingIds.includes(g.id)),game,model.config,confirmedChoices)
- return softmax(features.map(f=>Object.entries(f).reduce((sum,[k,v])=>sum+(model.parameters[k]||0)*v,0)))
+ const scoreScale=model.config.scoreScale??1
+ const scores=features.map(row=>Object.entries(row).reduce((sum,[key,value])=>sum+(model.parameters[key]??0)*value,0))
+ return softmax(scores.map(score=>score*scoreScale))
 }

@@ -1,8 +1,8 @@
 import {createHash} from 'node:crypto'
 import {CANDIDATES,FULL_CONTEXT_ID,trainContextModel,predictContext,contextFeatures} from './context-model.mjs'
-export const MODEL_VERSION='source-roster-context-3d-v4'
+export const MODEL_VERSION='source-roster-context-3d-v5'
 // Chosen against actual winners in the pre-November-8 rolling replay.
-const FULL_CONFIG={...CANDIDATES.find(candidate=>candidate.id===FULL_CONTEXT_ID),halfLife:3,lambda:8}
+const FULL_CONFIG={...CANDIDATES.find(candidate=>candidate.id===FULL_CONTEXT_ID),halfLife:3,lambda:8,scoreScale:1.25}
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
@@ -75,6 +75,6 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
    contention:Object.entries(row).filter(([name])=>name.startsWith('contention:')).reduce((sum,[name,value])=>sum+value*(model.parameters[name]??0),0)
   })),
   diagnostic:chronologicalDiagnostic(games,FULL_CONFIG),
-  notice:'综合模型按近期战绩、同禁用表现、同场交手和同玩法竞争计算。缺少历史样本的特征贡献为零。结果为未校准的实验概率。'
+  notice:'综合模型按近期战绩、同禁用表现、同场交手和同玩法竞争计算。将六人综合评分差放大 25% 后归一。结果为未校准的实验概率。'
  }
 }

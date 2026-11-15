@@ -50,7 +50,7 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  const input={...request,version:'v1.8.1',aceContext:{supportStage:'OPEN',bannedFaction:'日落海',grossReturnConfirmed:true},players:profiles.map(p=>({nickname:p.nickname,profileId:p.id,commander:'TEST棋手',returnMultiplier:5.6}))}
  const first=await post(`screenshots/${draft.id}/analyze`,input);assert.equal(first.status,200);assert.equal(first.json.data.status,'DATA_AUDIT_ONLY');assert.equal(first.json.data.allocation.status,'ABSTAIN')
  const experimental=await post(`screenshots/${draft.id}/analyze`,{...input,experimentalProbability:true});assert.equal(experimental.status,200);assert.equal(experimental.json.data.model.trainingMatches,data.matches.length);assert.ok(Math.abs(experimental.json.data.players.reduce((s,p)=>s+p.probability,0)-1)<1e-12);assert.equal(experimental.json.data.calibrated,false);assert.equal((await fetch(url+'screenshot-analyses/'+experimental.json.data.id)).status,401);assert.deepEqual((await p.screenshots.analysis(experimental.json.data.id)).model,experimental.json.data.model)
- assert.equal(experimental.json.data.model.modelVersion,'source-roster-context-3d-v4')
+ assert.equal(experimental.json.data.model.modelVersion,'source-roster-context-3d-v5')
  assert.deepEqual(experimental.json.data.players.map(p=>p.probability),experimental.json.data.model.players.map(p=>p.probability))
  const persisted=(await pool.query('SELECT result FROM prediction_screenshot_analyses WHERE id=$1',[experimental.json.data.id])).rows[0].result
  assert.deepEqual(persisted.model,experimental.json.data.model)

@@ -41,3 +41,17 @@ test('优先模型按历史夺冠和同禁用表现打分，双方均未夺冠�
  assert.equal(contextFeatures([old],{...target,ban:'河洛'},cfg)[0].sameBanForm,0)
  assert.equal(f[0].playerCommanderChampions,undefined)
 })
+
+test('放大综合评分上调首选概率，同时保持并列、总和和无历史先验',()=>{
+ const target=game('target','2026-01-02')
+ const previous=game('previous','2026-01-01')
+ const config=CANDIDATES.find(candidate=>candidate.id==='recent-player')
+ const model=trainContextModel([previous],target.day,config)
+ const original=predictContext(model,[previous],target)
+ const sharpened=predictContext({...model,config:{...config,scoreScale:1.25}},[previous],target)
+ assert.ok(sharpened[0]>original[0])
+ assert.equal(sharpened[1],sharpened[2])
+ assert.ok(Math.abs(sharpened.reduce((sum,p)=>sum+p,0)-1)<1e-12)
+ const empty=trainContextModel([],target.day,{...config,scoreScale:1.25})
+ assert.deepEqual(predictContext(empty,[],target),Array(6).fill(1/6))
+})

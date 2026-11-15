@@ -28,7 +28,7 @@ test('综合实验预测使用当场禁用、同场交手和已确认的玩法',
  }
  const context={bannedFaction:'河洛',players:roster.map((_,index)=>({visiblePlan:index<2?'三分倒转':'逐鹿嬴政'}))}
  const result=experimentalWinnerEstimate(catalog,roster,'2026-01-07',context)
- assert.equal(result.modelVersion,'source-roster-context-3d-v4')
+ assert.equal(result.modelVersion,'source-roster-context-3d-v5')
  assert.equal(result.diagnostic.strictHits,5)
  for(const signal of ['ban','opponents','contention']) assert.ok(Math.abs(result.signals[0][signal])>1e-8,signal)
  assert.ok(result.players[0].probability>result.players[1].probability)
