@@ -1,0 +1,103 @@
+{
+  "before": {
+    "key": "ruanshi:2026-11-08:1",
+    "sourceUrl": "https://www.douyin.com/note/7706018349281729452",
+    "day": "2026-11-08",
+    "ordinal": 1,
+    "materialKey": "e2b0dcad6c443b5b97338f025454a2a0bd2f21aae215a22914ef2df40661ae10",
+    "winnerSlot": 1,
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "RW侠.晓枫",
+        "build": "日落海倒转",
+        "commander": "乔汐",
+        "avatar": "/avatars/commanders/乔汐.png",
+        "winner": true
+      },
+      {
+        "slot": 2,
+        "nickname": "胜天半子嘉誉",
+        "build": "镜猪转吕布",
+        "commander": "马可",
+        "avatar": "/avatars/commanders/马可.png",
+        "winner": false
+      },
+      {
+        "slot": 3,
+        "nickname": "QT电竞披萨鱼",
+        "build": "逐鹿蒙恬",
+        "commander": "嬴律",
+        "avatar": "/avatars/commanders/嬴律.png",
+        "winner": false
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音刺儿",
+        "build": "日落海倒转",
+        "commander": "乔汐",
+        "avatar": "/avatars/commanders/乔汐.png",
+        "winner": false
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音刺痛",
+        "build": "逐鹿蒙犽",
+        "commander": "香香",
+        "avatar": "/avatars/commanders/香香.png",
+        "winner": false
+      },
+      {
+        "slot": 6,
+        "nickname": "B站QT逆光",
+        "build": "传统养猪",
+        "commander": "白歌",
+        "avatar": "/avatars/commanders/白歌.png",
+        "winner": false
+      }
+    ],
+    "winnerBuild": "日落海倒转"
+  },
+  "after": {
+    "key": "ruanshi:2026-11-08:1",
+    "day": "2026-11-08",
+    "ordinal": 1,
+    "sourceUrl": "https://www.douyin.com/note/7706004795199850341",
+    "materialKey": "793a3c21051466c0f4b7d0251667fd72be63d0890cb1435608fba58694cffbb9",
+    "ban": "日落海",
+    "winnerSlot": 1,
+    "winnerBuild": "自爆海月混搭",
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "抖音所演II",
+        "build": "高阶混搭大河"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EZ阿文",
+        "build": "三分登场"
+      },
+      {
+        "slot": 3,
+        "nickname": "YK、",
+        "build": "伞百里守约"
+      },
+      {
+        "slot": 4,
+        "nickname": "快手小斯",
+        "build": "三分登场"
+      },
+      {
+        "slot": 5,
+        "nickname": "羡慕无机盐",
+        "build": "逐鹿蒙恬"
+      },
+      {
+        "slot": 6,
+        "nickname": "小琳谷芷",
+        "build": "逐鹿嬴政"
+      }
+    ]
+  }
+}

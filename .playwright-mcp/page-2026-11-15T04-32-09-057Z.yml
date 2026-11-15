@@ -1,0 +1,134 @@
+- generic [active] [ref=f41e1]:
+  - button "开启读屏标签" [ref=f41e2]
+  - generic: 读屏标签已关闭
+  - generic [ref=f41e4]:
+    - generic [ref=f41e6]:
+      - link [ref=f41e7] [cursor=pointer]:
+        - /url: //www.douyin.com/jingxuan
+      - generic [ref=f41e13]:
+        - generic [ref=f41e15]:
+          - link "精选" [ref=f41e19] [cursor=pointer]:
+            - /url: https://www.douyin.com/jingxuan?from_nav=1
+          - link "推荐" [ref=f41e26] [cursor=pointer]:
+            - /url: https://www.douyin.com/?recommend=1&from_nav=1
+          - link "AI抖音" [ref=f41e33] [cursor=pointer]:
+            - /url: https://www.douyin.com/aisearch?from_nav=1
+          - link "关注 1" [ref=f41e41] [cursor=pointer]:
+            - /url: https://www.douyin.com/follow?from_nav=1
+            - generic [ref=f41e44]: 关注
+            - generic: "1"
+          - link "朋友" [ref=f41e49] [cursor=pointer]:
+            - /url: https://www.douyin.com/friend?from_nav=1
+          - link "我的" [ref=f41e56] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/self?from_nav=1
+          - link "直播" [ref=f41e65] [cursor=pointer]:
+            - /url: https://live.douyin.com/?from_nav=1
+          - link "放映厅" [ref=f41e72] [cursor=pointer]:
+            - /url: https://www.douyin.com/vs?from_nav=1
+          - link "短剧" [ref=f41e79] [cursor=pointer]:
+            - /url: https://www.douyin.com/series?from_nav=1
+        - generic [ref=f41e85]:
+          - generic [ref=f41e87] [cursor=pointer]
+          - generic [ref=f41e91] [cursor=pointer]
+          - generic [ref=f41e95] [cursor=pointer]
+    - generic [ref=f41e98]:
+      - banner [ref=f41e101]:
+        - generic [ref=f41e103]:
+          - generic [ref=f41e107]:
+            - generic [ref=f41e108]:
+              - generic [ref=f41e109]: 王者万象棋三分登场
+              - textbox [ref=f41e111]
+            - button "搜索" [ref=f41e113] [cursor=pointer]
+          - generic [ref=f41e120]:
+            - paragraph [ref=f41e130] [cursor=pointer]: 充钻石
+            - link [ref=f41e135] [cursor=pointer]:
+              - /url: https://www.douyin.com/download/pc/obj/douyin-pc-web/douyin-pc-client/7044145585217083655/releases/540056698/8.8.0/darwin-universal/douyin-v8.8.0-darwin-universal.dmg
+              - paragraph [ref=f41e143]: 客户端
+            - generic [ref=f41e144]: 壁纸
+            - list [ref=f41e153]:
+              - listitem [ref=f41e155]:
+                - paragraph [ref=f41e164] [cursor=pointer]: 通知
+            - list [ref=f41e165]:
+              - listitem [ref=f41e167]:
+                - paragraph [ref=f41e173] [cursor=pointer]: 消息
+            - paragraph [ref=f41e182] [cursor=pointer]: 投稿
+            - link [ref=f41e185] [cursor=pointer]:
+              - /url: //www.douyin.com/user/self
+              - listitem [ref=f41e186]
+      - main [ref=f41e190]:
+        - generic [ref=f41e193] [cursor=pointer]:
+          - generic [ref=f41e241]:
+            - generic [ref=f41e242]: "28"
+            - generic [ref=f41e249]: "6"
+            - generic [ref=f41e256]: "5"
+            - generic [ref=f41e262]: "3"
+          - generic [ref=f41e274]:
+            - button [ref=f41e276]
+            - button [ref=f41e278]
+            - button [ref=f41e280]
+            - button [ref=f41e282]
+          - generic [ref=f41e283]: 1/4
+        - generic [ref=f41e293]:
+          - generic [ref=f41e294]:
+            - link [ref=f41e297] [cursor=pointer]:
+              - /url: //www.douyin.com/user/MS4wLjABAAAAIAfK5ItLDLssfHQxe2GYdGn2MtBV0ktGWo4QBSjleU2e-tuypd7nXjF_-dB9BxbJ
+              - listitem [ref=f41e298]:
+                - img "抖音软柿🌈【万象棋】" [ref=f41e299]
+            - generic [ref=f41e300]:
+              - link [ref=f41e301] [cursor=pointer]:
+                - /url: //www.douyin.com/user/MS4wLjABAAAAIAfK5ItLDLssfHQxe2GYdGn2MtBV0ktGWo4QBSjleU2e-tuypd7nXjF_-dB9BxbJ
+                - generic [ref=f41e308]:
+                  - text: 抖音软柿
+                  - img "🌈" [ref=f41e309]
+                  - text: 【万象棋】
+              - paragraph [ref=f41e310]: 粉丝1298获赞5.2万
+            - button "关注" [ref=f41e312] [cursor=pointer]
+          - generic [ref=f41e315]:
+            - generic [ref=f41e316]:
+              - generic [ref=f41e321]:
+                - generic [ref=f41e322]: 万象棋王牌对决1113胜者一图流下
+                - generic [ref=f41e325]: 。
+                - generic [ref=f41e331]:
+                  - text: 恭喜胜者老师
+                  - img "🎉" [ref=f41e332]
+                - link "@湛蓝（王者万象棋）" [ref=f41e334] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAAbcfrpYtrKtMsrMnP54DL9VA6PRFnJyMmIG4QO6SBZWk
+                - link "@小谷芷（王者万象棋）" [ref=f41e339] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAA_I1FGU_RdQ3Dud-y7AUz2RBS2wLL9AJlv55_4LH3YO0
+                - link "@小新游（王者万象棋）" [ref=f41e344] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAA8eZCax4Q68B9btz9oL_iqQN_oxCYBDfdicCl5bOfuW8
+                - generic [ref=f41e345]: 在做今天的了。
+                - link "#王者万象棋" [ref=f41e349] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/1749041956903947
+                - link "#王者万象棋正式上线" [ref=f41e354] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7652591105221134351
+                - link "#王者万象棋s1创作激励" [ref=f41e359] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7699104354695677992
+                - link "#万象新星创作团" [ref=f41e364] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7683478909077162047
+              - button "展开" [ref=f41e366] [cursor=pointer]
+            - generic [ref=f41e367]: 发布时间：2026-11-14 18:33:16
+          - generic [ref=f41e372]:
+            - generic [ref=f41e374]:
+              - generic [ref=f41e375] [cursor=pointer]: 相关推荐
+              - generic [ref=f41e376] [cursor=pointer]: 评论(6)
+            - generic [ref=f41e381]:
+              - list [ref=f41e383]:
+                - listitem [ref=f41e384]:
+                  - generic [ref=f41e386] [cursor=pointer]:
+                    - generic [ref=f41e387]:
+                      - 'img "万象棋王牌对决1113胜者一图流下。恭喜胜者老师🎉@湛蓝（王者万象棋） @小谷芷（王者万象棋） @小新游（王者万象棋） 在做今天的了。 #王者万象棋 #王者万象棋正式上线 #王者万象棋s1创作激励 #万象新星创作团" [ref=f41e391]'
+                      - generic [ref=f41e393]: 播放中
+                    - generic [ref=f41e398]:
+                      - heading [level=3] [ref=f41e399]:
+                        - generic [ref=f41e406]:
+                          - text: 万象棋王牌对决1113胜者一图流下。恭喜胜者老师
+                          - img "🎉" [ref=f41e407]
+                          - text: "@湛蓝（王者万象棋） @小谷芷（王者万象棋） @小新游（王者万象棋） 在做今天的了。#王者万象棋 #王者万象棋正式上线 #王者万象棋s1创作激励 #万象新星创作团"
+                      - generic [ref=f41e408]:
+                        - generic [ref=f41e409]: "28"
+                        - generic [ref=f41e417]:
+                          - text: 抖音软柿
+                          - img "🌈" [ref=f41e418]
+                          - text: 【万象棋】
+              - generic [ref=f41e419]: 加载中

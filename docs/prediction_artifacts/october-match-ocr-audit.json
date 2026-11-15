@@ -1,0 +1,4165 @@
+[
+  {
+    "key": "ruanshi:2026-10-23:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "AEH18732H202",
+      "第一场",
+      "禁：◎逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音梦飞7",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音梦飞7",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "遗愿",
+        "nicknameHit": true,
+        "build": "无阵营",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EG航迹云",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "小琳谷芷",
+        "nicknameHit": true,
+        "build": "光棱塔韩信",
+        "buildHit": true,
+        "commander": "班叔",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "8B21R?33H2om",
+      "第二场",
+      "禁：大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "马可削0丶7对吗",
+    "winnerHit": false,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "马可削0丶7对吗",
+        "nicknameHit": false,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EZ张嘉豪",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "EGM皮皮鲨",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "WE葫芦呼噜",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "I蟲丶沐小朵",
+        "nicknameHit": false,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "A821832H200",
+      "第三场",
+      "禁：0逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音QT萌岑",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "大河开团",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音QT萌岑",
+        "nicknameHit": true,
+        "build": "大河开团射刺",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音搜索北念",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "B站QT小优律",
+        "nicknameHit": true,
+        "build": "自爆海月大河",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "小宇13",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "B站QT逆光",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音火山羊",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-upper-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "AEH18732H202",
+      "第四场",
+      "禁：2逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音群星YUN落",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "大司命",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音群星YUN落",
+        "nicknameHit": true,
+        "build": "自爆大司命",
+        "buildHit": true,
+        "commander": "庄小鱼",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "胖狗王",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "饼子不高兴",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "快手小斯",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音龙傲天",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "AEHR3IH20",
+      "第五场",
+      "禁：◎日落海",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EGM小谷芷",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "鲸吞",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EGM小谷芷",
+        "nicknameHit": true,
+        "build": "鲸吞",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "BLIBLI猫猫虾条",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "大河开团",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音一朵老雏菊",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "百川",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "遗志干将",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "A821832H200",
+      "第六场",
+      "禁： 三分",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "QT披萨鱼遗愿",
+    "winnerHit": true,
+    "ban": "三分",
+    "banHit": true,
+    "winnerBuild": "河洛木兰",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "QT披萨鱼遗愿",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "武凤",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音小新游",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "EZ灬欧洲鱼",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "玉环",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "DY道无涯",
+        "nicknameHit": true,
+        "build": "干将遗志海月",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音梦飞1",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ小超",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-03.webp",
+    "header": [
+      "ABHR31H209",
+      "第七场",
+      "禁：w河洛",
+      "棋手选择"
+    ],
+    "dateHit": false,
+    "ordinalHit": true,
+    "winner": "武汉EG碎碎圆圆",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "镜猪吕布",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "武汉EG碎碎圆圆",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "方屿行",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "西施养猪",
+        "buildHit": true,
+        "commander": "武凤",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ泪花",
+        "nicknameHit": true,
+        "build": "养曜",
+        "buildHit": true,
+        "commander": "庄小鱼",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "曹玄德",
+        "nicknameHit": true,
+        "build": "逐鹿蒙犽",
+        "buildHit": true,
+        "commander": "香香",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-23:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1023-lower-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "1023期",
+      "AEHR31H2000",
+      "第八场",
+      "禁：0逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "白白白白白3",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "白白白白白3",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音梦飞",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "YK丶",
+        "nicknameHit": false,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EG如昨",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音66熊",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "第一场",
+      "禁：§大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "遗愿",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "遗愿",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "EGM小谷芷",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "第二场",
+      "禁：芝河洛",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "B站万象棋小祥",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "遗志吕布",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "B站万象棋小祥",
+        "nicknameHit": true,
+        "build": "干将遗志伞吕布",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "B站QT小优律",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "B站QT逆光",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "胜天半子嘉誉",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "阿震",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "AEHR732H2O2",
+      "第三场",
+      "禁：並大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音区王",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音区王",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音群星YUN落",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG如昨",
+        "nicknameHit": true,
+        "build": "镜猪转周瑜",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "EZ阿文",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-upper-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "AEH732H2002",
+      "第四场",
+      "禁：C逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音搜索北念",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "牺牲李信",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音搜索北念",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "安逸体面离场",
+        "nicknameHit": true,
+        "build": "三分射",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音龙傲天",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "尘缘A",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "DY道无涯",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "河洛没有木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "2982R3382004",
+      "第六场",
+      "禁：凉逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音EG万象棋",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音EG万象棋",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "EGM皮皮鲨",
+        "nicknameHit": true,
+        "build": "伞苏烈转伞艾琳",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "EZ小超",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音EG未言",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音梦飞11",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "白白白白白3",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "T02XB日",
+      "1024期",
+      "第七场",
+      "禁：0逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音小新游",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "传统养猪",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音小新游",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EG小意",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音清晨",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "武汉EG碎碎圆圆",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "干将遗志露娜",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "B站QT孙悟方",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-24:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1024-lower-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "1024期",
+      "498HR3JH2002",
+      "第八场",
+      "禁：Y河洛",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音梦飞",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音梦飞",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "干将遗志伞吕布",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "I蟲抖音猪葛龟",
+        "nicknameHit": false,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "镜猪",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ张嘉豪",
+        "nicknameHit": true,
+        "build": "海月",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音梦飞冻冻",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "H8：.",
+      "1025期",
+      "S8G2R3192000gl",
+      "第一场",
+      "禁：大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "BILI星光柯基",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "河洛李白",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音刺痛",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "遗愿",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "1025期",
+      "4A8H831H2002",
+      "第二场",
+      "禁：v河洛",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音EG白起",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音EG白起",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "B站万象棋小祥",
+        "nicknameHit": true,
+        "build": "干将遗志海月",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "DY道无涯",
+        "nicknameHit": true,
+        "build": "镜猪转海月",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "B站QT逆光",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "三分毒奶",
+        "buildHit": false,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音一朵老雏菊",
+        "nicknameHit": true,
+        "build": "国士无双",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "T024B日",
+      "1025期",
+      "RaR2a1h 2009gW",
+      "第三场",
+      "禁：2日落海",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音猪葛龟龟",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "乔汐速6司空震",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG小意",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "想K益笙菌",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "I蟲丶沐小朵",
+        "nicknameHit": false,
+        "build": "鲸吞",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音龙傲天",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-upper-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "T02XB日",
+      "1025期",
+      "S8G2R3192000g",
+      "第四场",
+      "禁：並大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "I蟲抖音诸葛龟",
+    "winnerHit": false,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "日落海倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "I蟲抖音诸葛龟",
+        "nicknameHit": false,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音区王",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "墨宝",
+        "nicknameHit": true,
+        "build": "曜遗志吕布",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "胜天半子嘉誉",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "小新U",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1025期",
+      "48G2223182000g",
+      "第五场",
+      "禁：心逐鹿",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音搜索北念",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "牺牲李信",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音搜索北念",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EGM小谷芷",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "武凤",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "QT鱼沐汐0丶7版",
+        "nicknameHit": false,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "白白白白白3",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "BA",
+      "1025期",
+      "RSaR231H2000g",
+      "第六场",
+      "禁： 三分",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "风华绝代小樾",
+    "winnerHit": true,
+    "ban": "三分",
+    "banHit": true,
+    "winnerBuild": "牺牲李信",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "风华绝代小樾",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EG航迹云",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音搜流儿",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "DYEG清辞",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音梦飞1",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "1025期",
+      "2A8H891H29009",
+      "第七场",
+      "禁：◎日落海",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音EZ张嘉豪",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音EZ张嘉豪",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EGM断弦",
+        "nicknameHit": true,
+        "build": "化铁为区",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音遗愿1",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音梦飞冻冻",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ小超",
+        "nicknameHit": true,
+        "build": "逐鹿蒙犽",
+        "buildHit": true,
+        "commander": "香香",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-25:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1025-lower-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "T02X8日",
+      "1025期",
+      "SRS8R2338200091",
+      "第八场",
+      "禁：•三分",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "YK丶",
+    "winnerHit": false,
+    "ban": "三分",
+    "banHit": true,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "YK丶",
+        "nicknameHit": false,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "胖狗王",
+        "nicknameHit": true,
+        "build": "算盘李信遗志清空",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音梦飞",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "无阵营裴擒虎",
+        "buildHit": true,
+        "commander": "武凤",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音刺儿",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "武汉EG碎碎圆圆",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "玉环",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-01.webp",
+    "header": [
+      "王牌对决。",
+      "1026期",
+      "RG2R231H2000g",
+      "第一场",
+      "禁：大河",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EGM皮皮鲨",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "日落海倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EGM皮皮鲨",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EGM小谷芷",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "EZ阿文",
+        "nicknameHit": true,
+        "build": "伞狄仁杰转露娜",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EG航迹云",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音呆头鹅",
+        "nicknameHit": true,
+        "build": "炸盾廉颇",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-02.webp",
+    "header": [
+      "王牌对决。",
+      "T02A83",
+      "1026期",
+      "enn mei eoutlt",
+      "48GaR33H2000gk",
+      "第二场",
+      "禁：2日落海|",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音龙傲天",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音龙傲天",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "小琳谷芷",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "快手小斯",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音一茗",
+        "nicknameHit": true,
+        "build": "国士无双",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "胖狗王",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-03.webp",
+    "header": [
+      "王牌对决。",
+      "H8：.",
+      "1026期",
+      "SRBR233020009",
+      "第三场",
+      "禁： 三分",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EGM无量怜苓",
+    "winnerHit": true,
+    "ban": "三分",
+    "banHit": true,
+    "winnerBuild": "雷霆战机",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EGM无量怜苓",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "EZ天眷",
+        "nicknameHit": true,
+        "build": "伞沈梦溪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EGM断弦",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-04.webp",
+    "header": [
+      "王牌对决。",
+      "T02XB日",
+      "1026期",
+      "4R82R33620c3g",
+      "第四场",
+      "禁：Y河洛",
+      "棋手选择"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音梦飞22",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分倒转混沌裂隙",
+    "winnerBuildHit": false,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音梦飞22",
+        "nicknameHit": true,
+        "build": "三分倒转混沌裂隙",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "小慷",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音群星YUN落",
+        "nicknameHit": true,
+        "build": "露娜",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "虎牙EGM行乐",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音QT萌岑",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-upper-image-05.webp",
+    "header": [
+      "王牌对决",
+      "1026期",
+      "第五场",
+      "禁：0逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "WE葫芦呼噜",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "大河龙蛇",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "WE葫芦呼噜",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音清晨",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "马可之母挽星",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "EZ拉丁鱼丶沐汐",
+        "nicknameHit": false,
+        "build": "日落海倒转",
+        "buildHit": false,
+        "commander": "玉环",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EGM抖音花归尘",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-01.webp",
+    "header": [
+      "王牌对决",
+      "1026期",
+      "第六场",
+      "禁：0逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音梦飞1",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音梦飞1",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音一朵老雏菊",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "遗愿",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-02.webp",
+    "header": [
+      "玉牌对决",
+      "1026期",
+      "第七场",
+      "禁：大河",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音小新游",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "镜猪海月",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音小新游",
+        "nicknameHit": true,
+        "build": "镜猪转海月",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "武汉EG碎碎圆圆",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "玉环",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "想K益笙菌",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音搜流儿",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "B站QT逆光",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-26:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1026-lower-image-03.webp",
+    "header": [
+      "王牌对决",
+      "1026期",
+      "第八场",
+      "禁： 河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "胜天半子嘉誉",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "镜猪吕布",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "胜天半子嘉誉",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "小宇13",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音XYG懒羊羊",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音EG泪花",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "马瑶诸葛亮",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EZ羡鱼儿",
+        "nicknameHit": false,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-01.webp",
+    "header": [
+      "王牌对决",
+      "1027期",
+      "第一场",
+      "禁：2日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音湛蓝",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "EZ阿文",
+        "nicknameHit": true,
+        "build": "伞沈梦溪",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "大河蛇拼公孙离",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音QT萌岑",
+        "nicknameHit": true,
+        "build": "大河开团了一半射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-02.webp",
+    "header": [
+      "玉牌对决",
+      "1027期",
+      "第二场",
+      "禁：2日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "世薄情",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "我是66熊",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音清晨",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "EGM皮皮鲨",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "算盘周瑜换帅吕布",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-03.webp",
+    "header": [
+      "王牌对决",
+      "1027期",
+      "第三场",
+      "禁：◎逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "小天使翼",
+    "winnerHit": false,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "成年礼三分",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "小天使翼",
+        "nicknameHit": false,
+        "build": "成年礼三分",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音龙傲天",
+        "nicknameHit": true,
+        "build": "乔汐速6司空震",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "一个打五个",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音火山羊",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "ASEN",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-04.webp",
+    "header": [
+      "王牌对决",
+      "1027期",
+      "第四场",
+      "禁：◎日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "风华绝代小樾",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "金算盘",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "风华绝代小樾",
+        "nicknameHit": true,
+        "build": "金算盘",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "B站QT逆光",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG如昨",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音刺痛",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "YK丶",
+        "nicknameHit": false,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音群星李由多",
+        "nicknameHit": true,
+        "build": "大司命山鬼",
+        "buildHit": true,
+        "commander": "庄小鱼",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-05.webp",
+    "header": [
+      "玉牌对决",
+      "1027期",
+      "第五场",
+      "禁：0逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音EZ羡鱼儿",
+    "winnerHit": false,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "河洛木兰",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音EZ羡鱼儿",
+        "nicknameHit": false,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "百川",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音呆头鹅",
+        "nicknameHit": true,
+        "build": "坐火箭海月",
+        "buildHit": false,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "浪屿",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "虎牙EGM行乐",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-06.webp",
+    "header": [
+      "王牌对决",
+      "1027期",
+      "第六场",
+      "禁：2河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EZ灬欧洲鱼",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "日落海倒转",
+    "winnerBuildHit": false,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EZ灬欧洲鱼",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": false,
+        "commander": "玉环",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音梦飞",
+        "nicknameHit": true,
+        "build": "镜猪吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "斗鱼奇谋",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音QT新一",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ丶7D",
+        "nicknameHit": false,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-07.webp",
+    "header": [
+      "玉牌对决",
+      "1027期",
+      "第七场",
+      "禁：0日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音小新游",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "四区吕布",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音小新游",
+        "nicknameHit": true,
+        "build": "四驱兄弟转吕布",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EG万象棋",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音一朵老雏菊",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "胜天半子嘉誉",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音诸葛龟龟",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EGM小谷芷",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-27:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1027-match-08.webp",
+    "header": [
+      "王牌对决",
+      "1027期",
+      "第八场",
+      "禁：河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EZ天誉",
+    "winnerHit": false,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EZ天誉",
+        "nicknameHit": false,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "EZ沐汐嘻嘻嘻",
+        "nicknameHit": true,
+        "build": "三分毒奶",
+        "buildHit": false,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "镜猪转海月",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "I蟲抖音猪葛龟龟",
+        "nicknameHit": false,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ张嘉豪",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音搜索北念",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-01.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第一场",
+      "禁：逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "娇弱的佩奇",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "河洛木兰",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "小宇13",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "小慷",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EG如昨",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "B站QT小优律",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-03.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第三场",
+      "禁：您逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "世薄情",
+    "winnerHit": true,
+    "ban": null,
+    "banHit": false,
+    "winnerBuild": "逐鹿蒙恬",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "YK丶",
+        "nicknameHit": false,
+        "build": "日落海整备",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音EG航迹云",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "小天使翼",
+        "nicknameHit": false,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ抖音沐汐",
+        "nicknameHit": true,
+        "build": "泳池派对",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-04.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第四场",
+      "禁：2日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音妖柒",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "雷霆战机",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音妖柒",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "君莫",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "事后诸葛亮",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "EZ阿文",
+        "nicknameHit": true,
+        "build": "伞百里守约",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "B站QT孙悟方",
+        "nicknameHit": true,
+        "build": "三分毒奶",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-05.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第五场",
+      "禁：2日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音搜流儿",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音搜流儿",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音丶公孙策",
+        "nicknameHit": false,
+        "build": "自爆木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "胖狗王",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音刺痛",
+        "nicknameHit": true,
+        "build": "逐鹿蒙犽",
+        "buildHit": true,
+        "commander": "香香",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "快手小斯",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音群星李由多",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-06.webp",
+    "header": [
+      "王牌对决",
+      "1028期",
+      "第六场",
+      "禁：您逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音所演",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音所演",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "DY寻心",
+        "nicknameHit": true,
+        "build": "日落海整备",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "B站万象棋小祥",
+        "nicknameHit": true,
+        "build": "伞半月",
+        "buildHit": false,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "安逸体面离场",
+        "nicknameHit": true,
+        "build": "河洛木兰变李信",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "I蟲丶沐小呆",
+        "nicknameHit": false,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-07.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第七场",
+      "禁：◎逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音梦飞1",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音梦飞1",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "墨宝",
+        "nicknameHit": true,
+        "build": "干将遗志周瑜",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG福鱼",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音小新游",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音QT萌岑",
+        "nicknameHit": true,
+        "build": "大河开团射",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音梦飞冻冻",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-28:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1028-match-08.webp",
+    "header": [
+      "玉牌对决",
+      "1028期",
+      "第八场",
+      "禁：河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "BLIBLI喵喵虾条",
+    "winnerHit": true,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EG清辞",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "武汉EG碎碎圆圆",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "小琳谷芷",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音刺儿",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ丶7D",
+        "nicknameHit": false,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:1",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-01.webp",
+    "header": [
+      "玉牌对决",
+      "1029期",
+      "第一场",
+      "禁：Q日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "小琳谷芷",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "雷霆战机",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "小琳谷芷",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "B站QT小优律",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "娇弱的佩奇",
+        "nicknameHit": true,
+        "build": "大河龙蛇",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "丰川祥子",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EGM李由多",
+        "nicknameHit": true,
+        "build": "曜转吕布",
+        "buildHit": true,
+        "commander": "庄小鱼",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音QT新一",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:2",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-02.webp",
+    "header": [
+      "王牌对决",
+      "1029期",
+      "第二场",
+      "禁：並大河",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "DY道无涯",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "日落海倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "DY道无涯",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "I蟲丶初心",
+        "nicknameHit": false,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "遗愿",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "武凤",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "墨宝",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "小天使翼",
+        "nicknameHit": false,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音湛蓝",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:3",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-03.webp",
+    "header": [
+      "王牌对决",
+      "1029期",
+      "第三场",
+      "禁：您逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EZ小超",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "三分登场",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EZ小超",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音群星李由多",
+        "nicknameHit": true,
+        "build": "坐火箭露娜",
+        "buildHit": true,
+        "commander": "庄小鱼",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "BLIBLI喵喵虾条",
+        "nicknameHit": true,
+        "build": "日落海整备",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "胖狗王",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音瑞梨",
+        "nicknameHit": true,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音刺痛",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "白歌",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:4",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-04.webp",
+    "header": [
+      "王牌对决",
+      "1029期",
+      "第四场",
+      "禁：並大河",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EGM皮皮鲨",
+    "winnerHit": true,
+    "ban": "大河",
+    "banHit": true,
+    "winnerBuild": "日落海倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EGM皮皮鲨",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "QT电竞披萨鱼",
+        "nicknameHit": true,
+        "build": "猪镜转李信",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "胜天半子嘉誉",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "BILI星光柯基",
+        "nicknameHit": true,
+        "build": "逐鹿蒙恬",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "EGM抖音画笔",
+        "nicknameHit": true,
+        "build": "半月",
+        "buildHit": false,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音DY小凌",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:5",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-05.webp",
+    "header": [
+      "王牌对决",
+      "1029期",
+      "第五场",
+      "禁：2日落海",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EGM I 无量怜苓",
+    "winnerHit": true,
+    "ban": "日落海",
+    "banHit": true,
+    "winnerBuild": "三分毒奶",
+    "winnerBuildHit": false,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EGM I 无量怜苓",
+        "nicknameHit": true,
+        "build": "三分毒奶",
+        "buildHit": false,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EZ姚半仙",
+        "nicknameHit": true,
+        "build": "伞沈梦溪",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音呆头鹅",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "EZ抖音沐汐",
+        "nicknameHit": true,
+        "build": "三分登场姜子牙",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "斗鱼奇谋",
+        "nicknameHit": true,
+        "build": "三分登场混沌裂隙",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "冷酷心机小猫",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:6",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-06.webp",
+    "header": [
+      "王牌对决",
+      "1029期",
+      "第六场",
+      "禁：河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "EZ丶7D",
+    "winnerHit": false,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "三分倒转",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "EZ丶7D",
+        "nicknameHit": false,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音EG反骨",
+        "nicknameHit": true,
+        "build": "镜猪",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音梦飞冻冻",
+        "nicknameHit": true,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "喵帕斯",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ张嘉豪",
+        "nicknameHit": true,
+        "build": "镜猪",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "B站万象棋小祥",
+        "nicknameHit": true,
+        "build": "伞半月",
+        "buildHit": false,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:7",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-07.webp",
+    "header": [
+      "玉牌对决",
+      "1029期",
+      "第七场",
+      "禁：0逐鹿",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "世薄情",
+    "winnerHit": true,
+    "ban": "逐鹿",
+    "banHit": true,
+    "winnerBuild": "河洛木兰",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "世薄情",
+        "nicknameHit": true,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "马克之母挽星",
+        "nicknameHit": true,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "YK丶",
+        "nicknameHit": false,
+        "build": "河洛木兰",
+        "buildHit": true,
+        "commander": "明先生",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音EG许诺1",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "EZ灬欧洲鱼",
+        "nicknameHit": true,
+        "build": "牺牲李信",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "I蟲丶沐小呆",
+        "nicknameHit": false,
+        "build": "三分登场",
+        "buildHit": true,
+        "commander": "马可",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  },
+  {
+    "key": "ruanshi:2026-10-29:8",
+    "file": "docs/prediction_artifacts/ruanshi-roster-2026-10-31/1029-match-08.webp",
+    "header": [
+      "玉牌对决",
+      "1029期",
+      "第八场",
+      "禁：河洛",
+      "棋手选择",
+      "最终胜者"
+    ],
+    "dateHit": true,
+    "ordinalHit": true,
+    "winner": "抖音EZ羡鱼儿",
+    "winnerHit": false,
+    "ban": "河洛",
+    "banHit": true,
+    "winnerBuild": "传统养猪",
+    "winnerBuildHit": true,
+    "roster": [
+      {
+        "slot": 1,
+        "nickname": "抖音EZ羡鱼儿",
+        "nicknameHit": false,
+        "build": "传统养猪",
+        "buildHit": true,
+        "commander": "小妲己",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 2,
+        "nickname": "抖音猪葛龟龟",
+        "nicknameHit": true,
+        "build": "日落海倒转",
+        "buildHit": true,
+        "commander": "乔汐",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音清晨",
+        "nicknameHit": true,
+        "build": "镜猪转吕布",
+        "buildHit": true,
+        "commander": "镜",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音搜索北念",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "安琪拉",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EGM小谷芷",
+        "nicknameHit": true,
+        "build": "雷霆战机",
+        "buildHit": true,
+        "commander": "嬴律",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      },
+      {
+        "slot": 6,
+        "nickname": "EZ天誉",
+        "nicknameHit": false,
+        "build": "三分倒转",
+        "buildHit": true,
+        "commander": "阿离",
+        "commanderReview": "PORTRAIT_NOT_VERIFIED"
+      }
+    ],
+    "review": "OCR_CROSSCHECK_NOT_VISUAL_VERIFICATION"
+  }
+]

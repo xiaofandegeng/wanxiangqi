@@ -1,0 +1,161 @@
+{
+  "storedHash": "67ee22c5b4128a38da53d63284e184c1068a4dc4be0358dd2cddfab9c8051282",
+  "stored": [
+    {
+      "slot": 1,
+      "build_label": "三分登场",
+      "winner": true,
+      "nickname": "EZ天誉"
+    },
+    {
+      "slot": 2,
+      "build_label": "毒奶",
+      "winner": false,
+      "nickname": "EZ沐汐嘻嘻嘻"
+    },
+    {
+      "slot": 3,
+      "build_label": "镜猪转海月",
+      "winner": false,
+      "nickname": "抖音EG反骨"
+    },
+    {
+      "slot": 4,
+      "build_label": "日落海倒转",
+      "winner": false,
+      "nickname": "I蟲抖音猪葛龟龟"
+    },
+    {
+      "slot": 5,
+      "build_label": "传统养猪",
+      "winner": false,
+      "nickname": "抖音EZ张嘉豪"
+    },
+    {
+      "slot": 6,
+      "build_label": "三分登场",
+      "winner": false,
+      "nickname": "抖音搜索北念"
+    }
+  ],
+  "before": {
+    "key": "ruanshi:2026-10-27:8",
+    "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+    "day": "2026-10-27",
+    "ordinal": 8,
+    "materialKey": "e92ab381fc1b847fa8cd0c8d2e0f0f8be934112ada974c5e467775ee821d5f58",
+    "ban": "河洛",
+    "winnerSlot": 1,
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "EZ天誉",
+        "build": "三分登场",
+        "commander": "镜",
+        "avatar": "/avatars/commanders/镜.png",
+        "winner": true
+      },
+      {
+        "slot": 2,
+        "nickname": "EZ沐汐嘻嘻嘻",
+        "build": "毒奶",
+        "commander": "阿离",
+        "avatar": "/avatars/commanders/阿离.png",
+        "winner": false
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG反骨",
+        "build": "镜猪转海月",
+        "commander": "镜",
+        "avatar": "/avatars/commanders/镜.png",
+        "winner": false
+      },
+      {
+        "slot": 4,
+        "nickname": "I蟲抖音猪葛龟龟",
+        "build": "日落海倒转",
+        "commander": "乔汐",
+        "avatar": "/avatars/commanders/乔汐.png",
+        "winner": false
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ张嘉豪",
+        "build": "传统养猪",
+        "commander": "小妲己",
+        "avatar": "/avatars/commanders/小妲己.png",
+        "winner": false
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音搜索北念",
+        "build": "三分登场",
+        "commander": "马可",
+        "avatar": "/avatars/commanders/马可.png",
+        "winner": false
+      }
+    ],
+    "winnerBuild": "三分登场"
+  },
+  "after": {
+    "key": "ruanshi:2026-10-27:8",
+    "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+    "day": "2026-10-27",
+    "ordinal": 8,
+    "materialKey": "e92ab381fc1b847fa8cd0c8d2e0f0f8be934112ada974c5e467775ee821d5f58",
+    "ban": "河洛",
+    "winnerSlot": 1,
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "EZ天眷",
+        "build": "三分登场",
+        "commander": "镜",
+        "avatar": "/avatars/commanders/镜.png",
+        "winner": true
+      },
+      {
+        "slot": 2,
+        "nickname": "EZ沐汐嘻嘻嘻",
+        "build": "毒奶",
+        "commander": "阿离",
+        "avatar": "/avatars/commanders/阿离.png",
+        "winner": false
+      },
+      {
+        "slot": 3,
+        "nickname": "抖音EG反骨",
+        "build": "镜猪转海月",
+        "commander": "镜",
+        "avatar": "/avatars/commanders/镜.png",
+        "winner": false
+      },
+      {
+        "slot": 4,
+        "nickname": "I蟲抖音猪葛龟龟",
+        "build": "日落海倒转",
+        "commander": "乔汐",
+        "avatar": "/avatars/commanders/乔汐.png",
+        "winner": false
+      },
+      {
+        "slot": 5,
+        "nickname": "抖音EZ张嘉豪",
+        "build": "传统养猪",
+        "commander": "小妲己",
+        "avatar": "/avatars/commanders/小妲己.png",
+        "winner": false
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音搜索北念",
+        "build": "三分登场",
+        "commander": "马可",
+        "avatar": "/avatars/commanders/马可.png",
+        "winner": false
+      }
+    ],
+    "winnerBuild": "三分登场"
+  }
+}

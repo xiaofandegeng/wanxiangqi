@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto'
+import {CANDIDATES,trainContextModel,predictContext} from './context-model.mjs'
 export const MODEL_VERSION='source-roster-luce-l2-v1'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
@@ -21,7 +22,7 @@ export function trainWinnerModel(games){
  return {parameters:Object.fromEntries(ids.map((id,i)=>[id,scores[i]])),iterations:completed}
 }
 export const predictWinner=(model,ids)=>softmax(ids.map(id=>model.parameters[id]||0))
-function metric(probabilities,g){const y=g.seats.map(s=>s.winner?1:0),max=Math.max(...probabilities),ties=probabilities.map((p,i)=>({p,i})).filter(x=>Math.abs(x.p-max)<1e-12);return {logLoss:-Math.log(Math.max(1e-15,probabilities[y.indexOf(1)])),brier:probabilities.reduce((s,p,i)=>s+(p-y[i])**2,0),top1Credit:ties.some(t=>y[t.i])?1/ties.length:0}}
+export function metric(probabilities,g){const y=g.seats.map(s=>s.winner?1:0),max=Math.max(...probabilities),ties=probabilities.map((p,i)=>({p,i})).filter(x=>Math.abs(x.p-max)<1e-12);return {logLoss:-Math.log(Math.max(1e-15,probabilities[y.indexOf(1)])),brier:probabilities.reduce((s,p,i)=>s+(p-y[i])**2,0),top1Credit:ties.some(t=>y[t.i])?1/ties.length:0}}
 export function chronologicalDiagnostic(games){
  const rows=[]
  for(const day of [...new Set(games.map(g=>g.day))].sort()){
@@ -37,5 +38,8 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff){
  const day=new Date(Date.parse(cutoff)+8*3600000).toISOString().slice(0,10)
  const games=catalogGames(catalog).filter(g=>g.day<day),canonical=games.map(g=>({...g,seats:[...g.seats].sort((a,b)=>a.id.localeCompare(b.id))})),model=trainWinnerModel(games)
  const probabilities=predictWinner(model,roster.map(p=>p.profileId||'__UNSEEN__'))
- return {status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',modelVersion:MODEL_VERSION,config:CONFIG,computedBy:'BACKEND_DETERMINISTIC_PROGRAM',calibrated:false,cutoff,trainingMatches:games.length,trainingMatchIds:games.map(g=>g.id),dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),parameters:model.parameters,iterations:model.iterations,players:roster.map((p,i)=>({profileId:p.profileId,nickname:p.nickname,probability:probabilities[i],coldStart:!p.profileId||!(p.profileId in model.parameters)})),diagnostic:chronologicalDiagnostic(games),notice:'仅来源昵称的实验模型，模式/版本/账号归属未完整核实；未知选手使用零强度先验。只学习同场冠军标签，不使用席位编号、赛后阵容、作者评价或返奖率；未校准，不用于自动分配钻石。'}
+ const recentModel=trainContextModel(games,day,CANDIDATES.find(c=>c.id==='recent-player'))
+ const recentProbabilities=predictContext(recentModel,games,{day,seats:roster.map(p=>({id:p.profileId||'__UNSEEN__'}))})
+ const challenger={status:'SHADOW_ONLY',modelVersion:recentModel.version,variant:'recent-player',halfLifeDays:7,converged:recentModel.converged,trainingMatches:games.length,players:roster.map((p,i)=>({profileId:p.profileId,nickname:p.nickname,probability:recentProbabilities[i]})),notice:'近期衰减候选仅供对照，未替代主概率；历史窗口内优势尚未通过后续新比赛验证。'}
+ return {challenger,status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',modelVersion:MODEL_VERSION,config:CONFIG,computedBy:'BACKEND_DETERMINISTIC_PROGRAM',calibrated:false,cutoff,trainingMatches:games.length,trainingMatchIds:games.map(g=>g.id),dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),parameters:model.parameters,iterations:model.iterations,players:roster.map((p,i)=>({profileId:p.profileId,nickname:p.nickname,probability:probabilities[i],coldStart:!p.profileId||!(p.profileId in model.parameters)})),diagnostic:chronologicalDiagnostic(games),notice:'仅来源昵称的实验模型，模式/版本/账号归属未完整核实；未知选手使用零强度先验。只学习同场冠军标签，不使用席位编号、赛后阵容、作者评价或返奖率；未校准，不用于自动分配钻石。'}
 }

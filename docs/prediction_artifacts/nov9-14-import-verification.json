@@ -1,0 +1,151 @@
+{
+  "at": "2026-11-15T04:36:03.142Z",
+  "database": "wanxiangqi_prediction_dev",
+  "before": {
+    "matches": 83
+  },
+  "imported": {
+    "insertedMatches": 20,
+    "totalSubmittedMatches": 20
+  },
+  "coverage": [
+    {
+      "day": "2026-11-08",
+      "matches": 8
+    },
+    {
+      "day": "2026-11-09",
+      "matches": 8
+    },
+    {
+      "day": "2026-11-10",
+      "matches": 8
+    },
+    {
+      "day": "2026-11-11",
+      "matches": 5
+    },
+    {
+      "day": "2026-11-13",
+      "matches": 8
+    },
+    {
+      "day": "2026-11-14",
+      "matches": 4
+    }
+  ],
+  "verified": [
+    {
+      "id": "ruanshi:2026-11-09:1",
+      "sha256": "96342cfa1f48c786af65d2e64eb7ccdda26e867d80b9e1604d4017f10862fa31",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:2",
+      "sha256": "bade9e6dad008eb9d7868842bb52fe2db32a36280a0cfa1d97108b0f7b47b6d7",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:3",
+      "sha256": "0ace76f1b92721b9d4fc0b6a41cc037513ceaf3dcaba8497e3e028ebbfd0459d",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:4",
+      "sha256": "395d9cf3866da80ec731f74df0db7a9378fa091668c990fdd8a53ca81009006e",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:5",
+      "sha256": "6e10f6e88de644a2c98a5ddbed8d375f03a7ec1492b421442f9ae0ef5b288917",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:6",
+      "sha256": "49b9de69f5edeecbdce263915fa4ffb4f24e1c2aefbf57effaf603dd1d44db3c",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:7",
+      "sha256": "27c606fd07cfa179b01a4fb5d210e62d0a637cc121f668351054ee13cdbccf6a",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-09:8",
+      "sha256": "7b352dfa026fa22f6b5fbe2d5aafef77e5e00c61bb85d8385fb0e1cdb351fa2e",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:1",
+      "sha256": "48b76c720b6af2d88f6dbee95aff1df3a4153c4eb5297487b95b464a7f341bbf",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:2",
+      "sha256": "f9c8f5564ddc63cbf8d6ba471198ae76ba0266b30b7346525857614f551d9f44",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:3",
+      "sha256": "6da0a0480b80f833fcc6577cb942c8da6c5372eddab5b098e38cb6832da6c492",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:4",
+      "sha256": "16bdf38ef876929082a42080bd3403464f70fb923270869b3e7f01c0c5946c20",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:5",
+      "sha256": "f94400a99df0cb8f69a6ed1152b847eaace93d3134d6f41542ecf74e587a43ee",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:6",
+      "sha256": "680c5175afdd1f8e86b8dc68044be344e61b600ddd5963c416e5bdb6f8454f12",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:7",
+      "sha256": "34f20f57a39c450ce646889d7d788a307b8c2d8d5bebc1623e8fd7ea2a1a135d",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-13:8",
+      "sha256": "8a1365e7493e506b5d70b1976ac1abd5bb2d25302219a253cd0c86ec8f0218e7",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-14:1",
+      "sha256": "4b889135ca0e5e538438b4eec6bbd675c63e8e350aa1cdaa9a59df19eb8f8a79",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-14:2",
+      "sha256": "44feefae81f1d2cad807afabf3ff13101b0c26358e95566a7b7074b02256c197",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-14:3",
+      "sha256": "26587722301fce14eaefe03f2230e0262ec5e31c97631039b14fb8c0678bf92e",
+      "fieldsAndOriginalBytesMatch": true
+    },
+    {
+      "id": "ruanshi:2026-11-14:4",
+      "sha256": "75fe2a4e3ba4d292cf3976232c47d6aba75b0caf7b6183a9e7964342e41344f6",
+      "fieldsAndOriginalBytesMatch": true
+    }
+  ],
+  "notes": {
+    "nov9-upper": "日期、场次、六席、冠军标题及复盘交叉核对；昵称仅按来源记录，不跨昵称归并。",
+    "nov9-lower": "第5场席6原文“木兰放弃从军了”、第8场席6“三分真的被分完了”为评论性标签，build=UNKNOWN。",
+    "nov13-upper": "第1场页头禁大河、过渡说明禁日落海冲突，ban=null；编号不作为完整排名或赛前输入。",
+    "nov13-lower": "第8场冠军标题镜猪吕布与名单/牌图/结尾三分冲突，winnerBuild=UNKNOWN。第6场11回合说明疑似复制第5场，不采入。",
+    "nov14-upper": "仅第1–4场。第1场席3/5名单标签与复盘冲突，席6标逐鹿嬴政但禁逐鹿且复盘描述司空震，build=UNKNOWN；第3场席5名单大河猪离与复盘三分猪离冲突，build=UNKNOWN。第2场投注策略疑似复制，不采入。"
+  },
+  "missing": [
+    "2026-11-12:1-8",
+    "2026-11-14:5-8"
+  ],
+  "limitation": "Single-author original images checked visually and with OCR. Not independently corroborated by official game records. Nickname identities unverified. No final rank or post-match build is a pre-match predictor."
+}

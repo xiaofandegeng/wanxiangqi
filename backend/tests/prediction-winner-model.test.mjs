@@ -15,3 +15,15 @@ test('资料样本只接收完整六人唯一冠军，记录可复算的参数�
  assert.equal(catalogGames(catalog).length,1);assert.equal(catalogGames({players:catalog.players.slice(1)}).length,0)
  const r=experimentalWinnerEstimate(catalog,roster,'2026-01-02');assert.equal(r.calibrated,false);assert.equal(r.computedBy,'BACKEND_DETERMINISTIC_PROGRAM');assert.equal(r.dataHash.length,64);assert.deepEqual(r.trainingMatchIds,['a']);assert.equal(r.players.length,6);assert.equal(experimentalWinnerEstimate(catalog,roster,'2026-01-01T00:00:00Z').trainingMatches,0)
 })
+
+test('分析结果保留主概率并附上同名单的近期模型对照',()=>{
+ const g=game('a','2026-01-01','A')
+ const roster=g.seats.map(s=>({profileId:s.id,nickname:s.id}))
+ const catalog={players:g.seats.map(s=>({id:s.id,history:[{matchId:g.id,day:g.day,rank:s.winner?1:null}]}))}
+ const result=experimentalWinnerEstimate(catalog,roster,'2026-01-02')
+ assert.deepEqual(result.players.map(p=>p.probability),predictWinner(trainWinnerModel([g]),roster.map(p=>p.profileId)))
+ assert.equal(result.challenger.status,'SHADOW_ONLY')
+ assert.equal(result.challenger.converged,true)
+ assert.deepEqual(result.challenger.players.map(p=>p.profileId),roster.map(p=>p.profileId))
+ assert.ok(Math.abs(result.challenger.players.reduce((sum,p)=>sum+p.probability,0)-1)<1e-12)
+})

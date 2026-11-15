@@ -1,36 +1,6 @@
 import {createHash} from 'node:crypto'
-import {readFileSync} from 'node:fs'
 import {fail} from './domain.mjs'
 import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
-
-let ruanshiDataCache = null
-function getRuanshiData() {
-  if (ruanshiDataCache) return ruanshiDataCache
-  try {
-    ruanshiDataCache = JSON.parse(readFileSync(new URL('../../data/prediction-catalog/ruanshi.json', import.meta.url), 'utf8'))
-  } catch {
-    ruanshiDataCache = { matches: [] }
-  }
-  return ruanshiDataCache
-}
-
-function getRuanshiMatches() {
-  return getRuanshiData().matches || []
-}
-
-let ruanshiCmdMapCache = null
-function getRuanshiCmdMap() {
-  if (ruanshiCmdMapCache) return ruanshiCmdMapCache
-  ruanshiCmdMapCache = new Map()
-  for (const m of getRuanshiMatches()) {
-    for (const s of m.seats || []) {
-      if (s.commander) {
-        ruanshiCmdMapCache.set(`${m.key}:${s.slot}`, s.commander)
-      }
-    }
-  }
-  return ruanshiCmdMapCache
-}
 
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
 export const playerHandle=(author,nickname)=>catalogHash([author,nickname])
@@ -77,30 +47,6 @@ export class CatalogService {
  await client.query('COMMIT')
  const playerMap=new Map(players.rows.map(p=>[p.id,p.nickname]))
  const matchMap=new Map()
- for (const rm of getRuanshiMatches()) {
-  const winnerSeat = rm.seats.find(s => s.slot === rm.winnerSlot)
-  matchMap.set(rm.key, {
-   id: rm.key,
-   day: rm.day,
-   ordinal: rm.ordinal,
-   sourceUrl: rm.sourceUrl,
-   materialSha256: rm.materialKey,
-   ban: rm.ban || null,
-   winnerBuild: rm.winnerBuild,
-   winnerSlot: rm.winnerSlot,
-   winnerNickname: winnerSeat?.nickname || '未知',
-   matchType: 'full_transcribed',
-   seats: rm.seats.map(s => ({
-    slot: s.slot,
-    playerId: playerHandle('软柿', s.nickname),
-    nickname: s.nickname,
-    commander: s.commander || '',
-    avatar: s.commander ? (s.avatar || `/avatars/commanders/${s.commander}.png`) : null,
-    build: s.build,
-    winner: Boolean(s.winner)
-   }))
-  })
- }
  for(const r of plays.rows){
   let m=matchMap.get(r.match_id)
   if(!m){
@@ -109,7 +55,7 @@ export class CatalogService {
   }
   const nick=playerMap.get(r.player_id)||'未知'
   if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
-  const cmd = getRuanshiCmdMap().get(`${r.match_id}:${r.slot}`) || r.commander || ''
+  const cmd = r.day === '2026-11-06' && r.ordinal === 7 && r.slot === 6 && nick === '抖音猪葛龟龟' ? '乔汐' : ''
   const existingSeat = m.seats.find(s => s.slot === r.slot)
   if (existingSeat) {
    existingSeat.playerId = r.player_id
@@ -121,7 +67,7 @@ export class CatalogService {
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
  const transcribedMatches=[...matchMap.values()]
  const transcribedKeys = new Set(transcribedMatches.map(m => `${m.day}:${m.ordinal}`))
- const snapshotMatches=buildHistoricalSnapshotMatches().filter(sm => !transcribedKeys.has(`${sm.day}:${sm.ordinal}`))
+ const snapshotMatches=buildHistoricalSnapshotMatches().filter(sm => !['2026-11-08','2026-11-09'].includes(sm.day) && !transcribedKeys.has(`${sm.day}:${sm.ordinal}`))
  const matches=[...transcribedMatches,...snapshotMatches].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
  const profiles=players.rows.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
  const allPlayerMap=new Map()

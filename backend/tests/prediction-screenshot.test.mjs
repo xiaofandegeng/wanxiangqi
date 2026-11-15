@@ -30,7 +30,11 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  if(!await isLocalPgAvailable()){t.skip('本地PG不可达');return}
  await recreateNamedTestDb('wanxiangqi_screenshots_test');const pool=await connectNamedTestDb('wanxiangqi_screenshots_test');t.after(()=>pool.end())
  const c=await pool.connect();try{await runMigrations(c,{logger:{log(){}}})}finally{c.release()}
- const data=JSON.parse(await fs.readFile(path.join(root,'backend/data/prediction-catalog/ruanshi.json'),'utf8'));await importCatalog(pool,data,m=>fs.readFile(path.join(root,m.file)))
+ const pack=JSON.parse(await fs.readFile(path.join(root,'backend/data/prediction-catalog/ruanshi.json'),'utf8'))
+ const matches=pack.matches.filter(m=>m.day==='2026-11-09')
+ assert.equal(matches.length,8)
+ const data={...pack,matches,claims:[],sources:pack.sources.filter(s=>matches.some(m=>m.sourceUrl===s.url)),materials:pack.materials.filter(b=>matches.some(m=>m.materialKey===b.key))}
+ await importCatalog(pool,data,m=>fs.readFile(path.join(root,m.file)))
  const material=data.materials[0],bytes=await fs.readFile(path.join(root,material.file))
  await pool.query(`INSERT INTO evidence_blobs(sha256,content,mime_type,size_bytes,storage_uri) VALUES($1,$2,'image/webp',$3,'TEST ONLY')`,[material.sha256,bytes,bytes.length])
  await pool.query(`INSERT INTO evidences(id,sha256,source_id,captured_at,status,kind,usage_scope) VALUES('TEST-SCREENSHOT',$1,'src-manual-review',now(),'PENDING','CONTENT_ASSET','INTERNAL_ONLY')`,[material.sha256])
@@ -46,6 +50,9 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  const input={...request,version:'v1.8.1',aceContext:{supportStage:'OPEN',bannedFaction:'日落海',grossReturnConfirmed:true},players:profiles.map(p=>({nickname:p.nickname,profileId:p.id,commander:'TEST棋手',returnMultiplier:5.6}))}
  const first=await post(`screenshots/${draft.id}/analyze`,input);assert.equal(first.status,200);assert.equal(first.json.data.status,'DATA_AUDIT_ONLY');assert.equal(first.json.data.allocation.status,'ABSTAIN')
  const experimental=await post(`screenshots/${draft.id}/analyze`,{...input,experimentalProbability:true});assert.equal(experimental.status,200);assert.equal(experimental.json.data.model.trainingMatches,data.matches.length);assert.ok(Math.abs(experimental.json.data.players.reduce((s,p)=>s+p.probability,0)-1)<1e-12);assert.equal(experimental.json.data.calibrated,false);assert.equal((await fetch(url+'screenshot-analyses/'+experimental.json.data.id)).status,401);assert.deepEqual((await p.screenshots.analysis(experimental.json.data.id)).model,experimental.json.data.model)
+ assert.equal(experimental.json.data.model.challenger.status,'SHADOW_ONLY')
+ const persisted=(await pool.query('SELECT result FROM prediction_screenshot_analyses WHERE id=$1',[experimental.json.data.id])).rows[0].result
+ assert.deepEqual(persisted.model.challenger,experimental.json.data.model.challenger)
  const oldCount=first.json.data.players[0].sourceSample.observations
  await pool.query("UPDATE prediction_catalog_matches SET available_at=now()+interval '1 day'")
  const next=await p.screenshots.analyze(draft.id,input);assert.equal(next.players[0].sourceSample.observations,0)

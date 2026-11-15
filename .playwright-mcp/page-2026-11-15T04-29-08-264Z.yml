@@ -1,0 +1,251 @@
+- generic [active] [ref=f1e1]:
+  - button "开启读屏标签" [ref=f1e2]
+  - generic: 读屏标签已关闭
+  - generic [ref=f1e4]:
+    - generic [ref=f1e6]:
+      - link [ref=f1e7] [cursor=pointer]:
+        - /url: //www.douyin.com/jingxuan
+      - generic [ref=f1e13]:
+        - generic [ref=f1e15]:
+          - link "精选" [ref=f1e19] [cursor=pointer]:
+            - /url: https://www.douyin.com/jingxuan?from_nav=1
+          - link "推荐" [ref=f1e26] [cursor=pointer]:
+            - /url: https://www.douyin.com/?recommend=1&from_nav=1
+          - link "AI抖音" [ref=f1e33] [cursor=pointer]:
+            - /url: https://www.douyin.com/aisearch?from_nav=1
+          - link "关注" [ref=f1e41] [cursor=pointer]:
+            - /url: https://www.douyin.com/follow?from_nav=1
+          - link "朋友" [ref=f1e48] [cursor=pointer]:
+            - /url: https://www.douyin.com/friend?from_nav=1
+          - link "我的" [ref=f1e55] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/self?from_nav=1
+          - link "直播" [ref=f1e63] [cursor=pointer]:
+            - /url: https://live.douyin.com/?from_nav=1
+          - link "放映厅" [ref=f1e70] [cursor=pointer]:
+            - /url: https://www.douyin.com/vs?from_nav=1
+          - link "短剧" [ref=f1e77] [cursor=pointer]:
+            - /url: https://www.douyin.com/series?from_nav=1
+        - generic [ref=f1e83]:
+          - generic [ref=f1e85] [cursor=pointer]
+          - generic [ref=f1e89] [cursor=pointer]
+          - generic [ref=f1e93] [cursor=pointer]
+    - generic [ref=f1e96]:
+      - banner [ref=f1e99]:
+        - generic [ref=f1e101]:
+          - generic [ref=f1e105]:
+            - generic [ref=f1e106]:
+              - generic [ref=f1e107]: 万象棋王牌对决数据统计
+              - textbox [ref=f1e109]
+            - button "搜索" [ref=f1e111] [cursor=pointer]
+          - generic [ref=f1e118]:
+            - paragraph [ref=f1e128] [cursor=pointer]: 充钻石
+            - link [ref=f1e133] [cursor=pointer]:
+              - /url: https://www.douyin.com/download/pc/obj/douyin-pc-web/douyin-pc-client/7044145585217083655/releases/540056698/8.8.0/darwin-universal/douyin-v8.8.0-darwin-universal.dmg
+              - paragraph [ref=f1e141]: 客户端
+            - generic [ref=f1e146]: 壁纸
+            - list [ref=f1e155]:
+              - paragraph [ref=f1e165] [cursor=pointer]: 通知
+            - list [ref=f1e166]:
+              - paragraph [ref=f1e173] [cursor=pointer]: 消息
+            - paragraph [ref=f1e182] [cursor=pointer]: 投稿
+            - button [ref=f1e186] [cursor=pointer]:
+              - paragraph [ref=f1e191]: 登录
+      - main [ref=f1e196]:
+        - generic [ref=f1e199] [cursor=pointer]:
+          - generic [ref=f1e229]:
+            - generic [ref=f1e230]: 因浏览器限制，当前为静音
+            - button "打开声音" [ref=f1e231]
+          - generic [ref=f1e259]:
+            - generic [ref=f1e260]: "30"
+            - generic [ref=f1e267]: "2"
+            - generic [ref=f1e274]: "2"
+            - generic [ref=f1e280]: "5"
+          - generic [ref=f1e292]:
+            - button [ref=f1e294]
+            - button [ref=f1e296]
+            - button [ref=f1e298]
+            - button [ref=f1e300]
+          - generic [ref=f1e301]: 2/4
+        - generic [ref=f1e311]:
+          - generic [ref=f1e312]:
+            - link [ref=f1e315] [cursor=pointer]:
+              - /url: //www.douyin.com/user/MS4wLjABAAAAIAfK5ItLDLssfHQxe2GYdGn2MtBV0ktGWo4QBSjleU2e-tuypd7nXjF_-dB9BxbJ
+              - listitem [ref=f1e316]:
+                - img "抖音软柿🌈【万象棋】" [ref=f1e317]
+            - generic [ref=f1e318]:
+              - link [ref=f1e319] [cursor=pointer]:
+                - /url: //www.douyin.com/user/MS4wLjABAAAAIAfK5ItLDLssfHQxe2GYdGn2MtBV0ktGWo4QBSjleU2e-tuypd7nXjF_-dB9BxbJ
+                - generic [ref=f1e326]:
+                  - text: 抖音软柿
+                  - img "🌈" [ref=f1e327]
+                  - text: 【万象棋】
+              - paragraph [ref=f1e328]: 粉丝1298获赞5.2万
+            - button "关注" [ref=f1e330] [cursor=pointer]
+          - generic [ref=f1e333]:
+            - generic [ref=f1e334]:
+              - generic [ref=f1e339]:
+                - generic [ref=f1e340]: 万象棋王牌对决1109胜者一图流上
+                - generic [ref=f1e343]: 。
+                - generic [ref=f1e349]:
+                  - text: 恭喜胜者老师
+                  - img "🎉" [ref=f1e350]
+                - link "@刷牌之怪嘉誉（王者万象棋）" [ref=f1e352] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAA3aaQSidDiShINxUyPrKuaxMFmKQ0_s9rjINBL7f3AJo7FotRd5nD5FgVZfvfKF9y
+                - link "@丰川祥子" [ref=f1e357] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAA5CHgNDg1UfzUkADNXxZCvomSrBzExm5se0IXZnX4dq8
+                - link "@阿文倒转王(王者万象棋)" [ref=f1e362] [cursor=pointer]:
+                  - /url: //www.douyin.com/user/MS4wLjABAAAARE_NKGOe5A7eCmAw_YHgjUZRNfdowoZHGExCxRW8vJA
+                - generic [ref=f1e363]: 下的晚上回去发
+                - link "#王者万象棋" [ref=f1e367] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/1749041956903947
+                - link "#王者万象棋正式上线" [ref=f1e372] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7652591105221134351
+                - link "#王者万象棋s1创作激励" [ref=f1e377] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7699104354695677992
+                - link "#万象新星创作团" [ref=f1e382] [cursor=pointer]:
+                  - /url: //www.douyin.com/hashtag/7683478909077162047
+              - button "展开" [ref=f1e384] [cursor=pointer]
+            - generic [ref=f1e385]: 发布时间：2026-11-10 11:57:59
+          - generic [ref=f1e390]:
+            - generic [ref=f1e392]:
+              - generic [ref=f1e393] [cursor=pointer]: 相关推荐
+              - generic [ref=f1e394] [cursor=pointer]: 评论(2)
+            - generic [ref=f1e396]:
+              - generic [ref=f1e397]:
+                - paragraph [ref=f1e398]: 登录后查看更多评论
+                - generic [ref=f1e402]:
+                  - paragraph [ref=f1e414]: 打开「抖音APP」进行扫码登录
+                  - paragraph [ref=f1e416] [cursor=pointer]: 登录其他账号
+              - generic [ref=f1e419]:
+                - generic [ref=f1e420] [cursor=pointer]: 继续看视频
+                - generic [ref=f1e421] [cursor=pointer]
+            - list [ref=f1e427]:
+              - listitem [ref=f1e428]:
+                - generic [ref=f1e430] [cursor=pointer]:
+                  - generic [ref=f1e431]:
+                    - 'img "万象棋王牌对决1109胜者一图流上。恭喜胜者老师🎉@刷牌之怪嘉誉（王者万象棋） @丰川祥子 @阿文倒转王(王者万象棋) 下的晚上回去发 #王者万象棋 #王者万象棋正式上线 #王者万象棋s1创作激励 #万象新星创作团" [ref=f1e435]'
+                    - generic [ref=f1e437]: 播放中
+                  - generic [ref=f1e442]:
+                    - heading [level=3] [ref=f1e443]:
+                      - generic [ref=f1e450]:
+                        - text: 万象棋王牌对决1109胜者一图流上。恭喜胜者老师
+                        - img "🎉" [ref=f1e451]
+                        - text: "@刷牌之怪嘉誉（王者万象棋） @丰川祥子 @阿文倒转王(王者万象棋) 下的晚上回去发#王者万象棋 #王者万象棋正式上线 #王者万象棋s1创作激励 #万象新星创作团"
+                    - generic [ref=f1e452]:
+                      - generic [ref=f1e453]: "30"
+                      - generic [ref=f1e461]:
+                        - text: 抖音软柿
+                        - img "🌈" [ref=f1e462]
+                        - text: 【万象棋】
+              - listitem [ref=f1e463]:
+                - generic [ref=f1e465] [cursor=pointer]:
+                  - generic [ref=f1e466]: 03:08
+                  - generic [ref=f1e475]:
+                    - 'heading "棋仙钟珍逆风翻盘，险象环生 #象棋破局 #象棋布局 #象棋高手 #象棋 #棋仙钟珍" [level=3] [ref=f1e476]'
+                    - generic [ref=f1e483]:
+                      - generic [ref=f1e484]: "7679"
+                      - generic [ref=f1e487]: 棋谈风云
+              - listitem [ref=f1e492]:
+                - generic [ref=f1e494] [cursor=pointer]:
+                  - generic [ref=f1e495]: 07:12
+                  - generic [ref=f1e504]:
+                    - 'heading "面对巅峰时期的许银川，胡荣华直接弃车，太残暴了 #分享你的象棋战术图 #图解你的象棋布局妙招 #分享你的棋盘战术 #你的象棋技巧心得 #象棋精彩对局" [level=3] [ref=f1e505]'
+                    - generic [ref=f1e512]:
+                      - generic [ref=f1e513]: "922"
+                      - generic [ref=f1e516]: 象棋老王
+              - listitem [ref=f1e521]:
+                - generic [ref=f1e523] [cursor=pointer]:
+                  - generic [ref=f1e524]: 07:35
+                  - generic [ref=f1e533]:
+                    - 'heading "东北虎王嘉良的经典神作 连续弃子超带感 #中国象棋 #象棋 #棋坛高手 #搞笑解说 #爆笑解说" [level=3] [ref=f1e534]'
+                    - generic [ref=f1e541]:
+                      - generic [ref=f1e542]: "5790"
+                      - generic [ref=f1e545]: 四郎讲棋
+              - listitem [ref=f1e550]:
+                - generic [ref=f1e552] [cursor=pointer]:
+                  - generic [ref=f1e553]: 04:13
+                  - generic [ref=f1e562]:
+                    - 'heading "钟珍步步退让，就在对手心花怒放的时候，他却嘴角一歪，绝杀落下。#象棋 #中国象棋 #象棋高手 #象棋绝杀 #钟珍" [level=3] [ref=f1e563]'
+                    - generic [ref=f1e570]:
+                      - generic [ref=f1e571]: 3.0万
+                      - generic [ref=f1e574]: 大白象棋
+              - listitem [ref=f1e579]:
+                - generic [ref=f1e581] [cursor=pointer]:
+                  - generic [ref=f1e582]: 04:43
+                  - generic [ref=f1e591]:
+                    - 'heading "王天一这盘棋开软件了吗，8步连杀，郑惟桐怒了 #分享你的象棋战术图 #图解你的象棋布局妙招 #分享你的棋盘战术 #你的象棋技巧心得 #象棋精彩对局" [level=3] [ref=f1e592]'
+                    - generic [ref=f1e599]:
+                      - generic [ref=f1e600]: "4075"
+                      - generic [ref=f1e603]: 象棋老王
+              - listitem [ref=f1e608]:
+                - generic [ref=f1e610] [cursor=pointer]:
+                  - generic [ref=f1e611]: 01:33
+                  - generic [ref=f1e620]:
+                    - 'heading "JJ象棋所有绝杀动画 #中国象棋 你们觉得哪一个最权威？" [level=3] [ref=f1e621]'
+                    - generic [ref=f1e628]:
+                      - generic [ref=f1e629]: 10.3万
+                      - generic [ref=f1e632]: 别看背景图
+              - listitem [ref=f1e637]:
+                - generic [ref=f1e639] [cursor=pointer]:
+                  - generic [ref=f1e640]: 01:57
+                  - generic [ref=f1e649]:
+                    - 'heading "王天一快棋天花板 恐怖如斯#象棋 #象棋残局 #象棋高手 #象棋直播" [level=3] [ref=f1e650]'
+                    - generic [ref=f1e657]:
+                      - generic [ref=f1e658]: "4627"
+                      - generic [ref=f1e661]: 刘叔讲棋
+              - listitem [ref=f1e666]:
+                - generic [ref=f1e668] [cursor=pointer]:
+                  - generic [ref=f1e669]: 04:47
+                  - generic [ref=f1e678]:
+                    - 'heading "#中国象棋 #象棋开局战术 #象棋布局绝杀 #象棋高级战术 #象棋精妙杀招" [level=3] [ref=f1e679]'
+                    - generic [ref=f1e686]:
+                      - generic [ref=f1e687]: "4689"
+                      - generic [ref=f1e690]: 红兵象棋
+              - listitem [ref=f1e695]:
+                - generic [ref=f1e697] [cursor=pointer]:
+                  - generic [ref=f1e698]: 04:20
+                  - generic [ref=f1e707]:
+                    - 'heading "#中国象棋 #棋仙钟珍 #象棋精妙杀招 #象棋开局战术 #象棋飞刀战术讲解" [level=3] [ref=f1e708]'
+                    - generic [ref=f1e715]:
+                      - generic [ref=f1e716]: "2776"
+                      - generic [ref=f1e719]: 红兵象棋
+              - listitem [ref=f1e724]:
+                - generic [ref=f1e726] [cursor=pointer]:
+                  - generic [ref=f1e727]: 03:04
+                  - generic [ref=f1e736]:
+                    - 'heading "棋仙钟珍一子不吃，只取上将首级 #中国象棋 #棋仙钟珍 #象棋破局 #象棋高手 #大牙顽顽崽" [level=3] [ref=f1e737]'
+                    - generic [ref=f1e744]:
+                      - generic [ref=f1e745]: "7734"
+                      - generic [ref=f1e748]: 棋谈风云
+  - article [ref=f1e761]:
+    - generic [ref=f1e764]:
+      - generic [ref=f1e765]:
+        - generic [ref=f1e766]: 登录后免费畅享高清视频
+        - generic [ref=f1e767] [cursor=pointer]
+      - generic [ref=f1e771]:
+        - generic [ref=f1e774]:
+          - generic [ref=f1e775] [cursor=pointer]: 扫码登录
+          - generic [ref=f1e780]:
+            - generic [ref=f1e781]: 如何扫码
+            - paragraph [ref=f1e795]:
+              - paragraph [ref=f1e796]: 打开「抖音APP」点击左上角
+              - paragraph [ref=f1e803]: 扫一扫
+        - generic [ref=f1e806]:
+          - generic [ref=f1e807] [cursor=pointer]:
+            - generic [ref=f1e808]: 验证码登录
+            - generic [ref=f1e811]: 密码登录
+          - generic [ref=f1e815]:
+            - generic [ref=f1e817]:
+              - combobox "国家/地区" [ref=f1e820]: "+86"
+              - textbox "请输入手机号" [ref=f1e824]
+            - generic [ref=f1e826]:
+              - textbox "请输入验证码" [ref=f1e828]
+              - generic [ref=f1e829]: 获取验证码
+            - generic [ref=f1e831]: 登录
+            - generic "登录即代表同意用户协议和隐私政策" [ref=f1e834]:
+              - text: 登录即代表同意
+              - link "用户协议" [ref=f1e835] [cursor=pointer]:
+                - /url: https://www.douyin.com/agreements/?id=6773906068725565448
+              - text: 和
+              - link "隐私政策" [ref=f1e836] [cursor=pointer]:
+                - /url: https://www.douyin.com/agreements/?id=6773901168964798477

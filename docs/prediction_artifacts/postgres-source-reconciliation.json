@@ -1,0 +1,633 @@
+{
+  "rows": [
+    {
+      "key": "ruanshi:2026-10-29:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "4e2f496014965187f73bdd2806367915a0b224c87a0c88f197c30e1ff460ee17",
+          "source": "c680cc2d9c516701b12894316a518b63384e2c3343d3b95bdf3fccaf0576500c"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "8b2d824604bf595e3140e2633bb14766c0322c6ae67f855709f9dd26515bdc2e",
+          "source": "493c971b93c4065d35c51cc3379379c03bf426c4c5131ac53cf2d3031fa50197"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "448e2d0a0dfe99f54f068223908282eb67dc19b2f3af1f65c6fab2c557b0cb94",
+          "source": "cdc90b2e2fc342afb5193cba1f131bcaff98304d8875be4f325fb6d35d12a350"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "c10034e998c35de619fd0984075d256f0ba56eb7e3eccb27a9ccd50ae5fe7a8c",
+          "source": "bdd7b9645f5d559e96fcf2d0359544a8c3958aa4c64e3d6f171d9ba3f628582c"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "5ca1da050c41f15f901ef17604cbeb08322d44ff9f071eeb8e0969ef1d5e5f05",
+          "source": "8fe54470b92c7e20b04e925d8dc0c55d938665d4c1605ce3d9c287e042ff3fe4"
+        },
+        {
+          "field": "winnerBuild",
+          "db": "毒奶",
+          "source": "三分毒奶"
+        },
+        {
+          "slot": 1,
+          "field": "build",
+          "db": "毒奶",
+          "source": "三分毒奶"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "07030a11272b88ed6a0bc5f202c3731d026f93d0e09bdd47d1d3b04b4318c1d9",
+          "source": "5da1a526f916b90f1082bf36ece26cf3f8e1790b4df073b55ef27955aef99d2a"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "9c7b556ad4f0bf7bccfcc2d470fc8cc309d7692ada3e2131b7a73e86ab73829c",
+          "source": "caa913444062934ffd3cd31c50c93fe7cea0305dc410374d4e2b20c7156edd97"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-29:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "6e8e5859558ae4869b788dfb3ddf611e8a46ad4168a8f67b70ca81ad2fb0b4ad",
+          "source": "ade8f7f8034e99ef0a60ee88a1b1811845ea7f6f0d5ae1ce656d95088ac2bc5b"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "a8a47cc99b5d22cd25333baff9d7b528889deff8608f92cf08765466a8cb30f3",
+          "source": "c42185372667a9f1a11c4ee4dea673e7e1d9c8ea3c390a9ab998190b258e60d9"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "2644d46d641f409605b12d4d9abc2a7e0ae14981c7c840865bd827dbfeea2080",
+          "source": "b39702042cbc95d81bff197f188b6cb62e236dd5b59432862335beb1a72ad71e"
+        },
+        {
+          "field": "ban",
+          "db": "逐鹿",
+          "source": null
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "f7729cdd5c65208aac67d6cf9c9a785d272fede223b52d172733ae4443eaeb67",
+          "source": "ca02ec450ee78e43fe7b5b9ac5eb706615ab11f1731e77211f58fd972635a340"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "dd6ba926c3c9af112ec38603ca053c695ae422b07f87981e0bd2e9dcd5e13bef",
+          "source": "cf61d094ed2a32f12ac513a83bb460cd7148287344360d56b11318c436636124"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "6973079d345673f8db281f9d8a946df8ab954e625b5f64635c768b3cb4760329",
+          "source": "47ff4b16cf74a755d34cb92a9b1ad4c1c619d9a33c6f85580f40da096b81dc6f"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "e3c7e7a6db9374c95f0bcbedf4e0c598c6221fb150ce75cbf22ad95071c1323c",
+          "source": "0a2c061569ff87f0c40fbad49b4cfff785f7bb3d78b19a9400034409318bafec"
+        },
+        {
+          "slot": 3,
+          "field": "build",
+          "db": "传统养猪",
+          "source": "伞半月"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-28:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "35a6eaa26c57b79531ac688eea1b2619afa4bd18445f5c7e117df69792d3db7b",
+          "source": "e10b1dbdab869923ec2b71bba1932a79bfe07a88c6eb78aa046ae72b44cb8004"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "7e25dd6ed5cf59d39df27918015b47fd2ea824fb7e3ba4e315735d4f4c57d49c",
+          "source": "8bbcb05504bc9336ab68dcd297f84f3bd1301873b19413e517ad2c72ddeee4d8"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "6b9508e16605cb2fdf14ebdde967562c14cb99fcabfead22c5aa8f44e33aeb9f",
+          "source": "cbc86d890d303a6fc2fccfd587c15ae5da376218018cdd1c139388a342853a6c"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "6133920b6b9ab3a8e0c529bc39f87c09e9fcb21f2e8f18a486b04553993e2b11",
+          "source": "0f17c9049c6e7cbd192c71bbfbd237190204cf41ce936d5a8a1c502f24ef8e2a"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "3fad915cbe5fa087f9c1e40b141ad7fc51f1c11d7c49a0aeb6424824edd59ecc",
+          "source": "9a56e857bc35a26b9b35ee6c292de5542da1af4c5ba9f094c9e17a6e8cd34dd1"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "3d264260136beb173fce814df6e4fe6cb94c140e7999c55e1ab2c4c21aca2d8d",
+          "source": "a682de84e16ecb6d1d193f83c0bfa67f70096aab483f6980574a96dd5d9e2aa4"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "5ff984e2d183fb83098e1532f4f74ea8e9e26f9e0cfe3212cd106e0959eb8306",
+          "source": "d321ce375d6d389fc2a6c8aa5d1b2eae452604225c46288f61582fd266f73959"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-27:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "797f5aa571e41f796e275b2eb5e0b7c5bd74a427b51f0927de47a67f5b9f71b4",
+          "source": "eb9df76b2f4832a4bc85ffefadba568f58a3942d5228604238af9f6cadc6440e"
+        },
+        {
+          "field": "winnerBuild",
+          "db": "传统养猪",
+          "source": "日落海倒转"
+        },
+        {
+          "slot": 1,
+          "field": "build",
+          "db": "传统养猪",
+          "source": "日落海倒转"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "b460597d4508d96ce3fe074fe47aeb4ee0ad924e3ffc890347cc0c51737affe2",
+          "source": "22ce7e49db2e432034366bf36aee95461c44f97c89e3c82d1eeeba1c773463a4"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "85405f71a095ea9d6c948d8f47f65db4cdb81ccad967e2f27c0f9041f1562edd",
+          "source": "30e6c0111e097f7be5d9eda4c838387c8a8e1fc36d079905131d628b965b4e1a"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "8448eb8da0b45b66ad94aec2643520a57ecaf67a494352164dd85a8e43ec488a",
+          "source": "c6e46e5923f970559b7a9ceffa39fd722dab50d566b05367f929734e43de54d9"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "1356bedb524ca6b32cfa06867e0177af931e8a4bca3c582e5677ff765596d5b9",
+          "source": "a5576331bd6982c07941eaa691e2dfe783a75f6eb543301363b348e2f857b1b2"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "19002b565ad7195ad1a46483f2e0ac2775fcf9295a105509715941e7c9c7eaec",
+          "source": "7b0d67bfe4d1c93de2988d2f6b3792a7a43ba6bb5624fb443d9ee05d39a48ec9"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "a25115f6648f8b011090ee4dc46e133072678bd779ee6fb84daf637de45a9570",
+          "source": "26f2b3588e0f03fead6a57ad9ac3262714457cca4594b9f583fc44b65ef7b207"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "32e32a14b50d24a3305fdf80b1aa16ea6c64cabb4a465b4b351158a36aa11f1b",
+          "source": "78c72ec9db8dcea741528cd4d961c181555d582ddbaaddca823bb1e40007e655"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-23:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "272b5b3102a9aea0ff3e57cb51c03e832d014d07d4c964ef4325ff8bb312ae0e",
+          "source": "27566b56f87f15c0e3c6cd03daae83a1044bc45434f406ceba42abc3b59ca4e6"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "63906be9e164785c8ed02ba6d4e8131bba97c8119cafa0b0c3ddfdf9f4b46324",
+          "source": "37843dd2ca0e7ae3787c1b7cc224264a8aa8e1a221ff7ec9f065642a7a30be95"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "b6424b558c14ceab8afee54cddc6ac93c09aabd1508ef6f03eafaee91a762252",
+          "source": "74e2f77871d3d5b64653e268758a56444cc1b567f4729d6312d759f1b72a19c3"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "16cf991112b3f0b446434aa2a6aac575d0ff1ffdb988932de679e8e2576ee053",
+          "source": "2a047b8a6f9299b883a8e5a972d8255e51295d29802baafe47b8c57cf0798c8d"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "5f1b93ef3df655e9533f80e1291b1c66e138c3f9dd7242cb800ba83e38777dc5",
+          "source": "564a9361f407ffcf1a9e97ffda0d07cfa79681ce971da868f522813e3513ec26"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "9df3f432c032c7e0a6dfc2d7414ecfe8525ff4fc7525d78a074cc51dcacc3b60",
+          "source": "53e1fc693442e4f926b58e837d485c5e2a4e4037ba1f72f0994589b65a24443c"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "11fa3a9efa292435435bb215c67f4ff03ddbf4b0e2dc1d106e3c7fc2b610816c",
+          "source": "7daf4f11197a683120a247d1cf3d4dcc0b231954f58f54afe614787624ca18ad"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-24:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "e57fc1e994952ece7e9849ee200624214ed5654303fcf2433605e80e08c73395",
+          "source": "689808825e5fc09a065a7d5a986ae1a69690b5a8eca54d10b7cd7d93992cb801"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "ad2398ce40600ddede7ecf8e8f07ef12a51f9dbb37b988ce6e61c749f315e2ca",
+          "source": "d6decac76eab245efcc79853525849fda998be3e01c3960e5040a14530b9f277"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "4cd50b42dbb961eb4384e60c52dc18f21ee0ad3a98c021b43a9d562da51876ac",
+          "source": "69e70ea9efd268163b3cdc7f9398f504296123f7c3ce70ec4760b4892cd2cf92"
+        },
+        {
+          "slot": 5,
+          "field": "build",
+          "db": "毒奶",
+          "source": "三分毒奶"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "a7e5da6025277c65c27a08bc55052d14648551a5bd602d545e324847d4f666b4",
+          "source": "b98c16d342a3f5f394b52db7edf69799046fcc8a1e0c2e9bc7748717593febea"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "b802ad9744622157579496f738990829db094afb2a6161873681f436fbf0af79",
+          "source": "33b8e154712e8b5bb267c76a19a96b26c818ce72cff0cfc695619325799ecf0d"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "2b3b990b202548efc163479847d8f9de7039774c05245f9966be93314505dee7",
+          "source": "d20e76f60c74941a75653ff275729972c1a6ab8b966d11b0ac40796ff6a1f02f"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "5865da1d70de85356a341826f2bcb517edc8e27f11a9e0cb2cf22109071bea42",
+          "source": "83a2539921ebb1f8bc31f06b4033962315674dbdca837d553d079d3dfab0f8fe"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "511094f23f11a265ab9045af642bde5d134f1143a0ef15ba45639d1a496aecbf",
+          "source": "f2fc4757ef0906c86a1dd9dfddbfdf098e3d455f7aaa15004e8c81b4b8dcf061"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-25:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "0e47fa52468cf56cea468182b52e990e38b60cf319a43a0c5809602c76b04b7a",
+          "source": "3b395e3283302fd42c1c8c901bd111b129228e5ff7a6fc47d3a92e4bf4916a70"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:1",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "00fcc3056465b95cb60a1a4c9422ec00d0c3da82b29271c002c075451f9d90c7",
+          "source": "5da6f883af04ddf7fc22b7f6cfcbbc73c75a91f94ed809f5e8943225decccdfc"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:2",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "14d15da0f26b6552de404c46cb75e56847417285449ebeb94a4d7a3365b8b5d2",
+          "source": "afa8188d23c6273676e6222525c6a9e75efa017ff1972f0d170845ad849a0188"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:3",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "80964e7dbdca15d2340306eada47085d9d69a093a1b0e282d4a9e0afbaf415ea",
+          "source": "20ea78a87b587af3695152cc8a0633b43219a4cb293d6b2951540c84ac66fdf2"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:4",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "3dc62b9b767ceebe31c04c2348dffb07eaba6e94902d9d077f7eb7ae2fbf1476",
+          "source": "2219a3a271ade4798cae0de7c6074ac939e86ad6e6649be11b61049c115b2e66"
+        },
+        {
+          "field": "winnerBuild",
+          "db": "三分倒转",
+          "source": "三分倒转混沌裂隙"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:5",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "6ec50807b4715788d2f4aa31169d5f3bac129d7284e91462ecdec7c916955a62",
+          "source": "28b1abc87c4303e68b061587f379049ad70661915efdbdf8ac915663a3ec12e5"
+        },
+        {
+          "slot": 4,
+          "field": "build",
+          "db": "传统养猪",
+          "source": "日落海倒转"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:6",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "e9d36c0b01d3463377f083d8cd4014574a65cc6166c6c9f9f014e2a8b7bdbbd4",
+          "source": "f7f87628c049218fec4a4215d09d011a5226f2fcc88a4b161618363ce9a13ddf"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:7",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "a425ce1b3a587042724845e8e8f44970d82b0fa8e8d72645a9dad40ac51f8705",
+          "source": "6cbbf2ff5bf974e3c9e3984a76316f3f9153d6a302a21d8e335118ef1b5e3a4c"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-10-26:8",
+      "diff": [
+        {
+          "field": "payloadHash",
+          "db": "616519031c05b014ca546079f15dd4de2cc1b6f0168711faad21e192bb2f8ff4",
+          "source": "28a10226395801782e7762c940f7725870d5c71c5a6da0a0741e51c464b98842"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-06:2",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:3",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:4",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:5",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:6",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:7",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:8",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-11-06:1",
+      "diff": []
+    },
+    {
+      "key": "ruanshi:2026-10-27:8",
+      "diff": []
+    }
+  ],
+  "notInDb": [
+    "ruanshi:2026-11-08:1",
+    "ruanshi:2026-11-08:2",
+    "ruanshi:2026-11-08:3",
+    "ruanshi:2026-11-08:4",
+    "ruanshi:2026-11-08:5",
+    "ruanshi:2026-11-08:6",
+    "ruanshi:2026-11-08:7",
+    "ruanshi:2026-11-08:8",
+    "ruanshi:2026-11-09:1",
+    "ruanshi:2026-11-09:2",
+    "ruanshi:2026-11-09:3"
+  ]
+}

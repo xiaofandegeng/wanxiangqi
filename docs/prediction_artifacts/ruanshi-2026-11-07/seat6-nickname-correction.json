@@ -1,0 +1,98 @@
+{
+  "before": {
+    "key": "ruanshi:2026-11-06:1",
+    "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+    "day": "2026-11-06",
+    "ordinal": 1,
+    "materialKey": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+    "winnerSlot": 1,
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "EZ拉丁鱼",
+        "build": "UNKNOWN",
+        "winner": true
+      },
+      {
+        "slot": 2,
+        "nickname": "WE葫芦呼噜",
+        "build": "镜转吕布",
+        "winner": false
+      },
+      {
+        "slot": 3,
+        "nickname": "胜天半子嘉誉",
+        "build": "牺牲李信",
+        "winner": false
+      },
+      {
+        "slot": 4,
+        "nickname": "DY棒教练",
+        "build": "镜转海月",
+        "winner": false
+      },
+      {
+        "slot": 5,
+        "nickname": "下雨了下雨了",
+        "build": "UNKNOWN",
+        "winner": false
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音所谓Y",
+        "build": "UNKNOWN",
+        "winner": false
+      }
+    ],
+    "winnerBuild": "UNKNOWN",
+    "ban": "UNKNOWN"
+  },
+  "after": {
+    "key": "ruanshi:2026-11-06:1",
+    "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+    "day": "2026-11-06",
+    "ordinal": 1,
+    "materialKey": "98e33543d4931484cf44e7b969fd194f333ef8cc4452310503a1c77d60702bb2",
+    "winnerSlot": 1,
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "EZ拉丁鱼",
+        "build": "UNKNOWN",
+        "winner": true
+      },
+      {
+        "slot": 2,
+        "nickname": "WE葫芦呼噜",
+        "build": "镜转吕布",
+        "winner": false
+      },
+      {
+        "slot": 3,
+        "nickname": "胜天半子嘉誉",
+        "build": "牺牲李信",
+        "winner": false
+      },
+      {
+        "slot": 4,
+        "nickname": "DY棒教练",
+        "build": "镜转海月",
+        "winner": false
+      },
+      {
+        "slot": 5,
+        "nickname": "下雨了下雨了",
+        "build": "UNKNOWN",
+        "winner": false
+      },
+      {
+        "slot": 6,
+        "nickname": "抖音所演Y",
+        "build": "UNKNOWN",
+        "winner": false
+      }
+    ],
+    "winnerBuild": "UNKNOWN",
+    "ban": "UNKNOWN"
+  }
+}

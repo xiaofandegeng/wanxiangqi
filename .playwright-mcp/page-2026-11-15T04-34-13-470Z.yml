@@ -1,0 +1,216 @@
+- generic [ref=f51e1]:
+  - text: HONOR OF KINGS · ACE ARCHIVE
+  - link "跳到主要内容" [ref=f51e2] [cursor=pointer]:
+    - /url: "#wpMain"
+  - banner [ref=f51e3]:
+    - link "王牌弈录总览" [ref=f51e4] [cursor=pointer]:
+      - /url: wangpai.html
+      - generic [ref=f51e7]:
+        - generic [ref=f51e8]: 奇迹司
+        - generic [ref=f51e9]: 王牌弈录
+    - navigation "王牌弈录模块" [ref=f51e10]:
+      - link "总览" [ref=f51e11] [cursor=pointer]:
+        - /url: wangpai.html
+      - link "返回主站" [ref=f51e12] [cursor=pointer]:
+        - /url: index.html
+      - link "万象图鉴" [ref=f51e13] [cursor=pointer]:
+        - /url: wxq.html
+    - button "维护数据" [ref=f51e15] [cursor=pointer]
+  - navigation "选择游戏资料库" [ref=f51e16]:
+    - link "王者荣耀世界 小队共建" [ref=f51e17] [cursor=pointer]:
+      - /url: index.html
+      - generic [ref=f51e18]: 王者荣耀世界
+      - generic [ref=f51e19]: 小队共建
+    - link "王者万象棋 王牌弈录" [ref=f51e20] [cursor=pointer]:
+      - /url: wangpai.html
+      - generic [ref=f51e21]: 王者万象棋
+      - generic [ref=f51e22]: 王牌弈录
+  - navigation "功能模块" [ref=f51e23]:
+    - link "总览 OVERVIEW" [ref=f51e24] [cursor=pointer]:
+      - /url: wangpai.html
+      - generic [ref=f51e25]: 总览
+      - generic [ref=f51e26]: OVERVIEW
+    - link "选手数据 PLAYERS" [ref=f51e27] [cursor=pointer]:
+      - /url: wangpai-players.html
+      - generic [ref=f51e28]: 选手数据
+      - generic [ref=f51e29]: PLAYERS
+    - link "万象大赛 WANXIANG" [ref=f51e30] [cursor=pointer]:
+      - /url: wangpai-wanxiang.html
+      - generic [ref=f51e31]: 万象大赛
+      - generic [ref=f51e32]: WANXIANG
+    - link "钻石狂潮 DIAMOND" [ref=f51e33] [cursor=pointer]:
+      - /url: wangpai-diamond.html
+      - generic [ref=f51e34]: 钻石狂潮
+      - generic [ref=f51e35]: DIAMOND
+    - link "棋手榜单 LORDS" [ref=f51e36] [cursor=pointer]:
+      - /url: wangpai-lords.html
+      - generic [ref=f51e37]: 棋手榜单
+      - generic [ref=f51e38]: LORDS
+    - link "10:00排行 10:00 RANKING" [ref=f51e39] [cursor=pointer]:
+      - /url: wangpai-rankings.html
+      - generic [ref=f51e40]: 10:00排行
+      - generic [ref=f51e41]: 10:00 RANKING
+    - link "截图录入 UPLOAD" [ref=f51e42] [cursor=pointer]:
+      - /url: wangpai-upload.html
+      - generic [ref=f51e43]: 截图录入
+      - generic [ref=f51e44]: UPLOAD
+  - main [ref=f51e45]:
+    - generic [ref=f51e47]:
+      - generic [ref=f51e48]:
+        - paragraph [ref=f51e49]: WANXIANG CUP
+        - heading "万象大赛 16:00–23:00" [level=2] [ref=f51e50]
+        - generic [ref=f51e51]: 0 场对局
+      - generic [ref=f51e52]:
+        - generic [ref=f51e53]:
+          - generic [ref=f51e54]: 日期
+          - textbox "日期" [ref=f51e55]
+        - generic [ref=f51e56]:
+          - generic [ref=f51e57]: 场次
+          - combobox "筛选万象大赛场次" [ref=f51e58] [cursor=pointer]:
+            - option "全部整点场" [selected]
+            - option "16:00场"
+            - option "17:00场"
+            - option "18:00场"
+            - option "19:00场"
+            - option "20:00场"
+            - option "21:00场"
+            - option "22:00场"
+            - option "23:00场"
+        - generic [ref=f51e59]:
+          - generic [ref=f51e60]: 选手
+          - searchbox "选手" [ref=f51e61]
+        - generic [ref=f51e62]:
+          - generic [ref=f51e63]: 棋手
+          - searchbox "棋手" [ref=f51e64]
+        - link "截图录入" [ref=f51e65] [cursor=pointer]:
+          - /url: wangpai-upload.html
+  - contentinfo [ref=f51e66]:
+    - paragraph [ref=f51e67]: 王牌对局逐日存档 · 万象棋棋手胜率观测站
+    - paragraph [ref=f51e68]: 数据由奇迹司小队维护，仅供参考。卡牌与棋手图鉴素材来源：王者万象棋官方网站。
+  - dialog "欢迎访问奇迹司小队 · 请先阅读并同意以下协议" [ref=f51e69]:
+    - generic [ref=f51e70]:
+      - generic [ref=f51e71]:
+        - heading "欢迎访问奇迹司小队 · 请先阅读并同意以下协议" [level=1] [ref=f51e72]
+        - paragraph [ref=f51e73]: 根据相关法律法规，您需在进入站点前阅读并同意下列两份协议。请将每份协议滚动至文末后勾选，两项均勾选后方可继续。
+      - tablist "协议选择" [ref=f51e74]:
+        - tab "《用户隐私政策》" [active] [selected] [ref=f51e75] [cursor=pointer]: 《用户隐私政策》 ✓ 已读
+        - tab "《网站平台用户规范协议》" [ref=f51e76] [cursor=pointer]:
+          - text: 《网站平台用户规范协议》
+          - generic [aria-hidden] [ref=f51e77]: ✓ 已读
+      - tabpanel "《用户隐私政策》" [ref=f51e79]:
+        - generic [ref=f51e80]:
+          - button "打印" [ref=f51e81] [cursor=pointer]
+          - button "下载 PDF" [ref=f51e82] [cursor=pointer]
+        - generic "用户隐私政策 正文，请滚动阅读至文末" [ref=f51e84]:
+          - generic [ref=f51e85]:
+            - heading "用户隐私政策" [level=2] [ref=f51e86]
+            - paragraph [ref=f51e87]: 最后更新日期：2026 年 9 月 19 日 生效日期：2026 年 9 月 19 日
+            - paragraph [ref=f51e88]: 欢迎使用「奇迹司小队」站点（以下简称"本站点"）。本政策说明我们在您使用本站点（以下统称"服务"）时，如何收集、使用、存储、共享、转让与保护您的个人信息。请您在访问前仔细阅读并充分理解本政策。如您不同意本政策，请勿使用本服务。
+            - heading "一、相关定义" [level=3] [ref=f51e89]
+            - paragraph [ref=f51e90]: 为便于理解，本政策中的下列用语含义如下：
+            - list [ref=f51e91]:
+              - listitem [ref=f51e92]: 个人信息：以电子或者其他方式记录的与已识别或者可识别的自然人有关的各种信息；
+              - listitem [ref=f51e93]: 匿名标识：无法直接识别特定自然人，但可用于区分设备与账号的标识（如设备标识）；
+              - listitem [ref=f51e94]: 敏感个人信息：一旦泄露或者非法使用，容易导致自然人的人格尊严受到侵害或者人身、财产安全受到危害的个人信息；
+              - listitem [ref=f51e95]: 去标识化：对个人信息进行处理，使其在不借助额外信息的情况下无法识别特定自然人的过程；
+              - listitem [ref=f51e96]: 匿名化：对个人信息进行处理，使其无法识别特定自然人且不能被复原的过程；
+              - listitem [ref=f51e97]: 服务：本站点全部网页功能的总称。
+            - heading "二、我们收集的信息" [level=3] [ref=f51e98]
+            - paragraph [ref=f51e99]: 我们仅在为您提供服务所必需的范围内收集信息，并遵循"最小必要"原则，主要包括：
+            - list [ref=f51e100]:
+              - listitem [ref=f51e101]:
+                - text: 账号与身份标识
+                - list [ref=f51e102]:
+                  - listitem [ref=f51e103]: 您注册、登录后产生的账号标识与会话信息；
+                  - listitem [ref=f51e104]: 您自愿填写的昵称、头像等基础资料；
+                  - listitem [ref=f51e105]: 您设置的个性化偏好、主题与配置项。
+              - listitem [ref=f51e106]:
+                - text: 玩法与功能数据
+                - list [ref=f51e107]:
+                  - listitem [ref=f51e108]: 您在「我的居所」中记录的种植、牧场、设施、收益等玩法数据；
+                  - listitem [ref=f51e109]: 您使用智能计算器产生的配置与计算结果；
+                  - listitem [ref=f51e110]: 您保存的收藏、笔记与自定义方案。
+              - listitem [ref=f51e111]:
+                - text: 使用行为与日志
+                - list [ref=f51e112]:
+                  - listitem [ref=f51e113]: 访问页面、点击行为、功能使用时长等匿名统计；
+                  - listitem [ref=f51e114]: 设备型号、操作系统、浏览器类型、屏幕分辨率、网络环境等诊断信息；
+                  - listitem [ref=f51e115]: 崩溃、报错与异常日志，用于定位与修复问题。
+              - listitem [ref=f51e116]:
+                - text: 反馈与内容
+                - list [ref=f51e117]:
+                  - listitem [ref=f51e118]: 您主动提交的评论、建议、报错与创作内容；
+                  - listitem [ref=f51e119]: 您通过客服渠道沟通时留下的记录。
+            - heading "三、信息的收集方式" [level=3] [ref=f51e120]
+            - paragraph [ref=f51e121]: 我们通过以下方式收集上述信息：
+            - list [ref=f51e122]:
+              - listitem [ref=f51e123]: 您注册、登录或主动填写表单时由您自行提供；
+              - listitem [ref=f51e124]: 您使用服务功能时由系统自动记录；
+              - listitem [ref=f51e125]: 您通过客服或反馈渠道主动提交；
+              - listitem [ref=f51e126]: 您在使用第三方账号登录（如适用）时，由相应平台按约定回传必要标识。
+            - heading "四、信息的使用目的" [level=3] [ref=f51e127]
+            - paragraph [ref=f51e128]: 我们将信息用于以下目的，且严格限制在为实现该目的所必需的范围内：
+            - list [ref=f51e129]:
+              - listitem [ref=f51e130]: 提供、维护与改进核心功能（如居所数据同步、智能计算器、内容展示与检索）；
+              - listitem [ref=f51e131]: 保障服务安全，识别并防范作弊、滥用、盗用与安全风险；
+              - listitem [ref=f51e132]: 向您推送与游戏玩法相关的提醒（如浇水提醒，且需您单独授权并随时可关闭）；
+              - listitem [ref=f51e133]: 开展匿名化、去标识化的统计分析与产品优化；
+              - listitem [ref=f51e134]: 响应您的咨询、投诉、报错与权利请求；
+              - listitem [ref=f51e135]: 履行法律法规及监管要求规定的义务。
+            - heading "五、信息的共享、转让与披露" [level=3] [ref=f51e136]
+            - paragraph [ref=f51e137]:
+              - text: 我们
+              - strong [ref=f51e138]: 不会出售
+              - text: 您的个人信息。仅在以下情形共享、转让或披露：
+            - list [ref=f51e139]:
+              - listitem [ref=f51e140]: 经您明确同意或主动授权；
+              - listitem [ref=f51e141]: 为完成功能所必需，交由具备相应资质的第三方服务商（如云存储与消息推送服务商）在约定范围内处理；
+              - listitem [ref=f51e142]: 涉及跨境提供的，依照法律规定进行安全评估，并事前征得您的单独同意；
+              - listitem [ref=f51e143]: 依据法律法规、监管规定或有权机关（如人民法院、监管部门）的强制性要求提供；
+              - listitem [ref=f51e144]: 为保护本站点、用户或公众的合法权益，在合理且必要的范围内披露。
+            - paragraph [ref=f51e145]: 对于接受我们信息的第三方，我们会要求其遵守保密与安全保障义务，并对处理活动进行监督。
+            - heading "六、信息的存储与保护" [level=3] [ref=f51e146]
+            - list [ref=f51e147]:
+              - listitem [ref=f51e148]:
+                - text: 存储地点：数据
+                - strong [ref=f51e149]: 主要存储于中国大陆境内的服务器
+                - text: ；
+              - listitem [ref=f51e150]:
+                - text: 存储期限：仅在实现处理目的所必需的最短时间内保留。账号注销或您请求删除后，我们将在合理期限内
+                - strong [ref=f51e151]: 删除或者匿名化处理
+                - text: 您的个人信息；
+              - listitem [ref=f51e152]: 安全措施：采用访问控制、传输加密（HTTPS）、去标识化、日志审计与定期安全评估等合理措施保护信息安全；
+              - listitem [ref=f51e153]: 事件处置：若发生或者可能发生信息安全事件，我们将依法及时采取补救措施，并依规通知您与监管部门。
+            - heading "七、Cookie 与本地存储" [level=3] [ref=f51e154]
+            - paragraph [ref=f51e155]:
+              - text: 为记住您的登录态与同意状态，我们会在您的设备本地存储少量数据（如
+              - code [ref=f51e156]: localStorage
+              - text: 、Cookie）。您可通过浏览器设置管理、清除相关存储，但关闭后部分功能可能受限。我们不会将本地存储用于本政策未载明的其他目的。
+            - heading "八、您的权利" [level=3] [ref=f51e157]
+            - paragraph [ref=f51e158]: 您对自身个人信息享有以下权利，并可按下方"联系我们"渠道提出：
+            - list [ref=f51e159]:
+              - listitem [ref=f51e160]: 查询、复制您的个人资料与玩法数据；
+              - listitem [ref=f51e161]: 更正不准确、不完整或过时的信息；
+              - listitem [ref=f51e162]: 在符合法律规定的情况下删除信息、撤回此前作出的同意（撤回不影响撤回前基于同意已进行的管理）；
+              - listitem [ref=f51e163]: 注销账号，并要求删除或者匿名化处理关联个人信息；
+              - listitem [ref=f51e164]: 对自动化决策结果进行说明与申诉。
+            - paragraph [ref=f51e165]: 我们将在收到请求后十五日内予以响应；情形复杂的，最长不超过三十日。在验证您的身份后，我们将依法提供相应协助。
+            - heading "九、未成年人保护" [level=3] [ref=f51e166]
+            - paragraph [ref=f51e167]: 我们重视未成年人个人信息保护。若您为未成年人，请在监护人陪同下阅读本政策，并在其同意下使用服务。我们不会主动收集未成年人的敏感个人信息；如发现有未成年人非经监护人同意提交的信息，将及时删除。
+            - heading "十、政策的更新" [level=3] [ref=f51e168]
+            - paragraph [ref=f51e169]: 我们可能适时修订本政策。当政策发生重大变更（如收集目的、共享对象、留存期限、使用方式发生变化）时，我们会通过站点公告或弹窗等方式通知；若您继续使用服务，即视为接受更新后的政策。涉及核心权益变更的，将重新征得您的同意。
+            - heading "十一、联系我们" [level=3] [ref=f51e170]
+            - paragraph [ref=f51e171]: 如对本政策有疑问、投诉，或需行使上述权利，可通过本站点"联系我们"页面、站内客服渠道或电子邮件与我们联系。我们将在法律法规要求的时限内予以答复并处理。
+        - generic [ref=f51e172]:
+          - checkbox "我已阅读并同意《用户隐私政策》" [disabled] [ref=f51e173]
+          - generic [ref=f51e174]:
+            - text: 我已阅读并同意《用户隐私政策》
+            - generic [ref=f51e175]: 请阅读至文末后再勾选
+      - generic [ref=f51e176]:
+        - generic [ref=f51e177]:
+          - text: 已读
+          - strong [ref=f51e178]: "1"
+          - text: /2 · 已勾选
+          - strong [ref=f51e179]: "0"
+          - text: /2
+        - button "同意并继续" [disabled] [ref=f51e180]
