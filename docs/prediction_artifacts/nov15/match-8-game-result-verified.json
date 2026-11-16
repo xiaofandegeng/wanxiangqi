@@ -1,0 +1,146 @@
+{
+  "id": "ace-catalog-20261115-8-game-result",
+  "matchId": "ruanshi:2026-11-15:8",
+  "day": "2026-11-15",
+  "ordinal": 8,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": null,
+  "banNote": "截图有红色禁用图标，名称待确认",
+  "duration": "00:29:28",
+  "playedAt": null,
+  "winner": "沐大胖朵",
+  "evidenceId": "ace-result-8c7108f7e0c5c023f6e5ba3d",
+  "evidenceSha256": "8c7108f7e0c5c023f6e5ba3d0bc776213d3d43a93bc4c69662b50a4f5caf18e2",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "沐大胖朵",
+      "catalogNickname": "沐大胖朵",
+      "playerId": "747674e2c21eaf8c755f8e863bcc9cd4ae4422fe9979f2c61d144daa4d891b38",
+      "commander": "镜",
+      "visibleCardLevels": [
+        999,
+        897,
+        807,
+        746,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "独断万古蛙蛙",
+      "catalogNickname": "独断万古蛙蛙",
+      "playerId": "9008cfe1a8003616aa89a5255b3983d38123b93359b562c8959a96cec3a31907",
+      "commander": "马可",
+      "visibleCardLevels": [
+        999,
+        47,
+        6,
+        4,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音搜小意",
+      "catalogNickname": "抖音搜小意",
+      "playerId": "1174d35a7f3270e27ed288840b84952fb2419291f0b83a7123c874dc7d734a9e",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        277,
+        159,
+        110,
+        101,
+        65,
+        63,
+        55
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "好运且喜忠犬壹",
+      "catalogNickname": "好运且喜忠犬壹",
+      "playerId": "3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        219,
+        168,
+        105,
+        100,
+        90,
+        51,
+        24
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "北念且好运",
+      "catalogNickname": "北念且好运",
+      "playerId": "adf9ea8606be08202a0427f74ff10da9786f15c7199b90f4dd1a7c9d377025cc",
+      "commander": "马可",
+      "visibleCardLevels": [
+        499,
+        149,
+        72,
+        71,
+        67,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "愿你安然入梦",
+      "catalogNickname": "愿你安然入梦",
+      "playerId": "f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        111,
+        28,
+        13,
+        12,
+        12,
+        8,
+        6
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-8c7108f7e0c5c023f6e5ba3d",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 46,
+    "today": 8,
+    "missing": [
+      {
+        "day": "2026-11-11",
+        "ordinals": [
+          7,
+          8
+        ]
+      },
+      {
+        "day": "2026-11-12",
+        "ordinals": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      }
+    ]
+  }
+}

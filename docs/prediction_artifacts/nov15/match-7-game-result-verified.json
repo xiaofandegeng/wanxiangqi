@@ -1,0 +1,121 @@
+{
+  "id": "ace-catalog-20261115-7-game-result",
+  "matchId": "ruanshi:2026-11-15:7",
+  "day": "2026-11-15",
+  "ordinal": 7,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:31:53",
+  "playedAt": null,
+  "winner": "丰川祥子",
+  "evidenceId": "ace-result-fd9cf2efebd80bcf7ef85a44",
+  "evidenceSha256": "fd9cf2efebd80bcf7ef85a4456d3c78e81578114b76e7cf571e1e3e1ad6008bc",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "丰川祥子",
+      "catalogNickname": "丰川祥子",
+      "playerId": "fefa84daffe463359c35592a388d3c8335e2232f699a3bc875655d2895d8dba8",
+      "commander": "马可",
+      "visibleCardLevels": [
+        391,
+        179,
+        158,
+        153,
+        75,
+        11,
+        7
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音群星yun落",
+      "catalogNickname": "抖音群星yun落",
+      "playerId": "b37073beebfecf12dc23de5de4e7591e85fe298a1edcb4a17a6164ae73c56463",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        392,
+        337,
+        276,
+        220,
+        217,
+        185,
+        112
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音EZ、色彩",
+      "catalogNickname": "抖音EZ、色彩",
+      "playerId": "8f70e26cb56b13c40e5f92173a6d5c559b4ba1cafbc281ba9f206c8600f99df0",
+      "commander": null,
+      "visibleCardLevels": [
+        126,
+        123,
+        114,
+        108,
+        80,
+        62,
+        47
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "好运连连猫猫",
+      "catalogNickname": "好运连连猫猫",
+      "playerId": "0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a",
+      "commander": "马可",
+      "visibleCardLevels": [
+        214,
+        162
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音梦飞久迁",
+      "catalogNickname": "抖音梦飞久迁",
+      "playerId": "fd49fee883d82cd0b1f71ce49daf039933f30de659ce6824637c9c1a046d933c",
+      "commander": null,
+      "visibleCardLevels": [
+        223,
+        222,
+        185,
+        173,
+        113,
+        17
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "EZ拉丁鱼7D版",
+      "catalogNickname": "EZ拉丁鱼7D版",
+      "playerId": "b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a",
+      "commander": "孙小宾",
+      "visibleCardLevels": [
+        105,
+        77,
+        76,
+        73,
+        63,
+        55,
+        54
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-fd9cf2efebd80bcf7ef85a44",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 45,
+    "today": 7
+  }
+}

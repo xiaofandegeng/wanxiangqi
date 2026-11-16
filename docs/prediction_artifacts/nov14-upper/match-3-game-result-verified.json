@@ -1,0 +1,118 @@
+{
+  "id": "ace-catalog-20261114-3-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:3",
+  "day": "2026-11-14",
+  "ordinal": 3,
+  "mode": "WANXIANG",
+  "ban": "大河",
+  "duration": "00:29:42",
+  "playedAt": null,
+  "winner": "抖音搜天眷",
+  "winnerBuildFromExistingSource": "三分登场",
+  "originalCatalogSource": "https://www.douyin.com/note/7708083869819342080",
+  "evidenceId": "ace-result-cf19370f1933f7c0b9811c20",
+  "evidenceSha256": "cf19370f1933f7c0b9811c204a30dfebb98c812c26951597c36516312e5afba9",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，截图六席与库内赛果一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音搜天眷",
+      "catalogNickname": "抖音搜天眷",
+      "playerId": "2f3d5ce772022c1d18cb0d99609d8682517a0fa0c81b8af890182b7c691c577f",
+      "commander": "镜",
+      "visibleCardLevels": [
+        642,
+        503,
+        495,
+        46,
+        38,
+        22,
+        11
+      ],
+      "sourceBuildLabel": "三分登场"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音刺痛",
+      "catalogNickname": "抖音刺痛",
+      "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        283,
+        72,
+        62,
+        46,
+        24,
+        20,
+        18
+      ],
+      "sourceBuildLabel": "逐鹿嬴政"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音、区王",
+      "catalogNickname": "抖音、区王",
+      "playerId": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        640,
+        438,
+        370,
+        351,
+        128
+      ],
+      "sourceBuildLabel": "日落海倒转"
+    },
+    {
+      "rank": 4,
+      "nickname": "北念且好运",
+      "catalogNickname": "北念且好运",
+      "playerId": "65f4dae8a5bdfa4da0fe5ae121e05ab521a09fcde924742d9311b309d804973d",
+      "commander": "马可",
+      "visibleCardLevels": [
+        501,
+        194,
+        14,
+        11,
+        2
+      ],
+      "sourceBuildLabel": "镜猪"
+    },
+    {
+      "rank": 5,
+      "nickname": "小宁来也",
+      "catalogNickname": "小宁来也",
+      "playerId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        230,
+        222,
+        193,
+        150,
+        57,
+        18
+      ],
+      "sourceBuildLabel": null
+    },
+    {
+      "rank": 6,
+      "nickname": "抖音群星yun落",
+      "catalogNickname": "抖音群星YUN落",
+      "playerId": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+      "commander": "班叔",
+      "visibleCardLevels": [
+        177,
+        49,
+        29,
+        20,
+        17,
+        11,
+        1
+      ],
+      "sourceBuildLabel": "河洛李信"
+    }
+  ],
+  "week": 42
+}

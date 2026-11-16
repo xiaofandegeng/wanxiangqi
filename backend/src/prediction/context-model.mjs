@@ -3,7 +3,7 @@ import {normalizeLabel} from './build-stats.mjs'
 
 // Offline challenger. All result-derived features use strictly earlier dates.
 export const CONTEXT_VERSION='historical-context-softmax-v1'
-export const FIELD_CONFIG=Object.freeze({id:'field-context',field:true,halfLife:14,lambda:4})
+export const FIELD_CONFIG=Object.freeze({id:'dynamic-roster-context',field:true,halfLife:14,lambda:4,rating:{halfLife:10,learningRate:0.65}})
 export const FULL_CONTEXT_ID='priority-contention'
 export const CANDIDATES=Object.freeze([
  {id:'player-only',history:false,builds:false,halfLife:Infinity},
@@ -20,6 +20,9 @@ const age=(a,b)=>(Date.parse(a)-Date.parse(b))/86400000
 const label=x=>typeof x==='string'&&x.trim()&&x!=='UNKNOWN'?x.trim():null
 const rate=rows=>(rows.reduce((s,r)=>s+Number(r.seat.winner),0)+1)/(rows.length+6)
 // Neither a source's final build nor its winner flag can satisfy this contract.
+export function historicalChoice(game,seat){
+ return seat.reviewedCommander ? {commander:seat.reviewedCommander} : knownChoice(game,seat)
+}
 export function knownChoice(game,seat){
  const p=seat.prematch
  return p?.evidenceId&&Number.isFinite(Date.parse(p.observedAt))&&Number.isFinite(Date.parse(game.startsAt))&&Date.parse(p.observedAt)<Date.parse(game.startsAt)?p:{}
@@ -43,9 +46,11 @@ function matchup(history, own, rivals, identify) {
  return advantage/(decided+12)
 }
 export function contextFeatures(history,game,config,confirmedChoices=[]){
- const choices=new Map(game.seats.map((seat,index)=>[seat,confirmedChoices[index]??knownChoice(game,seat)]))
+ // A reviewed historical commander is a selection observed on that match's roster.
+ // Never fill a missing pre-match plan with the recorded final build.
+ const choices=new Map(game.seats.map((seat,index)=>[seat,confirmedChoices[index]??historicalChoice(game,seat)]))
  const past=history.filter(g=>g.day<game.day)
- if(config.field)return fieldFeatures(past,game,choices,knownChoice)
+ if(config.field)return fieldFeatures(past,game,choices,historicalChoice,config)
  const distributions=new Map()
  if(config.contention) for(const seat of game.seats){
   const plan=normalizeLabel(choices.get(seat).plan)

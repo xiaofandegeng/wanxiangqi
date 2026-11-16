@@ -15,7 +15,7 @@ const fixture={counts:{matches:2},sources:[{status:'DISCOVERED'}],players:[{id:'
 const request={phase:'PREMATCH',identityConfirmed:true,operator:'TEST',mode:'WANXIANG',version:'TEST-V',players:Array.from({length:6},(_,i)=>({nickname:'TEST'+i,profileId:i===0?'TEST-A':null}))}
 test('胜者模型资料口径：六席+冠军可提供二元胜负；汇总不重复累计，不填排名与校准概率',()=>{
  const r=assessRoster(fixture,request,{featureCutoff:'2026-10-31T00:00:00Z',ocr:{phaseHint:'UNKNOWN'}})
- assert.equal(r.players[0].recent7.observations,2);assert.equal(r.players[0].buildRates[0].observedWinShare,.5);assert.equal(r.players[0].buildRates[0].finalBuildWinRate,null)
+ assert.equal(r.players[0].recent7.observations,2);assert.deepEqual(r.players[0].recent7Matches.map(match=>match.winner),[true,false]);assert.equal(r.players[0].buildRates[0].observedWinShare,.5);assert.equal(r.players[0].buildRates[0].finalBuildWinRate,null)
  assert.ok(r.players.every(p=>p.probability===null));assert.equal(r.allocation.status,'ABSTAIN');assert.equal(r.allocation.reserveRatio,1);assert.equal(r.allocation.players.reduce((s,p)=>s+p.ratio,0),0)
  assert.throws(()=>assessRoster(fixture,{...request,players:request.players.slice(1)},{featureCutoff:'2026-10-31T00:00:00Z',ocr:{}}),/六席/)
  const repeated=structuredClone(request);repeated.players[1].profileId='TEST-A';assert.throws(()=>assessRoster(fixture,repeated,{featureCutoff:'2026-10-31T00:00:00Z',ocr:{}}),/重复/)
@@ -50,7 +50,13 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  const input={...request,version:'v1.8.1',aceContext:{supportStage:'OPEN',bannedFaction:'日落海',grossReturnConfirmed:true},players:profiles.map(p=>({nickname:p.nickname,profileId:p.id,commander:'TEST棋手',returnMultiplier:5.6}))}
  const first=await post(`screenshots/${draft.id}/analyze`,input);assert.equal(first.status,200);assert.equal(first.json.data.status,'DATA_AUDIT_ONLY');assert.equal(first.json.data.allocation.status,'ABSTAIN')
  const experimental=await post(`screenshots/${draft.id}/analyze`,{...input,experimentalProbability:true});assert.equal(experimental.status,200);assert.equal(experimental.json.data.model.trainingMatches,data.matches.length);assert.ok(Math.abs(experimental.json.data.players.reduce((s,p)=>s+p.probability,0)-1)<1e-12);assert.equal(experimental.json.data.calibrated,false);assert.equal((await fetch(url+'screenshot-analyses/'+experimental.json.data.id)).status,401);assert.deepEqual((await p.screenshots.analysis(experimental.json.data.id)).model,experimental.json.data.model)
- assert.equal(experimental.json.data.model.modelVersion,'source-roster-field-v6')
+ const withReference=structuredClone(catalog)
+ withReference.players.find(player=>player.id===profiles[0].id).claims.push({id:'reference-only',text:'该选手擅长传统养猪'})
+ const referenceAnalysis=assessRoster(withReference,{...input,experimentalProbability:true},draft)
+ assert.equal(referenceAnalysis.players[0].claims.at(-1).id,'reference-only')
+ assert.deepEqual(referenceAnalysis.model.players,experimental.json.data.model.players)
+ assert.deepEqual(referenceAnalysis.model.buildProjections,experimental.json.data.model.buildProjections)
+ assert.equal(experimental.json.data.model.modelVersion,'source-roster-dynamic-v11')
  assert.deepEqual(experimental.json.data.players.map(p=>p.probability),experimental.json.data.model.players.map(p=>p.probability))
  const persisted=(await pool.query('SELECT result FROM prediction_screenshot_analyses WHERE id=$1',[experimental.json.data.id])).rows[0].result
  assert.deepEqual(persisted.model,experimental.json.data.model)

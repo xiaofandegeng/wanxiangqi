@@ -1,4 +1,6 @@
 import {normalizeLabel} from './build-stats.mjs'
+import {projectBuilds} from './build-projection.mjs'
+import {rateRosterHistory} from './roster-rating.mjs'
 
 const DAY=86400000
 const BASE=1/6
@@ -13,12 +15,30 @@ function winRate(rows, prior, strength) {
  return (wins+prior*strength)/(count+strength)
 }
 
-export function fieldFeatures(history, target, choices, historicalChoice) {
+function crossBuildResidual(rows, opponentBuild) {
+ let paired=0, pairedWeight=0, other=0, otherWeight=0
+ for(const row of rows){
+  const residual=row.weight*(Number(row.winner)-row.expected)
+  if(row.rivals.some(rival=>rival.build===opponentBuild)){
+   paired+=residual
+   pairedWeight+=row.weight
+  }else if(row.rivals.every(rival=>rival.build)){
+   other+=residual
+   otherWeight+=row.weight
+  }
+ }
+ if(!pairedWeight||!otherWeight)return 0
+ const baseline=other/(otherWeight+12)
+ return (paired-pairedWeight*baseline)/(pairedWeight+12)
+}
+
+export function fieldFeatures(history, target, choices, historicalChoice, config) {
+ const ratings=rateRosterHistory(history,target.day,config.rating)
  const past=history.flatMap(game=>{
   const age=(Date.parse(target.day)-Date.parse(game.day))/DAY
   const weight=2**(-age/14)
   const seats=game.seats.map(seat=>({
-   ...seat,build:normalizeLabel(seat.build),
+   ...seat,expected:ratings.expected(game.id,seat.id),build:normalizeLabel(seat.build),
    commander:normalizeLabel(historicalChoice(game,seat).commander)
   }))
   return seats.map((seat,index)=>({
@@ -36,17 +56,15 @@ export function fieldFeatures(history, target, choices, historicalChoice) {
   strengths.get(row.id).push(row)
  }
  const strength=new Map([...strengths].map(([id,rows])=>[id,winRate(rows,BASE,8)]))
- const distributions=target.seats.map((seat,index)=>{
-  const known=normalizeLabel(choices.get(seat).plan)
-  if(known)return new Map([[known,1]])
-  const history=histories[index]
-  const eligible=ban?history.filter(row=>row.ban===ban&&row.build):[]
-  const sample=eligible.length>=3?eligible:history.filter(row=>row.build)
-  const total=sample.reduce((sum,row)=>sum+row.weight,0)+3
-  const distribution=new Map()
-  for(const row of sample)distribution.set(row.build,(distribution.get(row.build)??0)+row.weight/total)
-  return distribution
- })
+ const projections=projectBuilds(history,target,target.seats.map(seat=>choices.get(seat)),historicalChoice)
+ const distributions=projections.map(projection=>new Map(projection.candidates.map(row=>[row.build,row.share])))
+ const byBuild=new Map()
+ for(const row of past){
+  if(!row.build)continue
+  if(!byBuild.has(row.build))byBuild.set(row.build,[])
+  byBuild.get(row.build).push(row)
+ }
+ const pairCache=new Map()
  return target.seats.map((seat,index)=>{
   const history=histories[index]
   const baseline=strength.get(seat.id)??BASE
@@ -58,36 +76,42 @@ export function fieldFeatures(history, target, choices, historicalChoice) {
   const opponentIds=new Set(target.seats.filter((_,i)=>i!==index).map(other=>other.id))
   const opponentCommanders=new Set(target.seats.filter((_,i)=>i!==index)
    .map(other=>normalizeLabel(choices.get(other).commander)).filter(other=>other&&other!==commander))
-  function fieldAdjustment(rows, isOpponent, prior) {
+  function fieldAdjustment(rows, isOpponent) {
    let residual=0, evidence=0
    for(const row of rows){
     const rivals=row.rivals.filter(isOpponent)
     if(!rivals.length)continue
-    const expected=prior/(prior+rivals.reduce((sum,rival)=>sum+(strength.get(rival.id)??BASE),0))
+    const expected=row.expected/(row.expected+rivals.reduce((sum,rival)=>sum+rival.expected,0))
     if(!row.winner&&!rivals.some(rival=>rival.winner))continue
     residual+=(Number(row.winner)-expected)*row.weight
     evidence+=row.weight
    }
    return residual/(evidence+6)
   }
+  const banHistory=ban?history.filter(row=>row.ban===ban):[]
+  const banResidual=banHistory.reduce((sum,row)=>sum+row.weight*(Number(row.winner)-row.expected),0)
+  const banSample=banHistory.reduce((sum,row)=>sum+row.weight,0)
   const features={
-   baseScore:Math.log(recentStrength/BASE),
+   baseScore:0.65*ratings.rating(seat.id)+0.35*Math.log(recentStrength/BASE),
    [`player:${seat.id}`]:1,
    championHistory:Math.log1p(history.reduce((sum,row)=>sum+row.weight*Number(row.winner),0)),
    playerForm:baseline-BASE,
    recentTrend:winRate(history.filter(row=>row.age<=7),baseline,6)-baseline,
-   sameBanForm:ban?winRate(history.filter(row=>row.ban===ban),baseline,8)-baseline:0,
+   sameBanForm:banResidual/(banSample+8),
    commanderForm:commanderStrength-BASE,
    playerCommander:winRate(ownCommander,baseline,8)-baseline,
    commanderUnderBan:ban?winRate(commanderRows.filter(row=>row.ban===ban),commanderStrength,10)-commanderStrength:0,
-   playerMatchup:fieldAdjustment(history,rival=>opponentIds.has(rival.id),baseline),
-   commanderMatchup:fieldAdjustment(commanderRows,rival=>opponentCommanders.has(rival.commander),commanderStrength),
+   playerMatchup:fieldAdjustment(history,rival=>opponentIds.has(rival.id)),
+   commanderMatchup:fieldAdjustment(commanderRows,rival=>opponentCommanders.has(rival.commander)),
    buildFit:0,
    buildUnderBan:0,
-   buildContention:0
+   crossBuildMatchup:0,
+   buildContention:0,
+   commanderBuildContention:0,
+   playerCommanderBuildContention:0
   }
   for(const [build,usage] of distributions[index]){
-   const buildRows=past.filter(row=>row.build===build)
+   const buildRows=byBuild.get(build)??[]
    const buildRate=winRate(buildRows,BASE,8)
    const personalRate=winRate(history.filter(row=>row.build===build),baseline,8)
    const collision=1-distributions.reduce((none,other,i)=>i===index?none:none*(1-(other.get(build)??0)),1)
@@ -97,9 +121,32 @@ export function fieldFeatures(history, target, choices, historicalChoice) {
    features.buildFit+=usage*((buildRate-BASE)+(personalRate-baseline))
    if(ban)features.buildUnderBan+=usage*(winRate(buildRows.filter(row=>row.ban===ban),buildRate,10)-buildRate)
    features.buildContention+=usage*collision*(shared-solo)
+   const rivalBuilds=new Set(distributions.flatMap((dist,i)=>i===index?[]:[...dist.keys()]))
+   for(const rivalBuild of rivalBuilds){
+    if(rivalBuild===build)continue
+    const pairKey=JSON.stringify([build,rivalBuild])
+    if(!pairCache.has(pairKey))pairCache.set(pairKey,crossBuildResidual(buildRows,rivalBuild))
+    const chance=1-distributions.reduce((none,dist,i)=>i===index?none:none*(1-(dist.get(rivalBuild)??0)),1)
+    features.crossBuildMatchup+=usage*chance*pairCache.get(pairKey)
+   }
+   if(!commander)continue
+   for(const [rivalIndex,rival] of target.seats.entries()){
+    if(rivalIndex===index)continue
+    const rivalCommander=normalizeLabel(choices.get(rival).commander)
+    const rivalUsage=distributions[rivalIndex].get(build)??0
+    if(!rivalCommander||!rivalUsage)continue
+    const pairRows=buildRows.filter(row=>row.commander===commander&&row.rivals.some(opponent=>
+     opponent.commander===rivalCommander&&opponent.build===build))
+    if(!pairRows.length)continue
+    const commanderBuildRate=winRate(buildRows.filter(row=>row.commander===commander),shared,12)
+    const pairRate=winRate(pairRows,commanderBuildRate,12)
+    const ownPairRate=winRate(pairRows.filter(row=>row.id===seat.id),pairRate,16)
+    features.commanderBuildContention+=usage*rivalUsage*(pairRate-commanderBuildRate)
+    features.playerCommanderBuildContention+=usage*rivalUsage*(ownPairRate-pairRate)
+   }
   }
   // Put rate differences on roughly the same scale as the account indicators.
-  for(const key of ['playerForm','recentTrend','sameBanForm','commanderForm','playerCommander','commanderUnderBan','playerMatchup','commanderMatchup','buildFit','buildUnderBan','buildContention'])features[key]*=6
+  for(const key of ['playerForm','recentTrend','sameBanForm','commanderForm','playerCommander','commanderUnderBan','playerMatchup','commanderMatchup','buildFit','buildUnderBan','crossBuildMatchup','buildContention','commanderBuildContention','playerCommanderBuildContention'])features[key]*=6
   return features
  })
 }

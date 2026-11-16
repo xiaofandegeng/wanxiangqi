@@ -1,0 +1,125 @@
+{
+  "id": "ace-catalog-20261115-4-game-result",
+  "matchId": "ruanshi:2026-11-15:4",
+  "day": "2026-11-15",
+  "ordinal": 4,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "duration": "00:26:27",
+  "playedAt": null,
+  "winner": "B站万象棋小祥",
+  "linkedPostmatchAuditId": "ace-live-20261115-1948-result",
+  "evidenceId": "ace-result-35db0e3f84d5f650142241c3",
+  "evidenceSha256": "35db0e3f84d5f650142241c39be4c16ff3362cb06b25b534f064da7d0c8972ee",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户确认日期和场次，与既有复盘六席和时长一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "B站万象棋小祥",
+      "catalogNickname": "B站万象棋小祥",
+      "playerId": "54d47ed1752ea34f4c5dd1c0b66e77fe63860582ec9c9cb8b8f055318613e57f",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        429,
+        143,
+        77,
+        71,
+        68,
+        49,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "小宁来也",
+      "catalogNickname": "小宁来也",
+      "playerId": "623161d59045f5347a3f48dde93021eb6213ce39e07aecb2beff7956dbaae6b3",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        332,
+        135,
+        66,
+        60,
+        39,
+        34,
+        12
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音搜道无涯",
+      "catalogNickname": "抖音道无涯",
+      "playerId": "f3103f07b33b95005ab05492bf55c60532d74f19e0378784de70d45d58e0ac84",
+      "commander": "马可",
+      "visibleCardLevels": [
+        469,
+        13,
+        9,
+        6,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "抖音所演ii",
+      "catalogNickname": "抖音所演II",
+      "playerId": "c709699a358ceb7c1af7505f8b5aee209f72c53601021967ee3a6b089aa6d1a7",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        143,
+        137,
+        19,
+        4,
+        4,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音沉默",
+      "catalogNickname": "抖音沉默",
+      "playerId": "69fa37e5bef99331d8843c9e173bd90a01924563defdc6296d425cd038dddc6c",
+      "commander": "小妲己",
+      "visibleCardLevels": [
+        619,
+        449,
+        415,
+        181,
+        168,
+        150,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "抖音湛蓝",
+      "catalogNickname": "抖音湛蓝",
+      "playerId": "8f38276751da0436b194c883566341dc96d72a6a194a823e3b2510600e1ab7c2",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        186,
+        110,
+        109,
+        108,
+        106,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-35db0e3f84d5f650142241c3",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 42,
+    "today": 4
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "cutoff": "2026-11-15T10:53:51.019Z",
+  "matchId": "ruanshi:2026-10-28:1",
+  "sha": "7fdad8247f66080c3928041920615eec76f73ad85596bbc15aacf2c87b158220",
+  "historicalWin": {
+    "matchId": "ruanshi:2026-10-28:1",
+    "day": "2026-10-28",
+    "ordinal": 1,
+    "slot": 1,
+    "build": "河洛木兰",
+    "reviewedCommander": "庄小鱼",
+    "rank": 1,
+    "winnerBuild": "河洛木兰",
+    "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+    "materialSha256": "7fdad8247f66080c3928041920615eec76f73ad85596bbc15aacf2c87b158220"
+  },
+  "historicalMatches": 10,
+  "historicalWins": 1,
+  "player": {
+    "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+    "nickname": "娇弱的佩奇",
+    "probability": 0.1444944759388662,
+    "historicalMatches": 10,
+    "historicalWins": 1,
+    "coldStart": false
+  },
+  "projection": {
+    "basis": "PLAYER_COMMANDER_HISTORY",
+    "personalSamples": 9,
+    "commanderSamples": 1,
+    "commanderPoolSamples": 1,
+    "excludedBuilds": [
+      "逐鹿嬴政"
+    ],
+    "unknownShare": 0.33494462067169867,
+    "candidates": [
+      {
+        "build": "河洛木兰",
+        "share": 0.43275810408940724,
+        "personalSamples": 4,
+        "commanderSamples": 1
+      },
+      {
+        "build": "大河猪离",
+        "share": 0.10112242305341841,
+        "personalSamples": 1,
+        "commanderSamples": 0
+      },
+      {
+        "build": "大河龙蛇",
+        "share": 0.04811885994031382,
+        "personalSamples": 1,
+        "commanderSamples": 0
+      },
+      {
+        "build": "大河开团射",
+        "share": 0.043582390145342736,
+        "personalSamples": 1,
+        "commanderSamples": 0
+      },
+      {
+        "build": "乔汐速6司空震",
+        "share": 0.039473602099819,
+        "personalSamples": 1,
+        "commanderSamples": 0
+      }
+    ]
+  },
+  "type": "RETROSPECTIVE_DATA_CORRECTION"
+}

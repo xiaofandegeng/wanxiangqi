@@ -30,6 +30,7 @@ export async function importCatalog(pool,data,readMaterial){
  for(const m of data.matches){const hash=catalogHash(m),res=await c.query(`INSERT INTO prediction_catalog_matches(id,source_url,material_sha256,payload_hash,day,ordinal,author,ban,winner_build) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(id) DO NOTHING RETURNING id`,[m.key,m.sourceUrl,m.materialKey,hash,m.day,m.ordinal,data.author,m.ban||null,m.winnerBuild]);const existing=(await c.query('SELECT payload_hash FROM prediction_catalog_matches WHERE id=$1',[m.key])).rows[0];if(existing.payload_hash!==hash)throw fail('已有场次内容冲突，不覆盖','CATALOG_CONFLICT',409)
  if(res.rowCount){insertedMatches++;for(const s of m.seats)await c.query('INSERT INTO prediction_catalog_plays(match_id,slot,player_id,build_label,winner) VALUES($1,$2,$3,$4,$5)',[m.key,s.slot,await player(s.nickname),s.build,s.slot===m.winnerSlot])}}
  for(const x of data.claims){const hash=catalogHash(x);await c.query(`INSERT INTO prediction_catalog_claims(id,player_id,source_url,material_sha256,payload_hash,kind,text,window_start,window_end,aggregate) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT DO NOTHING`,[x.key,await player(x.nickname),x.sourceUrl,x.materialKey,hash,x.kind,x.text,x.windowStart,x.windowEnd,x.aggregate?JSON.stringify(x.aggregate):null]);if((await c.query('SELECT payload_hash FROM prediction_catalog_claims WHERE id=$1',[x.key])).rows[0].payload_hash!==hash)throw fail('已有声明冲突，不覆盖','CATALOG_CONFLICT',409)}
+ if(insertedMatches)await c.query('REFRESH MATERIALIZED VIEW prediction_player_build_profiles')
  await c.query('COMMIT');return {insertedMatches,totalSubmittedMatches:data.matches.length}
  }catch(e){await c.query('ROLLBACK');throw e}finally{c.release()}
 }
@@ -40,13 +41,22 @@ export class CatalogService {
  const client=await this.pool.connect()
  try{
  await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
- const [players,plays,claims,sources]=[
+ const [players,plays,claims,sources,buildProfiles,links]=[
  await client.query('SELECT id,author,nickname,identity_status FROM prediction_catalog_players WHERE available_at<=$1 ORDER BY nickname',[cutoff]),
- await client.query(`SELECT p.*,m.day::text,m.ordinal,m.source_url,m.material_sha256,m.ban,m.winner_build FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
+ await client.query(`SELECT p.*,m.day::text,m.ordinal,m.source_url,m.material_sha256,m.ban,m.winner_build,ce.commander AS reviewed_commander FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 LEFT JOIN prediction_catalog_commander_evidence ce ON ce.match_id=p.match_id AND ce.slot=p.slot AND ce.material_sha256=m.material_sha256 AND ce.available_at<=$1 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
  await client.query(`SELECT c.*,c.window_start::text AS start,c.window_end::text AS finish FROM prediction_catalog_claims c JOIN prediction_catalog_materials b ON b.sha256=c.material_sha256 WHERE octet_length(b.content)=b.size_bytes AND c.available_at<=$1 AND c.window_end<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY c.window_end DESC,c.id`,[cutoff]),
- await client.query(`SELECT s.*, (SELECT count(*)::int FROM prediction_catalog_matches m WHERE m.source_url=s.url AND status='TRANSCRIBED' AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date) AS matches FROM prediction_catalog_sources s WHERE s.created_at<=$1 ORDER BY url DESC`,[cutoff])]
+ await client.query(`SELECT s.*, (SELECT count(*)::int FROM prediction_catalog_matches m WHERE m.source_url=s.url AND status='TRANSCRIBED' AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date) AS matches FROM prediction_catalog_sources s WHERE s.created_at<=$1 ORDER BY url DESC`,[cutoff]),
+ await client.query(`SELECT player_id,build,appearances,wins,observed_win_rate::float8 AS "winRate",
+   usage_share::float8 AS "usageShare",common,repeated_title_results AS "repeatedTitleResults",
+   commanders,first_day::text AS "firstDay",last_day::text AS "lastDay",match_ids AS "matchIds"
+  FROM prediction_player_build_profiles WHERE refreshed_at<=$1 AND last_day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date
+  ORDER BY appearances DESC,wins DESC,build`,[cutoff]),
+ await client.query('SELECT alias_id,canonical_id FROM prediction_catalog_player_links WHERE available_at<=$1',[cutoff])]
  await client.query('COMMIT')
- const playerMap=new Map(players.rows.map(p=>[p.id,p.nickname]))
+ const canonicalIds=new Map(links.rows.map(link=>[link.alias_id,link.canonical_id]))
+ const canonicalPlayers=players.rows.filter(player=>!canonicalIds.has(player.id))
+ for(const row of [...plays.rows,...claims.rows])row.player_id=canonicalIds.get(row.player_id)??row.player_id
+ const playerMap=new Map(canonicalPlayers.map(p=>[p.id,p.nickname]))
  const matchMap=new Map()
  for(const r of plays.rows){
   let m=matchMap.get(r.match_id)
@@ -56,13 +66,13 @@ export class CatalogService {
   }
   const nick=playerMap.get(r.player_id)||'未知'
   if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
-  const cmd = r.day === '2026-11-06' && r.ordinal === 7 && r.slot === 6 && nick === '抖音猪葛龟龟' ? '乔汐' : ''
+  const cmd = r.reviewed_commander || (r.day === '2026-11-06' && r.ordinal === 7 && r.slot === 6 && nick === '抖音猪葛龟龟' ? '乔汐' : '')
   const existingSeat = m.seats.find(s => s.slot === r.slot)
   if (existingSeat) {
    existingSeat.playerId = r.player_id
    if (!existingSeat.nickname || existingSeat.nickname === '未知') existingSeat.nickname = nick
   } else {
-   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,avatar:cmd ? `/avatars/commanders/${cmd}.png` : null,build:r.build_label,winner:Boolean(r.winner)})
+   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,reviewedCommander:r.reviewed_commander??null,avatar:cmd ? `/avatars/commanders/${cmd}.png` : null,build:r.build_label,winner:Boolean(r.winner)})
   }
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
@@ -70,7 +80,7 @@ export class CatalogService {
  const transcribedKeys = new Set(transcribedMatches.map(m => `${m.day}:${m.ordinal}`))
  const snapshotMatches=buildHistoricalSnapshotMatches().filter(sm => !['2026-11-08','2026-11-09'].includes(sm.day) && !transcribedKeys.has(`${sm.day}:${sm.ordinal}`))
  const matches=[...transcribedMatches,...snapshotMatches].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
- const profiles=players.rows.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
+ const profiles=canonicalPlayers.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,buildProfile:buildProfiles.rows.filter(row=>row.player_id===p.id),builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,slot:h.slot,build:h.build_label,reviewedCommander:h.reviewed_commander??null,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
  const allPlayerMap=new Map()
  for(const p of profiles){allPlayerMap.set(p.nickname,{...p,history:[...p.history],buildsMap:new Map(p.builds.map(b=>[b.label,{...b}])),commandersMap:new Map()})}
  for(const m of transcribedMatches){

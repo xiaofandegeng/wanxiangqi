@@ -1,0 +1,121 @@
+{
+  "id": "ace-catalog-20261114-5-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:5",
+  "day": "2026-11-14",
+  "ordinal": 5,
+  "mode": "WANXIANG",
+  "ban": "大河",
+  "duration": "00:29:14",
+  "playedAt": null,
+  "winner": "太极剑1",
+  "evidenceId": "ace-result-ce215dccfe3d92eb2bd580d6",
+  "evidenceSha256": "ce215dccfe3d92eb2bd580d6aaf5001117a687286a4e7b6b573b6268e339f8de",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "太极剑1",
+      "catalogNickname": "太极剑1",
+      "playerId": "b4771d511cfd6e0db231d92cebf4420f7db819fb8af8cae74a236c1387c69688",
+      "commander": null,
+      "visibleCardLevels": [
+        720,
+        660,
+        320,
+        13,
+        8,
+        8,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "我要打王牌18",
+      "catalogNickname": "我要打王牌18",
+      "playerId": "85494163079c6a6ccb434556826271748f567881af3f984268eb6a8b497c01d2",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        529,
+        512,
+        462,
+        231,
+        32,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "bili星光柯基",
+      "catalogNickname": "bili星光柯基",
+      "playerId": "a18ed15b8e7db11b0dc5728096b0c2e996c0c7ccd594eba5b3a79bde3321978b",
+      "commander": "小妲己",
+      "visibleCardLevels": [
+        421,
+        412,
+        93,
+        21,
+        20,
+        9,
+        6
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "喵喵且好运",
+      "catalogNickname": "喵喵且好运",
+      "playerId": "c20cff796cdf80c9a9693b0739399e67170849fb91895757e534c9f7b4e3ee66",
+      "commander": "班叔",
+      "visibleCardLevels": [
+        237,
+        38,
+        19,
+        15,
+        15,
+        6,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "EG小宇13",
+      "catalogNickname": "EG小宇13",
+      "playerId": "1ac594113448db77d555cd8e5d92cd871781338071b4af6a9547cb6d1438d4b4",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        573,
+        102,
+        81,
+        80,
+        69,
+        27,
+        3
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "下雨了下雨了",
+      "catalogNickname": "下雨了下雨了",
+      "playerId": "b182c2a51f77ffb7918ed646a8a730ec430591c4bf8b03698c21ece942468525",
+      "commander": "镜",
+      "visibleCardLevels": [
+        420,
+        386,
+        304,
+        296,
+        11,
+        9,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-ce215dccfe3d92eb2bd580d6",
+  "week": 43
+}

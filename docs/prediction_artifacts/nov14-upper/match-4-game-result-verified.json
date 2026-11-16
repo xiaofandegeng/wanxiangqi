@@ -1,0 +1,119 @@
+{
+  "id": "ace-catalog-20261114-4-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:4",
+  "day": "2026-11-14",
+  "ordinal": 4,
+  "mode": "WANXIANG",
+  "ban": "大河",
+  "duration": "00:31:16",
+  "playedAt": null,
+  "winner": "丰川祥子",
+  "winnerBuildFromExistingSource": "传统养猪",
+  "originalCatalogSource": "https://www.douyin.com/note/7708083869819342080",
+  "evidenceId": "ace-result-2872c37d23d3f010c1e92518",
+  "evidenceSha256": "2872c37d23d3f010c1e92518d6ce9c708de3b704556941981638239d7b510170",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，截图六席与库内赛果一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "丰川祥子",
+      "catalogNickname": "丰川祥子",
+      "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+      "commander": "马可",
+      "visibleCardLevels": [
+        460,
+        379,
+        240,
+        97,
+        77,
+        39
+      ],
+      "sourceBuildLabel": "传统养猪"
+    },
+    {
+      "rank": 2,
+      "nickname": "事后诸葛亮",
+      "catalogNickname": "事后诸葛亮",
+      "playerId": "077e5693f8d2b11f599ee3aeeffbe60a008afc93c128cc572e17231817efc477",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        740,
+        380,
+        237,
+        200,
+        172,
+        165,
+        42
+      ],
+      "sourceBuildLabel": "河洛木兰"
+    },
+    {
+      "rank": 3,
+      "nickname": "猫爷",
+      "catalogNickname": "猫爷",
+      "playerId": "dbb02fc6e81d063ce706863063667740a34effc9ad5cc32d92bcf7bdd20ee8e7",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        490,
+        462,
+        393,
+        329,
+        71,
+        21,
+        1
+      ],
+      "sourceBuildLabel": "日落海倒转"
+    },
+    {
+      "rank": 4,
+      "nickname": "douyin小猪柒宝",
+      "catalogNickname": "DOUYIN小猪柒宝",
+      "playerId": "4619abd541bfe2008c6724b4b4d6c15cc538e4c2a729e69662e086f01e957018",
+      "commander": "镜",
+      "visibleCardLevels": [
+        530,
+        288,
+        73,
+        32,
+        10,
+        5,
+        1
+      ],
+      "sourceBuildLabel": "三分倒转"
+    },
+    {
+      "rank": 5,
+      "nickname": "DY棒教练",
+      "catalogNickname": "DY棒教练",
+      "playerId": "92d9bb54a2d966416a3d91804dd379df2c3f2399a62051f43e2b0ff63cfeffd7",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        620,
+        548,
+        449,
+        307,
+        4
+      ],
+      "sourceBuildLabel": "日落海倒转"
+    },
+    {
+      "rank": 6,
+      "nickname": "抖音搜流儿",
+      "catalogNickname": "抖音搜流儿",
+      "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        345,
+        306,
+        219,
+        196,
+        114,
+        108
+      ],
+      "sourceBuildLabel": "三分倒转"
+    }
+  ],
+  "week": 42
+}

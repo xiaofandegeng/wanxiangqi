@@ -736,6 +736,18 @@
    <h3>分析结果：{{ result.model?'程序计算 · 未校准实验概率':result.status==='DATA_AUDIT_ONLY'?'历史资料分析，预测尚未就绪':result.status }}</h3><p>{{ result.notice }}</p>
    <p class="shot-warning">虚拟钻石／积分建议：暂不分配，保留100%。当前没有经过校准的六人获胜概率。</p>
    <section v-if="result.model" class="shot-model"><h3>后端模型结果</h3><p>{{ result.model.modelVersion }} · {{ result.model.trainingMatches }} 场训练 · {{ result.model.calibrated?'已校准':'未校准' }}</p><p>{{ result.model.notice }}</p><ol><li v-for="p in result.model.players" :key="p.nickname"><strong>{{ p.nickname }}：{{ (p.probability*100).toFixed(2) }}%</strong><span v-if="p.coldStart"> · 无历史，使用先验</span></li></ol><p v-if="result.model.diagnostic.model">历史逐场对照 {{ result.model.diagnostic.evaluatedMatches }} 场<span v-if="result.model.diagnostic.strictHits !== undefined">，唯一首选命中真实冠军 {{ result.model.diagnostic.strictHits }} 场</span>。对数损失 {{ result.model.diagnostic.model.logLoss.toFixed(3) }}（越低越好）。</p><details><summary>复算依据</summary><p>数据指纹 {{ result.model.dataHash }}</p><p>每次模型结果随分析记录保存。综合模型使用确认的禁用和玩法，以及此前比赛的交手与阵容记录。</p></details></section>
+   <details v-if="result.model?.buildProjections" class="shot-model">
+    <summary>六人阵容倾向</summary>
+    <ul>
+     <li v-for="(projection, i) in result.model.buildProjections" :key="i">
+      <strong>{{ result.model.players[i]?.nickname }}</strong>
+      <span v-if="!projection.candidates.length"> · 暂无可用历史玩法</span>
+      <span v-else> · {{ projection.candidates.slice(0, 3).map(c => c.build + ' ' + (c.share * 100).toFixed(1) + '%').join('、') }}</span>
+      <span> · 历史夺冠 {{ result.model.players[i]?.historicalWins ?? '—' }}/{{ result.model.players[i]?.historicalMatches ?? '—' }} 场，已知玩法 {{ projection.personalSamples }} 条，当前棋手已核对玩法 {{ projection.commanderSamples }} 条，未知 {{ (projection.unknownShare * 100).toFixed(1) }}%</span>
+     </li>
+    </ul>
+    <p>百分比为阵容倾向权重。只有赛前确认的玩法按确定输入处理。</p>
+   </details>
    <p>数据截止：{{ new Date(result.featureCutoff).toLocaleString('zh-CN') }}；同日无精确时间的历史场次保守排除。</p>
 
 
@@ -896,7 +908,21 @@
 
   <section v-if="result.aceContext" class="shot-context-result"><h3>本场条件</h3><p>阵营禁用与已知玩法用于核对；当前实验概率尚未使用这些条件。</p><p>禁用：{{ result.aceContext.bannedFaction || '未提供' }}</p><ul><li v-for="p in result.aceContext.players" :key="p.seat">{{ p.nickname }} · 棋手 {{ p.commander||'未知' }} · 玩法 {{ p.visiblePlan||'未知' }}</li></ul><p v-for="g in result.aceContext.sharedPlans" :key="g.label">{{ g.label }}：席位 {{ g.seats.join('、') }} 选择标签相同，需复核实际英雄竞争；不据此直接加减胜率。</p><p v-for="w in result.aceContext.warnings.filter(w => !w.includes('RETURN'))" :key="w">{{ contextWarnings[w]||w }}</p><a v-for="source in result.aceContext.rules.sources" :key="source.url" :href="source.url" target="_blank" rel="noreferrer">{{ source.title }} </a></section>
   <ul class="shot-gaps"><li v-for="b in result.blockers" :key="b">{{ blockerNames[b]||b }}</li></ul>
-  <div class="shot-profiles"><article v-for="(p,i) in result.players" :key="i"><h4>{{ p.nickname }}</h4><p>档案：{{ p.profileNickname||'未匹配' }} · 程序概率：{{ p.probability == null ? '未计算' : (p.probability*100).toFixed(2)+'%（实验）' }}</p><p>近7日来源样本 {{ p.recent7.wins }}/{{ p.recent7.observations }} 登顶；近30日 {{ p.recent30.wins }}/{{ p.recent30.observations }}</p><p class="muted">以上仅已采集样本，无模式/版本完整性保证，不能当作完整近期战绩。</p><ul><li v-for="b in p.buildRates" :key="b.label">{{ b.label }}：{{ b.wins }}/{{ b.observations }} 登顶（{{ (100*b.observedWinShare).toFixed(1) }}% 来源选择标签样本）；最终阵容胜率未知</li></ul><p v-if="!p.buildRates.length">暂无可关联的逐局玩法。</p><details v-if="p.claims.length"><summary>作者专长评价与原文</summary><ul><li v-for="c in p.claims" :key="c.id">{{ c.kind==='COMMANDER_AUTHOR_CLAIM'?'棋手':'玩法' }}：{{ c.text }} <a :href="c.sourceUrl" target="_blank" rel="noreferrer">来源</a></li></ul></details></article></div>
+  <div class="shot-profiles"><article v-for="(p,i) in result.players" :key="i"><h4>{{ p.nickname }}</h4><p>档案：{{ p.profileNickname||'未匹配' }} · 程序概率：{{ p.probability == null ? '未计算' : (p.probability*100).toFixed(2)+'%（实验）' }}</p><p v-if="p.recent7.observations">近 7 日已收录 {{ p.recent7.observations }} 场，夺冠 {{ p.recent7.wins }} 场。</p>
+   <p v-else>{{ p.profileNickname ? '该账号近 7 日暂无已收录场次。' : '该昵称尚未关联选手档案。' }}</p>
+   <p>近 30 日已收录 {{ p.recent30.observations }} 场，夺冠 {{ p.recent30.wins }} 场。</p>
+   <details v-if="p.recent7Matches?.length">
+    <summary>近 7 日逐场战绩（{{ p.recent7Matches.length }}）</summary>
+    <ul>
+     <li v-for="(match, index) in p.recent7Matches" :key="match.matchId ?? index">
+      {{ match.day }}<span v-if="match.ordinal"> 第 {{ match.ordinal }} 场</span> · {{ match.winner ? '夺冠' : '参赛，未夺冠' }}
+      · {{ match.build && match.build !== 'UNKNOWN' ? match.build : '玩法待核对' }}
+      · {{ match.commander ?? '棋手待核对' }}
+      <a v-if="match.sourceUrl" :href="match.sourceUrl" target="_blank" rel="noreferrer">赛果来源</a>
+     </li>
+    </ul>
+   </details>
+   <ul><li v-for="b in p.buildRates" :key="b.label">{{ b.label }}：{{ b.wins }}/{{ b.observations }} 登顶（{{ (100*b.observedWinShare).toFixed(1) }}% 来源选择标签样本）；最终阵容胜率未知</li></ul><p v-if="!p.buildRates.length">暂无可关联的逐局玩法。</p><details v-if="p.claims.length"><summary>玩法参考与原文</summary><p>用于了解选手可能擅长的阵容。夺冠概率只使用王牌对决逐局记录。</p><ul><li v-for="c in p.claims" :key="c.id">{{ c.kind==='COMMANDER_AUTHOR_CLAIM'?'棋手':'玩法' }}：{{ c.text }} <a :href="c.sourceUrl" target="_blank" rel="noreferrer">来源</a></li></ul></details></article></div>
  </section>
   </div>
 </section>
@@ -959,8 +985,8 @@ interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
 interface Sample {wins:number;observations:number}
 interface AceContext {notice:string;bannedFaction:string|null;rules:{perPlayerSupportCap:number|null;sources:{title:string;url:string}[]};players:{seat:number;nickname:string;commander:string|null;visiblePlan:string|null;returnMultiplier:number|null;breakEvenProbability:number|null}[];sharedPlans:{label:string;seats:number[]}[];warnings:string[]}
-interface WinnerModel {modelVersion:string;trainingMatches:number;calibrated:boolean;notice:string;dataHash:string;players:{nickname:string;probability:number;coldStart:boolean}[];diagnostic:{strictHits?:number;evaluatedMatches:number;model:null|{logLoss:number};uniform:null|{logLoss:number};notice:string}}
-interface Result {model?:WinnerModel|null;aceContext?:AceContext;status:string;notice:string;featureCutoff:string;blockers:string[];players:{probability?:number|null;nickname:string;profileNickname:string|null;recent7:Sample;recent30:Sample;buildRates:{label:string;wins:number;observations:number;observedWinShare:number}[];claims:{id:string;kind:string;text:string;sourceUrl:string}[]}[]}
+interface WinnerModel {buildProjections?:{personalSamples:number;commanderSamples:number;unknownShare:number;candidates:{build:string;share:number}[]}[];modelVersion:string;trainingMatches:number;calibrated:boolean;notice:string;dataHash:string;players:{nickname:string;probability:number;historicalMatches?:number;historicalWins?:number;coldStart:boolean}[];diagnostic:{strictHits?:number;evaluatedMatches:number;model:null|{logLoss:number};uniform:null|{logLoss:number};notice:string}}
+interface Result {model?:WinnerModel|null;aceContext?:AceContext;status:string;notice:string;featureCutoff:string;blockers:string[];players:{probability?:number|null;nickname:string;profileNickname:string|null;recent7:Sample;recent7Matches?:{matchId:string|null;day:string;ordinal:number|null;build:string|null;commander:string|null;winner:boolean;sourceUrl:string|null}[];recent30:Sample;buildRates:{label:string;wins:number;observations:number;observedWinShare:number}[];claims:{id:string;kind:string;text:string;sourceUrl:string}[]}[]}
 const capturedAt=ref('')
 const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false),mode=ref('WANXIANG'),version=ref(CURRENT_LATEST_VERSION)
 const savedAnalysisId=ref('')

@@ -1,0 +1,114 @@
+{
+  "id": "ace-catalog-20261114-6-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:6",
+  "day": "2026-11-14",
+  "ordinal": 6,
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "duration": "00:30:11",
+  "playedAt": null,
+  "winner": "I蟲、初心",
+  "evidenceId": "ace-result-bdb2696c12b63d1f406c1be8",
+  "evidenceSha256": "bdb2696c12b63d1f406c1be8613c59523c22835126e1906a0a00ef6fa895e31f",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "I蟲、初心",
+      "playerId": "d3b678914172fefda4bc5aaa68fa110831d323c8e6ee57f0db67de8984633e1d",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        276,
+        39,
+        37,
+        19,
+        7,
+        4,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音梦飞冻冻",
+      "playerId": "773a7092eea9cedc4719d9a1ebe7ca9a475c01616ea32afada4d66924ba69e30",
+      "commander": "镜",
+      "visibleCardLevels": [
+        331,
+        262,
+        219,
+        212,
+        169,
+        6,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音EZ、色彩",
+      "playerId": "8f70e26cb56b13c40e5f92173a6d5c559b4ba1cafbc281ba9f206c8600f99df0",
+      "commander": null,
+      "visibleCardLevels": [
+        164,
+        155,
+        150,
+        145,
+        136,
+        128,
+        104
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "小暖贴贴",
+      "playerId": "fb22422f34cdb6906c2c6c9b41afb27ce2e6e0b4b7ca9aa99d3fd28cac90bd2a",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        278,
+        148,
+        148,
+        125,
+        100,
+        47
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音一朵老雏菊",
+      "playerId": "d6411efc48a0fb8ab4befc2d4be0eb2792e4550c43f9b8322fcdd1c981227e06",
+      "commander": null,
+      "visibleCardLevels": [
+        363,
+        87,
+        50,
+        19,
+        10,
+        7,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "好运且爱忠犬1",
+      "playerId": "68ed2091e06b257b7fd9ebd7dfae53dd183694a1a4513db2a31349a29f7feb5b",
+      "commander": "马可",
+      "visibleCardLevels": [
+        238,
+        97,
+        74,
+        58,
+        21,
+        10
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-bdb2696c12b63d1f406c1be8",
+  "week": 44
+}

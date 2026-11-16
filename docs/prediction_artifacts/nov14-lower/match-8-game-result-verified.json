@@ -1,0 +1,114 @@
+{
+  "id": "ace-catalog-20261114-8-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:8",
+  "day": "2026-11-14",
+  "ordinal": 8,
+  "mode": "WANXIANG",
+  "ban": null,
+  "banNote": "截图有红色禁用图标，名称待核对",
+  "duration": "00:30:54",
+  "playedAt": null,
+  "winner": "抖音EG航迹云",
+  "evidenceId": "ace-result-c85b29cc4bc594582555cb2a",
+  "evidenceSha256": "c85b29cc4bc594582555cb2ab78bcd60048148ec531283e5644247b017c7e648",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音EG航迹云",
+      "playerId": "a7b9a7485699adb2cc17c2098e285a04ac52e54e1ea0d5bbc5e73a9749c7c100",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        841,
+        224,
+        196,
+        192,
+        157,
+        119,
+        57
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "独断万古蛙蛙",
+      "playerId": "9008cfe1a8003616aa89a5255b3983d38123b93359b562c8959a96cec3a31907",
+      "commander": "马可",
+      "visibleCardLevels": [
+        540,
+        191,
+        85,
+        74,
+        57,
+        56
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音梦飞久迁",
+      "playerId": "fd49fee883d82cd0b1f71ce49daf039933f30de659ce6824637c9c1a046d933c",
+      "commander": "孙小宾",
+      "visibleCardLevels": [
+        979,
+        588,
+        489,
+        438,
+        166,
+        11,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "抖音梦飞1",
+      "playerId": "7ff34279b7df6f528555af4fc7dfae6e81d2967bd4d50948fcbea86025c0ae9b",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        415,
+        6,
+        3,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音EZ嘉誉",
+      "playerId": "1a5dbebf489c13386955c2d5ceb71cf3ebd254a743faa84668cc9afc2195a38a",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        385,
+        79,
+        37,
+        32,
+        29,
+        6,
+        2
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "有局丨白兔",
+      "playerId": "7be730c596ae539856d971caaa18e9bd0294bada7f40c6a8c817af078a78dbb5",
+      "commander": "阿离",
+      "visibleCardLevels": [
+        301,
+        22,
+        20,
+        20,
+        14,
+        11,
+        7
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-c85b29cc4bc594582555cb2a",
+  "week": 46,
+  "today": 8
+}

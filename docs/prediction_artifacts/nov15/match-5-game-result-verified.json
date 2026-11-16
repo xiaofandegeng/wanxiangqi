@@ -1,0 +1,123 @@
+{
+  "id": "ace-catalog-20261115-5-game-result",
+  "matchId": "ruanshi:2026-11-15:5",
+  "day": "2026-11-15",
+  "ordinal": 5,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "大河",
+  "duration": "00:34:00",
+  "playedAt": null,
+  "winner": "抖音EGM小谷芷",
+  "evidenceId": "ace-result-aa08926f0a1eaed2f2a6256c",
+  "evidenceSha256": "aa08926f0a1eaed2f2a6256cbbd88e678a9f48f070ead417ebdf9665eb60715e",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音EGM小谷芷",
+      "catalogNickname": "抖音EGM小谷芷",
+      "playerId": "2d86f92cddbcc88364eaa3bb4349167511f5636954291bd4734842253c9f4eb7",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        424,
+        16,
+        16,
+        15,
+        12,
+        11,
+        11
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音EGM皮皮鲨",
+      "catalogNickname": "抖音EGM皮皮鲨",
+      "playerId": "aa2cf8b9703be76f81b24a23fe0fe76b93c2776d51f887b7a17daeaed6a95913",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        981,
+        448,
+        428,
+        212,
+        159,
+        37,
+        10
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "EG小宇13",
+      "catalogNickname": "EG小宇13",
+      "playerId": "1ac594113448db77d555cd8e5d92cd871781338071b4af6a9547cb6d1438d4b4",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        849,
+        800,
+        474,
+        393,
+        2,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "岑溪",
+      "catalogNickname": "岑溪",
+      "playerId": "c2615540f420504ac38e600396364d6cad39117d80c1faa91eefa32c096ffad7",
+      "commander": "镜",
+      "visibleCardLevels": [
+        517,
+        424,
+        355,
+        22,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音、区王",
+      "catalogNickname": "抖音、区王",
+      "playerId": "c1c42003df0bf091bc1de7f0101a1207139c2e894aa9177998576c154e14a587",
+      "commander": "小妲己",
+      "visibleCardLevels": [
+        386,
+        202,
+        200,
+        198,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "胖狗王刺痛版",
+      "catalogNickname": "胖狗王刺痛版",
+      "playerId": "531cbbf2334221c00ed3fc46bf083137b64b512bdad4be975b17dc4b8c682299",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        336,
+        148,
+        108,
+        103,
+        99,
+        98,
+        93
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-aa08926f0a1eaed2f2a6256c",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 43,
+    "today": 5
+  }
+}

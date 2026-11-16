@@ -1,0 +1,816 @@
+{
+  "id": "ace-live-20261115-1948-build-matchup-replay",
+  "status": "POSTMATCH_MODEL_REPLAY",
+  "cutoff": "2026-11-15T11:48:27.723Z",
+  "evidenceId": "ace-live-post-c8be63f06a5b17384bc8ba53",
+  "referenceAudit": "ace-live-20261115-1948-result",
+  "modelVersion": "source-roster-dynamic-v11",
+  "dataHash": "285227448b9c7488194d68ee0bb69687f3823385f24725692bc50e732fcdd1ad",
+  "profiles": [
+    {
+      "nickname": "抖音沉默",
+      "id": null,
+      "matches": 0,
+      "wins": 0,
+      "history": [],
+      "buildProfile": []
+    },
+    {
+      "nickname": "抖音搜道无涯",
+      "id": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+      "matches": 1,
+      "wins": 0,
+      "history": [
+        {
+          "matchId": "ruanshi:2026-11-14:1",
+          "day": "2026-11-14",
+          "ordinal": 1,
+          "slot": 2,
+          "build": "牺牲李信",
+          "reviewedCommander": "班叔",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7708083869819342080",
+          "materialSha256": "4b889135ca0e5e538438b4eec6bbd675c63e8e350aa1cdaa9a59df19eb8f8a79"
+        }
+      ],
+      "buildProfile": [
+        {
+          "player_id": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+          "build": "牺牲李信",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 1,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 0,
+              "commander": "班叔",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-14",
+          "lastDay": "2026-11-14",
+          "matchIds": [
+            "ruanshi:2026-11-14:1"
+          ]
+        }
+      ]
+    },
+    {
+      "nickname": "小宁来也",
+      "id": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+      "matches": 3,
+      "wins": 1,
+      "history": [
+        {
+          "matchId": "ruanshi:2026-11-14:3",
+          "day": "2026-11-14",
+          "ordinal": 3,
+          "slot": 5,
+          "build": "UNKNOWN",
+          "reviewedCommander": "嬴律",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7708083869819342080",
+          "materialSha256": "26587722301fce14eaefe03f2230e0262ec5e31c97631039b14fb8c0678bf92e"
+        },
+        {
+          "matchId": "ruanshi:2026-11-13:4",
+          "day": "2026-11-13",
+          "ordinal": 4,
+          "slot": 6,
+          "build": "逐鹿嬴政",
+          "reviewedCommander": "嬴律",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7707638370737982720",
+          "materialSha256": "16bdf38ef876929082a42080bd3403464f70fb923270869b3e7f01c0c5946c20"
+        },
+        {
+          "matchId": "ruanshi:2026-11-11:6",
+          "day": "2026-11-11",
+          "ordinal": 6,
+          "slot": 1,
+          "build": "逐鹿帝临",
+          "reviewedCommander": "嬴律",
+          "rank": 1,
+          "winnerBuild": "逐鹿帝临",
+          "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+          "materialSha256": "46b6d759c29b2ba5a6e2bbb395558ede63a91242b89964da7b087a0191fdcc90"
+        }
+      ],
+      "buildProfile": [
+        {
+          "player_id": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "build": "逐鹿帝临",
+          "appearances": 1,
+          "wins": 1,
+          "winRate": 1,
+          "usageShare": 0.5,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 1,
+              "commander": "嬴律",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-11",
+          "lastDay": "2026-11-11",
+          "matchIds": [
+            "ruanshi:2026-11-11:6"
+          ]
+        },
+        {
+          "player_id": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "build": "逐鹿嬴政",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.5,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 0,
+              "commander": "嬴律",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-13",
+          "lastDay": "2026-11-13",
+          "matchIds": [
+            "ruanshi:2026-11-13:4"
+          ]
+        }
+      ]
+    },
+    {
+      "nickname": "B站万象棋小祥",
+      "id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+      "matches": 8,
+      "wins": 2,
+      "history": [
+        {
+          "matchId": "ruanshi:2026-11-14:2",
+          "day": "2026-11-14",
+          "ordinal": 2,
+          "slot": 2,
+          "build": "伞猫转艾琳",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7708083869819342080",
+          "materialSha256": "44feefae81f1d2cad807afabf3ff13101b0c26358e95566a7b7074b02256c197"
+        },
+        {
+          "matchId": "ruanshi:2026-11-13:6",
+          "day": "2026-11-13",
+          "ordinal": 6,
+          "slot": 5,
+          "build": "逐鹿嬴政",
+          "reviewedCommander": "嬴律",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7707973311589944610",
+          "materialSha256": "680c5175afdd1f8e86b8dc68044be344e61b600ddd5963c416e5bdb6f8454f12"
+        },
+        {
+          "matchId": "ruanshi:2026-11-11:3",
+          "day": "2026-11-11",
+          "ordinal": 3,
+          "slot": 1,
+          "build": "日落海倒转",
+          "reviewedCommander": "玉环",
+          "rank": 1,
+          "winnerBuild": "日落海倒转",
+          "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+          "materialSha256": "a7ba364b16b1a566c7215eb05b0bfd21e6fae014e9739dec78f137c7db613d0f"
+        },
+        {
+          "matchId": "ruanshi:2026-11-09:1",
+          "day": "2026-11-09",
+          "ordinal": 1,
+          "slot": 6,
+          "build": "河洛木兰",
+          "reviewedCommander": "庄小鱼",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7706387096180641064",
+          "materialSha256": "96342cfa1f48c786af65d2e64eb7ccdda26e867d80b9e1604d4017f10862fa31"
+        },
+        {
+          "matchId": "ruanshi:2026-10-29:6",
+          "day": "2026-10-29",
+          "ordinal": 6,
+          "slot": 6,
+          "build": "伞半月",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+          "materialSha256": "b4c3bb08f329f8c4349faebc5183a9382d13235cf951d633280afe8df8073c82"
+        },
+        {
+          "matchId": "ruanshi:2026-10-28:6",
+          "day": "2026-10-28",
+          "ordinal": 6,
+          "slot": 3,
+          "build": "传统养猪",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7701930067777146127",
+          "materialSha256": "b5b0d0ff00815ee2ccb2c9147cc318d1ec0e64428f6018ff3969b924a2a236ba"
+        },
+        {
+          "matchId": "ruanshi:2026-10-25:2",
+          "day": "2026-10-25",
+          "ordinal": 2,
+          "slot": 2,
+          "build": "干将遗志海月",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7700648428581178659",
+          "materialSha256": "9bb991388086bc172542038f4f1b2c01c14eb80b8e3722dbb2e94922922bdf46"
+        },
+        {
+          "matchId": "ruanshi:2026-10-24:2",
+          "day": "2026-10-24",
+          "ordinal": 2,
+          "slot": 1,
+          "build": "干将遗志伞吕布",
+          "reviewedCommander": null,
+          "rank": 1,
+          "winnerBuild": "遗志吕布",
+          "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+          "materialSha256": "34e9ffb67de69dffc43b0847787ad5bc52d83cb069356921a349a859d0513ee0"
+        }
+      ],
+      "buildProfile": [
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "干将遗志伞吕布",
+          "appearances": 1,
+          "wins": 1,
+          "winRate": 1,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24",
+          "matchIds": [
+            "ruanshi:2026-10-24:2"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "日落海倒转",
+          "appearances": 1,
+          "wins": 1,
+          "winRate": 1,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 1,
+              "commander": "玉环",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-11",
+          "lastDay": "2026-11-11",
+          "matchIds": [
+            "ruanshi:2026-11-11:3"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "伞半月",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-29",
+          "lastDay": "2026-10-29",
+          "matchIds": [
+            "ruanshi:2026-10-29:6"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "伞猫转艾琳",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-11-14",
+          "lastDay": "2026-11-14",
+          "matchIds": [
+            "ruanshi:2026-11-14:2"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "传统养猪",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-28",
+          "lastDay": "2026-10-28",
+          "matchIds": [
+            "ruanshi:2026-10-28:6"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "干将遗志海月",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-25",
+          "lastDay": "2026-10-25",
+          "matchIds": [
+            "ruanshi:2026-10-25:2"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "河洛木兰",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 0,
+              "commander": "庄小鱼",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-09",
+          "lastDay": "2026-11-09",
+          "matchIds": [
+            "ruanshi:2026-11-09:1"
+          ]
+        },
+        {
+          "player_id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "逐鹿嬴政",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.125,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 0,
+              "commander": "嬴律",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-13",
+          "lastDay": "2026-11-13",
+          "matchIds": [
+            "ruanshi:2026-11-13:6"
+          ]
+        }
+      ]
+    },
+    {
+      "nickname": "抖音湛蓝",
+      "id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+      "matches": 12,
+      "wins": 2,
+      "history": [
+        {
+          "matchId": "ruanshi:2026-11-14:1",
+          "day": "2026-11-14",
+          "ordinal": 1,
+          "slot": 5,
+          "build": "UNKNOWN",
+          "reviewedCommander": "白歌",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7708083869819342080",
+          "materialSha256": "4b889135ca0e5e538438b4eec6bbd675c63e8e350aa1cdaa9a59df19eb8f8a79"
+        },
+        {
+          "matchId": "ruanshi:2026-11-13:5",
+          "day": "2026-11-13",
+          "ordinal": 5,
+          "slot": 1,
+          "build": "三分登场",
+          "reviewedCommander": "白歌",
+          "rank": 1,
+          "winnerBuild": "三分登场",
+          "sourceUrl": "https://www.douyin.com/note/7707973311589944610",
+          "materialSha256": "f94400a99df0cb8f69a6ed1152b847eaace93d3134d6f41542ecf74e587a43ee"
+        },
+        {
+          "matchId": "ruanshi:2026-11-11:1",
+          "day": "2026-11-11",
+          "ordinal": 1,
+          "slot": 6,
+          "build": "逐鹿蒙犽",
+          "reviewedCommander": "镜",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+          "materialSha256": "9ef2002f6f1af3bf4e43dfbdc5ff33649f0ab7830f9aa580eb38f068951dbbad"
+        },
+        {
+          "matchId": "ruanshi:2026-11-10:6",
+          "day": "2026-11-10",
+          "ordinal": 6,
+          "slot": 4,
+          "build": "三分登场",
+          "reviewedCommander": "白歌",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7706911796640189731",
+          "materialSha256": "247244266d9c4cc9718b757d18cc2cc650d4ed009a008f537facc82537ab7234"
+        },
+        {
+          "matchId": "ruanshi:2026-11-09:2",
+          "day": "2026-11-09",
+          "ordinal": 2,
+          "slot": 5,
+          "build": "三分登场",
+          "reviewedCommander": "武凤",
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7706387096180641064",
+          "materialSha256": "bade9e6dad008eb9d7868842bb52fe2db32a36280a0cfa1d97108b0f7b47b6d7"
+        },
+        {
+          "matchId": "ruanshi:2026-11-06:3",
+          "day": "2026-11-06",
+          "ordinal": 3,
+          "slot": 4,
+          "build": "三分登场",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7705300109956877603",
+          "materialSha256": "669a7892bafde4190c8a9bd737e440a43e62af7d5a043df1ddefd734241a4b3c"
+        },
+        {
+          "matchId": "ruanshi:2026-10-29:2",
+          "day": "2026-10-29",
+          "ordinal": 2,
+          "slot": 6,
+          "build": "三分登场",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7702337122895793423",
+          "materialSha256": "fa22d20b81aca0cf112c2d6a4e51241b1d3ffe81eb03e8c647e18e6ea6fee407"
+        },
+        {
+          "matchId": "ruanshi:2026-10-27:1",
+          "day": "2026-10-27",
+          "ordinal": 1,
+          "slot": 1,
+          "build": "三分登场",
+          "reviewedCommander": null,
+          "rank": 1,
+          "winnerBuild": "三分登场",
+          "sourceUrl": "https://www.douyin.com/note/7701738890171780387",
+          "materialSha256": "703b69e4d2b855a27158ad50413a1cd8f009136d9bb87ab953e159e1ba73d7b6"
+        },
+        {
+          "matchId": "ruanshi:2026-10-26:7",
+          "day": "2026-10-26",
+          "ordinal": 7,
+          "slot": 5,
+          "build": "三分登场",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7701377701794808549",
+          "materialSha256": "b2041afcc4e79a95cf65ed013f2d7ee715096cc65b8f7ebcd2fb3dcd7bcfebc1"
+        },
+        {
+          "matchId": "ruanshi:2026-10-25:8",
+          "day": "2026-10-25",
+          "ordinal": 8,
+          "slot": 4,
+          "build": "无阵营裴擒虎",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7700832645353196815",
+          "materialSha256": "2e80e31e36afc2b786a098507e00e2c791f897598c5cb01f5e46e0a3143897aa"
+        },
+        {
+          "matchId": "ruanshi:2026-10-24:3",
+          "day": "2026-10-24",
+          "ordinal": 3,
+          "slot": 6,
+          "build": "三分倒转",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7700281589359529216",
+          "materialSha256": "776eaeeb6d980a3b7508b29c0e322aff66b365426e59fbac9289026acc8c0632"
+        },
+        {
+          "matchId": "ruanshi:2026-10-23:7",
+          "day": "2026-10-23",
+          "ordinal": 7,
+          "slot": 3,
+          "build": "西施养猪",
+          "reviewedCommander": null,
+          "rank": null,
+          "winnerBuild": null,
+          "sourceUrl": "https://www.douyin.com/note/7700066684308098339",
+          "materialSha256": "7c64ba4b885c028b3bcc098d1046c75eb441c0ed5e628822dd15974e691c8d72"
+        }
+      ],
+      "buildProfile": [
+        {
+          "player_id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "三分登场",
+          "appearances": 7,
+          "wins": 2,
+          "winRate": 0.2857142857142857,
+          "usageShare": 0.6363636363636364,
+          "common": true,
+          "repeatedTitleResults": true,
+          "commanders": [
+            {
+              "wins": 1,
+              "commander": "白歌",
+              "appearances": 2
+            },
+            {
+              "wins": 0,
+              "commander": "武凤",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-10-26",
+          "lastDay": "2026-11-13",
+          "matchIds": [
+            "ruanshi:2026-10-26:7",
+            "ruanshi:2026-10-27:1",
+            "ruanshi:2026-10-29:2",
+            "ruanshi:2026-11-06:3",
+            "ruanshi:2026-11-09:2",
+            "ruanshi:2026-11-10:6",
+            "ruanshi:2026-11-13:5"
+          ]
+        },
+        {
+          "player_id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "三分倒转",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.09090909090909091,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24",
+          "matchIds": [
+            "ruanshi:2026-10-24:3"
+          ]
+        },
+        {
+          "player_id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "无阵营裴擒虎",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.09090909090909091,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-25",
+          "lastDay": "2026-10-25",
+          "matchIds": [
+            "ruanshi:2026-10-25:8"
+          ]
+        },
+        {
+          "player_id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "西施养猪",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.09090909090909091,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [],
+          "firstDay": "2026-10-23",
+          "lastDay": "2026-10-23",
+          "matchIds": [
+            "ruanshi:2026-10-23:7"
+          ]
+        },
+        {
+          "player_id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "逐鹿蒙犽",
+          "appearances": 1,
+          "wins": 0,
+          "winRate": 0,
+          "usageShare": 0.09090909090909091,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 0,
+              "commander": "镜",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-11",
+          "lastDay": "2026-11-11",
+          "matchIds": [
+            "ruanshi:2026-11-11:1"
+          ]
+        }
+      ]
+    },
+    {
+      "nickname": "抖音所演ii",
+      "id": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+      "matches": 2,
+      "wins": 2,
+      "history": [
+        {
+          "matchId": "ruanshi:2026-11-10:6",
+          "day": "2026-11-10",
+          "ordinal": 6,
+          "slot": 1,
+          "build": "多彩古币自爆海月",
+          "reviewedCommander": "安琪拉",
+          "rank": 1,
+          "winnerBuild": "自爆海月混搭",
+          "sourceUrl": "https://www.douyin.com/note/7706911796640189731",
+          "materialSha256": "247244266d9c4cc9718b757d18cc2cc650d4ed009a008f537facc82537ab7234"
+        },
+        {
+          "matchId": "ruanshi:2026-11-08:1",
+          "day": "2026-11-08",
+          "ordinal": 1,
+          "slot": 1,
+          "build": "高阶混搭大河",
+          "reviewedCommander": "安琪拉",
+          "rank": 1,
+          "winnerBuild": "自爆海月混搭",
+          "sourceUrl": "https://www.douyin.com/note/7706004795199850341",
+          "materialSha256": "793a3c21051466c0f4b7d0251667fd72be63d0890cb1435608fba58694cffbb9"
+        }
+      ],
+      "buildProfile": [
+        {
+          "player_id": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+          "build": "多彩古币自爆海月",
+          "appearances": 1,
+          "wins": 1,
+          "winRate": 1,
+          "usageShare": 0.5,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 1,
+              "commander": "安琪拉",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-10",
+          "lastDay": "2026-11-10",
+          "matchIds": [
+            "ruanshi:2026-11-10:6"
+          ]
+        },
+        {
+          "player_id": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+          "build": "高阶混搭大河",
+          "appearances": 1,
+          "wins": 1,
+          "winRate": 1,
+          "usageShare": 0.5,
+          "common": false,
+          "repeatedTitleResults": false,
+          "commanders": [
+            {
+              "wins": 1,
+              "commander": "安琪拉",
+              "appearances": 1
+            }
+          ],
+          "firstDay": "2026-11-08",
+          "lastDay": "2026-11-08",
+          "matchIds": [
+            "ruanshi:2026-11-08:1"
+          ]
+        }
+      ]
+    }
+  ],
+  "standings": [
+    {
+      "profileId": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+      "nickname": "抖音所演ii",
+      "probability": 0.262371034561163,
+      "historicalMatches": 2,
+      "historicalWins": 2,
+      "coldStart": false,
+      "build": "多彩古币自爆海月",
+      "matchup": 0.000009183537945145067,
+      "actualRank": 4
+    },
+    {
+      "profileId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+      "nickname": "小宁来也",
+      "probability": 0.16647509644242428,
+      "historicalMatches": 3,
+      "historicalWins": 1,
+      "coldStart": false,
+      "build": "逐鹿帝临",
+      "matchup": -0.0005140163372424614,
+      "actualRank": 2
+    },
+    {
+      "profileId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+      "nickname": "抖音湛蓝",
+      "probability": 0.161690891359331,
+      "historicalMatches": 12,
+      "historicalWins": 2,
+      "coldStart": false,
+      "build": "三分登场",
+      "matchup": 0.0008692597241232455,
+      "actualRank": 6
+    },
+    {
+      "profileId": null,
+      "nickname": "抖音沉默",
+      "probability": 0.14191679766837323,
+      "historicalMatches": 0,
+      "historicalWins": 0,
+      "coldStart": true,
+      "build": "逐鹿蒙恬",
+      "matchup": 0.00025187828971668524,
+      "actualRank": 5
+    },
+    {
+      "profileId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+      "nickname": "B站万象棋小祥",
+      "probability": 0.1415703704486445,
+      "historicalMatches": 8,
+      "historicalWins": 2,
+      "coldStart": false,
+      "build": "逐鹿嬴政",
+      "matchup": -0.00002499190354834505,
+      "actualRank": 1
+    },
+    {
+      "profileId": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+      "nickname": "抖音搜道无涯",
+      "probability": 0.12597580952006388,
+      "historicalMatches": 1,
+      "historicalWins": 0,
+      "coldStart": false,
+      "build": "牺牲李信",
+      "matchup": -0.0003023326565860272,
+      "actualRank": 3
+    }
+  ],
+  "alternateIdentity": {
+    "nickname": "DY道无涯",
+    "matches": 8,
+    "wins": 1,
+    "probability": 0.10637338801139556
+  },
+  "actualWinner": "B站万象棋小祥",
+  "actualWinnerPredictedRank": 5
+}

@@ -1,0 +1,120 @@
+{
+  "id": "ace-catalog-20261114-7-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:7",
+  "day": "2026-11-14",
+  "ordinal": 7,
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:27:24",
+  "playedAt": null,
+  "winner": "抖音梦飞77",
+  "evidenceId": "ace-result-1effe64d5349654db57bf05c",
+  "evidenceSha256": "1effe64d5349654db57bf05cdf4678f3efc6f036f832cf8abb7d2acceb7f1eab",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音梦飞77",
+      "catalogNickname": "抖音梦飞77",
+      "playerId": "a005123260d572715e76882d13d2a1f81543ec67fdaa95700ddc190bb2244e97",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        682,
+        534,
+        335,
+        321,
+        312,
+        7
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音清晨",
+      "catalogNickname": "抖音清晨",
+      "playerId": "ba62cb1912cc4cad9415dfef32666adc62a9453746b6367204ecb565f9c3b27c",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        552,
+        195,
+        120,
+        97,
+        96,
+        87,
+        5
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "运光永不六",
+      "catalogNickname": "运光永不六",
+      "playerId": "2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564",
+      "commander": null,
+      "visibleCardLevels": [
+        419,
+        226,
+        133,
+        102,
+        99,
+        49,
+        6
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "愿你安然入梦",
+      "catalogNickname": "愿你安然入梦",
+      "playerId": "f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c",
+      "commander": null,
+      "visibleCardLevels": [
+        507,
+        209,
+        206,
+        188,
+        170,
+        37
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音eg本露",
+      "catalogNickname": "抖音eg本露",
+      "playerId": "0d1e41cdbd307956f029f42aab81ed57403f4cd523f21fe329573cff8181b5e3",
+      "commander": null,
+      "visibleCardLevels": [
+        89,
+        88,
+        88,
+        87,
+        81,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "好运连连猫猫",
+      "catalogNickname": "好运连连猫猫",
+      "playerId": "0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a",
+      "commander": null,
+      "visibleCardLevels": [
+        201,
+        168,
+        128,
+        124,
+        118,
+        106,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-1effe64d5349654db57bf05c",
+  "week": 45
+}

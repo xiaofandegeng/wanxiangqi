@@ -1,0 +1,127 @@
+{
+  "id": "ace-catalog-20261115-6-game-result",
+  "matchId": "ruanshi:2026-11-15:6",
+  "day": "2026-11-15",
+  "ordinal": 6,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "三分",
+  "duration": "00:34:29",
+  "playedAt": null,
+  "winner": "抖音梦飞冻冻",
+  "evidenceId": "ace-result-e95908ff00387a10d45863ae",
+  "evidenceSha256": "e95908ff00387a10d45863ae8a1e96b0a4073a6a4bbe1f888c926a82cb02237d",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音梦飞冻冻",
+      "catalogNickname": "抖音梦飞冻冻",
+      "playerId": "773a7092eea9cedc4719d9a1ebe7ca9a475c01616ea32afada4d66924ba69e30",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        924,
+        724,
+        640,
+        505,
+        49,
+        19,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "运光永不六",
+      "catalogNickname": "运光永不六",
+      "playerId": "2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564",
+      "commander": null,
+      "visibleCardLevels": [
+        496,
+        301,
+        175,
+        160,
+        148,
+        135,
+        7
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "给我发个机器头",
+      "catalogNickname": "给我发个机器头",
+      "playerId": "4c30e5e127cb02c1a10eb57e374da14b316605097808533ea6c0893cb271fe1a",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        254,
+        124,
+        93,
+        60,
+        25,
+        12,
+        11
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "douyin小猪柒宝",
+      "catalogNickname": "douyin小猪柒宝",
+      "playerId": "17bf120999b8973e4f1f6b10a8944405b506a39ea94188107c3b8b5917e6e5a6",
+      "commander": "阿离",
+      "visibleCardLevels": [
+        243,
+        21,
+        19,
+        18,
+        7,
+        3,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音梦飞1",
+      "catalogNickname": "抖音梦飞1",
+      "playerId": "7ff34279b7df6f528555af4fc7dfae6e81d2967bd4d50948fcbea86025c0ae9b",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        384,
+        149,
+        92,
+        76,
+        69,
+        64,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "我要打王牌18",
+      "catalogNickname": "我要打王牌18",
+      "playerId": "85494163079c6a6ccb434556826271748f567881af3f984268eb6a8b497c01d2",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        180,
+        129,
+        123,
+        119,
+        117,
+        99,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-e95908ff00387a10d45863ae",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 44,
+    "today": 6
+  }
+}

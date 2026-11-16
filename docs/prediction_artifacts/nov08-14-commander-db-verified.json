@@ -1,0 +1,2458 @@
+{
+  "database": "wanxiangqi_prediction_dev",
+  "at": "2026-11-15T11:19:54.435Z",
+  "inserted": 232,
+  "coverage": {
+    "2026-11-08": {
+      "matches": 8,
+      "reviewedSeats": 43
+    },
+    "2026-11-09": {
+      "matches": 8,
+      "reviewedSeats": 45
+    },
+    "2026-11-10": {
+      "matches": 8,
+      "reviewedSeats": 47
+    },
+    "2026-11-11": {
+      "matches": 5,
+      "reviewedSeats": 30
+    },
+    "2026-11-13": {
+      "matches": 8,
+      "reviewedSeats": 44
+    },
+    "2026-11-14": {
+      "matches": 4,
+      "reviewedSeats": 23
+    }
+  },
+  "matches": 41,
+  "seats": 246,
+  "reviewedSeats": 232,
+  "reviewedWinners": 41,
+  "reviewedCommanderAndBuild": 226,
+  "method": "按席位核对 41 张原图，保留不能可靠判断的棋手及冲突玩法。新核对记录按实际入库时间可见。",
+  "rows": [
+    {
+      "id": "ruanshi:2026-11-08:1",
+      "day": "2026-11-08",
+      "ordinal": 1,
+      "ban": "日落海",
+      "winnerBuild": "自爆海月混搭",
+      "materialSha256": "793a3c21051466c0f4b7d0251667fd72be63d0890cb1435608fba58694cffbb9",
+      "original": "docs/prediction_artifacts/nov8-reposted/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音所演II",
+          "playerId": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+          "build": "高阶混搭大河",
+          "winner": true,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 3,
+          "nickname": "YK、",
+          "playerId": "806b55ad80954d8f26af4824e6cecf21e8a28c8e0ec3bf7ea3da9ea0e5998b25",
+          "build": "伞百里守约",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 4,
+          "nickname": "快手小斯",
+          "playerId": "3d746a80dda5892c0f2445f71cbba679ad79eca06c193f6c79a214c9d7f09c9d",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 5,
+          "nickname": "羡慕无机盐",
+          "playerId": "dcf19dd3e799cf5e9c0764e58d967f7ec60c2894a2d32d8fb76f5d62ed4b2bab",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 6,
+          "nickname": "小琳谷芷",
+          "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "小妲己"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:2",
+      "day": "2026-11-08",
+      "ordinal": 2,
+      "ban": "河洛",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "2486de2182ffdfd41b8f3626b7afd4130af0bdc94430a5865955d53b94a9ee2d",
+      "original": "docs/prediction_artifacts/nov8-reposted/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音猪葛龟龟",
+          "playerId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG小意",
+          "playerId": "f06ce68f4f4b85949c35a303eebc036a7e0690d49209a622763dfd24342a213a",
+          "build": "伞干将转刘邦",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 3,
+          "nickname": "EZ拉丁鱼",
+          "playerId": "659caae31385fee46b454809c68c8c6f11f8ab30b3c0fbee49c758eac440bf28",
+          "build": "镜转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 4,
+          "nickname": "B站QT小优律",
+          "playerId": "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b",
+          "build": "奶屏流",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 5,
+          "nickname": "WE葫芦呼噜",
+          "playerId": "49106debe935ac91daac5888ac2b486fee061ae87892f09816f2ce2127115729",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音呆头鹅",
+          "playerId": "9a21cd7d1571d72ca1d3abeb6cce54a46068ac89c3d26548503ea493c7bedaf1",
+          "build": "自爆海月",
+          "winner": false,
+          "commander": "安琪拉"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:3",
+      "day": "2026-11-08",
+      "ordinal": 3,
+      "ban": "三分",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "7a1eb28953b2ee091ae6dc2d49229bcff52f5f00c3213796bc86949c94248703",
+      "original": "docs/prediction_artifacts/nov8-reposted/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "丰川祥子",
+          "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "武凤"
+        },
+        {
+          "slot": 2,
+          "nickname": "下雨了下雨了",
+          "playerId": "6902273a2918bded9c041737b7f43fb0843a64969cec0f801cc52fa41efa59cb",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 3,
+          "nickname": "DY道无涯",
+          "playerId": "d5ab2839394bed3274cf1ebcb9c6fcb8655bfd9d3892dfe9d152130b126ff78e",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音QT新一",
+          "playerId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "B站QT孙悟方",
+          "playerId": "f0b6c4e19231c7b8f9096e62a83baf4815d97464056d3d4a3b250d921dc23368",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EG碎碎圆圆",
+          "playerId": "59bdddf442a4c6251fbefedc59c4905b42ec5caedd41960cc0aea1941bc54b88",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:4",
+      "day": "2026-11-08",
+      "ordinal": 4,
+      "ban": "日落海",
+      "winnerBuild": "三分登场",
+      "materialSha256": "6675030814d9183944a24eb3595e6fe1aaac2c17ee9db3f930e41ec4c3bbe7c5",
+      "original": "docs/prediction_artifacts/nov8-reposted/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "冷酷心机兰兰",
+          "playerId": "81fd64fbf383c7edb067569fd19f6ec49f53987d0dd671606aad5ebe154d9269",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "白歌"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EGM皮皮鲨",
+          "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "build": "伞李信转吕布",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 3,
+          "nickname": "BLIBLI喵喵虾条",
+          "playerId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 4,
+          "nickname": "白白白白白3",
+          "playerId": "5ba50168f8791c04a05ba55e14665d227f1d8083596c6bf390ade6c1b1cfa51b",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "布布打劫钻石版",
+          "playerId": "ab69249729e0c056392f0f452594f1449243c1b4aed6ef9254ad976f5ed605e6",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 6,
+          "nickname": "I蟲、沐小朵",
+          "playerId": "41502555f6bac1c1fc3a16ac034b898e6ec7f66d3e8ebbb8ed61ba6fa4f30381",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "小妲己"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:5",
+      "day": "2026-11-08",
+      "ordinal": 5,
+      "ban": "河洛",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "864aa6e16800ef4a4fb27d8fdfe3f122207f89ea30d6eb8bb85cdb87a1617fa3",
+      "original": "docs/prediction_artifacts/nov8-reposted/5.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音搜流儿",
+          "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "build": "三分倒转混沌裂隙",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音妖柒",
+          "playerId": "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5",
+          "build": "传统养猪混沌裂隙",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 3,
+          "nickname": "桉",
+          "playerId": "d0c8a5fb4a32b5aa6f782a4fa5d23a56d48d2c09c54b338ea6e398919b4b616d",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EZ非洲鱼",
+          "playerId": "489bcb78e8f427a84f037702bc6d5efa39ef3d044adc9a9b91f6b2753b512431",
+          "build": "技能突破亚瑟",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 5,
+          "nickname": "若夜",
+          "playerId": "c9b857189ece340338cfbd3642ab216e58932f7b8ffa3058e969b1c11f9b38d5",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 6,
+          "nickname": "EG小宇13",
+          "playerId": "8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "白歌"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:6",
+      "day": "2026-11-08",
+      "ordinal": 6,
+      "ban": "大河",
+      "winnerBuild": "日落海倒转",
+      "materialSha256": "c8e4c2033ee42253fa541d4053d82c6037a87b474eb122377861f5cec59a5e3b",
+      "original": "docs/prediction_artifacts/nov8-reposted/6.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音梦飞冻冻",
+          "playerId": "ece2cdf96442a552b24e79e12b33938379b1767603b7f790f1f316260682b5c5",
+          "build": "日落海倒转",
+          "winner": true,
+          "commander": "玉环"
+        },
+        {
+          "slot": 2,
+          "nickname": "事后诸葛亮",
+          "playerId": "077e5693f8d2b11f599ee3aeeffbe60a008afc93c128cc572e17231817efc477",
+          "build": "猪镜转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音群星YUN落",
+          "playerId": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EGM小谷芷",
+          "playerId": "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572",
+          "build": "逐鹿帝临",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音搜索北念",
+          "playerId": "3a8480356f619b0332b3a1fa9aeba5e23e8ea3b0510554fa229b14eb2cd08bbf",
+          "build": "牺牲李信",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 6,
+          "nickname": "娇弱的佩奇",
+          "playerId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "武凤"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:7",
+      "day": "2026-11-08",
+      "ordinal": 7,
+      "ban": "大河",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "a4f9d4ea56b1ef9245bce17f4b46b83bdb2f5483ea63e6838a72ee530199e9e1",
+      "original": "docs/prediction_artifacts/nov8-reposted/7.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "B站QT逆光",
+          "playerId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+          "build": "三分倒转",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音刺痛",
+          "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音刺儿",
+          "playerId": "61a0b9336a5192e3d23e6f87fc616e1d24d77fdb07f2f2c65dc0ae723de184d2",
+          "build": "多彩古币海月",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 4,
+          "nickname": "QT电竞披萨鱼",
+          "playerId": "9eb901cf6c8dd04b09fb7d312cf2eef208cf82f30e8d10bae8afb66e6903d80a",
+          "build": "镜猪转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "胜天半子嘉誉",
+          "playerId": "f8a7bb15e5a49499d2f670573d7e8958c6ae47a55be200c87f8db7b2988d5715",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 6,
+          "nickname": "沐汐猪葛龟版",
+          "playerId": "1ae39fdf77d51ab2b4f4673a11f3b911bf8e66831c7f4578c277e908651fdb5c",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-08:8",
+      "day": "2026-11-08",
+      "ordinal": 8,
+      "ban": "三分",
+      "winnerBuild": "日落海倒转",
+      "materialSha256": "19460f7bc3ca8e262b740fa0e8574a3d69731648af30c272d42ff8a932910547",
+      "original": "docs/prediction_artifacts/nov8-reposted/8.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "I蟲猪葛龟龟",
+          "playerId": "e6605a9bac9ff30c525951ea7ad071b04da470887878ce38e3d74cc8278df8a6",
+          "build": "日落海倒转",
+          "winner": true,
+          "commander": "玉环"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音一茗",
+          "playerId": "64aa6e3e065b5329a9302e879c8e53231f553c3394edd7b83e72997f9007a95a",
+          "build": "孙膑转露娜C",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 3,
+          "nickname": "虎牙EGM行乐",
+          "playerId": "d27a61de66d60148843408a6fbabd09382275f4c1bd672fe5ebf67264e49e029",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 4,
+          "nickname": "斗鱼奇谋",
+          "playerId": "c265f861084235873437e96f60494b61796f8a1391f8fba2d90e302a58577497",
+          "build": "逐鹿帝临",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 5,
+          "nickname": "DY棒教练",
+          "playerId": "92d9bb54a2d966416a3d91804dd379df2c3f2399a62051f43e2b0ff63cfeffd7",
+          "build": "牺牲李信",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音龙傲天",
+          "playerId": "fb24b783397f47229f610fda9a376b939d89b6c1c62a71f5f5a27994eb374a6d",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "马可"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:1",
+      "day": "2026-11-09",
+      "ordinal": 1,
+      "ban": "逐鹿",
+      "winnerBuild": "牺牲李信",
+      "materialSha256": "96342cfa1f48c786af65d2e64eb7ccdda26e867d80b9e1604d4017f10862fa31",
+      "original": "docs/prediction_artifacts/nov9-upper/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "胜天半子嘉誉",
+          "playerId": "f8a7bb15e5a49499d2f670573d7e8958c6ae47a55be200c87f8db7b2988d5715",
+          "build": "牺牲李信",
+          "winner": true,
+          "commander": "班叔"
+        },
+        {
+          "slot": 2,
+          "nickname": "WE葫芦呼噜",
+          "playerId": "49106debe935ac91daac5888ac2b486fee061ae87892f09816f2ce2127115729",
+          "build": "大河龙蛇",
+          "winner": false,
+          "commander": "昭君"
+        },
+        {
+          "slot": 3,
+          "nickname": "下雨了下雨了",
+          "playerId": "6902273a2918bded9c041737b7f43fb0843a64969cec0f801cc52fa41efa59cb",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音猪葛龟龟",
+          "playerId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "build": "三分登场猪",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 5,
+          "nickname": "EG小宇13",
+          "playerId": "8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站万象棋小祥",
+          "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:2",
+      "day": "2026-11-09",
+      "ordinal": 2,
+      "ban": "大河",
+      "winnerBuild": "传统养猪",
+      "materialSha256": "bade9e6dad008eb9d7868842bb52fe2db32a36280a0cfa1d97108b0f7b47b6d7",
+      "original": "docs/prediction_artifacts/nov9-upper/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "丰川祥子",
+          "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "build": "传统养猪",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "小琳谷芷",
+          "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "甜卷大王",
+          "playerId": "6eb6634419baf9d8469da30fbf55203af7100df9f4a22200ed0633efc90f727a",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "雾与散声慢慢",
+          "playerId": "3e178f609e7c3fa10d8d17c91a62d548592458eac6969f04c32fd62dd216f05a",
+          "build": "伞李信",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音湛蓝",
+          "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站东方朔",
+          "playerId": "5d0f9a8a54073416f3781b8b8cdfcf7758bd6efeed850a863eb0d047124b5989",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:3",
+      "day": "2026-11-09",
+      "ordinal": 3,
+      "ban": "三分",
+      "winnerBuild": "遗志海月",
+      "materialSha256": "0ace76f1b92721b9d4fc0b6a41cc037513ceaf3dcaba8497e3e028ebbfd0459d",
+      "original": "docs/prediction_artifacts/nov9-upper/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "有局丨白兔",
+          "playerId": "1be0a31f44f865c8d5099ac294514069d7f5511ed2c35da88339d9d59d8ca8aa",
+          "build": "伞干将遗志海月",
+          "winner": true,
+          "commander": "阿离"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG碎碎圆圆",
+          "playerId": "59bdddf442a4c6251fbefedc59c4905b42ec5caedd41960cc0aea1941bc54b88",
+          "build": "自爆东皇",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 3,
+          "nickname": "EZ拉丁鱼",
+          "playerId": "659caae31385fee46b454809c68c8c6f11f8ab30b3c0fbee49c758eac440bf28",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "YK、",
+          "playerId": "806b55ad80954d8f26af4824e6cecf21e8a28c8e0ec3bf7ea3da9ea0e5998b25",
+          "build": "自爆海月",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "B站QT小优律",
+          "playerId": "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b",
+          "build": "河洛帝临",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音搜流儿",
+          "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "build": "大河猪离开团射",
+          "winner": false,
+          "commander": "嬴律"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:4",
+      "day": "2026-11-09",
+      "ordinal": 4,
+      "ban": "大河",
+      "winnerBuild": "三分登场",
+      "materialSha256": "395d9cf3866da80ec731f74df0db7a9378fa091668c990fdd8a53ca81009006e",
+      "original": "docs/prediction_artifacts/nov9-upper/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "三分登场混沌裂隙",
+          "winner": true,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音梦飞1",
+          "playerId": "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795",
+          "build": "三分登场混沌裂隙",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音月影孤冰",
+          "playerId": "189b4e6b299b59f580867c838c24555e72ca413dc421c56232f6841cceb88252",
+          "build": "巨像蒙恬",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EZ、色彩",
+          "playerId": "80185629814696d7b2dafa9ba29f9cabf069569dc5ff73f422830f35ac87c434",
+          "build": "镜猪转周瑜",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "遗愿",
+          "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EGM皮皮鲨",
+          "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:5",
+      "day": "2026-11-09",
+      "ordinal": 5,
+      "ban": "大河",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "6e10f6e88de644a2c98a5ddbed8d375f03a7ec1492b421442f9ae0ef5b288917",
+      "original": "docs/prediction_artifacts/nov9-lower/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ姚半仙",
+          "playerId": "d96d028cb198f5f714fced3bc9be9578537c79f2c0dd001506552de9fbb58cea",
+          "build": "三分倒转",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "BLIBLI喵喵虾条",
+          "playerId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG万象棋",
+          "playerId": "2e0fc155561d0a8899e4693a3d0a85773afa849b76c512343499a89b94b677cf",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "985第一环",
+          "playerId": "9f375bcbab124abc0039b40fb1839962873720da22e4a9d96fd2b6cdf16f5145",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音DY小凌",
+          "playerId": "bb492ebc3ed1fc79b18163a42235efc7d57b7ed5b0bb6792d75d9666d0e66e34",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音遗愿",
+          "playerId": "bd8f9f8f9e292a6741af8c8627c3cc66ac437556ff1e5eb8f1df2672258f1be2",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "武凤"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:6",
+      "day": "2026-11-09",
+      "ordinal": 6,
+      "ban": "三分",
+      "winnerBuild": "河洛帝临",
+      "materialSha256": "49b9de69f5edeecbdce263915fa4ffb4f24e1c2aefbf57effaf603dd1d44db3c",
+      "original": "docs/prediction_artifacts/nov9-lower/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音小新游",
+          "playerId": "a1b5bdedb47eb3f60f02df680c3749fdf1fa11bf2462b98766e511fad4189aaf",
+          "build": "河洛帝临",
+          "winner": true,
+          "commander": "武凤"
+        },
+        {
+          "slot": 2,
+          "nickname": "桉",
+          "playerId": "d0c8a5fb4a32b5aa6f782a4fa5d23a56d48d2c09c54b338ea6e398919b4b616d",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "武林高手清辞",
+          "playerId": "27cf226fb5c1b2e767d24060a97027bceebb2002fc7774cba7fbf749516de982",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "EGM抖音画笔",
+          "playerId": "62569da0e4daaacbc7d27cf6ff30895d456b5aa36de3df99879f3f2c19c90cbb",
+          "build": "自爆海月",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 5,
+          "nickname": "EZ将我意",
+          "playerId": "45464db86406d7b78e6ea27b2b671333cf56c21fde94f530543a4855a63b879e",
+          "build": "无阵营",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EG尼采",
+          "playerId": "f477bcd24093eff0f0d0de1009c1ca0528265db9912adced000ef1d61885a252",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:7",
+      "day": "2026-11-09",
+      "ordinal": 7,
+      "ban": "日落海",
+      "winnerBuild": "三分登场",
+      "materialSha256": "27c606fd07cfa179b01a4fb5d210e62d0a637cc121f668351054ee13cdbccf6a",
+      "original": "docs/prediction_artifacts/nov9-lower/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "豪气冲天糕糕",
+          "playerId": "51281121c346ab566a9948f66db792d0984f0090bf00997b6d2a99a9c7027ed2",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "白歌"
+        },
+        {
+          "slot": 2,
+          "nickname": "虎牙EGM行乐",
+          "playerId": "d27a61de66d60148843408a6fbabd09382275f4c1bd672fe5ebf67264e49e029",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "羡慕无机盐",
+          "playerId": "dcf19dd3e799cf5e9c0764e58d967f7ec60c2894a2d32d8fb76f5d62ed4b2bab",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音一茗",
+          "playerId": "64aa6e3e065b5329a9302e879c8e53231f553c3394edd7b83e72997f9007a95a",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音EGM小谷芷",
+          "playerId": "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 6,
+          "nickname": "B站QT逆光",
+          "playerId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-09:8",
+      "day": "2026-11-09",
+      "ordinal": 8,
+      "ban": "逐鹿",
+      "winnerBuild": "三分登场",
+      "materialSha256": "7b352dfa026fa22f6b5fbe2d5aafef77e5e00c61bb85d8385fb0e1cdb351fa2e",
+      "original": "docs/prediction_artifacts/nov9-lower/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音梦飞77",
+          "playerId": "44da92c84db0e59963df0e21365ddfc390202e3b64a4541e806a3d249a1bd3ab",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "镜"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音搜索北念",
+          "playerId": "3a8480356f619b0332b3a1fa9aeba5e23e8ea3b0510554fa229b14eb2cd08bbf",
+          "build": "陷阱牺牲李信",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG泪花",
+          "playerId": "37a86f6a1b0a5c01dfb03e1b8601e3380243891ea5767787a974ca641177a336",
+          "build": "传统养猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音清晨",
+          "playerId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 5,
+          "nickname": "LERO滴谷芷",
+          "playerId": "338dd849f6b12a8993ef0ea097cbf4e4944e24df90187fd6ad796e9d87505606",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "辰风慕雨",
+          "playerId": "dec8748c8677fb32aec5b4b57e60dab86225f7c47c6e99e3bc61e336f9c43cac",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "白歌"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:1",
+      "day": "2026-11-10",
+      "ordinal": 1,
+      "ban": "大河",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "1a7810d29ed6945847939f4c3184e1a3806a0bab0be9fc0008a3c116edef4da0",
+      "original": "docs/prediction_artifacts/nov10/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "三分倒转",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "DY道无涯",
+          "playerId": "d5ab2839394bed3274cf1ebcb9c6fcb8655bfd9d3892dfe9d152130b126ff78e",
+          "build": "传统养猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 3,
+          "nickname": "胜天半子嘉誉",
+          "playerId": "f8a7bb15e5a49499d2f670573d7e8958c6ae47a55be200c87f8db7b2988d5715",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 4,
+          "nickname": "EZ拉丁鱼",
+          "playerId": "659caae31385fee46b454809c68c8c6f11f8ab30b3c0fbee49c758eac440bf28",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音刺痛",
+          "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EG碎碎圆圆",
+          "playerId": "59bdddf442a4c6251fbefedc59c4905b42ec5caedd41960cc0aea1941bc54b88",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "安琪拉"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:2",
+      "day": "2026-11-10",
+      "ordinal": 2,
+      "ban": "河洛",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "56351f470f0f32ae9bc6145f7f2fef375ac93d99fc8deac5fec1130d32197a01",
+      "original": "docs/prediction_artifacts/nov10/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "小琳谷芷",
+          "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 2,
+          "nickname": "EZ灬欧洲鱼",
+          "playerId": "05f64e0cdcbbe6e218b637187480f3f0cf7371e872eb709340a8483f4653ade7",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 3,
+          "nickname": "985第一环",
+          "playerId": "9f375bcbab124abc0039b40fb1839962873720da22e4a9d96fd2b6cdf16f5145",
+          "build": "奶屏流",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 4,
+          "nickname": "丰川祥子",
+          "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "build": "镜猪转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "下雨了下雨了",
+          "playerId": "6902273a2918bded9c041737b7f43fb0843a64969cec0f801cc52fa41efa59cb",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 6,
+          "nickname": "BLIBLI喵喵虾条",
+          "playerId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:3",
+      "day": "2026-11-10",
+      "ordinal": 3,
+      "ban": "逐鹿",
+      "winnerBuild": "国士无双",
+      "materialSha256": "61fb05717fd16490214ff3d9285796636d8c9744c9d0e538a8a62fe8358f6127",
+      "original": "docs/prediction_artifacts/nov10/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "有局丨白兔",
+          "playerId": "1be0a31f44f865c8d5099ac294514069d7f5511ed2c35da88339d9d59d8ca8aa",
+          "build": "国士无双",
+          "winner": true,
+          "commander": "阿离"
+        },
+        {
+          "slot": 2,
+          "nickname": "猫爷",
+          "playerId": "dbb02fc6e81d063ce706863063667740a34effc9ad5cc32d92bcf7bdd20ee8e7",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 3,
+          "nickname": "蒜香",
+          "playerId": "60edfaa60072105bc3663ae12cf98a48f06bf6969f0f2441b24616b18acefb2b",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 4,
+          "nickname": "DY寻心",
+          "playerId": "65aa8b820701571ce3f5900dbf89364a056c77eaa562c503b90a881d2f2e0f8b",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音群星YUN落",
+          "playerId": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+          "build": "整备日落海",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 6,
+          "nickname": "遗愿",
+          "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "嬴律"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:4",
+      "day": "2026-11-10",
+      "ordinal": 4,
+      "ban": "大河",
+      "winnerBuild": "日落海倒转",
+      "materialSha256": "9a53c7f274637a9234695357c1dc8c8a2742a36aa2b2f34eb08625cc1a48946c",
+      "original": "docs/prediction_artifacts/nov10/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "我不是高手18",
+          "playerId": "44d302dc88a7028afb684046192a51a01357cc37a756fb80b93f66851f47898c",
+          "build": "日落海倒转",
+          "winner": true,
+          "commander": "玉环"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EGM皮皮鲨",
+          "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 3,
+          "nickname": "比特",
+          "playerId": "a007c4a9e27e384bb0ae5c76b89560be3a209fd3b3cdcc8a49309d87140bd06a",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音一朵老雏菊",
+          "playerId": "85831e2ee44a34751535990688e4ee1bc2eff5984d0075074e0f83368648de6c",
+          "build": "牺牲李信",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "QIQQQ",
+          "playerId": "63617679ba50208b092a18448ba088a239bb3a6b86eedc95d96483e4b06a8e2f",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音WG棒教练",
+          "playerId": "c1e74957f6caaaa08a1b1bea44499dec7f09a6384d223edb48b6ae5187b40458",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:5",
+      "day": "2026-11-10",
+      "ordinal": 5,
+      "ban": "逐鹿",
+      "winnerBuild": "三分登场",
+      "materialSha256": "ebbdaf2de8c2157dadd19e57487b95846d117a5d113073ef6130e56938778ec6",
+      "original": "docs/prediction_artifacts/nov10/5.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "问鼎巅峰年年",
+          "playerId": "ab137c5de9bfa8417f64c46f0e6c9b907b75bcad911030a1f5b2bfe75f1d94b7",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "白歌"
+        },
+        {
+          "slot": 2,
+          "nickname": "小慷",
+          "playerId": "5f87c545673690ed930301a134d52ec4defbb28b76826e1de9c6da59677aab80",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EGM断弦",
+          "playerId": "1ef901c2974a8643c640d17255462054cabfc09c931643c8e7710d3573dc914b",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音搜索北念",
+          "playerId": "3a8480356f619b0332b3a1fa9aeba5e23e8ea3b0510554fa229b14eb2cd08bbf",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 5,
+          "nickname": "娇弱的佩奇",
+          "playerId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音清晨",
+          "playerId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "镜"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:6",
+      "day": "2026-11-10",
+      "ordinal": 6,
+      "ban": "日落海",
+      "winnerBuild": "自爆海月混搭",
+      "materialSha256": "247244266d9c4cc9718b757d18cc2cc650d4ed009a008f537facc82537ab7234",
+      "original": "docs/prediction_artifacts/nov10/6.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音所演II",
+          "playerId": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+          "build": "多彩古币自爆海月",
+          "winner": true,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音、区王",
+          "playerId": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音梦飞77",
+          "playerId": "44da92c84db0e59963df0e21365ddfc390202e3b64a4541e806a3d249a1bd3ab",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音湛蓝",
+          "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 5,
+          "nickname": "EZ将我意",
+          "playerId": "45464db86406d7b78e6ea27b2b671333cf56c21fde94f530543a4855a63b879e",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音梦飞1",
+          "playerId": "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:7",
+      "day": "2026-11-10",
+      "ordinal": 7,
+      "ban": "河洛",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "6c558e4db211b80c1a2c5ee9f90faac7f60e61fd1ff3dc19a4ce83b62e560b2b",
+      "original": "docs/prediction_artifacts/nov10/7.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EGM小谷芷",
+          "playerId": "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 2,
+          "nickname": "YK、",
+          "playerId": "806b55ad80954d8f26af4824e6cecf21e8a28c8e0ec3bf7ea3da9ea0e5998b25",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音QT新一",
+          "playerId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "桉",
+          "playerId": "d0c8a5fb4a32b5aa6f782a4fa5d23a56d48d2c09c54b338ea6e398919b4b616d",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 5,
+          "nickname": "风喵喵",
+          "playerId": "6a396c055a41ccadcc31c5784dafc2b608662c32e6faa008e72bfeaef0f1a313",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "自信纯真小猫",
+          "playerId": "a57d77dde00c7d17f743af17fdeea39ec2c7ea346b4ae453e2d8aab91c9a6ffe",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-10:8",
+      "day": "2026-11-10",
+      "ordinal": 8,
+      "ban": "逐鹿",
+      "winnerBuild": "三分登场",
+      "materialSha256": "401678faaf58194eb193ab16987d9d192e7e7825f876ae5c8dd4006159562943",
+      "original": "docs/prediction_artifacts/nov10/8.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音梦飞久迁",
+          "playerId": "8c3a94dd846edc390ed6651a7726cf19b20c2c69e31b2feb660b13958b00c2a1",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "白歌"
+        },
+        {
+          "slot": 2,
+          "nickname": "白白白白白3",
+          "playerId": "5ba50168f8791c04a05ba55e14665d227f1d8083596c6bf390ade6c1b1cfa51b",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音梦飞冻冻",
+          "playerId": "ece2cdf96442a552b24e79e12b33938379b1767603b7f790f1f316260682b5c5",
+          "build": "三分登场混沌裂隙",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音猪葛龟龟",
+          "playerId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "build": "河洛李信",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 5,
+          "nickname": "B站QT逆光",
+          "playerId": "460c27ca3622a06117413fc108d6df2ff569c135dd40c6876d566091b495c983",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 6,
+          "nickname": "WE葫芦呼噜",
+          "playerId": "49106debe935ac91daac5888ac2b486fee061ae87892f09816f2ce2127115729",
+          "build": "大河龙蛇",
+          "winner": false,
+          "commander": "昭君"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:1",
+      "day": "2026-11-11",
+      "ordinal": 1,
+      "ban": "三分",
+      "winnerBuild": "日落海倒转",
+      "materialSha256": "9ef2002f6f1af3bf4e43dfbdc5ff33649f0ab7830f9aa580eb38f068951dbbad",
+      "original": "docs/prediction_artifacts/nov11/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音MG棒教练",
+          "playerId": "9a2e6e4593bb1e3ba1883554cc4576e978a9ae1352d4662d4f7ba1ef8f0776fd",
+          "build": "日落海倒转",
+          "winner": true,
+          "commander": "玉环"
+        },
+        {
+          "slot": 2,
+          "nickname": "遗愿",
+          "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音猪葛龟龟",
+          "playerId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 5,
+          "nickname": "BLIBLI喵喵虾条",
+          "playerId": "f42fcc3955d02b61e1b481c425c0a5a80752216f8a8a53c3825e082c8b0a0454",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音湛蓝",
+          "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "镜"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:3",
+      "day": "2026-11-11",
+      "ordinal": 3,
+      "ban": "大河",
+      "winnerBuild": "日落海倒转",
+      "materialSha256": "a7ba364b16b1a566c7215eb05b0bfd21e6fae014e9739dec78f137c7db613d0f",
+      "original": "docs/prediction_artifacts/nov11/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "B站万象棋小祥",
+          "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "日落海倒转",
+          "winner": true,
+          "commander": "玉环"
+        },
+        {
+          "slot": 2,
+          "nickname": "好事又来到",
+          "playerId": "cdf51992e9f302ea452f381cce55448df778b8f9fae5732b0ca6b7bd7fc5ca0f",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 3,
+          "nickname": "小暖贴贴",
+          "playerId": "838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "辉夜7CC",
+          "playerId": "e2e2c490a612d8ebdea714e098582373e794368f1aed9d671f4f20cd76d43c64",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "有局丨白兔",
+          "playerId": "1be0a31f44f865c8d5099ac294514069d7f5511ed2c35da88339d9d59d8ca8aa",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 6,
+          "nickname": "BILI终岁无时闲",
+          "playerId": "d6b3b4585a71d98081c660e4ba510651b4815d81b0b380209be363178064fe84",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:4",
+      "day": "2026-11-11",
+      "ordinal": 4,
+      "ban": "大河",
+      "winnerBuild": "牺牲李信",
+      "materialSha256": "13ca3f4338790e394d614d4685da6b83cf6ec9843802184573a1ef8b4382b636",
+      "original": "docs/prediction_artifacts/nov11/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "无缺OVO",
+          "playerId": "0ff3040d88c8b810c1244cba29c3ffbb50d826f5dc377a63bf695020e7944774",
+          "build": "牺牲李信",
+          "winner": true,
+          "commander": "班叔"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音、区王",
+          "playerId": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 3,
+          "nickname": "I蟲、初心",
+          "playerId": "8eaa459a637bf2e5140ef541e4174d2c545b28553bf4fbafe3b34f77b69db480",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 4,
+          "nickname": "QVVVQ",
+          "playerId": "14b25ce1c803d58446e34d14676ffefd32dc0738db18f030cb5a115664e74f12",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 5,
+          "nickname": "DY道无涯",
+          "playerId": "d5ab2839394bed3274cf1ebcb9c6fcb8655bfd9d3892dfe9d152130b126ff78e",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "白龙",
+          "playerId": "49eca96e924174bee669f5edce13bb06bba915ff517a215e4a0757a9c50d3601",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:5",
+      "day": "2026-11-11",
+      "ordinal": 5,
+      "ban": "大河",
+      "winnerBuild": "河洛木兰",
+      "materialSha256": "0955ee46c132ad2ce50da5d595718a19d9ccdbdc0859f24edab5d01d6c495857",
+      "original": "docs/prediction_artifacts/nov11/5.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音搜流儿",
+          "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "build": "河洛木兰",
+          "winner": true,
+          "commander": "武凤"
+        },
+        {
+          "slot": 2,
+          "nickname": "幕后",
+          "playerId": "9c2e493546cb45812580b55aed3c6d1bc565c57073f333aa35f25aa3281746d9",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "好运且丝绸",
+          "playerId": "e1344a9a2c103669caf12d6a8f1a441aef8495edf59d2938c673bb015ebfbf81",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EGM皮皮鲨",
+          "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 5,
+          "nickname": "好运且慕名",
+          "playerId": "362f6edae4a3903be0a5b91b4150c4e1555abba835f98b288794bd1d6dae49e1",
+          "build": "牺牲李信转帝临",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音EG夜阳",
+          "playerId": "56bc7aaff7008e887217fce4ea011a8aaf3447d05ee0b6d774f5a0485d2e3c0c",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "孙小宾"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-11:6",
+      "day": "2026-11-11",
+      "ordinal": 6,
+      "ban": "日落海",
+      "winnerBuild": "逐鹿帝临",
+      "materialSha256": "46b6d759c29b2ba5a6e2bbb395558ede63a91242b89964da7b087a0191fdcc90",
+      "original": "docs/prediction_artifacts/nov11/6.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "小宁来也",
+          "playerId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "build": "逐鹿帝临",
+          "winner": true,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 2,
+          "nickname": "自信纯真小猫",
+          "playerId": "a57d77dde00c7d17f743af17fdeea39ec2c7ea346b4ae453e2d8aab91c9a6ffe",
+          "build": "三分登场转海月",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音小新游",
+          "playerId": "a1b5bdedb47eb3f60f02df680c3749fdf1fa11bf2462b98766e511fad4189aaf",
+          "build": "四驱兄弟转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 4,
+          "nickname": "我不是高手18",
+          "playerId": "44d302dc88a7028afb684046192a51a01357cc37a756fb80b93f66851f47898c",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "武凤"
+        },
+        {
+          "slot": 5,
+          "nickname": "左熠熠熠熠",
+          "playerId": "68fac674572bda73703188316887ff59c8bc48bdcc661c6d1dd31a900eeaa45c",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音梦飞77",
+          "playerId": "44da92c84db0e59963df0e21365ddfc390202e3b64a4541e806a3d249a1bd3ab",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:1",
+      "day": "2026-11-13",
+      "ordinal": 1,
+      "ban": null,
+      "winnerBuild": "曜转海月",
+      "materialSha256": "48b76c720b6af2d88f6dbee95aff1df3a4153c4eb5297487b95b464a7f341bbf",
+      "original": "docs/prediction_artifacts/nov13-upper/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "丰川祥子",
+          "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "build": "曜转海月",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "阿震",
+          "playerId": "d58f848f87313302a7fc28ca63e07c020b2abf79559faaf18e57b8017f1e2877",
+          "build": "逐鹿帝临",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音CC",
+          "playerId": "b7475f34a079e898e0785c553cd148b9ec4ad56828197aa9f6ab6ba4a9b1f3c1",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 4,
+          "nickname": "下雨了下雨了",
+          "playerId": "6902273a2918bded9c041737b7f43fb0843a64969cec0f801cc52fa41efa59cb",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音QT新一",
+          "playerId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音七七尾小九",
+          "playerId": "c53c2f0c339c8766b03fb1e22b340fd13dd31d03628cc5fe4850e8c8c00b0ce9",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": null
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:2",
+      "day": "2026-11-13",
+      "ordinal": 2,
+      "ban": "河洛",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "f9c8f5564ddc63cbf8d6ba471198ae76ba0266b30b7346525857614f551d9f44",
+      "original": "docs/prediction_artifacts/nov13-upper/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ、小九7D版",
+          "playerId": "eb92f5db6bd978430b159cc4c1ac2b3e2d1553dd007f1d2a96ee6e4a68ce25de",
+          "build": "三分倒转",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "雾与散声慢慢",
+          "playerId": "3e178f609e7c3fa10d8d17c91a62d548592458eac6969f04c32fd62dd216f05a",
+          "build": "伞刘邦",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 3,
+          "nickname": "BILI猫猫雪团",
+          "playerId": "093df949393ac9853c3e22b15dc0b8012e3f493ba12d0cf6025b955ca209a05d",
+          "build": "自爆海月",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音清晨",
+          "playerId": "79c92a692f0db572a50aebfd85da6158bee60ce694c30345aca0b6584cb72fad",
+          "build": "传统养猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "DY道无涯",
+          "playerId": "d5ab2839394bed3274cf1ebcb9c6fcb8655bfd9d3892dfe9d152130b126ff78e",
+          "build": "镜猪转吕布",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 6,
+          "nickname": "小琳谷芷",
+          "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "武凤"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:3",
+      "day": "2026-11-13",
+      "ordinal": 3,
+      "ban": "大河",
+      "winnerBuild": "镜猪吕布",
+      "materialSha256": "6da0a0480b80f833fcc6577cb942c8da6c5372eddab5b098e38cb6832da6c492",
+      "original": "docs/prediction_artifacts/nov13-upper/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "EZ灬欧洲鱼",
+          "playerId": "05f64e0cdcbbe6e218b637187480f3f0cf7371e872eb709340a8483f4653ade7",
+          "build": "镜猪转吕布",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "小暖贴贴",
+          "playerId": "838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "遗愿",
+          "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "最后在孕一把",
+          "playerId": "518c18c8374fcda048e84898573c0c2b51715edb488dccfc3ad28bd957c51414",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 6,
+          "nickname": "好运不赔光",
+          "playerId": "7b98e3074af572813132d1b208a7d186cfd6ad5d219eab44c3ca61abfb3dc6ba",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:4",
+      "day": "2026-11-13",
+      "ordinal": 4,
+      "ban": "河洛",
+      "winnerBuild": "传统养猪",
+      "materialSha256": "16bdf38ef876929082a42080bd3403464f70fb923270869b3e7f01c0c5946c20",
+      "original": "docs/prediction_artifacts/nov13-upper/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音、区王",
+          "playerId": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+          "build": "传统养猪",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音搜流儿",
+          "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 3,
+          "nickname": "EZ拉丁鱼",
+          "playerId": "659caae31385fee46b454809c68c8c6f11f8ab30b3c0fbee49c758eac440bf28",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 4,
+          "nickname": "娇弱的佩奇",
+          "playerId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+          "build": "大河猪离",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音群星YUN落",
+          "playerId": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+          "build": "自爆东皇",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 6,
+          "nickname": "小宁来也",
+          "playerId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:5",
+      "day": "2026-11-13",
+      "ordinal": 5,
+      "ban": "逐鹿",
+      "winnerBuild": "三分登场",
+      "materialSha256": "f94400a99df0cb8f69a6ed1152b847eaace93d3134d6f41542ecf74e587a43ee",
+      "original": "docs/prediction_artifacts/nov13-lower/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音湛蓝",
+          "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "白歌"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EGM小谷芷",
+          "playerId": "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EG航迹云",
+          "playerId": "b7b5ba9d06e3db08e50cc404cf7e04354e0471dd3f8211c44b9997b63571ea8a",
+          "build": "伞李信",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音刺痛",
+          "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+          "build": "传统养猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音WG棒教练",
+          "playerId": "c1e74957f6caaaa08a1b1bea44499dec7f09a6384d223edb48b6ae5187b40458",
+          "build": "河洛李信",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "猫爷",
+          "playerId": "dbb02fc6e81d063ce706863063667740a34effc9ad5cc32d92bcf7bdd20ee8e7",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "庄小鱼"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:6",
+      "day": "2026-11-13",
+      "ordinal": 6,
+      "ban": "日落海",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "680c5175afdd1f8e86b8dc68044be344e61b600ddd5963c416e5bdb6f8454f12",
+      "original": "docs/prediction_artifacts/nov13-lower/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "I蟲、初心",
+          "playerId": "8eaa459a637bf2e5140ef541e4174d2c545b28553bf4fbafe3b34f77b69db480",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EZ嘉誉",
+          "playerId": "eb5f70d8b4b12cdfe660f06ba7d065533c239aa354b3b1058c75dd0310780dfd",
+          "build": "伞猫转吕布",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音猪葛龟龟",
+          "playerId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 4,
+          "nickname": "EG小宇13",
+          "playerId": "8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 5,
+          "nickname": "B站万象棋小祥",
+          "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "985第一环",
+          "playerId": "9f375bcbab124abc0039b40fb1839962873720da22e4a9d96fd2b6cdf16f5145",
+          "build": "班叔奶屏流",
+          "winner": false,
+          "commander": "班叔"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:7",
+      "day": "2026-11-13",
+      "ordinal": 7,
+      "ban": "日落海",
+      "winnerBuild": "逐鹿嬴政",
+      "materialSha256": "34f20f57a39c450ce646889d7d788a307b8c2d8d5bebc1623e8fd7ea2a1a135d",
+      "original": "docs/prediction_artifacts/nov13-lower/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "LERO谷芷",
+          "playerId": "0be3e07d342859d31c9b7d62037ca9a9fa81c7fcbd87134b1b7110ea7453223c",
+          "build": "逐鹿嬴政",
+          "winner": true,
+          "commander": "小妲己"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音EG泪花",
+          "playerId": "37a86f6a1b0a5c01dfb03e1b8601e3380243891ea5767787a974ca641177a336",
+          "build": "三分登场混沌裂隙",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 3,
+          "nickname": "BILI星光柯基",
+          "playerId": "608b90204c455bc1629121112e4c8b611ac6279bdda68aeeefde8b32b9203c4e",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音EZ、色彩",
+          "playerId": "80185629814696d7b2dafa9ba29f9cabf069569dc5ff73f422830f35ac87c434",
+          "build": "大河开团射",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 5,
+          "nickname": "EZ姚半仙",
+          "playerId": "d96d028cb198f5f714fced3bc9be9578537c79f2c0dd001506552de9fbb58cea",
+          "build": "无阵营",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音妖柒",
+          "playerId": "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "commander": "小妲己"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-13:8",
+      "day": "2026-11-13",
+      "ordinal": 8,
+      "ban": "日落海",
+      "winnerBuild": "UNKNOWN",
+      "materialSha256": "8a1365e7493e506b5d70b1976ac1abd5bb2d25302219a253cd0c86ec8f0218e7",
+      "original": "docs/prediction_artifacts/nov13-lower/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音小新游",
+          "playerId": "a1b5bdedb47eb3f60f02df680c3749fdf1fa11bf2462b98766e511fad4189aaf",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "胖狗王刺痛版",
+          "playerId": "0116b50f2e2ab2e68e77a0e6c700bfaaa3dfcc858d93616cc5b772800ac862c8",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音搜小意",
+          "playerId": "f27cbfb5df7228860209f21058bfe5c29f5565faba26cfb13a6f3516732e389e",
+          "build": "伞李信",
+          "winner": false,
+          "commander": "阿离"
+        },
+        {
+          "slot": 4,
+          "nickname": "自信纯真小猫",
+          "playerId": "a57d77dde00c7d17f743af17fdeea39ec2c7ea346b4ae453e2d8aab91c9a6ffe",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音梦飞1",
+          "playerId": "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音遗愿",
+          "playerId": "bd8f9f8f9e292a6741af8c8627c3cc66ac437556ff1e5eb8f1df2672258f1be2",
+          "build": "三分登场",
+          "winner": false,
+          "commander": "白歌"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:1",
+      "day": "2026-11-14",
+      "ordinal": 1,
+      "ban": "逐鹿",
+      "winnerBuild": "三分倒转",
+      "materialSha256": "4b889135ca0e5e538438b4eec6bbd675c63e8e350aa1cdaa9a59df19eb8f8a79",
+      "original": "docs/prediction_artifacts/nov14-upper/1.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音EZ阿文",
+          "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "build": "三分倒转",
+          "winner": true,
+          "commander": "孙小宾"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音道无涯",
+          "playerId": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+          "build": "牺牲李信",
+          "winner": false,
+          "commander": "班叔"
+        },
+        {
+          "slot": 3,
+          "nickname": "遗愿",
+          "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音妖柒",
+          "playerId": "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5",
+          "build": "传统养猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "抖音湛蓝",
+          "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "白歌"
+        },
+        {
+          "slot": 6,
+          "nickname": "阿震",
+          "playerId": "d58f848f87313302a7fc28ca63e07c020b2abf79559faaf18e57b8017f1e2877",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "玉环"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:2",
+      "day": "2026-11-14",
+      "ordinal": 2,
+      "ban": "逐鹿",
+      "winnerBuild": "河洛木兰",
+      "materialSha256": "44feefae81f1d2cad807afabf3ff13101b0c26358e95566a7b7074b02256c197",
+      "original": "docs/prediction_artifacts/nov14-upper/2.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "B站QT小优律",
+          "playerId": "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b",
+          "build": "河洛木兰",
+          "winner": true,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 2,
+          "nickname": "B站万象棋小祥",
+          "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "build": "伞猫转艾琳",
+          "winner": false,
+          "commander": null
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音EGM皮皮鲨",
+          "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "build": "大河龙蛇",
+          "winner": false,
+          "commander": "昭君"
+        },
+        {
+          "slot": 4,
+          "nickname": "小琳谷芷",
+          "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "build": "河洛李信",
+          "winner": false,
+          "commander": "庄小鱼"
+        },
+        {
+          "slot": 5,
+          "nickname": "BILI猫猫雪团",
+          "playerId": "093df949393ac9853c3e22b15dc0b8012e3f493ba12d0cf6025b955ca209a05d",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "安琪拉"
+        },
+        {
+          "slot": 6,
+          "nickname": "十连六之人",
+          "playerId": "2e154f6629c8cb17fe5015efd0f071c1a2d1033b397ba7ae16ee7df29c78392d",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "小妲己"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:3",
+      "day": "2026-11-14",
+      "ordinal": 3,
+      "ban": "大河",
+      "winnerBuild": "三分登场",
+      "materialSha256": "26587722301fce14eaefe03f2230e0262ec5e31c97631039b14fb8c0678bf92e",
+      "original": "docs/prediction_artifacts/nov14-upper/3.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "抖音搜天眷",
+          "playerId": "2f3d5ce772022c1d18cb0d99609d8682517a0fa0c81b8af890182b7c691c577f",
+          "build": "三分登场",
+          "winner": true,
+          "commander": "镜"
+        },
+        {
+          "slot": 2,
+          "nickname": "抖音刺痛",
+          "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "抖音、区王",
+          "playerId": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "北念且好运",
+          "playerId": "65f4dae8a5bdfa4da0fe5ae121e05ab521a09fcde924742d9311b309d804973d",
+          "build": "镜猪",
+          "winner": false,
+          "commander": "马可"
+        },
+        {
+          "slot": 5,
+          "nickname": "小宁来也",
+          "playerId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "build": "UNKNOWN",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音群星YUN落",
+          "playerId": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+          "build": "河洛李信",
+          "winner": false,
+          "commander": "班叔"
+        }
+      ]
+    },
+    {
+      "id": "ruanshi:2026-11-14:4",
+      "day": "2026-11-14",
+      "ordinal": 4,
+      "ban": "大河",
+      "winnerBuild": "传统养猪",
+      "materialSha256": "75fe2a4e3ba4d292cf3976232c47d6aba75b0caf7b6183a9e7964342e41344f6",
+      "original": "docs/prediction_artifacts/nov14-upper/4.webp",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "丰川祥子",
+          "playerId": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "build": "传统养猪",
+          "winner": true,
+          "commander": "马可"
+        },
+        {
+          "slot": 2,
+          "nickname": "事后诸葛亮",
+          "playerId": "077e5693f8d2b11f599ee3aeeffbe60a008afc93c128cc572e17231817efc477",
+          "build": "河洛木兰",
+          "winner": false,
+          "commander": "嬴律"
+        },
+        {
+          "slot": 3,
+          "nickname": "猫爷",
+          "playerId": "dbb02fc6e81d063ce706863063667740a34effc9ad5cc32d92bcf7bdd20ee8e7",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 4,
+          "nickname": "DOUYIN小猪柒宝",
+          "playerId": "4619abd541bfe2008c6724b4b4d6c15cc538e4c2a729e69662e086f01e957018",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "镜"
+        },
+        {
+          "slot": 5,
+          "nickname": "DY棒教练",
+          "playerId": "92d9bb54a2d966416a3d91804dd379df2c3f2399a62051f43e2b0ff63cfeffd7",
+          "build": "日落海倒转",
+          "winner": false,
+          "commander": "玉环"
+        },
+        {
+          "slot": 6,
+          "nickname": "抖音搜流儿",
+          "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "build": "三分倒转",
+          "winner": false,
+          "commander": "白歌"
+        }
+      ]
+    }
+  ]
+}

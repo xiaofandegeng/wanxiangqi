@@ -1,0 +1,115 @@
+{
+  "id": "ace-catalog-20261114-1-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:1",
+  "day": "2026-11-14",
+  "ordinal": 1,
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:28:12",
+  "playedAt": null,
+  "winner": "抖音EZ阿文",
+  "winnerBuildFromExistingSource": "三分倒转",
+  "originalCatalogSource": "https://www.douyin.com/note/7708083869819342080",
+  "evidenceId": "ace-result-c13d1d2e6cc548f7c30f93f2",
+  "evidenceSha256": "c13d1d2e6cc548f7c30f93f29f80563dbb5973b8b37a0d4c7ebede9914665a79",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期及场次，六席与原有逐局资料一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音EZ阿文",
+      "playerId": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+      "commander": "孙小宾",
+      "visibleCardLevels": [
+        200,
+        193,
+        176,
+        122,
+        14,
+        9,
+        6
+      ],
+      "sourceBuildLabel": "三分倒转"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音道无涯",
+      "playerId": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+      "commander": "班叔",
+      "visibleCardLevels": [
+        236,
+        139,
+        20,
+        17,
+        14,
+        8,
+        1
+      ],
+      "sourceBuildLabel": "牺牲李信"
+    },
+    {
+      "rank": 3,
+      "nickname": "遗愿",
+      "playerId": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+      "commander": "镜",
+      "visibleCardLevels": [
+        539,
+        272,
+        260,
+        230,
+        1
+      ],
+      "sourceBuildLabel": null
+    },
+    {
+      "rank": 4,
+      "nickname": "抖音妖柒",
+      "playerId": "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5",
+      "commander": "马可",
+      "visibleCardLevels": [
+        358,
+        104,
+        90,
+        65,
+        60,
+        15,
+        1
+      ],
+      "sourceBuildLabel": "传统养猪"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音湛蓝",
+      "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        292,
+        130,
+        130,
+        99,
+        93,
+        75,
+        4
+      ],
+      "sourceBuildLabel": null
+    },
+    {
+      "rank": 6,
+      "nickname": "阿震",
+      "playerId": "d58f848f87313302a7fc28ca63e07c020b2abf79559faaf18e57b8017f1e2877",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        204,
+        155,
+        152,
+        151,
+        150,
+        71,
+        1
+      ],
+      "sourceBuildLabel": null
+    }
+  ],
+  "week": 42
+}

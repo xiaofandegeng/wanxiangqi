@@ -1,0 +1,128 @@
+{
+  "id": "ace-catalog-20261115-3-game-result",
+  "matchId": "ruanshi:2026-11-15:3",
+  "day": "2026-11-15",
+  "ordinal": 3,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:32:31",
+  "playedAt": null,
+  "winner": "娇弱的佩奇",
+  "linkedPostmatchAuditId": "ace-live-20261115-1837-result",
+  "evidenceId": "ace-result-956b40be8d104ac022f46149",
+  "evidenceSha256": "956b40be8d104ac022f461494d41671b8746740224682ff07557b354c8084afc",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户确认日期和场次；与既有赛后复盘的六席和时长一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "娇弱的佩奇",
+      "catalogNickname": "娇弱的佩奇",
+      "playerId": "5255b8260871a4754a8b42c8778b1a099eb65d49341532053dfaef0002769ee6",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        545,
+        288,
+        199,
+        185,
+        179,
+        156,
+        37
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音刺痛",
+      "catalogNickname": "抖音刺痛",
+      "playerId": "c8c65cdf324a0555ace6ee2e3d5f4b9e4ee86f34ff67c2f3aecbfb1024b570f4",
+      "commander": "马可",
+      "visibleCardLevels": [
+        345,
+        239,
+        198,
+        144,
+        120,
+        54,
+        6
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "小暖贴贴",
+      "catalogNickname": "小暖贴贴",
+      "playerId": "fb22422f34cdb6906c2c6c9b41afb27ce2e6e0b4b7ca9aa99d3fd28cac90bd2a",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        161,
+        116,
+        86,
+        83,
+        82,
+        77,
+        36
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "孕一把充一百",
+      "catalogNickname": "世薄情",
+      "playerId": "4db9f6d466334e45b25b9ad5a9b0e2541879d2cf5a8c674bb438a1383aa360a7",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        405,
+        374,
+        209,
+        169,
+        165,
+        160,
+        51
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音猪葛龟龟",
+      "catalogNickname": "抖音猪葛龟龟",
+      "playerId": "d87cd1d60aa76634d8443d254c56d7b280ebe2b44b968ac4f0976a08637733be",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        145,
+        128,
+        106,
+        98,
+        97,
+        97,
+        49
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "B站QT孙悟方",
+      "catalogNickname": "B站QT孙悟方",
+      "playerId": "f1cec9c6cef5d6b7211a302ff1bc3f67ae6b67130743f8f0a73f27822717a86b",
+      "commander": "白歌",
+      "visibleCardLevels": [
+        430,
+        351,
+        350,
+        324,
+        322,
+        200,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-956b40be8d104ac022f46149",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 41,
+    "today": 3
+  }
+}

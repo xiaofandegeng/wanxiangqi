@@ -18,9 +18,13 @@ export function assessRoster(catalog,input,draft){
  const rows=input.players.map(x=>{
  const p=x.profileId?catalog.players.find(p=>p.id===x.profileId):null
  if(x.profileId&&!p)throw fail('档案在截图截止时刻不可用，请重新确认','PROFILE_UNAVAILABLE')
- const history=p?.history||[],builds=new Map()
+ const history=(p?.history||[]).filter(h=>h.day<day),builds=new Map()
+ const recent7Matches=history.filter(h=>h.day>=start7).map(h=>({
+  matchId:h.matchId??null,day:h.day,ordinal:h.ordinal??null,build:h.build??null,
+  commander:h.reviewedCommander??null,winner:h.rank===1,sourceUrl:h.sourceUrl??null
+ })).sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal??0)-(a.ordinal??0))
  for(const h of history){const row=builds.get(h.build)||{label:h.build,observations:0,wins:0};row.observations++;if(h.rank===1)row.wins++;builds.set(h.build,row)}
- return {nickname:x.nickname,profileId:p?.id||null,profileNickname:p?.nickname||null,identityStatus:p?.identityStatus||'UNMATCHED',recent7:sourceSample(history.filter(h=>h.day>=start7)),recent30:sourceSample(history.filter(h=>h.day>=start30)),sourceSample:sourceSample(history),buildRates:[...builds.values()].map(b=>({...b,observedWinShare:b.wins/b.observations,finalBuildWinRate:null,notice:'仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率'})),claims:p?.claims||[],probability:null}
+ return {nickname:x.nickname,profileId:p?.id||null,profileNickname:p?.nickname||null,identityStatus:p?.identityStatus||'UNMATCHED',recent7:{observations:recent7Matches.length,wins:recent7Matches.filter(match=>match.winner).length,from:start7,toExclusive:day},recent7Matches,recent30:sourceSample(history.filter(h=>h.day>=start30)),sourceSample:sourceSample(history),buildRates:[...builds.values()].map(b=>({...b,observedWinShare:b.wins/b.observations,finalBuildWinRate:null,notice:'仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率'})),claims:p?.claims||[],probability:null}
  })
  const blockers=['UNCALIBRATED_MODEL','UNCONFIRMED_HISTORICAL_IDENTITIES','UNKNOWN_HISTORICAL_MODE_VERSION','UNVERIFIED_SOURCE_RESULTS']
  if(rows.some(r=>!r.profileId))blockers.push('UNMATCHED_PLAYER')

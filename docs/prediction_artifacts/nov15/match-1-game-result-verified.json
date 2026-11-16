@@ -1,0 +1,124 @@
+{
+  "id": "ace-catalog-20261115-1-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-15:1",
+  "day": "2026-11-15",
+  "ordinal": 1,
+  "mode": "WANXIANG",
+  "ban": "大河",
+  "duration": "00:27:13",
+  "playedAt": null,
+  "winner": "抖音EG碎碎圆圆",
+  "evidenceId": "ace-result-93ec084a5e48bcdad5ee8902",
+  "evidenceSha256": "93ec084a5e48bcdad5ee89026173b664287def923a0e3dfa22ecc3cff2f17737",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "抖音EG碎碎圆圆",
+      "catalogNickname": "抖音EG碎碎圆圆",
+      "playerId": "794723dfaa85414e2a959ec1220166e1c075dcd1122f7f96bf910028cc594763",
+      "commander": "玉环",
+      "visibleCardLevels": [
+        485,
+        384,
+        220,
+        206,
+        114,
+        5,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "抖音EZ嘉誉",
+      "catalogNickname": "抖音EZ嘉誉",
+      "playerId": "1a5dbebf489c13386955c2d5ceb71cf3ebd254a743faa84668cc9afc2195a38a",
+      "commander": "班叔",
+      "visibleCardLevels": [
+        272,
+        183,
+        21,
+        20,
+        11,
+        8,
+        4
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音QT萌岑",
+      "catalogNickname": "抖音QT萌岑",
+      "playerId": "b9ac155b0e6d1e341e3027cd7832d3194c1e085e9b51fbbd4211a91a80f20656",
+      "commander": "镜",
+      "visibleCardLevels": [
+        129,
+        112,
+        92,
+        37,
+        8
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "抖音EZ阿文",
+      "catalogNickname": "抖音EZ阿文",
+      "playerId": "a25b7313dcf545f086daa1386685a0a38e6bfef73c9826538bc548b5fba4e05e",
+      "commander": "孙小宾",
+      "visibleCardLevels": [
+        441,
+        354,
+        243,
+        221,
+        213,
+        197
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "抖音cc",
+      "catalogNickname": "抖音cc",
+      "playerId": "3309981210e4b3d6b0faee5a13600d49034af6ab51626eb42543aa693d7ab9fd",
+      "commander": null,
+      "visibleCardLevels": [
+        81,
+        17,
+        16,
+        15,
+        6,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "抖音EG航迹云",
+      "catalogNickname": "抖音EG航迹云",
+      "playerId": "a7b9a7485699adb2cc17c2098e285a04ac52e54e1ea0d5bbc5e73a9749c7c100",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        159,
+        105,
+        48,
+        48,
+        42,
+        26,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-93ec084a5e48bcdad5ee8902",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 39,
+    "today": 1
+  }
+}

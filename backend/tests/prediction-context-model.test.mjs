@@ -1,8 +1,72 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {CANDIDATES,contextFeatures,trainContextModel,predictContext,knownChoice} from '../src/prediction/context-model.mjs'
+import {projectBuilds} from '../src/prediction/build-projection.mjs'
+import {rateRosterHistory} from '../src/prediction/roster-rating.mjs'
+import {CANDIDATES,FIELD_CONFIG,contextFeatures,trainContextModel,predictContext,knownChoice} from '../src/prediction/context-model.mjs'
 const game=(id,day,winner='a')=>({id,day,ban:'三分',seats:['a','b','c','d','e','f'].map(id=>({id,winner:id===winner,build:'日落海倒转'}))})
 const cfg=CANDIDATES[3]
+test('跨阵容对位需要历史同场及对照样本，目标场结果不会进入特征',()=>{
+ const paired=game('paired','2026-01-01','a')
+ paired.seats[0].build='逐鹿嬴政'
+ paired.seats[1].build='河洛木兰'
+ const control=game('control','2026-01-01','b')
+ control.seats[0].build='逐鹿嬴政'
+ const target={...game('target','2026-01-02'),ban:'大河'}
+ const choices=[{plan:'逐鹿嬴政'},{plan:'河洛木兰'}]
+ const value=rows=>contextFeatures(rows,target,FIELD_CONFIG,choices)[0].crossBuildMatchup
+ assert.ok(value([paired,control])>0)
+ assert.equal(value([paired]),0)
+ assert.equal(value([paired,control,target]),value([paired,control]))
+})
+test('动态实力区分爆冷和热门夺冠，同日预测共用开赛前评分',()=>{
+ const opening=game('opening','2026-01-01','a')
+ const favoriteWins=game('favorite','2026-01-02','a')
+ const upset=game('upset','2026-01-02','b')
+ const initial=rateRosterHistory([opening], '2026-01-02')
+ const updated=rateRosterHistory([opening,favoriteWins,upset], '2026-01-03')
+ const reversed=rateRosterHistory([upset,favoriteWins,opening], '2026-01-03')
+ assert.ok(initial.rating('a')>initial.rating('b'))
+ assert.ok(updated.expected('upset','b')<updated.expected('favorite','a'))
+ assert.equal(updated.expected('upset','a'),updated.expected('favorite','a'))
+ assert.equal(updated.rating('a'),reversed.rating('a'))
+ assert.equal(rateRosterHistory([opening,upset],upset.day).rating('b'),initial.rating('b'))
+})
+test('同阵容棋手对位用历史证据，选手自己的表现可抵消棋手平均劣势',()=>{
+ const history=Array.from({length:8},(_,i)=>{
+  const g=game('old'+i,'2026-01-01',i===0?'a':'b')
+  g.startsAt='2026-01-01T09:00:00Z'
+  g.seats[0].id=i===0?'a':'other-white'
+  g.seats[0].build=g.seats[1].build='三分倒转'
+  for(const [j,commander] of ['白歌','孙小宾'].entries()){
+   g.seats[j].prematch={commander,evidenceId:g.id,observedAt:'2026-01-01T08:00:00Z'}
+  }
+  return g
+ })
+ const future={...game('target','2026-01-02'),ban:'逐鹿'}
+ const choices=[{commander:'白歌',plan:'三分倒转'},{commander:'孙小宾',plan:'三分倒转'}]
+ const atIssue=contextFeatures(history,future,FIELD_CONFIG,choices)[0]
+ assert.notEqual(atIssue.commanderBuildContention,0)
+ assert.ok(atIssue.playerCommanderBuildContention>0)
+ assert.equal(contextFeatures(history,future,FIELD_CONFIG,[choices[0],{...choices[1],plan:'河洛木兰'}])[0].commanderBuildContention,0)
+ assert.equal(contextFeatures(history.map(g=>({...g,startsAt:null})),future,FIELD_CONFIG,choices)[0].playerCommanderBuildContention,0)
+})
+test('阵容推断优先用同棋手经历，排除明确被禁的标签，忽略同日赛果',()=>{
+ const old=game('old','2026-01-01')
+ old.seats[0].build='三分倒转'
+ old.startsAt='2026-01-01T09:00:00Z'
+ old.seats[0].prematch={commander:'白歌',evidenceId:'old',observedAt:'2026-01-01T08:00:00Z'}
+ const other=game('other','2026-01-01')
+ other.seats[0].build='逐鹿嬴政'
+ const target={...game('target','2026-01-02'),ban:'逐鹿'}
+ const rows=[old,other,target]
+ const projection=projectBuilds(rows,target,[{commander:'白歌'}],knownChoice)[0]
+ assert.equal(projection.basis,'PLAYER_COMMANDER_HISTORY')
+ assert.deepEqual(projection.excludedBuilds,['逐鹿嬴政'])
+ assert.deepEqual(projection.candidates.map(row=>row.build),['三分倒转'])
+ assert.equal(projection.personalSamples,2)
+ assert.equal(projection.commanderSamples,1)
+ assert.ok(Math.abs(projection.candidates[0].share+projection.unknownShare-1)<1e-12)
+})
 test('当场结果、成型阵容、同日与未来赛果不能改变概率或特征',()=>{
  const old=game('old','2026-01-01'),target=game('target','2026-01-02'),future=game('future','2026-01-03')
  const model=trainContextModel([old,target,future],target.day,cfg)

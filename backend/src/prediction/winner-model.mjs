@@ -1,12 +1,13 @@
+import {projectBuilds} from './build-projection.mjs'
 import {createHash} from 'node:crypto'
-import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures} from './context-model.mjs'
-export const MODEL_VERSION='source-roster-field-v6'
+import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures,historicalChoice} from './context-model.mjs'
+export const MODEL_VERSION='source-roster-dynamic-v11'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
  const grouped=new Map()
  const matches=new Map((catalog.matches||[]).map(match=>[match.id,match]))
- for(const p of catalog.players)for(const h of p.history||[]){const g=grouped.get(h.matchId)||{id:h.matchId,day:h.day,ban:matches.get(h.matchId)?.ban??null,seats:[]};g.seats.push({id:p.id,winner:h.rank===1,build:h.build??null});grouped.set(h.matchId,g)}
+ for(const p of catalog.players)for(const h of p.history||[]){const g=grouped.get(h.matchId)||{id:h.matchId,day:h.day,ban:matches.get(h.matchId)?.ban??null,seats:[]};g.seats.push({id:p.id,winner:h.rank===1,build:h.build??null,...(h.reviewedCommander?{reviewedCommander:h.reviewedCommander}:{})});grouped.set(h.matchId,g)}
  return [...grouped.values()].filter(g=>g.seats.length===6&&new Set(g.seats.map(s=>s.id)).size===6&&g.seats.filter(s=>s.winner).length===1).sort((a,b)=>a.day.localeCompare(b.day)||a.id.localeCompare(b.id))
 }
 export function trainWinnerModel(games){
@@ -59,12 +60,15 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
   trainingMatches:games.length,
   trainingMatchIds:games.map(game=>game.id),
   dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),
+  buildProjections:projectBuilds(games,target,choices??[],historicalChoice),
   parameters:model.parameters,
   iterations:model.iterations,
   players:roster.map((player,index)=>({
    profileId:player.profileId,
    nickname:player.nickname,
    probability:probabilities[index],
+   historicalMatches:games.filter(game=>game.seats.some(seat=>seat.id===ids[index])).length,
+   historicalWins:games.filter(game=>game.seats.some(seat=>seat.id===ids[index]&&seat.winner)).length,
    coldStart:!player.profileId||!Object.hasOwn(model.parameters,`player:${player.profileId}`)
   })),
   signals:features.map(row=>{
@@ -73,10 +77,11 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
     ban:contribution('sameBanForm','commanderUnderBan','buildUnderBan'),
     opponents:contribution('playerMatchup','commanderMatchup'),
     buildFit:contribution('buildFit'),
-    contention:contribution('buildContention')
+    crossBuildMatchup:contribution('crossBuildMatchup'),
+    contention:contribution('buildContention','commanderBuildContention','playerCommanderBuildContention')
    }
   }),
   diagnostic:chronologicalDiagnostic(games,FIELD_CONFIG),
-  notice:'综合模型根据近期夺冠、禁用条件、对手强弱和阵容竞争重新排序。已确认玩法优先，无确认时按历史玩法分布估算。结果为未校准的实验概率。'
+  notice:'综合模型先根据历史对手强弱更新选手评分，再用禁用、同场交手、阵容对位和同阵容竞争修正。已确认玩法优先，无确认时按历史玩法分布估算。结果为未校准的实验概率。'
  }
 }

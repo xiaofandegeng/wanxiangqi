@@ -282,7 +282,7 @@
       "url": "https://www.douyin.com/note/7706960952893132047",
       "title": "万象棋王牌对决1111胜者一图流",
       "status": "TRANSCRIBED",
-      "note": "第1、3–6场图面日期一致；第2图标题为11月10日，未录；第7、8场未刊。"
+      "note": "第2图标题标11月10日，用户明确确认对应11月11日第2场，且与已收录的11月10日第2场六席不同。已保留日期冲突说明和用户截图证据。第7、8场未刊。"
     },
     {
       "url": "https://www.douyin.com/note/7706911796640189731",
@@ -1063,6 +1063,13 @@
       "key": "75fe2a4e3ba4d292cf3976232c47d6aba75b0caf7b6183a9e7964342e41344f6",
       "sourceUrl": "https://www.douyin.com/note/7708083869819342080",
       "imageOrdinal": 4
+    },
+    {
+      "file": "docs/prediction_artifacts/nov11/2.webp",
+      "key": "4af18f5844fe906230ba432bc68b9d68eeca6f58d5d5f57f5ecdd043d1c1e849",
+      "sha256": "4af18f5844fe906230ba432bc68b9d68eeca6f58d5d5f57f5ecdd043d1c1e849",
+      "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+      "imageOrdinal": 2
     }
   ],
   "matches": [
@@ -6411,6 +6418,48 @@
           "slot": 6,
           "nickname": "抖音搜流儿",
           "build": "三分倒转"
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-11:2",
+      "day": "2026-11-11",
+      "ordinal": 2,
+      "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+      "materialKey": "4af18f5844fe906230ba432bc68b9d68eeca6f58d5d5f57f5ecdd043d1c1e849",
+      "ban": "三分",
+      "winnerSlot": 1,
+      "winnerBuild": "逐鹿蒙恬",
+      "seats": [
+        {
+          "slot": 1,
+          "nickname": "最后再孕一把",
+          "build": "逐鹿蒙恬"
+        },
+        {
+          "slot": 2,
+          "nickname": "985第一环",
+          "build": "逐鹿帝临"
+        },
+        {
+          "slot": 3,
+          "nickname": "小慷",
+          "build": "大河猪离"
+        },
+        {
+          "slot": 4,
+          "nickname": "抖音群星YUN落",
+          "build": "自爆海月"
+        },
+        {
+          "slot": 5,
+          "nickname": "小琳谷芷",
+          "build": "日落海倒转"
+        },
+        {
+          "slot": 6,
+          "nickname": "DY寻心",
+          "build": "河洛木兰"
         }
       ]
     }

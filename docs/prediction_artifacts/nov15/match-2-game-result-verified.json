@@ -1,0 +1,127 @@
+{
+  "id": "ace-catalog-20261115-2-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-15:2",
+  "day": "2026-11-15",
+  "ordinal": 2,
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "duration": "00:27:19",
+  "playedAt": null,
+  "winner": "遗愿",
+  "evidenceId": "ace-result-53f5c372f639dc7469386d58",
+  "evidenceSha256": "53f5c372f639dc7469386d581069ff28a524251af7464d7ef38326e8a7456b25",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "遗愿",
+      "catalogNickname": "遗愿",
+      "playerId": "54cc1cf4de1ff4868552e1b4501b2215c491c8b262d99a654de552cf376ccb19",
+      "commander": "镜",
+      "visibleCardLevels": [
+        857,
+        388,
+        229,
+        152,
+        45,
+        23,
+        15
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 2,
+      "nickname": "B站QT小优律",
+      "catalogNickname": "B站QT小优律",
+      "playerId": "1169d7ef81732208949c9050327518111442e21ac25e0009f0d379cba460f32b",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        119,
+        95,
+        82,
+        76,
+        74,
+        16,
+        12
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 3,
+      "nickname": "小琳谷芷",
+      "catalogNickname": "小琳谷芷",
+      "playerId": "3364025ff80a4b540da5a06f463fc7c9364653825d8d516058ffcfd67af183d9",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        139,
+        32,
+        27,
+        15,
+        3,
+        1,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 4,
+      "nickname": "抖音QT新一",
+      "catalogNickname": "抖音QT新一",
+      "playerId": "b2ca11faf47150bda2d406923cab6d025ff5955de87422a8db0b137c307211fc",
+      "commander": null,
+      "visibleCardLevels": [
+        228,
+        39,
+        36,
+        26,
+        21,
+        21,
+        1
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 5,
+      "nickname": "bili星光柯基",
+      "catalogNickname": "bili星光柯基",
+      "playerId": "a18ed15b8e7db11b0dc5728096b0c2e996c0c7ccd594eba5b3a79bde3321978b",
+      "commander": "镜",
+      "visibleCardLevels": [
+        277,
+        243,
+        235,
+        221,
+        195,
+        24,
+        8
+      ],
+      "build": "UNKNOWN"
+    },
+    {
+      "rank": 6,
+      "nickname": "抖音搜流儿",
+      "catalogNickname": "抖音搜流儿",
+      "playerId": "42c9613033820313df78f3d373a573b93a6153641455a4c76266e8f2c17b20f9",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        109,
+        24,
+        18,
+        17,
+        13,
+        10,
+        1
+      ],
+      "build": "UNKNOWN"
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-53f5c372f639dc7469386d58",
+  "coverage": {
+    "start": "2026-11-09",
+    "end": "2026-11-15",
+    "week": 40,
+    "today": 2
+  }
+}

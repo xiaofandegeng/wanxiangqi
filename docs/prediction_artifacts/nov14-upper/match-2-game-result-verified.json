@@ -1,0 +1,118 @@
+{
+  "id": "ace-catalog-20261114-2-game-result",
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "matchId": "ruanshi:2026-11-14:2",
+  "day": "2026-11-14",
+  "ordinal": 2,
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:39:03",
+  "playedAt": null,
+  "winner": "B站QT小优律",
+  "winnerBuildFromExistingSource": "河洛木兰",
+  "originalCatalogSource": "https://www.douyin.com/note/7708083869819342080",
+  "evidenceId": "ace-result-809e3982fb98facc728122c7",
+  "evidenceSha256": "809e3982fb98facc728122c7e63a0fdf8ed22e67569ed87514f822424428084d",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，截图六席与库内赛果一致",
+  "seats": [
+    {
+      "rank": 1,
+      "nickname": "B站QT小优律",
+      "catalogNickname": "B站QT小优律",
+      "playerId": "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b",
+      "commander": "嬴律",
+      "visibleCardLevels": [
+        437,
+        404,
+        216,
+        167,
+        166
+      ],
+      "sourceBuildLabel": "河洛木兰"
+    },
+    {
+      "rank": 2,
+      "nickname": "B站万象棋小祥",
+      "catalogNickname": "B站万象棋小祥",
+      "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+      "commander": null,
+      "visibleCardLevels": [
+        330,
+        41,
+        27,
+        26,
+        14
+      ],
+      "sourceBuildLabel": "伞猫转艾琳"
+    },
+    {
+      "rank": 3,
+      "nickname": "抖音EGM皮皮鲨",
+      "catalogNickname": "抖音EGM皮皮鲨",
+      "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+      "commander": "昭君",
+      "visibleCardLevels": [
+        403,
+        360,
+        173,
+        132,
+        128,
+        34,
+        28
+      ],
+      "sourceBuildLabel": "大河龙蛇"
+    },
+    {
+      "rank": 4,
+      "nickname": "小琳谷芷",
+      "catalogNickname": "小琳谷芷",
+      "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+      "commander": "庄小鱼",
+      "visibleCardLevels": [
+        386,
+        43,
+        26,
+        25,
+        11,
+        4,
+        1
+      ],
+      "sourceBuildLabel": "河洛李信"
+    },
+    {
+      "rank": 5,
+      "nickname": "bili猫猫雪团",
+      "catalogNickname": "BILI猫猫雪团",
+      "playerId": "093df949393ac9853c3e22b15dc0b8012e3f493ba12d0cf6025b955ca209a05d",
+      "commander": "安琪拉",
+      "visibleCardLevels": [
+        413,
+        62,
+        46,
+        42,
+        39,
+        35,
+        31
+      ],
+      "sourceBuildLabel": "河洛木兰"
+    },
+    {
+      "rank": 6,
+      "nickname": "十连六之人",
+      "catalogNickname": "十连六之人",
+      "playerId": "2e154f6629c8cb17fe5015efd0f071c1a2d1033b397ba7ae16ee7df29c78392d",
+      "commander": "小妲己",
+      "visibleCardLevels": [
+        103,
+        102,
+        90,
+        70,
+        54,
+        12
+      ],
+      "sourceBuildLabel": "日落海倒转"
+    }
+  ],
+  "week": 42
+}

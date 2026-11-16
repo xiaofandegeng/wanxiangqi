@@ -1,0 +1,138 @@
+{
+  "id": "ace-live-20261115-1837-result",
+  "status": "POSTMATCH_AUDIT",
+  "source": "USER_RESULT_SCREENSHOT",
+  "internalOnly": true,
+  "modelVersion": "source-roster-dynamic-v8",
+  "predictionFile": "live-20261115-1837-identity-corrected.json",
+  "predictionCutoff": "2026-11-15T10:37:41.178Z",
+  "trainingDataHash": "e136eeff77ae62693702fed2c1b8eea94767fad1c1fe5de86ab7b25f48666ab4",
+  "trainingMatches": 103,
+  "evidenceId": "ace-live-post-8c2e5626bf70021705861828",
+  "evidenceSha256": "8c2e5626bf700217058618281f67daed786f0dee173b12ed6e93b6ffbf60fc77",
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "visibleDuration": "00:32:31",
+  "playedAt": null,
+  "seats": [
+    {
+      "nickname": "娇弱的佩奇",
+      "profileId": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+      "profileNickname": "娇弱的佩奇",
+      "commander": "庄小鱼",
+      "actualRank": 1,
+      "visibleCardLevels": [
+        545,
+        288,
+        199,
+        185,
+        179,
+        156,
+        37
+      ],
+      "buildReading": "河洛木兰（据木兰随阵推读，待核对）",
+      "predictedRank": 5,
+      "probability": 0.14492485901428837
+    },
+    {
+      "nickname": "抖音刺痛",
+      "profileId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+      "profileNickname": "抖音刺痛",
+      "commander": "马可",
+      "actualRank": 2,
+      "visibleCardLevels": [
+        345,
+        239,
+        198,
+        144,
+        120,
+        54,
+        6
+      ],
+      "buildReading": "养猪体系（据猪八戒为最高等级推读）",
+      "predictedRank": 6,
+      "probability": 0.12071967056703187
+    },
+    {
+      "nickname": "小暖贴贴",
+      "profileId": "838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df",
+      "profileNickname": "小暖贴贴",
+      "commander": "嬴律",
+      "actualRank": 3,
+      "visibleCardLevels": [
+        161,
+        116,
+        86,
+        83,
+        82,
+        77,
+        36
+      ],
+      "buildReading": null,
+      "predictedRank": 2,
+      "probability": 0.1623609283470553
+    },
+    {
+      "nickname": "孕一把充一百",
+      "profileId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+      "profileNickname": "世薄情",
+      "commander": "嬴律",
+      "actualRank": 4,
+      "visibleCardLevels": [
+        405,
+        374,
+        169,
+        169,
+        165,
+        160,
+        51
+      ],
+      "buildReading": null,
+      "predictedRank": 1,
+      "probability": 0.2519596540273926
+    },
+    {
+      "nickname": "抖音猪葛龟龟",
+      "profileId": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+      "profileNickname": "抖音猪葛龟龟",
+      "commander": "嬴律",
+      "actualRank": 5,
+      "visibleCardLevels": [
+        145,
+        128,
+        106,
+        98,
+        97,
+        97,
+        49
+      ],
+      "buildReading": null,
+      "predictedRank": 3,
+      "probability": 0.16026748396878707
+    },
+    {
+      "nickname": "B站QT孙悟方",
+      "profileId": "f0b6c4e19231c7b8f9096e62a83baf4815d97464056d3d4a3b250d921dc23368",
+      "profileNickname": "B站QT孙悟方",
+      "commander": "白歌",
+      "actualRank": 6,
+      "visibleCardLevels": [
+        430,
+        351,
+        350,
+        324,
+        322,
+        200,
+        1
+      ],
+      "buildReading": null,
+      "predictedRank": 4,
+      "probability": 0.1597674040754447
+    }
+  ],
+  "actualWinner": "娇弱的佩奇",
+  "predictedWinner": "孕一把充一百",
+  "strictHit": false,
+  "logLoss": 1.9315398845752483,
+  "brier": 0.8867827637275602
+}

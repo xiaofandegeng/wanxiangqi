@@ -1,0 +1,152 @@
+{
+  "id": "ace-live-20261115-1948-result",
+  "status": "POSTMATCH_AUDIT",
+  "source": "USER_RESULT_SCREENSHOT",
+  "internalOnly": true,
+  "modelVersion": "source-roster-dynamic-v10",
+  "predictionFile": "live-20261115-1948-prematch.json",
+  "predictionCutoff": "2026-11-15T11:48:27.723Z",
+  "trainingDataHash": "285227448b9c7488194d68ee0bb69687f3823385f24725692bc50e732fcdd1ad",
+  "evidenceId": "ace-live-post-c8be63f06a5b17384bc8ba53",
+  "evidenceSha256": "c8be63f06a5b17384bc8ba53f6d47853c520ff99667aba1752d6e1aa6efe8520",
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "visibleDuration": "00:26:27",
+  "playedAt": null,
+  "seats": [
+    {
+      "nickname": "B站万象棋小祥",
+      "commander": "嬴律",
+      "visiblePlan": null,
+      "profileId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+      "profileNickname": "B站万象棋小祥",
+      "identityMatch": "EXACT_OR_CASE_INSENSITIVE",
+      "actualRank": 1,
+      "visibleCardLevels": [
+        429,
+        143,
+        77,
+        71,
+        68,
+        49,
+        4
+      ],
+      "buildReading": "逐鹿嬴政（根据卡面初读）",
+      "predictedRank": 5,
+      "probability": 0.1415887582591939,
+      "predictedBuild": "逐鹿嬴政"
+    },
+    {
+      "nickname": "小宁来也",
+      "commander": "嬴律",
+      "visiblePlan": null,
+      "profileId": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+      "profileNickname": "小宁来也",
+      "identityMatch": "EXACT_OR_CASE_INSENSITIVE",
+      "actualRank": 2,
+      "visibleCardLevels": [
+        332,
+        135,
+        66,
+        60,
+        39,
+        34,
+        12
+      ],
+      "buildReading": "河洛木兰体系（根据卡面初读）",
+      "predictedRank": 2,
+      "probability": 0.16657414181375113,
+      "predictedBuild": "逐鹿帝临"
+    },
+    {
+      "nickname": "抖音搜道无涯",
+      "commander": "马可",
+      "visiblePlan": null,
+      "profileId": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+      "profileNickname": "抖音道无涯",
+      "identityMatch": "TENTATIVE_PREFIX_VARIANT",
+      "actualRank": 3,
+      "visibleCardLevels": [
+        469,
+        13,
+        9,
+        6,
+        1
+      ],
+      "buildReading": null,
+      "predictedRank": 6,
+      "probability": 0.12601983427003388,
+      "predictedBuild": "牺牲李信"
+    },
+    {
+      "nickname": "抖音所演ii",
+      "commander": "安琪拉",
+      "visiblePlan": null,
+      "profileId": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+      "profileNickname": "抖音所演II",
+      "identityMatch": "EXACT_OR_CASE_INSENSITIVE",
+      "actualRank": 4,
+      "visibleCardLevels": [
+        143,
+        137,
+        19,
+        4,
+        4,
+        1,
+        1
+      ],
+      "buildReading": null,
+      "predictedRank": 1,
+      "probability": 0.26236489403640467,
+      "predictedBuild": "多彩古币自爆海月"
+    },
+    {
+      "nickname": "抖音沉默",
+      "commander": "小妲己",
+      "visiblePlan": null,
+      "profileId": null,
+      "profileNickname": null,
+      "identityMatch": "UNMATCHED",
+      "actualRank": 5,
+      "visibleCardLevels": [
+        619,
+        449,
+        415,
+        181,
+        168,
+        150,
+        4
+      ],
+      "buildReading": null,
+      "predictedRank": 4,
+      "probability": 0.14189190937795876,
+      "predictedBuild": "逐鹿蒙恬"
+    },
+    {
+      "nickname": "抖音湛蓝",
+      "commander": "白歌",
+      "visiblePlan": null,
+      "profileId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+      "profileNickname": "抖音湛蓝",
+      "identityMatch": "EXACT_OR_CASE_INSENSITIVE",
+      "actualRank": 6,
+      "visibleCardLevels": [
+        186,
+        110,
+        109,
+        108,
+        106,
+        1
+      ],
+      "buildReading": null,
+      "predictedRank": 3,
+      "probability": 0.16156046224265774,
+      "predictedBuild": "三分登场"
+    }
+  ],
+  "actualWinner": "B站万象棋小祥",
+  "predictedWinner": "抖音所演ii",
+  "strictHit": false,
+  "logLoss": 1.954828491699038,
+  "brier": 0.8955682378271451
+}

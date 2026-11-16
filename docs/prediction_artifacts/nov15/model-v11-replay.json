@@ -1,0 +1,4468 @@
+{
+  "database": "wanxiangqi_prediction_dev",
+  "day": "2026-11-15",
+  "modelVersion": "source-roster-dynamic-v11",
+  "config": {
+    "id": "dynamic-roster-context",
+    "field": true,
+    "halfLife": 14,
+    "lambda": 4,
+    "rating": {
+      "halfLife": 10,
+      "learningRate": 0.65
+    }
+  },
+  "trainingCount": 108,
+  "trainingThrough": "2026-11-14",
+  "trainingHash": "f2a5688e979a64ece8705e2ff0d02772b6942c5bea49c85408a93182100819ec",
+  "protocol": "按比赛日期回测，历史材料按当前收录状态读取。仅用此前日期赛果训练。第3、4场使用留存赛前截图的棋手与禁用，其他场从结算图复原名单、棋手与禁用。软柿目录仅对唯一同名的抖音来源档案作回测内映射，未核UID。赛后阵容、名次、卡牌等级及返奖率不进预测。",
+  "summary": {
+    "matches": 8,
+    "top1": 3,
+    "tiedTop1": 0,
+    "top2": 5,
+    "top3": 5,
+    "logLoss": 1.7037721559514216,
+    "brier": 0.7943192650886556
+  },
+  "rows": [
+    {
+      "ordinal": 1,
+      "matchId": "ruanshi:2026-11-15:1",
+      "ban": "大河",
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "抖音EZ阿文"
+      ],
+      "predictedProbability": 0.3094297376190193,
+      "actual": "抖音EG碎碎圆圆",
+      "actualProbability": 0.11948982109629505,
+      "actualRank": 6,
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 2.12452409034902,
+        "brier": 0.9540833379647692,
+        "top1Credit": 0
+      },
+      "predicted": [
+        {
+          "id": "46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26",
+          "catalogId": "a25b7313dcf545f086daa1386685a0a38e6bfef73c9826538bc548b5fba4e05e",
+          "nickname": "抖音EZ阿文",
+          "commander": "孙小宾",
+          "plan": null,
+          "probability": 0.3094297376190193,
+          "historicalMatches": 7,
+          "historicalWins": 3,
+          "features": {
+            "baseScore": 0.6867212035120498,
+            "player:46bf1e57e233911a9e8dae43f743eeb4178f4c954e49a4f58122df9cef2deb26": 1,
+            "championHistory": 1.2457100060798816,
+            "playerForm": 0.6866477936351627,
+            "recentTrend": 0.6025891883169694,
+            "sameBanForm": 0.5899198955794404,
+            "commanderForm": 0.9268878124234115,
+            "playerCommander": 0.7677928088545646,
+            "commanderUnderBan": 0.5750955848212177,
+            "playerMatchup": 0.2539809513672367,
+            "commanderMatchup": 1.3902844560055077,
+            "buildFit": 0.58957926651377,
+            "buildUnderBan": 0.020299466409189712,
+            "crossBuildMatchup": 0.05059012043980153,
+            "buildContention": -0.018729281355075802,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "b7b5ba9d06e3db08e50cc404cf7e04354e0471dd3f8211c44b9997b63571ea8a",
+          "catalogId": "a7b9a7485699adb2cc17c2098e285a04ac52e54e1ea0d5bbc5e73a9749c7c100",
+          "nickname": "抖音EG航迹云",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.17429542721559377,
+          "historicalMatches": 6,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.32500604781774034,
+            "player:b7b5ba9d06e3db08e50cc404cf7e04354e0471dd3f8211c44b9997b63571ea8a": 1,
+            "championHistory": 0.6686983041814324,
+            "playerForm": 0.2119102295787244,
+            "recentTrend": 0.4402394899953371,
+            "sameBanForm": -0.04192768488597634,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.17066204400521684,
+            "playerMatchup": 0.4295845275714949,
+            "commanderMatchup": -0.19108757930844192,
+            "buildFit": -0.017314703122394103,
+            "buildUnderBan": -0.04642024259016145,
+            "crossBuildMatchup": -0.017052754297809055,
+            "buildContention": -0.009617597153787289,
+            "commanderBuildContention": -0.0006393959696238087,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "9330c5bb044dea5da9e112f1d20da8861713542fe9624efc67132cd0838f52b6",
+          "catalogId": "b9ac155b0e6d1e341e3027cd7832d3194c1e085e9b51fbbd4211a91a80f20656",
+          "nickname": "抖音QT萌岑",
+          "commander": "镜",
+          "plan": null,
+          "probability": 0.1421771478253286,
+          "historicalMatches": 4,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.004764467259683939,
+            "player:9330c5bb044dea5da9e112f1d20da8861713542fe9624efc67132cd0838f52b6": 1,
+            "championHistory": 0.2777996561664755,
+            "playerForm": 0.04520402004218699,
+            "recentTrend": 1.6653345369377348e-16,
+            "sameBanForm": 0,
+            "commanderForm": -0.13412576748883337,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.07179089718141968,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.10887976629103698,
+            "buildFit": 0.0459405673142012,
+            "buildUnderBan": -0.009064375898021278,
+            "crossBuildMatchup": -0.014922425934180632,
+            "buildContention": -0.024178927678875355,
+            "commanderBuildContention": 0.003051805543803557,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "b7475f34a079e898e0785c553cd148b9ec4ad56828197aa9f6ab6ba4a9b1f3c1",
+          "catalogId": "3309981210e4b3d6b0faee5a13600d49034af6ab51626eb42543aa693d7ab9fd",
+          "nickname": "抖音cc",
+          "commander": null,
+          "plan": null,
+          "probability": 0.13134003273331524,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.09506603222051355,
+            "player:b7475f34a079e898e0785c553cd148b9ec4ad56828197aa9f6ab6ba4a9b1f3c1": 1,
+            "championHistory": 0,
+            "playerForm": -0.1017012988959351,
+            "recentTrend": -0.11781681844261943,
+            "sameBanForm": 0,
+            "commanderForm": 0,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0,
+            "buildFit": 0.05284459916169503,
+            "buildUnderBan": -0.002316779410441546,
+            "crossBuildMatchup": -0.016463302633161717,
+            "buildContention": -0.02275178155439768,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "eb5f70d8b4b12cdfe660f06ba7d065533c239aa354b3b1058c75dd0310780dfd",
+          "catalogId": "1a5dbebf489c13386955c2d5ceb71cf3ebd254a743faa84668cc9afc2195a38a",
+          "nickname": "抖音EZ嘉誉",
+          "commander": "班叔",
+          "plan": null,
+          "probability": 0.12326783351044814,
+          "historicalMatches": 2,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.18068487312025394,
+            "player:eb5f70d8b4b12cdfe660f06ba7d065533c239aa354b3b1058c75dd0310780dfd": 1,
+            "championHistory": 0,
+            "playerForm": -0.1884285178204575,
+            "recentTrend": -0.19184775275686985,
+            "sameBanForm": 0,
+            "commanderForm": -0.02209709117020936,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.05366456911017137,
+            "playerMatchup": -0.4295845275714949,
+            "commanderMatchup": -0.10349957150648523,
+            "buildFit": -0.04506704772271265,
+            "buildUnderBan": 0.0007754950660021972,
+            "crossBuildMatchup": 0.02148373009209265,
+            "buildContention": -0.00037656182990893436,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "59bdddf442a4c6251fbefedc59c4905b42ec5caedd41960cc0aea1941bc54b88",
+          "catalogId": "794723dfaa85414e2a959ec1220166e1c075dcd1122f7f96bf910028cc594763",
+          "nickname": "抖音EG碎碎圆圆",
+          "commander": "玉环",
+          "plan": null,
+          "probability": 0.11948982109629505,
+          "historicalMatches": 3,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.18793231530523724,
+            "player:59bdddf442a4c6251fbefedc59c4905b42ec5caedd41960cc0aea1941bc54b88": 1,
+            "championHistory": 0,
+            "playerForm": -0.21804846637124164,
+            "recentTrend": -0.21193382817711914,
+            "sameBanForm": -0.0667547301813807,
+            "commanderForm": -0.010437290641454267,
+            "playerCommander": -0.06350252108804016,
+            "commanderUnderBan": -0.0876530754565919,
+            "playerMatchup": -0.2539809513672367,
+            "commanderMatchup": -0.31353300722091615,
+            "buildFit": -0.045503580278844505,
+            "buildUnderBan": -0.021703656410210624,
+            "crossBuildMatchup": -0.0443421260242237,
+            "buildContention": 0.005674322804663472,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 7,
+          "commanderSamples": 2,
+          "commanderPoolSamples": 10,
+          "excludedBuilds": [],
+          "unknownShare": 0.17990335631560112,
+          "candidates": [
+            {
+              "build": "三分倒转",
+              "share": 0.616351092926581,
+              "personalSamples": 3,
+              "commanderSamples": 2
+            },
+            {
+              "build": "三分登场",
+              "share": 0.08080959682775586,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.0668338400203882,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.049193694616709194,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.0038795887403700355,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转混沌裂隙",
+              "share": 0.003028830552594791,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 3,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 27,
+          "excludedBuilds": [],
+          "unknownShare": 0.3463982273399729,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.4325926696775777,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.13521813838338897,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.08579096459906034,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 4,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 13,
+          "excludedBuilds": [
+            "大河开团射刺",
+            "大河开团射",
+            "大河开团了一半射"
+          ],
+          "unknownShare": 0.7977077830169815,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.11824218973393337,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.039760859870522754,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.01924670288739115,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.012831135258260767,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.012211329232910436,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 0,
+          "excludedBuilds": [],
+          "unknownShare": 0.7681034957616224,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.2318965042383776,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 5,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 37,
+          "excludedBuilds": [],
+          "unknownShare": 0.4700672094979675,
+          "candidates": [
+            {
+              "build": "伞李信",
+              "share": 0.1419169984789362,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.11966674385008039,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.09361553957744782,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.07469236376831302,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.05017523599504837,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.015362822890025787,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.012433855367384741,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.009003230091857882,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.004259251151369031,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.002983624281994919,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.002983624281994919,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.0028395007675793547,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 10,
+          "excludedBuilds": [],
+          "unknownShare": 0.6515611082997506,
+          "candidates": [
+            {
+              "build": "伞猫转吕布",
+              "share": 0.19671143816703407,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.06183401022139665,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "奶屏流",
+              "share": 0.023081024238603386,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.022145983880682136,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信转帝临",
+              "share": 0.019089236204921676,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "班叔奶屏流",
+              "share": 0.014050817011931005,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "陷阱牺牲李信",
+              "share": 0.011526381975680594,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 2,
+      "matchId": "ruanshi:2026-11-15:2",
+      "ban": "日落海",
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "抖音搜流儿"
+      ],
+      "predictedProbability": 0.23912629810712593,
+      "actual": "遗愿",
+      "actualProbability": 0.12960785215337342,
+      "actualRank": 4,
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 2.0432419092961274,
+        "brier": 0.9199494303278666,
+        "top1Credit": 0
+      },
+      "predicted": [
+        {
+          "id": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+          "catalogId": "42c9613033820313df78f3d373a573b93a6153641455a4c76266e8f2c17b20f9",
+          "nickname": "抖音搜流儿",
+          "commander": "庄小鱼",
+          "plan": null,
+          "probability": 0.23912629810712593,
+          "historicalMatches": 9,
+          "historicalWins": 3,
+          "features": {
+            "baseScore": 0.3146812197769653,
+            "player:be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702": 1,
+            "championHistory": 1.07759626266871,
+            "playerForm": 0.4115603357945652,
+            "recentTrend": 0.32957926800862186,
+            "sameBanForm": 0.2456201998470262,
+            "commanderForm": -0.4347305635053185,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.046945798470578864,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.6657325634286657,
+            "buildFit": 0.15563266575259488,
+            "buildUnderBan": -0.01897978304143904,
+            "crossBuildMatchup": -0.01673112116115957,
+            "buildContention": -0.041584414730378993,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b",
+          "catalogId": "1169d7ef81732208949c9050327518111442e21ac25e0009f0d379cba460f32b",
+          "nickname": "B站QT小优律",
+          "commander": "安琪拉",
+          "plan": null,
+          "probability": 0.2165619428214013,
+          "historicalMatches": 7,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.28666249261543364,
+            "player:cbb9cf5d4ae03be8371d5cb289ba4de7257f3a93b039d7d32f7f6f0c70c3f32b": 1,
+            "championHistory": 0.6686983041814324,
+            "playerForm": 0.15214910078141047,
+            "recentTrend": 0.3502750115322477,
+            "sameBanForm": -0.047289829211377706,
+            "commanderForm": 0.223145743897039,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.6186624193378585,
+            "playerMatchup": 0.3370623905302981,
+            "commanderMatchup": 0.31110159106412727,
+            "buildFit": 0.03758395226670175,
+            "buildUnderBan": -0.019137959254202315,
+            "crossBuildMatchup": -0.00298168057100619,
+            "buildContention": 0.01107721041663724,
+            "commanderBuildContention": -0.0002893702412614212,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+          "catalogId": "3364025ff80a4b540da5a06f463fc7c9364653825d8d516058ffcfd67af183d9",
+          "nickname": "小琳谷芷",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.1634703695444289,
+          "historicalMatches": 10,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": -0.017695563390891695,
+            "player:0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac": 1,
+            "championHistory": 0.7937594579058306,
+            "playerForm": 0.05738567964675928,
+            "recentTrend": -0.0463849784062938,
+            "sameBanForm": 0.10131112413535842,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": -0.08985872095053882,
+            "commanderUnderBan": 0.36162372600137904,
+            "playerMatchup": -0.20707893593039006,
+            "commanderMatchup": -0.03197945720606901,
+            "buildFit": 0.06131979325032564,
+            "buildUnderBan": 0.07772588534614605,
+            "crossBuildMatchup": 0.05179088414841666,
+            "buildContention": 0.0007684895219275868,
+            "commanderBuildContention": -0.00010286221547433795,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712",
+          "catalogId": "54cc1cf4de1ff4868552e1b4501b2215c491c8b262d99a654de552cf376ccb19",
+          "nickname": "遗愿",
+          "commander": "镜",
+          "plan": null,
+          "probability": 0.12960785215337342,
+          "historicalMatches": 11,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": -0.1475823601582665,
+            "player:fb23ea35c31cb01736c1c3a86ae9cbd5138483855dd7a67a10818720dda8f712": 1,
+            "championHistory": 0.6815392651575671,
+            "playerForm": -0.05412133209486125,
+            "recentTrend": -0.38955910881580036,
+            "sameBanForm": 0,
+            "commanderForm": -0.13412576748883337,
+            "playerCommander": -0.178230515431354,
+            "commanderUnderBan": -0.22250640540978264,
+            "playerMatchup": -0.05431314667417499,
+            "commanderMatchup": 0.029564373886256795,
+            "buildFit": 0.27445530466037255,
+            "buildUnderBan": -0.02972679610995181,
+            "crossBuildMatchup": -0.05278907869362311,
+            "buildContention": -0.11740824115296983,
+            "commanderBuildContention": 0.00046044469641668914,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+          "catalogId": "b2ca11faf47150bda2d406923cab6d025ff5955de87422a8db0b137c307211fc",
+          "nickname": "抖音QT新一",
+          "commander": null,
+          "plan": null,
+          "probability": 0.12716125892132413,
+          "historicalMatches": 5,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.2639503266863338,
+            "player:520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353": 1,
+            "championHistory": 0,
+            "playerForm": -0.2866620462197482,
+            "recentTrend": -0.2034186691193924,
+            "sameBanForm": -0.055654617830870834,
+            "commanderForm": 0,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": -0.1492191699032334,
+            "commanderMatchup": 0,
+            "buildFit": 0.04309430238448758,
+            "buildUnderBan": -0.02580055264127387,
+            "crossBuildMatchup": -0.04877176193097467,
+            "buildContention": -0.09338188184081786,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "608b90204c455bc1629121112e4c8b611ac6279bdda68aeeefde8b32b9203c4e",
+          "catalogId": "a18ed15b8e7db11b0dc5728096b0c2e996c0c7ccd594eba5b3a79bde3321978b",
+          "nickname": "bili星光柯基",
+          "commander": "镜",
+          "plan": null,
+          "probability": 0.12407227845234631,
+          "historicalMatches": 8,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": -0.19293920596518177,
+            "player:608b90204c455bc1629121112e4c8b611ac6279bdda68aeeefde8b32b9203c4e": 1,
+            "championHistory": 0.30273327561360797,
+            "playerForm": -0.16078825851319262,
+            "recentTrend": -0.19838164625873983,
+            "sameBanForm": -0.08726308205135543,
+            "commanderForm": -0.13412576748883337,
+            "playerCommander": -0.085348924157928,
+            "commanderUnderBan": -0.22250640540978264,
+            "playerMatchup": 0.054313146674175014,
+            "commanderMatchup": 0.029564373886256795,
+            "buildFit": 0.12637879016154313,
+            "buildUnderBan": -0.03675612164974576,
+            "crossBuildMatchup": -0.03701380006727473,
+            "buildContention": -0.15527342116015658,
+            "commanderBuildContention": 0.0006004736458710526,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 10,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 41,
+          "excludedBuilds": [
+            "日落海倒转"
+          ],
+          "unknownShare": 0.2414659843567495,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.49268842298837795,
+              "personalSamples": 4,
+              "commanderSamples": 1
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.09688641316466168,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.07799707424431207,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.0330138473735048,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "光棱塔韩信",
+              "share": 0.025774213782782378,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.006552973346028154,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.0063390383877079326,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.005656104248550547,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.0037589683045000767,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.0030872928917608533,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.0013964052678931956,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.0013964052678931956,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.00132895212509245,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.00132895212509245,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.00132895212509245,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 5,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 0,
+          "excludedBuilds": [],
+          "unknownShare": 0.46653586201301034,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.36279577554187153,
+              "personalSamples": 3,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.109963557232037,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.06070480521308108,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 7,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 13,
+          "excludedBuilds": [],
+          "unknownShare": 0.26634899804433587,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.5794138054303587,
+              "personalSamples": 3,
+              "commanderSamples": 1
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.10838792470109904,
+              "personalSamples": 3,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.03728082083859932,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.004284225492803488,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.004284225492803488,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 9,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 15,
+          "excludedBuilds": [],
+          "unknownShare": 0.3077829124481823,
+          "candidates": [
+            {
+              "build": "三分倒转",
+              "share": 0.2286742285882653,
+              "personalSamples": 3,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.12882714057935502,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.11664503892544131,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.07622727503198938,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转混沌裂隙",
+              "share": 0.07254512817515171,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.04009072872837331,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营",
+              "share": 0.011347916245377988,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.010029504793277398,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临",
+              "share": 0.004011961843788914,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币海月",
+              "share": 0.0038181646407974583,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 7,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 11,
+          "excludedBuilds": [],
+          "unknownShare": 0.38694077426310586,
+          "candidates": [
+            {
+              "build": "河洛木兰",
+              "share": 0.13093321221986634,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临",
+              "share": 0.0958319634648674,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "奶屏流",
+              "share": 0.09120281513300507,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.08338310771176484,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.052903532968165995,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河龙蛇",
+              "share": 0.043398638551502264,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆海月大河",
+              "share": 0.04130227395672452,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆海月",
+              "share": 0.02731082110047348,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.014176829029184346,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币自爆海月",
+              "share": 0.010069607180588218,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "高阶混搭大河",
+              "share": 0.009120281513300507,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "整备日落海",
+              "share": 0.006713071453725479,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.006713071453725479,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 10,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 13,
+          "excludedBuilds": [],
+          "unknownShare": 0.24849372076755408,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.4442959579916534,
+              "personalSamples": 4,
+              "commanderSamples": 1
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.16519190888036203,
+              "personalSamples": 3,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.10369605997152405,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营",
+              "share": 0.026524358285096652,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.003997023233166942,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.003997023233166942,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.003803947637475814,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 3,
+      "matchId": "ruanshi:2026-11-15:3",
+      "ban": "逐鹿",
+      "inputSource": "PREMATCH_SCREENSHOT",
+      "leaders": [
+        "孕一把充一百"
+      ],
+      "predictedProbability": 0.2627505792694209,
+      "actual": "娇弱的佩奇",
+      "actualProbability": 0.17101232241848052,
+      "actualRank": 2,
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.7660196641489545,
+        "brier": 0.8389856966132445,
+        "top1Credit": 0
+      },
+      "predicted": [
+        {
+          "id": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+          "catalogId": "4db9f6d466334e45b25b9ad5a9b0e2541879d2cf5a8c674bb438a1383aa360a7",
+          "nickname": "孕一把充一百",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.2627505792694209,
+          "historicalMatches": 7,
+          "historicalWins": 3,
+          "features": {
+            "baseScore": 0.30965396014728036,
+            "player:985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24": 1,
+            "championHistory": 0.8026778947077489,
+            "playerForm": 0.4499838788058348,
+            "recentTrend": 0,
+            "sameBanForm": 0.34885157925805704,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.06438686415265737,
+            "playerMatchup": 0.18520400622491429,
+            "commanderMatchup": -0.22916308494130064,
+            "buildFit": 0.03969722670750594,
+            "buildUnderBan": 0.008384813782034942,
+            "crossBuildMatchup": -0.028370708360705994,
+            "buildContention": 0.023690059677399625,
+            "commanderBuildContention": -0.0004398943593532787,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222",
+          "catalogId": "5255b8260871a4754a8b42c8778b1a099eb65d49341532053dfaef0002769ee6",
+          "nickname": "娇弱的佩奇",
+          "commander": "庄小鱼",
+          "plan": null,
+          "probability": 0.17101232241848052,
+          "historicalMatches": 10,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": -0.23085953690265587,
+            "player:d75d54cf09164172fce19d232a543ff06e02195f7fbe54099b630fbda4f03222": 1,
+            "championHistory": 0.3437086178896708,
+            "playerForm": -0.21505279369900193,
+            "recentTrend": -0.22383908663287308,
+            "sameBanForm": 0.14743460408586717,
+            "commanderForm": -0.4347305635053185,
+            "playerCommander": 0.25434048130257453,
+            "commanderUnderBan": -0.07514698385902899,
+            "playerMatchup": -0.17486877475175608,
+            "commanderMatchup": -1.2236753433114989,
+            "buildFit": -0.07104706319205431,
+            "buildUnderBan": 0.026906645498899862,
+            "crossBuildMatchup": -0.09320880294798346,
+            "buildContention": 0.038816774743008736,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "f0b6c4e19231c7b8f9096e62a83baf4815d97464056d3d4a3b250d921dc23368",
+          "catalogId": "f1cec9c6cef5d6b7211a302ff1bc3f67ae6b67130743f8f0a73f27822717a86b",
+          "nickname": "B站QT孙悟方",
+          "commander": "白歌",
+          "plan": null,
+          "probability": 0.16737753775043723,
+          "historicalMatches": 4,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.15751357955988146,
+            "player:f0b6c4e19231c7b8f9096e62a83baf4815d97464056d3d4a3b250d921dc23368": 1,
+            "championHistory": 0,
+            "playerForm": -0.20746511215781077,
+            "recentTrend": -0.08355417794928724,
+            "sameBanForm": -0.03745664751885443,
+            "commanderForm": 0.11270583009761242,
+            "playerCommander": -0.06436199849196789,
+            "commanderUnderBan": 0.7890572848599756,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.4317963638624992,
+            "buildFit": 0.07458488306579196,
+            "buildUnderBan": 0.123836932500894,
+            "crossBuildMatchup": 0.21027424574842013,
+            "buildContention": -0.042108320620633716,
+            "commanderBuildContention": -0.004735728432083997,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949",
+          "catalogId": "d87cd1d60aa76634d8443d254c56d7b280ebe2b44b968ac4f0976a08637733be",
+          "nickname": "抖音猪葛龟龟",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.15268586444449025,
+          "historicalMatches": 12,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": -0.07410510949089055,
+            "player:5d1cde66def017f27cdb839eb49a64fa9530642972c491a86f39d8f524b47949": 1,
+            "championHistory": 0.723026403199168,
+            "playerForm": -0.03078613330395502,
+            "recentTrend": 0.040935079460173995,
+            "sameBanForm": -0.2961579250737042,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0.10799279692862057,
+            "commanderUnderBan": 0.06438686415265737,
+            "playerMatchup": -0.011258689859404048,
+            "commanderMatchup": -0.22916308494130064,
+            "buildFit": -0.056490676565078723,
+            "buildUnderBan": 0.022910296384000873,
+            "crossBuildMatchup": 0.06493966165606364,
+            "buildContention": -0.03166515629396763,
+            "commanderBuildContention": -0.004722030027793321,
+            "playerCommanderBuildContention": -0.0033592651130279474
+          }
+        },
+        {
+          "id": "838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df",
+          "catalogId": "fb22422f34cdb6906c2c6c9b41afb27ce2e6e0b4b7ca9aa99d3fd28cac90bd2a",
+          "nickname": "小暖贴贴",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.14652082392987123,
+          "historicalMatches": 3,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.23902470334654308,
+            "player:838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df": 1,
+            "championHistory": 0,
+            "playerForm": -0.25077878080228055,
+            "recentTrend": -0.2311923346014114,
+            "sameBanForm": 0,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": -0.14117464385306241,
+            "commanderUnderBan": 0.06438686415265737,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.22916308494130064,
+            "buildFit": -0.0076030550198243774,
+            "buildUnderBan": 0.009998453095480066,
+            "crossBuildMatchup": -0.0003255258074746593,
+            "buildContention": 0.006707884817476589,
+            "commanderBuildContention": -0.0006371762511138739,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+          "catalogId": "c8c65cdf324a0555ace6ee2e3d5f4b9e4ee86f34ff67c2f3aecbfb1024b570f4",
+          "nickname": "抖音刺痛",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.09965287218729982,
+          "historicalMatches": 9,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.3986436106601392,
+            "player:7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75": 1,
+            "championHistory": 0,
+            "playerForm": -0.41049641474401855,
+            "recentTrend": -0.21101962047939543,
+            "sameBanForm": -0.15512658493889936,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": -0.059953280324343966,
+            "commanderUnderBan": -0.32449420455253447,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.4579958133210292,
+            "buildFit": 0.17684736514761396,
+            "buildUnderBan": -0.25018458591214426,
+            "crossBuildMatchup": 0.031468778736208396,
+            "buildContention": -0.022888742802894695,
+            "commanderBuildContention": 0.01025841592267365,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 11,
+          "commanderSamples": 3,
+          "commanderPoolSamples": 14,
+          "excludedBuilds": [
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.15193189501236667,
+          "candidates": [
+            {
+              "build": "河洛李信",
+              "share": 0.237229250996944,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.2257699283261313,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "三分登场",
+              "share": 0.20451878921481514,
+              "personalSamples": 2,
+              "commanderSamples": 1
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.11334483274797869,
+              "personalSamples": 4,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.044661224030969914,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.011310228343430352,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.0048563595898712,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.0021965671388605923,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.0020904622993160307,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.0020904622993160307,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 9,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 32,
+          "excludedBuilds": [
+            "逐鹿蒙犽",
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.26033129923701553,
+          "candidates": [
+            {
+              "build": "传统养猪",
+              "share": 0.5441369246074854,
+              "personalSamples": 2,
+              "commanderSamples": 1
+            },
+            {
+              "build": "三分登场",
+              "share": 0.12677089065420433,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.0386331295010953,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪",
+              "share": 0.013403509282204512,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.0021832242432179008,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.001977397861477112,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.001977397861477112,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.001977397861477112,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.0017909760368046627,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.0017044632133851663,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.0017044632133851663,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.0017044632133851663,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.0017044632133851663,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 2,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 14,
+          "excludedBuilds": [
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.8001243010225189,
+          "candidates": [
+            {
+              "build": "河洛木兰",
+              "share": 0.059563454710781366,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.02993382630051999,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.025575217909599688,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.01735178857428333,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.01735178857428333,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.016513613082210495,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.01156785904952222,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.01100907538814033,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.01100907538814033,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 7,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 14,
+          "excludedBuilds": [
+            "逐鹿蒙恬"
+          ],
+          "unknownShare": 0.5523905923769089,
+          "candidates": [
+            {
+              "build": "河洛木兰",
+              "share": 0.16015789507313088,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.10962912808903835,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛没有木兰",
+              "share": 0.09293282558604786,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.02066574408641335,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.017656643790468617,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.011979344655696798,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.011400684245070312,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.007986229770464532,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.007600456163380208,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.007600456163380208,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 9,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 15,
+          "excludedBuilds": [
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.3097108777975464,
+          "candidates": [
+            {
+              "build": "河洛木兰",
+              "share": 0.43967432470076045,
+              "personalSamples": 4,
+              "commanderSamples": 1
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.09350415703372826,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河龙蛇",
+              "share": 0.044493726517671514,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.04029902101834159,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "乔汐速6司空震",
+              "share": 0.036499776982980535,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.015138495061467737,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营",
+              "share": 0.008958364367483464,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临",
+              "share": 0.00403709294465566,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币海月",
+              "share": 0.0038420817876821615,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.0038420817876821615,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 4,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 23,
+          "excludedBuilds": [
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.5638331105545626,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.3328252804411994,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分毒奶",
+              "share": 0.07708870591261183,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.019628245827160985,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.006624657264465162,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 4,
+      "matchId": "ruanshi:2026-11-15:4",
+      "ban": "日落海",
+      "inputSource": "PREMATCH_SCREENSHOT",
+      "leaders": [
+        "抖音所演ii"
+      ],
+      "predictedProbability": 0.29699646421751896,
+      "actual": "B站万象棋小祥",
+      "actualProbability": 0.1350543703235947,
+      "actualRank": 4,
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 2.002077838485218,
+        "brier": 0.9194644881446589,
+        "top1Credit": 0
+      },
+      "predicted": [
+        {
+          "id": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+          "catalogId": "c709699a358ceb7c1af7505f8b5aee209f72c53601021967ee3a6b089aa6d1a7",
+          "nickname": "抖音所演ii",
+          "commander": "安琪拉",
+          "plan": null,
+          "probability": 0.29699646421751896,
+          "historicalMatches": 2,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": 0.6128910462779844,
+            "player:e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e": 1,
+            "championHistory": 0.9114052024232964,
+            "playerForm": 0.7840666224401278,
+            "recentTrend": 0.8376986040027102,
+            "sameBanForm": 0.7521626139428933,
+            "commanderForm": 0.223145743897039,
+            "playerCommander": 0.6611145287551937,
+            "commanderUnderBan": 0.6186624193378585,
+            "playerMatchup": 0.24259864533142755,
+            "commanderMatchup": 0.5181639016287682,
+            "buildFit": 0.5569375256067645,
+            "buildUnderBan": 0.22861386156939706,
+            "crossBuildMatchup": -0.0027933685686404646,
+            "buildContention": 0.0010158744126261925,
+            "commanderBuildContention": -0.0002550969761787096,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d",
+          "catalogId": "623161d59045f5347a3f48dde93021eb6213ce39e07aecb2beff7956dbaae6b3",
+          "nickname": "小宁来也",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.1807143279935204,
+          "historicalMatches": 3,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.1603964679777754,
+            "player:d603c05c7e9deda74c6a3ba016a6d382024615ad8c5d91e6765818d585fe941d": 1,
+            "championHistory": 0.5990207456572892,
+            "playerForm": 0.2101807108819978,
+            "recentTrend": 0.19376507486614053,
+            "sameBanForm": 0.4868568942437701,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0.15747184845885392,
+            "commanderUnderBan": 0.36162372600137904,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.4012846213077176,
+            "buildFit": 0.1696280919616794,
+            "buildUnderBan": 0.19809247357068505,
+            "crossBuildMatchup": 0.12151478952219123,
+            "buildContention": 0.05095734384825126,
+            "commanderBuildContention": 0.02245782454963769,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+          "catalogId": "8f38276751da0436b194c883566341dc96d72a6a194a823e3b2510600e1ab7c2",
+          "nickname": "抖音湛蓝",
+          "commander": "白歌",
+          "plan": null,
+          "probability": 0.1469423539485977,
+          "historicalMatches": 12,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": 0.12718842489102092,
+            "player:3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a": 1,
+            "championHistory": 0.8312025612135006,
+            "playerForm": 0.04861923007957869,
+            "recentTrend": 0.10082965187743298,
+            "sameBanForm": 0.15600205448023352,
+            "commanderForm": 0.11270583009761242,
+            "playerCommander": 0.25079132664247133,
+            "commanderUnderBan": -0.057572010903479354,
+            "playerMatchup": -0.24259864533142755,
+            "commanderMatchup": -0.08143529636259841,
+            "buildFit": 0.3852154105325636,
+            "buildUnderBan": -0.04193182061091751,
+            "crossBuildMatchup": -0.210687056754578,
+            "buildContention": -0.0065906895000476685,
+            "commanderBuildContention": 0.0005139992701210973,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+          "catalogId": "54d47ed1752ea34f4c5dd1c0b66e77fe63860582ec9c9cb8b8f055318613e57f",
+          "nickname": "B站万象棋小祥",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.1350543703235947,
+          "historicalMatches": 8,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": 0.08845346534944026,
+            "player:60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521": 1,
+            "championHistory": 0.7686304656141116,
+            "playerForm": 0.15356228680071976,
+            "recentTrend": 0.10359709011745133,
+            "sameBanForm": -0.15111284500668642,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": -0.11731878292499842,
+            "commanderUnderBan": 0.36162372600137904,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.4012846213077176,
+            "buildFit": -0.07370572763253147,
+            "buildUnderBan": 0.06954828392547253,
+            "crossBuildMatchup": 0.0046116951739169545,
+            "buildContention": 0.054869852072547694,
+            "commanderBuildContention": 0.02128848986490409,
+            "playerCommanderBuildContention": -0.008270906117431448
+          }
+        },
+        {
+          "id": "69fa37e5bef99331d8843c9e173bd90a01924563defdc6296d425cd038dddc6c",
+          "catalogId": "69fa37e5bef99331d8843c9e173bd90a01924563defdc6296d425cd038dddc6c",
+          "nickname": "抖音沉默",
+          "commander": "小妲己",
+          "plan": null,
+          "probability": 0.1219742936182553,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:69fa37e5bef99331d8843c9e173bd90a01924563defdc6296d425cd038dddc6c": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": 0.23822942775738765,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.13840116142302333,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.16166255140776348,
+            "buildFit": -0.0001452229273162602,
+            "buildUnderBan": 0.006454811627715199,
+            "crossBuildMatchup": -0.063359752212055,
+            "buildContention": 0.01781542782564615,
+            "commanderBuildContention": 0.010714866052734098,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0",
+          "catalogId": "f3103f07b33b95005ab05492bf55c60532d74f19e0378784de70d45d58e0ac84",
+          "nickname": "抖音搜道无涯",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.11831818989851287,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.09647944783161078,
+            "player:958d0f80b46c609f4d9f7b401b62894468ce61fd095dd5e598504b709684fea0": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.11644652138908684,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.02862029187524369,
+            "buildFit": 0.009590053191258798,
+            "buildUnderBan": -0.04247662196529254,
+            "crossBuildMatchup": 0.07227123003391833,
+            "buildContention": -0.006107386924940058,
+            "commanderBuildContention": 0.003729867523454526,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 11,
+          "commanderSamples": 2,
+          "commanderPoolSamples": 28,
+          "excludedBuilds": [],
+          "unknownShare": 0.17984064217367451,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.6962658528074875,
+              "personalSamples": 7,
+              "commanderSamples": 2
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.05196373093118321,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.02195347819821255,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营裴擒虎",
+              "share": 0.021194422935658108,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "西施养猪",
+              "share": 0.01919629040324325,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.005399512629185832,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.0041860699213550085,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 8,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 41,
+          "excludedBuilds": [
+            "日落海倒转"
+          ],
+          "unknownShare": 0.24065933537431147,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.4671033979922329,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "伞猫转艾琳",
+              "share": 0.07634477433416312,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.06592092832581765,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞半月",
+              "share": 0.03457363437866964,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪",
+              "share": 0.03290356026014122,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "干将遗志海月",
+              "share": 0.028361974666503868,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "干将遗志伞吕布",
+              "share": 0.026991953819921716,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.006531082273893921,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.005637209285979271,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.0037464109748790147,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.0030769793824843342,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.0013917403918386328,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.0013917403918386328,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.0013917403918386328,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.0013245125851619277,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.0013245125851619277,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.0013245125851619277,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 14,
+          "excludedBuilds": [],
+          "unknownShare": 0.7932485725202388,
+          "candidates": [
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.1163237355330983,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.09042769194666293,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 31,
+          "excludedBuilds": [],
+          "unknownShare": 0.6378261941251183,
+          "candidates": [
+            {
+              "build": "牺牲李信",
+              "share": 0.20233869913736185,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪",
+              "share": 0.04183693215474737,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪",
+              "share": 0.033777611855577205,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.022033011203712906,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.020041490941620922,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.00747473397183751,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.00747473397183751,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.005501850263871467,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.004513362294913716,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.004295345019850271,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.004295345019850271,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.004295345019850271,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.004295345019850271,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 2,
+          "commanderSamples": 2,
+          "commanderPoolSamples": 41,
+          "excludedBuilds": [],
+          "unknownShare": 0.24324660730353168,
+          "candidates": [
+            {
+              "build": "逐鹿帝临",
+              "share": 0.40347172755710886,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.3260649563544622,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.00638578384232654,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.005697813597555503,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.0037866877583894107,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.0031100592643460074,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.0014067026655562324,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.0014067026655562324,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.0014067026655562324,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.0013387521085369853,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.0013387521085369853,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.0013387521085369853,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 2,
+          "commanderSamples": 2,
+          "commanderPoolSamples": 11,
+          "excludedBuilds": [],
+          "unknownShare": 0.24162185094927702,
+          "candidates": [
+            {
+              "build": "多彩古币自爆海月",
+              "share": 0.3772727952911179,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "高阶混搭大河",
+              "share": 0.341704898578158,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "自爆海月",
+              "share": 0.01705400822078772,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.0088525994117482,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.005110007653552917,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "整备日落海",
+              "share": 0.004191919947679088,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.004191919947679088,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 5,
+      "matchId": "ruanshi:2026-11-15:5",
+      "ban": "大河",
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "抖音EGM小谷芷"
+      ],
+      "predictedProbability": 0.22142960428194314,
+      "actual": "抖音EGM小谷芷",
+      "actualProbability": 0.22142960428194314,
+      "actualRank": 1,
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.5076505536359388,
+        "brier": 0.7343859765841597,
+        "top1Credit": 1
+      },
+      "predicted": [
+        {
+          "id": "12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572",
+          "catalogId": "2d86f92cddbcc88364eaa3bb4349167511f5636954291bd4734842253c9f4eb7",
+          "nickname": "抖音EGM小谷芷",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.22142960428194314,
+          "historicalMatches": 9,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": 0.2394826181718634,
+            "player:12098042faa8be8d3ba2e7e29ebf80f01deae1b97cc21cc170d71ba28ed35572": 1,
+            "championHistory": 0.8842436776392422,
+            "playerForm": 0.240445273202405,
+            "recentTrend": 0.08685488817617076,
+            "sameBanForm": -0.13816129179659942,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.17066204400521684,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.3381541969737427,
+            "buildFit": 0.06306709699382006,
+            "buildUnderBan": -0.11082841722751054,
+            "crossBuildMatchup": -0.07120555067028879,
+            "buildContention": 0.016094343587301697,
+            "commanderBuildContention": -0.0030653918180061227,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "c2615540f420504ac38e600396364d6cad39117d80c1faa91eefa32c096ffad7",
+          "catalogId": "c2615540f420504ac38e600396364d6cad39117d80c1faa91eefa32c096ffad7",
+          "nickname": "岑溪",
+          "commander": "镜",
+          "plan": null,
+          "probability": 0.2021893926960427,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:c2615540f420504ac38e600396364d6cad39117d80c1faa91eefa32c096ffad7": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": -0.13412576748883337,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.07179089718141968,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.16936265209866047,
+            "buildFit": 0.0459405673142012,
+            "buildUnderBan": -0.009064375898021278,
+            "crossBuildMatchup": 0.005804162825555527,
+            "buildContention": -0.0236310305322059,
+            "commanderBuildContention": -0.008968396392062046,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2",
+          "catalogId": "c1c42003df0bf091bc1de7f0101a1207139c2e894aa9177998576c154e14a587",
+          "nickname": "抖音、区王",
+          "commander": "小妲己",
+          "plan": null,
+          "probability": 0.19277499799009568,
+          "historicalMatches": 4,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.19607201982293584,
+            "player:e0a830b88c0edc85cf00b2555b1c1bbe28689f8a44f25f66016e7eff6d7228e2": 1,
+            "championHistory": 0.6448618126979669,
+            "playerForm": 0.17243836008847285,
+            "recentTrend": 0.14584894277934407,
+            "sameBanForm": -0.21492096059072496,
+            "commanderForm": 0.23822942775738765,
+            "playerCommander": -0.10424367488366532,
+            "commanderUnderBan": -0.19396385289764811,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.38840434810746516,
+            "buildFit": 0.05313732016933144,
+            "buildUnderBan": 0.06090127841150665,
+            "crossBuildMatchup": -0.009193678132693018,
+            "buildContention": -0.01963600140090368,
+            "commanderBuildContention": 0.0006914968009693813,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "0116b50f2e2ab2e68e77a0e6c700bfaaa3dfcc858d93616cc5b772800ac862c8",
+          "catalogId": "531cbbf2334221c00ed3fc46bf083137b64b512bdad4be975b17dc4b8c682299",
+          "nickname": "胖狗王刺痛版",
+          "commander": "玉环",
+          "plan": null,
+          "probability": 0.15305194143230635,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.09213910472727235,
+            "player:0116b50f2e2ab2e68e77a0e6c700bfaaa3dfcc858d93616cc5b772800ac862c8": 1,
+            "championHistory": 0,
+            "playerForm": -0.1017012988959351,
+            "recentTrend": -0.11781681844261943,
+            "sameBanForm": 0,
+            "commanderForm": -0.010437290641454267,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.0876530754565919,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.6609578586478996,
+            "buildFit": -0.01144160447079133,
+            "buildUnderBan": -0.06931555022752384,
+            "crossBuildMatchup": -0.03323017067300361,
+            "buildContention": 0.006602023295369142,
+            "commanderBuildContention": 0.0071585569546654265,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c",
+          "catalogId": "1ac594113448db77d555cd8e5d92cd871781338071b4af6a9547cb6d1438d4b4",
+          "nickname": "EG小宇13",
+          "commander": "白歌",
+          "plan": null,
+          "probability": 0.12446616204610415,
+          "historicalMatches": 4,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.29550806816471786,
+            "player:8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c": 1,
+            "championHistory": 0,
+            "playerForm": -0.2925063975722224,
+            "recentTrend": -0.25141503761892553,
+            "sameBanForm": -0.09443833662059219,
+            "commanderForm": 0.11270583009761242,
+            "playerCommander": -0.16094637863299874,
+            "commanderUnderBan": -0.3600411322270817,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.15324297599987383,
+            "buildFit": 0.09381159316890107,
+            "buildUnderBan": -0.10737997943577185,
+            "crossBuildMatchup": -0.03809662801303093,
+            "buildContention": 0.0011840768307115127,
+            "commanderBuildContention": -0.01699621258574621,
+            "playerCommanderBuildContention": -0.003356888377772973
+          }
+        },
+        {
+          "id": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+          "catalogId": "aa2cf8b9703be76f81b24a23fe0fe76b93c2776d51f887b7a17daeaed6a95913",
+          "nickname": "抖音EGM皮皮鲨",
+          "commander": "玉环",
+          "plan": null,
+          "probability": 0.10608790155350792,
+          "historicalMatches": 6,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.3749458203932363,
+            "player:d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde": 1,
+            "championHistory": 0,
+            "playerForm": -0.36725314989971436,
+            "recentTrend": -0.2532066667291808,
+            "sameBanForm": -0.1759198688806037,
+            "commanderForm": -0.010437290641454267,
+            "playerCommander": -0.14338544224240113,
+            "commanderUnderBan": -0.0876530754565919,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.6609578586478996,
+            "buildFit": -0.09886834336861311,
+            "buildUnderBan": 0.07797900239705065,
+            "crossBuildMatchup": 0.13611808883725002,
+            "buildContention": -0.02577477362238768,
+            "commanderBuildContention": 0.0071585569546654265,
+            "playerCommanderBuildContention": -0.015285118166008313
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 27,
+          "excludedBuilds": [],
+          "unknownShare": 0.6189908982139146,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.19413086696064752,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.1868782348254379,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 9,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 37,
+          "excludedBuilds": [],
+          "unknownShare": 0.3093476319660776,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.20627278744902525,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.13996161443676658,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.11755352918337046,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.11048141922788622,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.0977128579331274,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.0059249567991277,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.004146568113703197,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.002802980575973353,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.00196350029881335,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.00196350029881335,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.0018686537173155686,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 3,
+          "commanderSamples": 3,
+          "commanderPoolSamples": 28,
+          "excludedBuilds": [],
+          "unknownShare": 0.2285852446067852,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.536883186222422,
+              "personalSamples": 2,
+              "commanderSamples": 2
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.2191492222057876,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.006669280632934755,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.005313949623601089,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.0033991167084691304,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 13,
+          "excludedBuilds": [],
+          "unknownShare": 0.7977077830169815,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.11824218973393337,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.039760859870522754,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.01924670288739115,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.012831135258260767,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.012211329232910436,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 5,
+          "commanderSamples": 3,
+          "commanderPoolSamples": 27,
+          "excludedBuilds": [
+            "大河龙蛇"
+          ],
+          "unknownShare": 0.1613006444177061,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.8006804290897873,
+              "personalSamples": 3,
+              "commanderSamples": 3
+            },
+            {
+              "build": "伞李信转吕布",
+              "share": 0.03801892649250667,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 4,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 16,
+          "excludedBuilds": [],
+          "unknownShare": 0.29115792319843914,
+          "candidates": [
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.3323048412097327,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.1467705102980217,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.11942356929071803,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪",
+              "share": 0.08790287369291981,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.02244028231016867,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 6,
+      "matchId": "ruanshi:2026-11-15:6",
+      "ban": "三分",
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "抖音梦飞冻冻"
+      ],
+      "predictedProbability": 0.20142336988306367,
+      "actual": "抖音梦飞冻冻",
+      "actualProbability": 0.20142336988306367,
+      "actualRank": 1,
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 1.6023462682742333,
+        "brier": 0.765814848092366,
+        "top1Credit": 1
+      },
+      "predicted": [
+        {
+          "id": "ece2cdf96442a552b24e79e12b33938379b1767603b7f790f1f316260682b5c5",
+          "catalogId": "773a7092eea9cedc4719d9a1ebe7ca9a475c01616ea32afada4d66924ba69e30",
+          "nickname": "抖音梦飞冻冻",
+          "commander": "玉环",
+          "plan": null,
+          "probability": 0.20142336988306367,
+          "historicalMatches": 8,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": 0.23210900963598838,
+            "player:ece2cdf96442a552b24e79e12b33938379b1767603b7f790f1f316260682b5c5": 1,
+            "championHistory": 0.8533722848302155,
+            "playerForm": 0.27548378634972925,
+            "recentTrend": 0.13402243281599685,
+            "sameBanForm": 0,
+            "commanderForm": -0.010437290641454267,
+            "playerCommander": 0.3836793939080008,
+            "commanderUnderBan": 0.1939960406406166,
+            "playerMatchup": 0.22501780076546093,
+            "commanderMatchup": 0.870129782180143,
+            "buildFit": 0.2473803794112298,
+            "buildUnderBan": -0.0020448319393577535,
+            "crossBuildMatchup": 0.048280130785190015,
+            "buildContention": -0.012536966732803873,
+            "commanderBuildContention": 0.004330669622364279,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "4619abd541bfe2008c6724b4b4d6c15cc538e4c2a729e69662e086f01e957018",
+          "catalogId": "17bf120999b8973e4f1f6b10a8944405b506a39ea94188107c3b8b5917e6e5a6",
+          "nickname": "douyin小猪柒宝",
+          "commander": "阿离",
+          "plan": null,
+          "probability": 0.173324436270495,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.08939707823464016,
+            "player:4619abd541bfe2008c6724b4b4d6c15cc538e4c2a729e69662e086f01e957018": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": -0.029413419695473952,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.3478395981495167,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.07757539242171682,
+            "buildFit": -0.005932369411207268,
+            "buildUnderBan": 0.007022592238762471,
+            "crossBuildMatchup": -0.008882256030046776,
+            "buildContention": 0.001141651479033513,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "4c30e5e127cb02c1a10eb57e374da14b316605097808533ea6c0893cb271fe1a",
+          "catalogId": "4c30e5e127cb02c1a10eb57e374da14b316605097808533ea6c0893cb271fe1a",
+          "nickname": "给我发个机器头",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.16343482909611348,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:4c30e5e127cb02c1a10eb57e374da14b316605097808533ea6c0893cb271fe1a": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.32709817451622464,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.16675953771156898,
+            "buildFit": -0.015801758446736137,
+            "buildUnderBan": -0.005064114309465522,
+            "crossBuildMatchup": -0.044354495110043655,
+            "buildContention": 0.007382701990132802,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564",
+          "catalogId": "2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564",
+          "nickname": "运光永不六",
+          "commander": null,
+          "plan": null,
+          "probability": 0.16172282493132914,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.10468677997611979,
+            "player:2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": 0,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0,
+            "buildFit": -0.009043881434432141,
+            "buildUnderBan": 0.003795332739992726,
+            "crossBuildMatchup": -0.003159927591634787,
+            "buildContention": 0.00010467466769238873,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795",
+          "catalogId": "7ff34279b7df6f528555af4fc7dfae6e81d2967bd4d50948fcbea86025c0ae9b",
+          "nickname": "抖音梦飞1",
+          "commander": "庄小鱼",
+          "plan": null,
+          "probability": 0.1588583945518318,
+          "historicalMatches": 9,
+          "historicalWins": 2,
+          "features": {
+            "baseScore": -0.17510741409465574,
+            "player:eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795": 1,
+            "championHistory": 0.5775490221071257,
+            "playerForm": -0.058396655639906536,
+            "recentTrend": -0.3393706718991858,
+            "sameBanForm": -0.07575890047721598,
+            "commanderForm": -0.4347305635053185,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.12708313515651076,
+            "playerMatchup": -0.22501780076546085,
+            "commanderMatchup": -0.9015719365334269,
+            "buildFit": -0.010466987510988134,
+            "buildUnderBan": 0.02330033078487495,
+            "crossBuildMatchup": -0.03215941466149712,
+            "buildContention": 0.002796197125754049,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "85494163079c6a6ccb434556826271748f567881af3f984268eb6a8b497c01d2",
+          "catalogId": "85494163079c6a6ccb434556826271748f567881af3f984268eb6a8b497c01d2",
+          "nickname": "我要打王牌18",
+          "commander": "玉环",
+          "plan": null,
+          "probability": 0.14123614526716688,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.11018927503542435,
+            "player:85494163079c6a6ccb434556826271748f567881af3f984268eb6a8b497c01d2": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": -0.010437290641454267,
+            "playerCommander": -0.09501174104564342,
+            "commanderUnderBan": 0.1939960406406166,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.870129782180143,
+            "buildFit": 0.005468784569657498,
+            "buildUnderBan": 0.0009098197269445235,
+            "crossBuildMatchup": 0.020189227364399643,
+            "buildContention": -0.01135894412779636,
+            "commanderBuildContention": 0.004330669622364279,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "FIELD_SAME_BAN",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 0,
+          "excludedBuilds": [],
+          "unknownShare": 0.7800273176007047,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.04931214703842015,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.03232244563650698,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.02096039851369962,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.012960489990596855,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆海月",
+              "share": 0.012850000904322261,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.01236433771492179,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临",
+              "share": 0.011847710312207825,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.008710300406731333,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.008510332807613343,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.0059095993477094036,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.004570599909140406,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.004139700497590928,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞干将遗志海月",
+              "share": 0.004139700497590928,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营",
+              "share": 0.004139700497590928,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.004139700497590928,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.003939732898472936,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "孙膑转露娜C",
+              "share": 0.003939732898472936,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河龙蛇",
+              "share": 0.0038540049073084487,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临木兰",
+              "share": 0.0035683093170259693,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞沈梦溪",
+              "share": 0.002069850248795464,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "算盘李信遗志清空",
+              "share": 0.001969866449236468,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营裴擒虎",
+              "share": 0.001969866449236468,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "干将遗志海月",
+              "share": 0.0017841546585129846,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 11,
+          "excludedBuilds": [
+            "三分倒转"
+          ],
+          "unknownShare": 0.8302161423048716,
+          "candidates": [
+            {
+              "build": "伞李信",
+              "share": 0.04712757858191111,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞干将遗志海月",
+              "share": 0.020561607436905785,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞刘邦",
+              "share": 0.016709920145320297,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞猫转吕布",
+              "share": 0.016709920145320297,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.01513457010357677,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "国士无双",
+              "share": 0.014403497010473441,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞百里守约",
+              "share": 0.01304558809054023,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞干将转刘邦",
+              "share": 0.01304558809054023,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "伞李信转吕布",
+              "share": 0.01304558809054023,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 36,
+          "excludedBuilds": [],
+          "unknownShare": 0.7861652781882189,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.10952968311122567,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.028592807412700635,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.02631833857413813,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.0178677427591423,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.013995227137689597,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.007301481960659086,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.005114720428112839,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.005114720428112839,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 27,
+          "excludedBuilds": [],
+          "unknownShare": 0.7912767124547533,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.20872328754524672,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 8,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 15,
+          "excludedBuilds": [
+            "三分登场",
+            "三分登场混沌裂隙"
+          ],
+          "unknownShare": 0.5472072916137214,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.14240325236846318,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.09673349665369674,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.08761381704624657,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.06114622923593243,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "无阵营",
+              "share": 0.019394364491339876,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.017831458252511492,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛帝临",
+              "share": 0.010699301451474826,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.010182473331968079,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币海月",
+              "share": 0.006788315554645386,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 7,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 27,
+          "excludedBuilds": [
+            "三分登场",
+            "三分登场混沌裂隙"
+          ],
+          "unknownShare": 0.3757494087606209,
+          "candidates": [
+            {
+              "build": "日落海倒转",
+              "share": 0.4505183342077484,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "成年礼三分登场",
+              "share": 0.08021540272804571,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.05137342083421723,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪",
+              "share": 0.0421434334693678,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 7,
+      "matchId": "ruanshi:2026-11-15:7",
+      "ban": "逐鹿",
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "丰川祥子"
+      ],
+      "predictedProbability": 0.41226619348404697,
+      "actual": "丰川祥子",
+      "actualProbability": 0.41226619348404697,
+      "actualRank": 1,
+      "strictHit": true,
+      "metrics": {
+        "logLoss": 0.8860860375763662,
+        "brier": 0.41962363581185996,
+        "top1Credit": 1
+      },
+      "predicted": [
+        {
+          "id": "58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd",
+          "catalogId": "fefa84daffe463359c35592a388d3c8335e2232f699a3bc875655d2895d8dba8",
+          "nickname": "丰川祥子",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.41226619348404697,
+          "historicalMatches": 12,
+          "historicalWins": 4,
+          "features": {
+            "baseScore": 1.017073707992588,
+            "player:58ed9470adf9d6196899adc72f3f29faf160691900874f2910714e33de6761cd": 1,
+            "championHistory": 1.460362969273577,
+            "playerForm": 0.8648255274334147,
+            "recentTrend": 1.2114409435327422,
+            "sameBanForm": 0,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": 0.8169040559214573,
+            "commanderUnderBan": -0.32449420455253447,
+            "playerMatchup": 0,
+            "commanderMatchup": -1.0519735674783324,
+            "buildFit": 0.568407248486352,
+            "buildUnderBan": -0.19597520474662644,
+            "crossBuildMatchup": 0.002107661793229865,
+            "buildContention": -0.015276316046490643,
+            "commanderBuildContention": -0.000020446028393673948,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "8c3a94dd846edc390ed6651a7726cf19b20c2c69e31b2feb660b13958b00c2a1",
+          "catalogId": "fd49fee883d82cd0b1f71ce49daf039933f30de659ce6824637c9c1a046d933c",
+          "nickname": "抖音梦飞久迁",
+          "commander": null,
+          "plan": null,
+          "probability": 0.1684624558544334,
+          "historicalMatches": 2,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": 0.24143194832552092,
+            "player:8c3a94dd846edc390ed6651a7726cf19b20c2c69e31b2feb660b13958b00c2a1": 1,
+            "championHistory": 0.5770117018984491,
+            "playerForm": 0.3033012867233576,
+            "recentTrend": 0.3137976480034482,
+            "sameBanForm": 0.4606921630826407,
+            "commanderForm": 0,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0,
+            "buildFit": 0.2068717982248472,
+            "buildUnderBan": 0.10603689249864205,
+            "crossBuildMatchup": 0.047638064903735525,
+            "buildContention": -0.007529506917337942,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a",
+          "catalogId": "0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a",
+          "nickname": "好运连连猫猫",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.12659772858462426,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.10468677997611979,
+            "player:0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": -0.10865644747953425,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": 0,
+            "commanderUnderBan": -0.32449420455253447,
+            "playerMatchup": 0,
+            "commanderMatchup": -1.0519735674783324,
+            "buildFit": 0.01598578328937646,
+            "buildUnderBan": -0.022754578487720604,
+            "crossBuildMatchup": -0.0003191956413206489,
+            "buildContention": -0.013589682851475781,
+            "commanderBuildContention": -0.000020446028393673948,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a",
+          "catalogId": "b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a",
+          "nickname": "EZ拉丁鱼7D版",
+          "commander": "孙小宾",
+          "plan": null,
+          "probability": 0.12531732409303656,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": 0.9268878124234115,
+            "playerCommander": 0,
+            "commanderUnderBan": 0.3539507877480964,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.7140008235204129,
+            "buildFit": 0.06222604308377867,
+            "buildUnderBan": -0.00771696885350626,
+            "crossBuildMatchup": 0.029996613036640724,
+            "buildContention": 0,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "80185629814696d7b2dafa9ba29f9cabf069569dc5ff73f422830f35ac87c434",
+          "catalogId": "8f70e26cb56b13c40e5f92173a6d5c559b4ba1cafbc281ba9f206c8600f99df0",
+          "nickname": "抖音EZ、色彩",
+          "commander": null,
+          "plan": null,
+          "probability": 0.08990420792053816,
+          "historicalMatches": 4,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.27597438746940084,
+            "player:80185629814696d7b2dafa9ba29f9cabf069569dc5ff73f422830f35ac87c434": 1,
+            "championHistory": 0,
+            "playerForm": -0.28831063696226567,
+            "recentTrend": -0.21518591516131907,
+            "sameBanForm": 0,
+            "commanderForm": 0,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0,
+            "buildFit": -0.22145809073902642,
+            "buildUnderBan": -0.017908453651576887,
+            "crossBuildMatchup": -0.052396180406927145,
+            "buildContention": 0.00007917763650851854,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee",
+          "catalogId": "b37073beebfecf12dc23de5de4e7591e85fe298a1edcb4a17a6164ae73c56463",
+          "nickname": "抖音群星yun落",
+          "commander": "安琪拉",
+          "plan": null,
+          "probability": 0.07745209006332071,
+          "historicalMatches": 9,
+          "historicalWins": 1,
+          "features": {
+            "baseScore": -0.34607938424976203,
+            "player:f1da0be5514c21cfea6b3667dcce239006fb44b50b493b350aa6dbd3c5bf98ee": 1,
+            "championHistory": 0.2777996561664755,
+            "playerForm": -0.28284080452704385,
+            "recentTrend": -0.29387204925229404,
+            "sameBanForm": 0.10702930215301312,
+            "commanderForm": 0.223145743897039,
+            "playerCommander": -0.17110417139255102,
+            "commanderUnderBan": -0.1806094410602695,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.07621996793566865,
+            "buildFit": -0.18005727350084674,
+            "buildUnderBan": -0.014638575457567683,
+            "crossBuildMatchup": -0.017830089298655073,
+            "buildContention": 0.000013892227851585717,
+            "commanderBuildContention": 0,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 32,
+          "excludedBuilds": [],
+          "unknownShare": 0.7944659607556858,
+          "candidates": [
+            {
+              "build": "传统养猪",
+              "share": 0.060228411160238485,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪",
+              "share": 0.040904155246002286,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.029093328711085012,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.02426992945334743,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.0066626538991535625,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.0060345233032635705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.0060345233032635705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.0060345233032635705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.005465610558317815,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.00520159507659473,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.00520159507659473,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.00520159507659473,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.00520159507659473,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 12,
+          "commanderSamples": 4,
+          "commanderPoolSamples": 32,
+          "excludedBuilds": [
+            "逐鹿蒙恬",
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.1607839091007063,
+          "candidates": [
+            {
+              "build": "传统养猪",
+              "share": 0.3729717310871843,
+              "personalSamples": 2,
+              "commanderSamples": 2
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.19416772174048882,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.18915002874744113,
+              "personalSamples": 2,
+              "commanderSamples": 1
+            },
+            {
+              "build": "三分登场",
+              "share": 0.04474680005928424,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "雷霆战机",
+              "share": 0.02092091236296841,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪",
+              "share": 0.008278177170307849,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.0012212659751150705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.0012212659751150705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.0012212659751150705,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.0011061294940220546,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.0010526980780628783,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.0010526980780628783,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.0010526980780628783,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.0010526980780628783,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 3,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 0,
+          "excludedBuilds": [],
+          "unknownShare": 0.5671973704754721,
+          "candidates": [
+            {
+              "build": "大河开团射",
+              "share": 0.29232728730118696,
+              "personalSamples": 2,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.14047534222334093,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 0,
+          "excludedBuilds": [],
+          "unknownShare": 0.7192409809822417,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.2807590190177583,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 9,
+          "excludedBuilds": [],
+          "unknownShare": 0.8337260666721142,
+          "candidates": [
+            {
+              "build": "三分倒转",
+              "share": 0.15115769344594107,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转混沌裂隙",
+              "share": 0.015116239881944606,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 9,
+          "commanderSamples": 3,
+          "commanderPoolSamples": 10,
+          "excludedBuilds": [
+            "逐鹿嬴政"
+          ],
+          "unknownShare": 0.1685533372503061,
+          "candidates": [
+            {
+              "build": "整备日落海",
+              "share": 0.2631822761486041,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.20653210565778268,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "自爆海月",
+              "share": 0.1938146968994365,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.05347046469496021,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "崛起",
+              "share": 0.03598295436654427,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆大司命",
+              "share": 0.026987215774908202,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "露娜",
+              "share": 0.020872441380744077,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "牺牲李信",
+              "share": 0.018904664089501123,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.005728978360174307,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币自爆海月",
+              "share": 0.0031331223351024296,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "高阶混搭大河",
+              "share": 0.00283774304193606,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 8,
+      "matchId": "ruanshi:2026-11-15:8",
+      "ban": null,
+      "inputSource": "SETTLEMENT_ROSTER_AS_PROXY",
+      "leaders": [
+        "好运且喜忠犬壹"
+      ],
+      "predictedProbability": 0.1904315706519212,
+      "actual": "沐大胖朵",
+      "actualProbability": 0.18300699810782575,
+      "actualRank": 2,
+      "strictHit": false,
+      "metrics": {
+        "logLoss": 1.6982308858455153,
+        "brier": 0.8022467071703195,
+        "top1Credit": 0
+      },
+      "predicted": [
+        {
+          "id": "3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0",
+          "catalogId": "3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0",
+          "nickname": "好运且喜忠犬壹",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.1904315706519212,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.40467742414984187,
+            "buildFit": -0.007922794877470881,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": 0.018788483158093946,
+            "buildContention": 0.002906049793653119,
+            "commanderBuildContention": 0.0012650304608385792,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "747674e2c21eaf8c755f8e863bcc9cd4ae4422fe9979f2c61d144daa4d891b38",
+          "catalogId": "747674e2c21eaf8c755f8e863bcc9cd4ae4422fe9979f2c61d144daa4d891b38",
+          "nickname": "沐大胖朵",
+          "commander": "镜",
+          "plan": null,
+          "probability": 0.18300699810782575,
+          "historicalMatches": 0,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": 0,
+            "player:747674e2c21eaf8c755f8e863bcc9cd4ae4422fe9979f2c61d144daa4d891b38": 1,
+            "championHistory": 0,
+            "playerForm": 0,
+            "recentTrend": 0,
+            "sameBanForm": 0,
+            "commanderForm": -0.13412576748883337,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.12193471305573586,
+            "buildFit": 0.03791226881087026,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": 0.02850671966544404,
+            "buildContention": -0.0013617772302638089,
+            "commanderBuildContention": 0.0005232258813319371,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "f27cbfb5df7228860209f21058bfe5c29f5565faba26cfb13a6f3516732e389e",
+          "catalogId": "1174d35a7f3270e27ed288840b84952fb2419291f0b83a7123c874dc7d734a9e",
+          "nickname": "抖音搜小意",
+          "commander": "嬴律",
+          "plan": null,
+          "probability": 0.17158304968076493,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.09213910472727235,
+            "player:f27cbfb5df7228860209f21058bfe5c29f5565faba26cfb13a6f3516732e389e": 1,
+            "championHistory": 0,
+            "playerForm": -0.1017012988959351,
+            "recentTrend": -0.11781681844261943,
+            "sameBanForm": 0,
+            "commanderForm": -0.15326764252777098,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": -0.40467742414984187,
+            "buildFit": -0.07134150443340787,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": 0.0116329020677942,
+            "buildContention": 0.0028062176591669426,
+            "commanderBuildContention": 0.0012656455141217065,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c",
+          "catalogId": "f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c",
+          "nickname": "愿你安然入梦",
+          "commander": "安琪拉",
+          "plan": null,
+          "probability": 0.15599328982440816,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.10468677997611979,
+            "player:f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": 0.223145743897039,
+            "playerCommander": 0,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.21125783031289508,
+            "buildFit": -0.015703654237228762,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": -0.0012463502678349888,
+            "buildContention": 0.0011016950531365687,
+            "commanderBuildContention": -0.0002245563403164239,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "9008cfe1a8003616aa89a5255b3983d38123b93359b562c8959a96cec3a31907",
+          "catalogId": "9008cfe1a8003616aa89a5255b3983d38123b93359b562c8959a96cec3a31907",
+          "nickname": "独断万古蛙蛙",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.1536318079192066,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.09479799809878911,
+            "player:9008cfe1a8003616aa89a5255b3983d38123b93359b562c8959a96cec3a31907": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": -0.09501174104564342,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.2782159976694973,
+            "buildFit": 0.010932951412460647,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": 0.005886455755817989,
+            "buildContention": -0.0020596648224970263,
+            "commanderBuildContention": -0.0013161727214370087,
+            "playerCommanderBuildContention": 0
+          }
+        },
+        {
+          "id": "65f4dae8a5bdfa4da0fe5ae121e05ab521a09fcde924742d9311b309d804973d",
+          "catalogId": "adf9ea8606be08202a0427f74ff10da9786f15c7199b90f4dd1a7c9d377025cc",
+          "nickname": "北念且好运",
+          "commander": "马可",
+          "plan": null,
+          "probability": 0.1453532838158734,
+          "historicalMatches": 1,
+          "historicalWins": 0,
+          "features": {
+            "baseScore": -0.1001625319718421,
+            "player:65f4dae8a5bdfa4da0fe5ae121e05ab521a09fcde924742d9311b309d804973d": 1,
+            "championHistory": 0,
+            "playerForm": -0.10631451772467337,
+            "recentTrend": -0.12234658210365373,
+            "sameBanForm": 0,
+            "commanderForm": 0.10418455049758946,
+            "playerCommander": -0.09501174104564342,
+            "commanderUnderBan": 0,
+            "playerMatchup": 0,
+            "commanderMatchup": 0.2782159976694973,
+            "buildFit": -0.275307119294218,
+            "buildUnderBan": 0,
+            "crossBuildMatchup": -0.022260796788634355,
+            "buildContention": -0.001572085824979018,
+            "commanderBuildContention": -0.0013161727214370087,
+            "playerCommanderBuildContention": 0
+          }
+        }
+      ],
+      "buildProjections": [
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 41,
+          "excludedBuilds": [],
+          "unknownShare": 0.8016260806668948,
+          "candidates": [
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.09683884020416263,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.021044531433577308,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.019319195417070067,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.01398883583491711,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.010249288351259397,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.009790056297024107,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.004635828458015842,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.004635828458015842,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.004635828458015842,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.004411895473682372,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.004411895473682372,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.004411895473682372,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_COMMANDER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 1,
+          "commanderPoolSamples": 32,
+          "excludedBuilds": [],
+          "unknownShare": 0.40007132542027624,
+          "candidates": [
+            {
+              "build": "镜猪",
+              "share": 0.524734043291656,
+              "personalSamples": 1,
+              "commanderSamples": 1
+            },
+            {
+              "build": "传统养猪",
+              "share": 0.02551293652867156,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.012221672574897435,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.01175857341236266,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.0033551302483941703,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.0030388208626582393,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.0030388208626582393,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.0030388208626582393,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.0027523319667684264,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.002619380992249697,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.002619380992249697,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.002619380992249697,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.002619380992249697,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 13,
+          "excludedBuilds": [],
+          "unknownShare": 0.8259515575209369,
+          "candidates": [
+            {
+              "build": "三分登场",
+              "share": 0.10738812409387503,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.02744575966086642,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.013285436568313741,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.013285436568313741,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙恬",
+              "share": 0.012643685587694227,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 32,
+          "excludedBuilds": [],
+          "unknownShare": 0.806816360867292,
+          "candidates": [
+            {
+              "build": "传统养猪",
+              "share": 0.0514514620198715,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪",
+              "share": 0.04154003231118814,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转吕布",
+              "share": 0.024647218543422715,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.02371329512203156,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "曜转海月",
+              "share": 0.006766228432896242,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "日落海倒转",
+              "share": 0.006128333209489416,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场转海月",
+              "share": 0.006128333209489416,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "四驱兄弟转吕布",
+              "share": 0.006128333209489416,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜猪转周瑜",
+              "share": 0.005550576410328942,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "传统养猪混沌裂隙",
+              "share": 0.005282456666125137,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.005282456666125137,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "镜转吕布",
+              "share": 0.005282456666125137,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "猪镜转吕布",
+              "share": 0.005282456666125137,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "PLAYER_HISTORY",
+          "personalSamples": 1,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 41,
+          "excludedBuilds": [],
+          "unknownShare": 0.6454226694716796,
+          "candidates": [
+            {
+              "build": "伞李信",
+              "share": 0.19485819506429397,
+              "personalSamples": 1,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.07796899858985991,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.016943832022456636,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿帝临",
+              "share": 0.015554691868005413,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿蒙犽",
+              "share": 0.011262996533074445,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离",
+              "share": 0.008252130522439498,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场",
+              "share": 0.007882383597408164,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河开团射",
+              "share": 0.0037324992920591857,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛李信",
+              "share": 0.0037324992920591857,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分倒转",
+              "share": 0.0037324992920591857,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "大河猪离开团射",
+              "share": 0.003552201484868297,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场混沌裂隙",
+              "share": 0.003552201484868297,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "三分登场猪",
+              "share": 0.003552201484868297,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        },
+        {
+          "basis": "COMMANDER_HISTORY",
+          "personalSamples": 0,
+          "commanderSamples": 0,
+          "commanderPoolSamples": 11,
+          "excludedBuilds": [],
+          "unknownShare": 0.8360300995935812,
+          "candidates": [
+            {
+              "build": "自爆海月",
+              "share": 0.05900817386871183,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "自爆东皇",
+              "share": 0.03063067160022545,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "河洛木兰",
+              "share": 0.017681017634537704,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "多彩古币自爆海月",
+              "share": 0.014504363895805812,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "整备日落海",
+              "share": 0.014504363895805812,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "逐鹿嬴政",
+              "share": 0.014504363895805812,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            },
+            {
+              "build": "高阶混搭大河",
+              "share": 0.013136945615526353,
+              "personalSamples": 0,
+              "commanderSamples": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

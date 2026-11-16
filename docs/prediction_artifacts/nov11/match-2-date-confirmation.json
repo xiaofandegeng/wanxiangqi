@@ -1,0 +1,86 @@
+{
+  "dateBasis": "用户确认11月11日第2场；原帖图面日期为11月10日",
+  "originalHeading": "11月10日",
+  "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+  "screenshotSha256": "b3718f9cf3b58147bbfc2fca258d091a4e610227908b59000af7578829168945",
+  "evidenceId": "ace-date-note-b3718f9cf3b58147bbfc2fca",
+  "sha256": "4af18f5844fe906230ba432bc68b9d68eeca6f58d5d5f57f5ecdd043d1c1e849",
+  "match": {
+    "key": "ruanshi:2026-11-11:2",
+    "day": "2026-11-11",
+    "ordinal": 2,
+    "sourceUrl": "https://www.douyin.com/note/7706960952893132047",
+    "materialKey": "4af18f5844fe906230ba432bc68b9d68eeca6f58d5d5f57f5ecdd043d1c1e849",
+    "ban": "三分",
+    "winnerSlot": 1,
+    "winnerBuild": "逐鹿蒙恬",
+    "seats": [
+      {
+        "slot": 1,
+        "nickname": "最后再孕一把",
+        "build": "逐鹿蒙恬"
+      },
+      {
+        "slot": 2,
+        "nickname": "985第一环",
+        "build": "逐鹿帝临"
+      },
+      {
+        "slot": 3,
+        "nickname": "小慷",
+        "build": "大河猪离"
+      },
+      {
+        "slot": 4,
+        "nickname": "抖音群星YUN落",
+        "build": "自爆海月"
+      },
+      {
+        "slot": 5,
+        "nickname": "小琳谷芷",
+        "build": "日落海倒转"
+      },
+      {
+        "slot": 6,
+        "nickname": "DY寻心",
+        "build": "河洛木兰"
+      }
+    ]
+  },
+  "ranked": [
+    [
+      "最后再孕一把",
+      "小妲己",
+      "逐鹿蒙恬"
+    ],
+    [
+      "985第一环",
+      "嬴律",
+      "逐鹿帝临"
+    ],
+    [
+      "小慷",
+      "嬴律",
+      "大河猪离"
+    ],
+    [
+      "抖音群星YUN落",
+      "安琪拉",
+      "自爆海月"
+    ],
+    [
+      "小琳谷芷",
+      "玉环",
+      "日落海倒转"
+    ],
+    [
+      "DY寻心",
+      "嬴律",
+      "河洛木兰"
+    ]
+  ],
+  "week": 42,
+  "day": 6,
+  "sourceAlias": "原文称最后再孕一把为世薄情更名，保留来源昵称，未合并档案",
+  "buildNote": "冠军阵容标题和第1席均标逐鹿蒙恬，保留该值；正文有帝临描述。"
+}
