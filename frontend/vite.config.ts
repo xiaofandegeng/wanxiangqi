@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
+import { searchForWorkspaceRoot } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -19,6 +20,7 @@ export default defineConfig(({ command, mode }) => {
   },
   server: {
     ...(local ? { host: '127.0.0.1' } : {}),
+    fs: { allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL('../shared/', import.meta.url))] },
     proxy: {
       '/api': {
         // 浏览器验收：harness 用 WXQ_API_TARGET 把代理指向临时验收后端；

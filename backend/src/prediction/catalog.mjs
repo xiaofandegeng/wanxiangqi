@@ -2,6 +2,7 @@ import {buildStatistics} from './build-stats.mjs'
 import {createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
 import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
+import {buildTalentStatistics} from './talent-statistics.mjs'
 
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
 export const playerHandle=(author,nickname)=>catalogHash([author,nickname])
@@ -144,6 +145,7 @@ export class CatalogService {
   },
   matches,
   buildStatistics:buildStatistics(transcribedMatches),
+  talentStatistics:buildTalentStatistics(transcribedMatches,cutoff),
   players:profiles,
   allPlayers,
   sources:sources.rows,

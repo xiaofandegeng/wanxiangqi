@@ -39,3 +39,45 @@ it('恢复后端实验概率快照，仅格式化展示，不由前端重新估�
  const el=await mount();const input=el.querySelector<HTMLInputElement>('.shot-restore input')!;input.value='TEST-ID';input.dispatchEvent(new Event('input'));await nextTick();el.querySelector('.shot-restore')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await wait()
  expect(api).toHaveBeenCalledWith('screenshot-analyses/TEST-ID');expect(el.querySelectorAll('.shot-model ol li')).toHaveLength(6);expect(el.querySelector('.shot-model')?.textContent).toContain('16.67%');expect(el.textContent).toContain('未校准实验概率')
 })
+
+it('赛中允许确认已取得天赋，并把阵容和天赋提交给模型',async()=>{
+ const names=Array.from({length:6},(_,i)=>`TALENT-${i}`)
+ api.mockImplementation(async(action:string)=>{
+  if(action==='catalog') return {players:[]}
+  if(action==='screenshots') return {id:'TALENT',featureCutoff:'2026-11-20T15:00:00Z',ocr:{
+   phaseHint:'UNKNOWN',rows:names.map(rawText=>({rawText,candidates:[]}))
+  }}
+  return {status:'DATA_AUDIT_ONLY',notice:'TEST',featureCutoff:'2026-11-20T15:00:00Z',blockers:[],players:[]}
+ })
+ upload.mockResolvedValue({evidenceId:'TEST-TALENT'})
+ const el=await mount()
+ const screenshot=el.querySelector<HTMLInputElement>('input[type=file]')!
+ Object.defineProperty(screenshot,'files',{value:[new File(['TEST'],'fixture.png')]})
+ screenshot.dispatchEvent(new Event('change'))
+ const time=el.querySelector<HTMLInputElement>('input[type=datetime-local]')!
+ time.value='2026-11-20T20:00'
+ time.dispatchEvent(new Event('input'))
+ el.querySelector('.shot-upload')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
+ await wait()
+ expect(el.querySelector('.shot-review select[multiple]')).toBeNull()
+ const phase=[...el.querySelectorAll<HTMLSelectElement>('.shot-review select')].find(select=>select.querySelector('[value=IN_PROGRESS]'))!
+ phase.value='IN_PROGRESS'
+ phase.dispatchEvent(new Event('change'))
+ await nextTick()
+ const first=el.querySelector('.shot-seat')!
+ const plan=first.querySelector<HTMLInputElement>('input[placeholder^="未知留空"]')!
+ plan.value='三分登场'
+ plan.dispatchEvent(new Event('input'))
+ const talent=first.querySelector<HTMLSelectElement>('select[multiple]')!
+ talent.querySelector<HTMLOptionElement>('option[value="点兵点将"]')!.selected=true
+ talent.dispatchEvent(new Event('change'))
+ const confirmed=el.querySelector<HTMLInputElement>('.shot-confirm input')!
+ confirmed.checked=true
+ confirmed.dispatchEvent(new Event('change'))
+ el.querySelector('.shot-review')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
+ await wait()
+ const payload=api.mock.calls.find(([action])=>action==='screenshots/TALENT/analyze')![1]
+ expect(payload.phase).toBe('IN_PROGRESS')
+ expect(payload.players[0]).toMatchObject({visiblePlan:'三分登场',selectedTalents:['点兵点将']})
+ expect(payload.players[1].selectedTalents).toEqual([])
+})

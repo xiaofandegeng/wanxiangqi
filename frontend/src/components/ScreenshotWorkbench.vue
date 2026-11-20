@@ -501,6 +501,46 @@
       </div>
     </div>
 
+    <details class="talent-panel">
+      <summary>阵容与天赋的历史表现</summary>
+      <p>同阵容基准含该版本已复核的全部阵容席位。结算中未见图标的席位也计入基准。</p>
+      <table v-if="activeTalentStatistics.length">
+        <thead><tr><th>阵容</th><th>天赋</th><th>登顶／可见席位</th><th>同阵容登顶／席位</th><th>模型影响</th></tr></thead>
+        <tbody>
+          <tr v-for="pair in activeTalentStatistics" :key="pair.build + pair.talent">
+            <td>{{ pair.build }}</td><td :title="TALENT_RULES[pair.talent]">{{ pair.talent }}</td>
+            <td>{{ pair.wins }}/{{ pair.appearances }}</td><td>{{ pair.buildWins }}/{{ pair.buildAppearances }}</td>
+            <td>{{ pair.logWeight > 0 ? '上调' : pair.logWeight < 0 ? '下调' : '样本不足或不调整' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-else>该版本和玩法暂时没有复核样本。</p>
+    </details>
+    <details v-if="matchupResult?.players.length === 6" class="talent-panel">
+      <summary>赛中天赋推演</summary>
+      <p>按推断或手动指定的阵容试算。只选择已经取得的天赋。调整依据为同版本同阵容的结算样本。</p>
+      <table>
+        <thead><tr><th>选手</th><th>阵容</th><th>已取得天赋</th><th>基础估计</th><th>加入天赋</th></tr></thead>
+        <tbody>
+          <tr v-for="row in quickTalentForecast" :key="row.slot">
+            <td>{{ row.nickname }}</td>
+            <td>{{ row.build }}</td>
+            <td>
+              <select v-model="quickTalents[row.inputIndex]" multiple size="3" :aria-label="row.nickname + '已取得天赋'">
+                <option v-for="(rule, talent) in TALENT_RULES" :key="talent" :value="talent" :title="rule">{{ talent }}</option>
+              </select>
+              <small v-for="pair in row.impact.pairs" :key="pair.talent">
+                {{ pair.talent }} {{ pair.wins }}/{{ pair.appearances }}，同阵容 {{ pair.buildWins }}/{{ pair.buildAppearances }}{{ pair.logWeight === 0 ? '，样本不足或修正为零' : '' }}
+              </small>
+              <small v-if="quickTalents[row.inputIndex]?.length && !row.impact.pairs.length">该版本暂无组合样本</small>
+            </td>
+            <td>{{ (row.base * 100).toFixed(2) }}%</td>
+            <td>{{ (row.adjusted * 100).toFixed(2) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </details>
+
     <!-- 极速投比决策速览卡片 (2 分钟快速决胜) -->
     <div v-if="matchupResult && rankedPlayers.length >= 2" class="decision-hub-card">
       <div class="decision-header">
@@ -695,7 +735,7 @@
   <!-- 2. 传统截图审计与合规台账模式 (保留完整审计台账流程) -->
   <div v-show="activeTab === 'audit'" class="audit-mode-panel">
   <form class="shot-upload" @submit.prevent="read">
-   <label>赛前名单截图<input type="file" accept="image/png,image/jpeg,image/webp" @change="selectFile"></label>
+   <label>赛前或赛中截图<input type="file" accept="image/png,image/jpeg,image/webp" @change="selectFile"></label>
    <label>实际截图采集时间<input v-model="capturedAt" type="datetime-local" step="1" :readonly="!!draft" required></label>
    <label>复核人<input v-model="operator" required maxlength="160" placeholder="操作人标识"></label>
    <button class="primary" :disabled="busy||!file">{{ busy?'处理中…':'保存原图并识别' }}</button>
@@ -704,7 +744,7 @@
   <p class="muted">原图仅存本机后端与数据库，默认内部使用。当前OCR使用macOS本地Vision；不支持的服务器会明确提示。识别结果必须人工确认。</p>
   <p v-if="error" role="alert">{{ error }}</p><p v-if="evidenceId" class="muted">已保存原件：{{ evidenceId }}；上传不等于材料／赛果核验。</p>
   <template v-if="draft">
-   <p class="shot-warning" v-if="draft.ocr.phaseHint==='POSTMATCH_INDICATORS'">图片中识别到赛后标记。可核对文字和历史资料，但不能将其作为本场赛前预测输入。</p>
+   <p class="shot-warning" v-if="draft.ocr.phaseHint==='POSTMATCH_INDICATORS'">图片中识别到赛后标记，仅用于核对文字和历史资料。</p>
    <details><summary>查看OCR原文与候选（{{ draft.ocr.rows.length }}行）</summary><ul><li v-for="(r,i) in draft.ocr.rows" :key="i">{{ r.rawText }} → {{ r.candidates.map(c=>c.nickname).join('、')||'未找到候选' }}</li></ul></details>
    <form class="shot-review" @submit.prevent="analyze">
     <div class="shot-meta">
@@ -723,11 +763,27 @@
        </select>
      </label>
     </div>
-    <div class="shot-meta"><label>截图时支持状态<select v-model="supportStage"><option value="UNKNOWN">不确定</option><option value="OPEN">仍可支持</option><option value="CLOSED">已结束支持</option></select></label><label>当时已揭示的禁用阵营<input v-model="bannedFaction" maxlength="160" placeholder="未显示则留空，不从赛后材料补填"></label></div>
+    <div class="shot-meta"><label v-if="analysisPhase === 'PREMATCH'">截图时支持状态<select v-model="supportStage"><option value="UNKNOWN">不确定</option><option value="OPEN">仍可支持</option><option value="CLOSED">已结束支持</option></select></label><label>截图阶段<select v-model="analysisPhase"><option value="PREMATCH">赛前</option><option value="IN_PROGRESS">赛中</option></select></label><label>当时已揭示的禁用阵营<input v-model="bannedFaction" maxlength="160" placeholder="未显示则留空，不从赛后材料补填"></label></div>
     <p class="muted">王牌对决包含万象大赛、钻石狂潮两类，历史记录不能混算。棋手指角色，不是参赛人。以下棋手／玩法仅填截图时已经知道的信息，未揭示则留空；不会自动根据擅长标签猜本场选择。</p>
-    <fieldset><legend>六人确认（名单序号不是排名）</legend><div class="shot-seat" v-for="(p,i) in players" :key="i"><span>{{ i+1 }}</span><label>截图昵称<input v-model="p.nickname" required maxlength="160" @input="p.profileId='';result=null"></label><label>选择历史昵称档案<select v-model="p.profileId" @change="result=null"><option value="">未匹配／没有该选手历史</option><option v-for="profile in candidates(p.nickname)" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></select></label><div class="shot-seat-context"><label>已揭示棋手<input v-model="p.commander" maxlength="160" placeholder="如：小妲己；未知留空"></label><label>当时已知玩法<input v-model="p.visiblePlan" maxlength="160" placeholder="未知留空，非赛后成型阵容"></label></div></div></fieldset>
+    <fieldset>
+     <legend>六人确认（名单序号不是排名）</legend>
+     <div class="shot-seat" v-for="(p,i) in players" :key="i">
+      <span>{{ i+1 }}</span>
+      <label>截图昵称<input v-model="p.nickname" required maxlength="160" @input="p.profileId='';result=null"></label>
+      <label>选择历史昵称档案<select v-model="p.profileId" @change="result=null"><option value="">未匹配／没有该选手历史</option><option v-for="profile in candidates(p.nickname)" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></select></label>
+      <div class="shot-seat-context">
+       <label>已揭示棋手<input v-model="p.commander" maxlength="160" placeholder="如：小妲己；未知留空"></label>
+       <label>当时已知玩法<input v-model="p.visiblePlan" maxlength="160" placeholder="未知留空，非赛后成型阵容"></label>
+       <label v-if="analysisPhase === 'IN_PROGRESS' && mode === 'WANXIANG'">已取得天赋
+        <select v-model="p.selectedTalents" multiple size="3">
+         <option v-for="(rule, talent) in TALENT_RULES" :key="talent" :value="talent" :title="rule">{{ talent }}</option>
+        </select>
+       </label>
+      </div>
+     </div>
+    </fieldset>
     <p v-if="hasDuplicates" class="shot-warning">存在重复昵称，请先核对OCR；不能用重复行补齐六人。</p>
-    <label class="shot-confirm"><input type="checkbox" v-model="confirmed">我已逐席对照赛前原图，确认名单与所选来源昵称档案；这不代表UID已核实。</label>
+    <label class="shot-confirm"><input type="checkbox" v-model="confirmed">我已核对截图阶段、六席名单与已填写的当时信息。</label>
     <label class="shot-confirm"><input type="checkbox" v-model="experimentalProbability">由后端程序计算实验概率（使用来源昵称历史，尚未校准，不自动分配钻石）</label>
     <button class="primary" :disabled="busy||!confirmed||hasDuplicates||players.some(p=>!p.nickname.trim())">{{ experimentalProbability?'程序计算实验概率':'生成历史分析' }}</button>
    </form>
@@ -747,6 +803,18 @@
      </li>
     </ul>
     <p>百分比为阵容倾向权重。只有赛前确认的玩法按确定输入处理。</p>
+   </details>
+   <details v-if="result.model?.talentAdjustment" class="shot-model">
+    <summary>天赋调整依据</summary>
+    <ul>
+     <li v-for="(impact, i) in result.model.talentAdjustment.players" :key="i">
+      {{ result.model.players[i]?.nickname }} {{ (impact.baseProbability * 100).toFixed(2) }}% → {{ ((result.model.players[i]?.probability ?? 0) * 100).toFixed(2) }}%
+      <span v-for="pair in impact.pairs" :key="pair.talent">
+       · {{ pair.build }} × {{ pair.talent }} {{ pair.wins }}/{{ pair.appearances }}，同阵容 {{ pair.buildWins }}/{{ pair.buildAppearances }}
+      </span>
+     </li>
+    </ul>
+    <p>赛中估计使用已取得天赋与当时已知玩法。同版本样本不足时该席不加天赋分。</p>
    </details>
    <p>数据截止：{{ new Date(result.featureCutoff).toLocaleString('zh-CN') }}；同日无精确时间的历史场次保守排除。</p>
 
@@ -906,7 +974,7 @@
     </div>
   </section>
 
-  <section v-if="result.aceContext" class="shot-context-result"><h3>本场条件</h3><p>阵营禁用与已知玩法用于核对；当前实验概率尚未使用这些条件。</p><p>禁用：{{ result.aceContext.bannedFaction || '未提供' }}</p><ul><li v-for="p in result.aceContext.players" :key="p.seat">{{ p.nickname }} · 棋手 {{ p.commander||'未知' }} · 玩法 {{ p.visiblePlan||'未知' }}</li></ul><p v-for="g in result.aceContext.sharedPlans" :key="g.label">{{ g.label }}：席位 {{ g.seats.join('、') }} 选择标签相同，需复核实际英雄竞争；不据此直接加减胜率。</p><p v-for="w in result.aceContext.warnings.filter(w => !w.includes('RETURN'))" :key="w">{{ contextWarnings[w]||w }}</p><a v-for="source in result.aceContext.rules.sources" :key="source.url" :href="source.url" target="_blank" rel="noreferrer">{{ source.title }} </a></section>
+  <section v-if="result.aceContext" class="shot-context-result"><h3>本场条件</h3><p>阵营禁用与已知玩法参与实验概率计算。</p><p>禁用：{{ result.aceContext.bannedFaction || '未提供' }}</p><ul><li v-for="p in result.aceContext.players" :key="p.seat">{{ p.nickname }} · 棋手 {{ p.commander||'未知' }} · 玩法 {{ p.visiblePlan||'未知' }}</li></ul><p v-for="g in result.aceContext.sharedPlans" :key="g.label">{{ g.label }}：席位 {{ g.seats.join('、') }} 选择标签相同，需复核实际英雄竞争；不据此直接加减胜率。</p><p v-for="w in result.aceContext.warnings.filter(w => !w.includes('RETURN'))" :key="w">{{ contextWarnings[w]||w }}</p><a v-for="source in result.aceContext.rules.sources" :key="source.url" :href="source.url" target="_blank" rel="noreferrer">{{ source.title }} </a></section>
   <ul class="shot-gaps"><li v-for="b in result.blockers" :key="b">{{ blockerNames[b]||b }}</li></ul>
   <div class="shot-profiles"><article v-for="(p,i) in result.players" :key="i"><h4>{{ p.nickname }}</h4><p>档案：{{ p.profileNickname||'未匹配' }} · 程序概率：{{ p.probability == null ? '未计算' : (p.probability*100).toFixed(2)+'%（实验）' }}</p><p v-if="p.recent7.observations">近 7 日已收录 {{ p.recent7.observations }} 场，夺冠 {{ p.recent7.wins }} 场。</p>
    <p v-else>{{ p.profileNickname ? '该账号近 7 日暂无已收录场次。' : '该昵称尚未关联选手档案。' }}</p>
@@ -953,6 +1021,7 @@ import {
 import {getPlayerAvatar, PLAYER_ALIASES, normalizeNickname} from '../utils/player-avatar'
 import {getMasterPlayerName} from '../utils/player-grouping'
 import {applyMatchPatches} from '../utils/match-storage'
+import {TALENT_RULES, applyTalentImpact, talentImpact, type TalentImpact, type TalentStatistic} from '../../../shared/talent-impact.mjs'
 
 // 标签切换：实战极速推演 vs 传统截图审计
 const activeTab = ref<'instant' | 'audit'>('instant')
@@ -985,26 +1054,38 @@ interface Candidate {id:string;nickname:string;similarity:number}
 interface Draft {id:string;featureCutoff:string;ocr:{phaseHint:string;rows:{rawText:string;candidates:Candidate[]}[]}}
 interface Sample {wins:number;observations:number}
 interface AceContext {notice:string;bannedFaction:string|null;rules:{perPlayerSupportCap:number|null;sources:{title:string;url:string}[]};players:{seat:number;nickname:string;commander:string|null;visiblePlan:string|null;returnMultiplier:number|null;breakEvenProbability:number|null}[];sharedPlans:{label:string;seats:number[]}[];warnings:string[]}
-interface WinnerModel {buildProjections?:{personalSamples:number;commanderSamples:number;unknownShare:number;candidates:{build:string;share:number}[]}[];modelVersion:string;trainingMatches:number;calibrated:boolean;notice:string;dataHash:string;players:{nickname:string;probability:number;historicalMatches?:number;historicalWins?:number;coldStart:boolean}[];diagnostic:{strictHits?:number;evaluatedMatches:number;model:null|{logLoss:number};uniform:null|{logLoss:number};notice:string}}
+interface WinnerModel {buildProjections?:{personalSamples:number;commanderSamples:number;unknownShare:number;candidates:{build:string;share:number}[]}[];talentAdjustment?:{players:(TalentImpact & {baseProbability:number})[]};modelVersion:string;trainingMatches:number;calibrated:boolean;notice:string;dataHash:string;players:{nickname:string;probability:number;historicalMatches?:number;historicalWins?:number;coldStart:boolean}[];diagnostic:{strictHits?:number;evaluatedMatches:number;model:null|{logLoss:number};uniform:null|{logLoss:number};notice:string}}
 interface Result {model?:WinnerModel|null;aceContext?:AceContext;status:string;notice:string;featureCutoff:string;blockers:string[];players:{probability?:number|null;nickname:string;profileNickname:string|null;recent7:Sample;recent7Matches?:{matchId:string|null;day:string;ordinal:number|null;build:string|null;commander:string|null;winner:boolean;sourceUrl:string|null}[];recent30:Sample;buildRates:{label:string;wins:number;observations:number;observedWinShare:number}[];claims:{id:string;kind:string;text:string;sourceUrl:string}[]}[]}
 const capturedAt=ref('')
 const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false),mode=ref('WANXIANG'),version=ref(CURRENT_LATEST_VERSION)
 const savedAnalysisId=ref('')
 const catalogMatches=ref<any[]>([])
+const talentStatistics=ref<Record<string,TalentStatistic[]>>({})
+const analysisPhase=ref<'PREMATCH'|'IN_PROGRESS'>('PREMATCH')
+const quickTalents=ref<string[][]>(Array.from({length:6},()=>[]))
+const activeTalentStatistics=computed(()=>mode.value==='WANXIANG' ? talentStatistics.value[version.value] ?? [] : [])
+const emptySeat = () => ({nickname:'',profileId:'',commander:'',visiblePlan:'',selectedTalents:[] as string[]})
 async function loadSaved(){busy.value=true;error.value='';result.value=null;draft.value=null;confirmed.value=false;try{result.value=await researchApi<Result>(`screenshot-analyses/${encodeURIComponent(savedAnalysisId.value.trim())}`)}catch(e){error.value=e instanceof Error?e.message:'读取失败'}finally{busy.value=false}}
 const experimentalProbability=ref(true)
 const supportStage=ref('UNKNOWN'),bannedFaction=ref('')
 const contextWarnings:Record<string,string>={UNKNOWN_RULE_VERSION:'该版本尚未核对官方支持上限，不套用其他版本',SUPPORT_NOT_CONFIRMED_OPEN:'尚未确认仍可支持，不能执行支持方案',MISSING_RETURN_QUOTES:'部分返奖率缺失，无法比较全部六席报价',RETURN_BASIS_UNCONFIRMED:'尚未确认返奖是否含本金，暂不计算保本阈值'}
-const profiles=ref<{id:string;nickname:string}[]>([]),players=ref(Array.from({length:6},()=>({nickname:'',profileId:'',commander:'',visiblePlan:''})))
+const profiles=ref<{id:string;nickname:string}[]>([]),players=ref(Array.from({length:6},emptySeat))
 const blockerNames:Record<string,string>={UNCALIBRATED_MODEL:'尚未完成时间回测和概率校准',UNCONFIRMED_HISTORICAL_IDENTITIES:'历史账号身份未确认，昵称不等于稳定UID',UNKNOWN_HISTORICAL_MODE_VERSION:'历史模式和游戏版本未核全',UNVERIFIED_SOURCE_RESULTS:'来源赛果尚未完成独立核验',UNMATCHED_PLAYER:'有选手未匹配历史档案',INCOMPLETE_SOURCE_COVERAGE:'历史来源尚未采集齐全',SCREENSHOT_HAS_POSTMATCH_INDICATORS:'截图存在赛后标记'}
 const normalize=(s:string)=>s.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'').toLowerCase()
 const hasDuplicates=computed(()=>{const names=players.value.map(p=>p.nickname.normalize('NFKC').replace(/\s/g,'').toLowerCase()).filter(Boolean);return new Set(names).size!==names.length})
 function candidates(name:string){const ids=new Set(draft.value?.ocr.rows.find(r=>r.rawText===name)?.candidates.map(c=>c.id)||[]);const q=normalize(name);return profiles.value.filter(p=>!q||normalize(p.nickname).includes(q)||q.includes(normalize(p.nickname))||ids.has(p.id))}
 function selectFile(event:Event){file.value=(event.target as HTMLInputElement).files?.[0]||null;draft.value=null;result.value=null;evidenceId.value='';confirmed.value=false}
 async function read(){if(!file.value)return;busy.value=true;error.value='';draft.value=null;result.value=null;confirmed.value=false
- try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'赛前截图识别草稿；非赛果核验'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({nickname:draft.value?.ocr.rows[i]?.rawText||'',profileId:'',commander:'',visiblePlan:''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
-async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:'PREMATCH',identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
-watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction],()=>{result.value=null},{deep:true})
+ try{const uploaded=await uploadEvidence(file.value,{capturedAt:new Date(capturedAt.value).toISOString(),providedBy:operator.value,kind:'CONTENT_ASSET',usageScope:'INTERNAL_ONLY',note:'对局截图分析原件'});evidenceId.value=uploaded.evidenceId;draft.value=await researchApi<Draft>('screenshots',{evidenceId:uploaded.evidenceId});players.value=Array.from({length:6},(_,i)=>({...emptySeat(),nickname:draft.value?.ocr.rows[i]?.rawText||''}))}catch(e){error.value=e instanceof Error?e.message:'识别失败'}finally{busy.value=false}}
+async function analyze(){if(!draft.value)return;busy.value=true;error.value='';result.value=null;try{result.value=await researchApi<Result>(`screenshots/${draft.value.id}/analyze`,{experimentalProbability:experimentalProbability.value,phase:analysisPhase.value,identityConfirmed:confirmed.value,operator:operator.value,mode:mode.value,version:version.value,aceContext:{supportStage:supportStage.value,bannedFaction:bannedFaction.value},players:players.value.map(p=>({nickname:p.nickname,profileId:p.profileId||null,commander:p.commander,visiblePlan:p.visiblePlan,selectedTalents:analysisPhase.value==='IN_PROGRESS'&&mode.value==='WANXIANG'?p.selectedTalents:[]}))})}catch(e){error.value=e instanceof Error?e.message:'分析失败'}finally{busy.value=false}}
+watch([players,operator,confirmed,mode,version,capturedAt,experimentalProbability,supportStage,bannedFaction,analysisPhase],()=>{result.value=null},{deep:true})
+watch(()=>players.value.map(player=>player.nickname),(current,previous)=>{
+  current.forEach((nickname,index)=>{
+    if(nickname===previous[index]) return
+    quickTalents.value[index]=[]
+    players.value[index]!.selectedTalents=[]
+  })
+})
 
 export interface KnownPlayerItem {
   nickname: string
@@ -1467,6 +1548,8 @@ function removeSeat(idx: number) {
   players.value[idx].profileId = ''
   players.value[idx].commander = ''
   players.value[idx].visiblePlan = ''
+  players.value[idx].selectedTalents = []
+  quickTalents.value[idx] = []
   if (manualBuildOverrides.value[idx]) {
     const copy = { ...manualBuildOverrides.value }
     delete copy[idx]
@@ -1505,6 +1588,18 @@ const matchupResult = computed<SixPlayerMatchupResult | null>(() => {
 })
 
 // 排序后的推演阵营
+const quickTalentForecast = computed(() => {
+  const activeSeats = players.value.flatMap((player,index) => player.nickname.trim() ? [index] : [])
+  const rows = (matchupResult.value?.players ?? []).map(player => {
+    const inputIndex = activeSeats[player.slot - 1]!
+    const build = player.inferredLineup.lineupName
+    const impact = talentImpact(activeTalentStatistics.value,build,quickTalents.value[inputIndex] ?? [])
+    return {slot:player.slot,nickname:player.nickname,inputIndex,build,impact,base:player.adjustedProbability}
+  })
+  const adjusted = applyTalentImpact(rows.map(row=>row.base),rows.map(row=>row.impact))
+  return rows.map((row,index)=>({...row,adjusted:adjusted[index] ?? row.base}))
+})
+
 const rankedPlayers = computed(() => {
   if (!matchupResult.value?.players) return []
   return [...matchupResult.value.players].sort((a, b) => b.adjustedProbability - a.adjustedProbability)
@@ -1554,9 +1649,10 @@ onMounted(async()=>{
  window.addEventListener('paste', handleGlobalPaste)
  document.addEventListener('click', handleDocumentClick)
  try{
-  const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[]}>('catalog')
+  const cat=await researchApi<{players:{id:string;nickname:string}[];matches:any[];talentStatistics?:Record<string,TalentStatistic[]>}>('catalog')
   profiles.value=cat.players||[]
   catalogMatches.value=applyMatchPatches(cat.matches||[])
+  talentStatistics.value=cat.talentStatistics||{}
  }catch(e){error.value=e instanceof Error?e.message:'档案加载失败'}
 })
 
@@ -3588,7 +3684,8 @@ onUnmounted(() => {
   }
 }
 
-.shot-model {
+.shot-model,
+.talent-panel {
   background: $color-primary-light;
   border: 1px solid rgba(30, 70, 58, 0.2);
   border-radius: $radius-lg;
@@ -3613,6 +3710,25 @@ onUnmounted(() => {
     margin-top: 12px;
     font-size: 12.5px;
     color: $text-secondary;
+  }
+}
+
+.talent-panel {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  small {
+    display: block;
   }
 }
 

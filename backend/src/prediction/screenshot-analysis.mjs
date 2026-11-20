@@ -8,7 +8,8 @@ const validText=s=>typeof s==='string'&&s.trim()&&s.length<=160
 const chinaDay=timestamp=>new Date(Date.parse(timestamp)+8*3600000).toISOString().slice(0,10)
 function sourceSample(history){const n=history.length,wins=history.filter(h=>h.rank===1).length;return {observations:n,wins,observedWinShare:n?wins/n:null}}
 export function assessRoster(catalog,input,draft){
- if(!input||input.phase!=='PREMATCH'||input.identityConfirmed!==true||!validText(input.operator)||!Array.isArray(input.players)||input.players.length!==6)throw fail('必须确认赛前截图、核对六席并填写复核人','ROSTER_CONFIRMATION_REQUIRED')
+ if(!input||!['PREMATCH','IN_PROGRESS'].includes(input.phase)||input.identityConfirmed!==true||!validText(input.operator)||!Array.isArray(input.players)||input.players.length!==6)throw fail('必须确认截图阶段、核对六席并填写复核人','ROSTER_CONFIRMATION_REQUIRED')
+ if(input.phase==='IN_PROGRESS'&&draft.ocr.phaseHint==='POSTMATCH_INDICATORS')throw fail('结算截图只可用于赛后核对','INVALID_SCREENSHOT_PHASE')
  const ids=input.players.map(x=>x?.profileId).filter(Boolean)
  if(new Set(ids).size!==ids.length||!input.players.every(x=>x&&validText(x.nickname)&&(x.profileId==null||typeof x.profileId==='string')))throw fail('六席昵称必填，档案不能重复选择','INVALID_ROSTER')
  if(new Set(input.players.map(x=>x.nickname.normalize('NFKC').replace(/\s/g,'').toLowerCase())).size!==6)throw fail('存在重复昵称，请复核OCR；同名席位尚无稳定账号依据时不能确认六人','AMBIGUOUS_ROSTER')
@@ -32,7 +33,7 @@ export function assessRoster(catalog,input,draft){
  if(draft.ocr.phaseHint==='POSTMATCH_INDICATORS')blockers.push('SCREENSHOT_HAS_POSTMATCH_INDICATORS')
  const model=input.experimentalProbability===true&&draft.ocr.phaseHint!=='POSTMATCH_INDICATORS'?experimentalWinnerEstimate(catalog,rows,draft.featureCutoff,aceContext):null
  if(model)rows.forEach((row,i)=>{row.probability=model.players[i].probability})
- return {model,aceContext,status:model?'EXPERIMENTAL_PROBABILITIES':'DATA_AUDIT_ONLY',phase:'PREMATCH',featureCutoff:draft.featureCutoff,calibrated:false,players:rows,blockers,coverage:{...catalog.counts,transcribedSources:catalog.sources.filter(s=>s.status==='TRANSCRIBED').length},allocation:{status:'ABSTAIN',unit:'VIRTUAL_GAME_POINTS_ONLY',reserveRatio:1,players:rows.map(p=>({nickname:p.nickname,ratio:0})),reason:'身份、历史模式版本、赛果核验和时间回测校准尚未完成，不从未经校准的比例生成投比。'},notice:model?'概率由后端同场冠军模型计算，属于未校准实验估计；来源样本、模式版本与账号身份仍有缺口，不生成自动投比。':'当前显示第三方来源样本统计，不是六人同场的获胜概率。玩家选择需人工确认；仅使用截图时已知的棋手、禁用和玩法，赛后成型阵容不倒填；返奖率与获胜概率分别记录。'}
+ return {model,aceContext,status:model?'EXPERIMENTAL_PROBABILITIES':'DATA_AUDIT_ONLY',phase:input.phase,featureCutoff:draft.featureCutoff,calibrated:false,players:rows,blockers,coverage:{...catalog.counts,transcribedSources:catalog.sources.filter(s=>s.status==='TRANSCRIBED').length},allocation:{status:'ABSTAIN',unit:'VIRTUAL_GAME_POINTS_ONLY',reserveRatio:1,players:rows.map(p=>({nickname:p.nickname,ratio:0})),reason:'身份、历史模式版本、赛果核验和时间回测校准尚未完成，不从未经校准的比例生成投比。'},notice:model?'概率由后端同场冠军模型计算，属于未校准实验估计；来源样本、模式版本与账号身份仍有缺口，不生成自动投比。':'当前显示第三方来源样本统计，不是六人同场的获胜概率。玩家选择需人工确认；仅使用截图时已知的棋手、禁用和玩法，赛后成型阵容不倒填；返奖率与获胜概率分别记录。'}
 }
 export class ScreenshotService {
  constructor(pool,recognizer=recognizeImage){this.pool=pool;this.catalog=new CatalogService(pool);this.recognizer=recognizer}

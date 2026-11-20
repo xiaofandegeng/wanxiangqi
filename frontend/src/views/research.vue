@@ -63,8 +63,8 @@
               <strong>{{ CURRENT_LATEST_VERSION }}</strong>
             </div>
             <div class="banner-content">
-              <h4>11月5日官方不停机更新已生效 · 赛前推演全面适配最新版本</h4>
-              <p>棋手「嬴律」并购红利每回合额外复制场上英雄（单核追三上限暴涨），「安琪拉」打扫战场飞行器法攻提至 125%/攻速 30%（雷霆机甲爆发增强），「乔汐」温柔呼唤升至 3~5 阶转瞬牌，新棋手「武凤」偷秘技上线。当前王牌对决所有赛前预测均默认锚定 <strong>{{ CURRENT_LATEST_VERSION }}</strong> 最新版本进行博弈研判与阵容加成修正。</p>
+              <h4>11月19日官方版本更新</h4>
+              <p>帝临移出棋手 4 级天赋商店。嬴律每回合合成第 4 次才获得英雄复制。天赋与阵容样本按版本统计。</p>
             </div>
             <router-link to="/research/predict" class="banner-action-btn">进入赛前推演 →</router-link>
           </div>

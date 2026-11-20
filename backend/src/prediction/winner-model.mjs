@@ -1,6 +1,8 @@
 import {projectBuilds} from './build-projection.mjs'
 import {createHash} from 'node:crypto'
 import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures,historicalChoice} from './context-model.mjs'
+import {applyTalentImpact,talentImpact} from '../../../shared/talent-impact.mjs'
+import {normalizeLabel} from './build-stats.mjs'
 export const MODEL_VERSION='source-roster-dynamic-v11'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
@@ -48,7 +50,14 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
  const target={day,ban:aceContext?.bannedFaction??null,seats:ids.map(id=>({id}))}
  const choices=aceContext?.players.map(player=>({commander:player.commander,plan:player.visiblePlan}))
  const model=trainContextModel(games,day,FIELD_CONFIG)
- const probabilities=predictContext(model,games,target,choices)
+ const baseProbabilities=predictContext(model,games,target,choices)
+ const talentRows=aceContext?.ruleset==='WANXIANG'&&aceContext.phase==='IN_PROGRESS'
+  ?catalog.talentStatistics?.[aceContext.rules?.version]??[]:[]
+ const impacts=roster.map((_,index)=>{
+  const player=aceContext?.players?.[index]
+  return talentImpact(talentRows,normalizeLabel(player?.visiblePlan),player?.selectedTalents??[])
+ })
+ const probabilities=applyTalentImpact(baseProbabilities,impacts)
  const features=contextFeatures(games,target,FIELD_CONFIG,choices)
  return {
   status:games.length?'EXPERIMENTAL_SOURCE_MODEL':'PRIOR_ONLY',
@@ -61,6 +70,10 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext){
   trainingMatchIds:games.map(game=>game.id),
   dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),
   buildProjections:projectBuilds(games,target,choices??[],historicalChoice),
+  ...(aceContext?.phase==='IN_PROGRESS'?{talentAdjustment:{
+   method:'observed-lineup-talent-v1',
+   players:impacts.map((impact,index)=>({...impact,baseProbability:baseProbabilities[index]}))
+  }}:{}),
   parameters:model.parameters,
   iterations:model.iterations,
   players:roster.map((player,index)=>({

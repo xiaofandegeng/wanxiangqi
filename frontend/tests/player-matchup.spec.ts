@@ -21,9 +21,11 @@ import {
 
 describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-matchup)', () => {
   it('官方版本历日对应与最新版本能够正确识别', () => {
-    expect(CURRENT_LATEST_VERSION).toBe('v1.9.1')
+    expect(CURRENT_LATEST_VERSION).toBe('v1.11.1')
+    expect(getVersionByDate('2026-11-19').version).toBe('v1.11.1')
+    expect(getVersionByDate('2026-11-18').version).toBe('v1.10.1')
     expect(getVersionByDate('2026-11-07').version).toBe('v1.9.1')
-    expect(getVersionByDate('2026-11-07').isLatest).toBe(true)
+    expect(getVersionByDate('2026-11-07').isLatest).toBe(false)
     expect(getVersionByDate('2026-10-31').version).toBe('v1.8.1')
     expect(getVersionByDate('2026-10-25').version).toBe('v1.7.1')
     expect(getVersionByDate('2026-10-18').version).toBe('v1.6.1')
@@ -191,7 +193,7 @@ describe('选手同场克制、Ban位与最新版本更迭分析引擎 (player-m
 
   it('结合棋手进行预测：识别T0棋手机制加成与选手阵容协同', () => {
     // 1. 嬴律 + 逐鹿蒙恬/坦射 -> 享有版本T0与单核追三超强协同
-    const yinglvEval = evaluateCommander('嬴律', ['逐鹿蒙恬'], CURRENT_LATEST_VERSION)
+    const yinglvEval = evaluateCommander('嬴律', ['逐鹿蒙恬'], 'v1.9.1')
     expect(yinglvEval).toBeDefined()
     expect(yinglvEval?.tier).toBe('T0')
     expect(yinglvEval?.synergyLevel).toBe('PERFECT')

@@ -1,7 +1,7 @@
 // 王牌对决选手同场克制关系 (Head-to-Head)、禁用阵营 (Ban) 与最新游戏版本更迭 (Version Meta) 综合博弈分析引擎
 import { getMasterPlayerName } from './player-grouping'
 
-export const CURRENT_LATEST_VERSION = 'v1.9.1'
+export const CURRENT_LATEST_VERSION = 'v1.11.1'
 
 export interface GameVersionMeta {
   version: string
@@ -17,10 +17,32 @@ export interface GameVersionMeta {
 
 export const GAME_VERSIONS: GameVersionMeta[] = [
   {
+    version: 'v1.11.1',
+    effectiveDate: '2026-11-19',
+    isLatest: true,
+    title: '11月19日更新',
+    summary: '帝临移出棋手4级天赋商店，嬴律单回合第4次合成才获得复制。',
+    keyChanges: ['帝临在棋手4级天赋商店停止投放', '嬴律的英雄复制改为单回合第4次合成触发'],
+    lineupImpact: '帝临的早期获取途径减少，嬴律的复制需要更高的单回合合成次数。',
+    buffedBuilds: [],
+    nerfedBuilds: []
+  },
+  {
+    version: 'v1.10.1',
+    effectiveDate: '2026-11-12',
+    isLatest: false,
+    title: '11月12日更新',
+    summary: '帝临·独断·三吸收双抗封顶100，新增以物易物。',
+    keyChanges: ['帝临·独断·三吸收双抗封顶100', '以物易物可通过出售古币取得不屈意志'],
+    lineupImpact: '帝临和古币体系的成型条件发生变化。',
+    buffedBuilds: [],
+    nerfedBuilds: []
+  },
+  {
     version: 'v1.9.1',
     effectiveDate: '2026-11-05',
-    isLatest: true,
-    title: 'v1.9.1 (11月5日 - 官方当前最新版本)',
+    isLatest: false,
+    title: 'v1.9.1 (11月5日更新)',
     summary: '新棋手武凤登场，嬴律复制英雄机制颠覆单核追三，乔汐转瞬3-5阶与潮汐4次大强化，安琪拉法攻125%飞跃',
     keyChanges: [
       '新棋手「武凤」（11/06）：偷取敌方秘技牌机制打破单棋手套路上限',
@@ -3434,7 +3456,7 @@ export function evaluate6PlayerMatchup(
 
   // 6. 版本更迭综合研判文案
   const verMeta = GAME_VERSIONS.find(v => v.version === targetVersion) || GAME_VERSIONS[0]
-  let versionSummaryText = `当前推演基于官方最新版本【${verMeta.version}】（${verMeta.effectiveDate}生效）。`
+  let versionSummaryText = `当前推演基于版本【${verMeta.version}】（${verMeta.effectiveDate}生效）。`
   if (buffedPlayers.length > 0) {
     versionSummaryText += `选手【${buffedPlayers.join('、')}】的主力体系受到当前版本机制（嬴律复制/安琪拉法爆/三分增益）利好支持。`
   } else {

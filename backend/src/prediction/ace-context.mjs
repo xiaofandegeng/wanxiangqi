@@ -1,21 +1,36 @@
 import {fail} from './domain.mjs'
+import {TALENT_RULES} from '../../../shared/talent-impact.mjs'
 
-export const LATEST_GAME_VERSION = 'v1.9.1'
+export const LATEST_GAME_VERSION = 'v1.11.1'
 
 // Rules are pinned to checked official releases, never extrapolated to unknown versions.
 export const ACE_RULE_SOURCES = [
  {title:'10月15日官方公告 v1.6.1',url:'https://www.taptap.cn/moment/859509109601339933?group_id=399839'},
  {title:'10月29日官方公告 v1.8.1',url:'https://www.taptap.cn/moment/864558229898660127'},
  {title:'11月5日官方公告 v1.9.1',url:'https://www.taptap.cn/moment/868153400588669502'},
+ {title:'11月12日官方公告 v1.10.1',url:'https://www.taptap.cn/moment/869646378760931587?group_id=399839'},
+ {title:'11月19日官方公告 v1.11.1',url:'https://www.taptap.cn/moment/872168105122466549'},
 ]
 
 export const GAME_VERSIONS_TIMELINE = [
  {
+  version:'v1.11.1',effectiveDate:'2026-11-19',isLatest:true,perPlayerSupportCap:null,
+  title:'11月19日版本更新',
+  keyFeatures:['帝临移出棋手4级天赋商店','嬴律单回合第4次合成获得英雄复制'],
+  lineupImpact:'帝临和依赖嬴律复制的玩法需要按新版本重新观察。'
+ },
+ {
+  version:'v1.10.1',effectiveDate:'2026-11-12',isLatest:false,perPlayerSupportCap:null,
+  title:'11月12日版本更新',
+  keyFeatures:['帝临·独断·三的双抗吸收封顶100','新增天赋以物易物'],
+  lineupImpact:'帝临及古币装备路线的成型条件发生变化。'
+ },
+ {
   version: 'v1.9.1',
   effectiveDate: '2026-11-05',
-  isLatest: true,
+  isLatest: false,
   perPlayerSupportCap: 10000,
-  title: '11月5日不停机更新 (v1.9.1 - 当前官方最新版本)',
+  title: '11月5日不停机更新 (v1.9.1)',
   keyFeatures: [
    '新棋手「武凤」11月6日登场（为我所用偷取对手秘技牌机制）',
    '棋手「嬴律」并购红利重磅强化：合成上限后每回合额外随机获得1张场上英雄复制（极大加速高阶单核追三星）',
@@ -93,16 +108,24 @@ export function buildAceContext(input,cutoff){
  const cap=release&&Date.parse(cutoff)>=Date.parse(release.since)?release.cap:null
  const players=input.players.map((p,i)=>{
   const commander=optionalText(p.commander,'棋手'),plan=optionalText(p.visiblePlan,'当时已知玩法')
+  const selectedTalents=p.selectedTalents??[]
+  if(!Array.isArray(selectedTalents)||selectedTalents.length>Object.keys(TALENT_RULES).length||
+    selectedTalents.some(name=>typeof name!=='string'||!Object.hasOwn(TALENT_RULES,name))){
+   throw fail('请选择图鉴中已识别的天赋','INVALID_ACE_CONTEXT')
+  }
+  if(selectedTalents.length&&input.phase!=='IN_PROGRESS'){
+   throw fail('已取得天赋用于赛中推演','INVALID_ACE_CONTEXT')
+  }
   const raw=p.returnMultiplier
   const multiplier=raw==null||raw===''?null:Number(raw)
   if(multiplier!==null&&(!['string','number'].includes(typeof raw)||!Number.isFinite(multiplier)||multiplier<=0||multiplier>100000))throw fail('返奖率必须为正数','INVALID_ACE_CONTEXT')
-  return {seat:i+1,nickname:p.nickname,commander,visiblePlan:plan,returnMultiplier:multiplier,
+  return {seat:i+1,nickname:p.nickname,commander,visiblePlan:plan,selectedTalents:[...new Set(selectedTalents)],returnMultiplier:multiplier,
    // Algebra conditional on the quote including principal; not a forecast or a bet suggestion.
    breakEvenProbability:c.grossReturnConfirmed===true&&multiplier!==null?1/multiplier:null,
    quoteBasis:'USER_CONFIRMED_AT_SCREENSHOT',commanderEffect:'NOT_SCORED'}
  })
  const plans=new Map();for(const p of players){if(p.visiblePlan){const group=plans.get(p.visiblePlan)||[];group.push(p.seat);plans.set(p.visiblePlan,group)}}
- return {event:'ACE_DUEL',ruleset:input.mode,supportStage:c.supportStage||'UNKNOWN',observedAt:cutoff,
+ return {event:'ACE_DUEL',ruleset:input.mode,phase:input.phase||'PREMATCH',supportStage:input.phase==='IN_PROGRESS'?'CLOSED':c.supportStage||'UNKNOWN',observedAt:cutoff,
   bannedFaction:optionalText(c.bannedFaction,'禁用阵营'),players,
   rules:{version:input.version,perPlayerSupportCap:cap,capBasis:cap===null?'UNKNOWN_VERSION':'OFFICIAL_RELEASE_REFERENCE_CONFIRM_IN_CLIENT',sources:ACE_RULE_SOURCES},
   sharedPlans:[...plans].filter(([,seats])=>seats.length>1).map(([label,seats])=>({label,seats,notice:'仅当时已知玩法标签相同；未核英雄池与实际持牌，不量化撞牌惩罚'})),
