@@ -16,10 +16,11 @@
   "seats": [
     {
       "rank": 1,
+      "build": "传统养猪",
       "nickname": "丰川祥子",
-      "catalogNickname": "丰川祥子",
       "playerId": "fefa84daffe463359c35592a388d3c8335e2232f699a3bc875655d2895d8dba8",
       "commander": "马可",
+      "catalogNickname": "丰川祥子",
       "visibleCardLevels": [
         391,
         179,
@@ -28,15 +29,15 @@
         75,
         11,
         7
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 2,
+      "build": "UNKNOWN",
       "nickname": "抖音群星yun落",
-      "catalogNickname": "抖音群星yun落",
       "playerId": "b37073beebfecf12dc23de5de4e7591e85fe298a1edcb4a17a6164ae73c56463",
       "commander": "安琪拉",
+      "catalogNickname": "抖音群星yun落",
       "visibleCardLevels": [
         392,
         337,
@@ -45,15 +46,15 @@
         217,
         185,
         112
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 3,
+      "build": "UNKNOWN",
       "nickname": "抖音EZ、色彩",
-      "catalogNickname": "抖音EZ、色彩",
       "playerId": "8f70e26cb56b13c40e5f92173a6d5c559b4ba1cafbc281ba9f206c8600f99df0",
       "commander": null,
+      "catalogNickname": "抖音EZ、色彩",
       "visibleCardLevels": [
         126,
         123,
@@ -62,27 +63,27 @@
         80,
         62,
         47
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 4,
+      "build": "UNKNOWN",
       "nickname": "好运连连猫猫",
-      "catalogNickname": "好运连连猫猫",
       "playerId": "0c49ccf347751bbda86e61cb5d22440f509ef714bc916edcd26bd5e24354665a",
       "commander": "马可",
+      "catalogNickname": "好运连连猫猫",
       "visibleCardLevels": [
         214,
         162
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 5,
+      "build": "UNKNOWN",
       "nickname": "抖音梦飞久迁",
-      "catalogNickname": "抖音梦飞久迁",
       "playerId": "fd49fee883d82cd0b1f71ce49daf039933f30de659ce6824637c9c1a046d933c",
       "commander": null,
+      "catalogNickname": "抖音梦飞久迁",
       "visibleCardLevels": [
         223,
         222,
@@ -90,15 +91,15 @@
         173,
         113,
         17
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 6,
+      "build": "UNKNOWN",
       "nickname": "EZ拉丁鱼7D版",
-      "catalogNickname": "EZ拉丁鱼7D版",
       "playerId": "b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a",
       "commander": "孙小宾",
+      "catalogNickname": "EZ拉丁鱼7D版",
       "visibleCardLevels": [
         105,
         77,
@@ -107,8 +108,7 @@
         63,
         55,
         54
-      ],
-      "build": "UNKNOWN"
+      ]
     }
   ],
   "sourceUrl": "urn:wxq:evidence:ace-result-fd9cf2efebd80bcf7ef85a44",
@@ -117,5 +117,11 @@
     "end": "2026-11-15",
     "week": 45,
     "today": 7
+  },
+  "winnerBuildReview": {
+    "note": "同一选手和马可，与 11/14 第4场已标注的传统养猪比对，猪八戒主核及六张卡一致",
+    "basis": "终局卡面与已标注场次交叉识别",
+    "label": "传统养猪",
+    "evidenceSha256": "fd9cf2efebd80bcf7ef85a4456d3c78e81578114b76e7cf571e1e3e1ad6008bc"
   }
 }

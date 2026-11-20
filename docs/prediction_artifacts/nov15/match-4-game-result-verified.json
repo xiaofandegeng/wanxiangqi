@@ -17,10 +17,11 @@
   "seats": [
     {
       "rank": 1,
+      "build": "逐鹿嬴政",
       "nickname": "B站万象棋小祥",
-      "catalogNickname": "B站万象棋小祥",
       "playerId": "54d47ed1752ea34f4c5dd1c0b66e77fe63860582ec9c9cb8b8f055318613e57f",
       "commander": "嬴律",
+      "catalogNickname": "B站万象棋小祥",
       "visibleCardLevels": [
         429,
         143,
@@ -29,15 +30,15 @@
         68,
         49,
         4
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 2,
+      "build": "UNKNOWN",
       "nickname": "小宁来也",
-      "catalogNickname": "小宁来也",
       "playerId": "623161d59045f5347a3f48dde93021eb6213ce39e07aecb2beff7956dbaae6b3",
       "commander": "嬴律",
+      "catalogNickname": "小宁来也",
       "visibleCardLevels": [
         332,
         135,
@@ -46,30 +47,30 @@
         39,
         34,
         12
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 3,
+      "build": "UNKNOWN",
       "nickname": "抖音搜道无涯",
-      "catalogNickname": "抖音道无涯",
       "playerId": "f3103f07b33b95005ab05492bf55c60532d74f19e0378784de70d45d58e0ac84",
       "commander": "马可",
+      "catalogNickname": "抖音道无涯",
       "visibleCardLevels": [
         469,
         13,
         9,
         6,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 4,
+      "build": "UNKNOWN",
       "nickname": "抖音所演ii",
-      "catalogNickname": "抖音所演II",
       "playerId": "c709699a358ceb7c1af7505f8b5aee209f72c53601021967ee3a6b089aa6d1a7",
       "commander": "安琪拉",
+      "catalogNickname": "抖音所演II",
       "visibleCardLevels": [
         143,
         137,
@@ -78,15 +79,15 @@
         4,
         1,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 5,
+      "build": "UNKNOWN",
       "nickname": "抖音沉默",
-      "catalogNickname": "抖音沉默",
       "playerId": "69fa37e5bef99331d8843c9e173bd90a01924563defdc6296d425cd038dddc6c",
       "commander": "小妲己",
+      "catalogNickname": "抖音沉默",
       "visibleCardLevels": [
         619,
         449,
@@ -95,15 +96,15 @@
         168,
         150,
         4
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 6,
+      "build": "UNKNOWN",
       "nickname": "抖音湛蓝",
-      "catalogNickname": "抖音湛蓝",
       "playerId": "8f38276751da0436b194c883566341dc96d72a6a194a823e3b2510600e1ab7c2",
       "commander": "白歌",
+      "catalogNickname": "抖音湛蓝",
       "visibleCardLevels": [
         186,
         110,
@@ -111,8 +112,7 @@
         108,
         106,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     }
   ],
   "sourceUrl": "urn:wxq:evidence:ace-result-35db0e3f84d5f650142241c3",
@@ -121,5 +121,11 @@
     "end": "2026-11-15",
     "week": 42,
     "today": 4
+  },
+  "winnerBuildReview": {
+    "note": "原复盘初判，与 11/14 第3场第2名已标注的逐鹿嬴政比对，核心卡面及六张终局卡一致",
+    "basis": "终局卡面与已标注场次交叉识别",
+    "label": "逐鹿嬴政",
+    "evidenceSha256": "35db0e3f84d5f650142241c39be4c16ff3362cb06b25b534f064da7d0c8972ee"
   }
 }

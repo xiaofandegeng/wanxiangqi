@@ -16,10 +16,11 @@
   "seats": [
     {
       "rank": 1,
+      "build": "逐鹿嬴政",
       "nickname": "抖音EGM小谷芷",
-      "catalogNickname": "抖音EGM小谷芷",
       "playerId": "2d86f92cddbcc88364eaa3bb4349167511f5636954291bd4734842253c9f4eb7",
       "commander": "嬴律",
+      "catalogNickname": "抖音EGM小谷芷",
       "visibleCardLevels": [
         424,
         16,
@@ -28,15 +29,15 @@
         12,
         11,
         11
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 2,
+      "build": "UNKNOWN",
       "nickname": "抖音EGM皮皮鲨",
-      "catalogNickname": "抖音EGM皮皮鲨",
       "playerId": "aa2cf8b9703be76f81b24a23fe0fe76b93c2776d51f887b7a17daeaed6a95913",
       "commander": "玉环",
+      "catalogNickname": "抖音EGM皮皮鲨",
       "visibleCardLevels": [
         981,
         448,
@@ -45,15 +46,15 @@
         159,
         37,
         10
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 3,
+      "build": "UNKNOWN",
       "nickname": "EG小宇13",
-      "catalogNickname": "EG小宇13",
       "playerId": "1ac594113448db77d555cd8e5d92cd871781338071b4af6a9547cb6d1438d4b4",
       "commander": "白歌",
+      "catalogNickname": "EG小宇13",
       "visibleCardLevels": [
         849,
         800,
@@ -62,45 +63,45 @@
         2,
         1,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 4,
+      "build": "UNKNOWN",
       "nickname": "岑溪",
-      "catalogNickname": "岑溪",
       "playerId": "c2615540f420504ac38e600396364d6cad39117d80c1faa91eefa32c096ffad7",
       "commander": "镜",
+      "catalogNickname": "岑溪",
       "visibleCardLevels": [
         517,
         424,
         355,
         22,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 5,
+      "build": "UNKNOWN",
       "nickname": "抖音、区王",
-      "catalogNickname": "抖音、区王",
       "playerId": "c1c42003df0bf091bc1de7f0101a1207139c2e894aa9177998576c154e14a587",
       "commander": "小妲己",
+      "catalogNickname": "抖音、区王",
       "visibleCardLevels": [
         386,
         202,
         200,
         198,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 6,
+      "build": "UNKNOWN",
       "nickname": "胖狗王刺痛版",
-      "catalogNickname": "胖狗王刺痛版",
       "playerId": "531cbbf2334221c00ed3fc46bf083137b64b512bdad4be975b17dc4b8c682299",
       "commander": "玉环",
+      "catalogNickname": "胖狗王刺痛版",
       "visibleCardLevels": [
         336,
         148,
@@ -109,8 +110,7 @@
         99,
         98,
         93
-      ],
-      "build": "UNKNOWN"
+      ]
     }
   ],
   "sourceUrl": "urn:wxq:evidence:ace-result-aa08926f0a1eaed2f2a6256c",
@@ -119,5 +119,12 @@
     "end": "2026-11-15",
     "week": 43,
     "today": 5
+  },
+  "winnerBuildReview": {
+    "note": "冠军图的 ACE 与另四张终局卡面相同；对照 11/14 第3场第2名的原始标签及卡面",
+    "basis": "冠军终局截图人工交叉识别",
+    "label": "逐鹿嬴政",
+    "evidenceSha256": "aa08926f0a1eaed2f2a6256cbbd88e678a9f48f070ead417ebdf9665eb60715e",
+    "referenceMatchId": "ruanshi:2026-11-16:8"
   }
 }

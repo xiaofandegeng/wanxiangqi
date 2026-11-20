@@ -16,10 +16,62 @@
   "seats": [
     {
       "rank": 1,
+      "build": "日落海艾琳",
       "nickname": "抖音EG碎碎圆圆",
-      "catalogNickname": "抖音EG碎碎圆圆",
       "playerId": "794723dfaa85414e2a959ec1220166e1c075dcd1122f7f96bf910028cc594763",
       "commander": "玉环",
+      "finalCards": [
+        {
+          "name": "艾琳",
+          "level": 485,
+          "heroId": "hero-3551",
+          "position": 1,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/9fc3a6c43ec97d8573b4ac8573fee4905a1496c67baf700d3314f30e8527e7b1.png"
+        },
+        {
+          "name": "姬小满",
+          "level": 384,
+          "heroId": "hero-5641",
+          "position": 2,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+        },
+        {
+          "name": "司空震",
+          "level": 220,
+          "heroId": "hero-5371",
+          "position": 3,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+        },
+        {
+          "name": "姜子牙",
+          "level": 206,
+          "heroId": "hero-1481",
+          "position": 4,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+        },
+        {
+          "name": "亚瑟",
+          "level": 114,
+          "heroId": "hero-1661",
+          "position": 5,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+        },
+        {
+          "name": "钟馗",
+          "level": 5,
+          "heroId": "hero-1751",
+          "position": 6,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+        },
+        {
+          "name": "太乙真人",
+          "level": 1,
+          "heroId": "hero-1861",
+          "position": 7,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+        }
+      ],
+      "catalogNickname": "抖音EG碎碎圆圆",
       "visibleCardLevels": [
         485,
         384,
@@ -28,15 +80,15 @@
         114,
         5,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 2,
+      "build": "UNKNOWN",
       "nickname": "抖音EZ嘉誉",
-      "catalogNickname": "抖音EZ嘉誉",
       "playerId": "1a5dbebf489c13386955c2d5ceb71cf3ebd254a743faa84668cc9afc2195a38a",
       "commander": "班叔",
+      "catalogNickname": "抖音EZ嘉誉",
       "visibleCardLevels": [
         272,
         183,
@@ -45,30 +97,30 @@
         11,
         8,
         4
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 3,
+      "build": "UNKNOWN",
       "nickname": "抖音QT萌岑",
-      "catalogNickname": "抖音QT萌岑",
       "playerId": "b9ac155b0e6d1e341e3027cd7832d3194c1e085e9b51fbbd4211a91a80f20656",
       "commander": "镜",
+      "catalogNickname": "抖音QT萌岑",
       "visibleCardLevels": [
         129,
         112,
         92,
         37,
         8
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 4,
+      "build": "UNKNOWN",
       "nickname": "抖音EZ阿文",
-      "catalogNickname": "抖音EZ阿文",
       "playerId": "a25b7313dcf545f086daa1386685a0a38e6bfef73c9826538bc548b5fba4e05e",
       "commander": "孙小宾",
+      "catalogNickname": "抖音EZ阿文",
       "visibleCardLevels": [
         441,
         354,
@@ -76,15 +128,15 @@
         221,
         213,
         197
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 5,
+      "build": "UNKNOWN",
       "nickname": "抖音cc",
-      "catalogNickname": "抖音cc",
       "playerId": "3309981210e4b3d6b0faee5a13600d49034af6ab51626eb42543aa693d7ab9fd",
       "commander": null,
+      "catalogNickname": "抖音cc",
       "visibleCardLevels": [
         81,
         17,
@@ -93,15 +145,15 @@
         6,
         1,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     },
     {
       "rank": 6,
+      "build": "UNKNOWN",
       "nickname": "抖音EG航迹云",
-      "catalogNickname": "抖音EG航迹云",
       "playerId": "a7b9a7485699adb2cc17c2098e285a04ac52e54e1ea0d5bbc5e73a9749c7c100",
       "commander": "嬴律",
+      "catalogNickname": "抖音EG航迹云",
       "visibleCardLevels": [
         159,
         105,
@@ -110,8 +162,7 @@
         42,
         26,
         1
-      ],
-      "build": "UNKNOWN"
+      ]
     }
   ],
   "sourceUrl": "urn:wxq:evidence:ace-result-93ec084a5e48bcdad5ee8902",
@@ -120,5 +171,66 @@
     "end": "2026-11-15",
     "week": 39,
     "today": 1
+  },
+  "winnerBuildReview": {
+    "basis": "用户原始结算图逐卡人工核对官方卡面；局部特征匹配仅作辅助",
+    "cards": [
+      {
+        "name": "艾琳",
+        "level": 485,
+        "heroId": "hero-3551",
+        "position": 1,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/9fc3a6c43ec97d8573b4ac8573fee4905a1496c67baf700d3314f30e8527e7b1.png"
+      },
+      {
+        "name": "姬小满",
+        "level": 384,
+        "heroId": "hero-5641",
+        "position": 2,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+      },
+      {
+        "name": "司空震",
+        "level": 220,
+        "heroId": "hero-5371",
+        "position": 3,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+      },
+      {
+        "name": "姜子牙",
+        "level": 206,
+        "heroId": "hero-1481",
+        "position": 4,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+      },
+      {
+        "name": "亚瑟",
+        "level": 114,
+        "heroId": "hero-1661",
+        "position": 5,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+      },
+      {
+        "name": "钟馗",
+        "level": 5,
+        "heroId": "hero-1751",
+        "position": 6,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+      },
+      {
+        "name": "太乙真人",
+        "level": 1,
+        "heroId": "hero-1861",
+        "position": 7,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+      }
+    ],
+    "label": "日落海艾琳",
+    "family": "日落海",
+    "commander": "玉环",
+    "classification": "FINAL_BOARD_COMPOSITION",
+    "evidenceSha256": "93ec084a5e48bcdad5ee89026173b664287def923a0e3dfa22ecc3cff2f17737",
+    "commanderStatus": "PORTRAIT_REVIEWED",
+    "mechanismCaveat": "主核标签按终局卡组命名。买卖循环、临场转型及登场/倒转机制未经录像验证，不由标签推定。"
   }
 }

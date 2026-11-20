@@ -1,0 +1,93 @@
+{
+  "database": "wanxiangqi_prediction_dev",
+  "reviewed": [
+    {
+      "key": "ruanshi:2026-11-15:3",
+      "id": "ace-catalog-20261115-3-game-result",
+      "nickname": "娇弱的佩奇",
+      "label": "河洛木兰",
+      "note": "与 11/14 第4场第2名已标注的河洛木兰比对，七张终局卡面一致",
+      "basis": "终局卡面与已标注场次交叉识别",
+      "evidenceSha256": "956b40be8d104ac022f461494d41671b8746740224682ff07557b354c8084afc"
+    },
+    {
+      "key": "ruanshi:2026-11-15:4",
+      "id": "ace-catalog-20261115-4-game-result",
+      "nickname": "B站万象棋小祥",
+      "label": "逐鹿嬴政",
+      "note": "原复盘初判，与 11/14 第3场第2名已标注的逐鹿嬴政比对，核心卡面及六张终局卡一致",
+      "basis": "终局卡面与已标注场次交叉识别",
+      "evidenceSha256": "35db0e3f84d5f650142241c39be4c16ff3362cb06b25b534f064da7d0c8972ee"
+    },
+    {
+      "key": "ruanshi:2026-11-15:7",
+      "id": "ace-catalog-20261115-7-game-result",
+      "nickname": "丰川祥子",
+      "label": "传统养猪",
+      "note": "同一选手和马可，与 11/14 第4场已标注的传统养猪比对，猪八戒主核及六张卡一致",
+      "basis": "终局卡面与已标注场次交叉识别",
+      "evidenceSha256": "fd9cf2efebd80bcf7ef85a4456d3c78e81578114b76e7cf571e1e3e1ad6008bc"
+    },
+    {
+      "key": "ruanshi:2026-11-16:6",
+      "id": "ace-catalog-20261116-6-game-result",
+      "nickname": "糊涂蛋新一",
+      "label": "河洛木兰",
+      "note": "与 11/14 第4场第2名已标注的河洛木兰比对，核心卡面及六张终局卡一致",
+      "basis": "终局卡面与已标注场次交叉识别",
+      "evidenceSha256": "f8c519a2c1155d97a983a2f5a0a87afb88b1c3001385101ee5b14b4c139d5c2b"
+    },
+    {
+      "key": "ruanshi:2026-11-16:8",
+      "id": "ace-catalog-20261116-8-game-result",
+      "nickname": "B站万象棋小祥",
+      "label": "逐鹿嬴政",
+      "note": "与 11/14 第3场第2名已标注的逐鹿嬴政比对，核心卡面及六张终局卡一致",
+      "basis": "终局卡面与已标注场次交叉识别",
+      "evidenceSha256": "939bbdb530631bdc07daba9dbc62466f0d88363880dc316c5e3a66772d164600"
+    }
+  ],
+  "coverage": [
+    {
+      "day": "2026-11-14",
+      "total": 8,
+      "recognized": 4
+    },
+    {
+      "day": "2026-11-15",
+      "total": 8,
+      "recognized": 3
+    },
+    {
+      "day": "2026-11-16",
+      "total": 8,
+      "recognized": 2
+    }
+  ],
+  "distribution": [
+    {
+      "winner_build": "UNKNOWN",
+      "wins": 15
+    },
+    {
+      "winner_build": "河洛木兰",
+      "wins": 3
+    },
+    {
+      "winner_build": "传统养猪",
+      "wins": 2
+    },
+    {
+      "winner_build": "逐鹿嬴政",
+      "wins": 2
+    },
+    {
+      "winner_build": "三分倒转",
+      "wins": 1
+    },
+    {
+      "winner_build": "三分登场",
+      "wins": 1
+    }
+  ]
+}

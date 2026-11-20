@@ -1,0 +1,136 @@
+{
+  "id": "ace-catalog-20261116-2-game-result",
+  "matchId": "ruanshi:2026-11-16:2",
+  "day": "2026-11-16",
+  "ordinal": 2,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:29:23",
+  "scheduledAt": "2026-11-16T09:00:00.000Z",
+  "playedAt": null,
+  "winner": "抖音刺痛",
+  "evidenceId": "ace-result-b4a97a14a76066b04a128a5a",
+  "evidenceSha256": "b4a97a14a76066b04a128a5ac5e432e7d05aef7e41832f94df66670ca2095d84",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供，计划时间为北京时间17:00",
+  "seats": [
+    {
+      "rank": 1,
+      "build": "河洛木兰",
+      "nickname": "抖音刺痛",
+      "playerId": "7556349bad911c0c55dabbf47cdcb8b95be9984f20170b79a66dd8821d1b4f75",
+      "commander": "武凤",
+      "catalogNickname": "抖音刺痛",
+      "visibleCardLevels": [
+        286,
+        163,
+        116,
+        109,
+        98,
+        95,
+        10
+      ]
+    },
+    {
+      "rank": 2,
+      "build": "UNKNOWN",
+      "nickname": "985第一环",
+      "playerId": "9f375bcbab124abc0039b40fb1839962873720da22e4a9d96fd2b6cdf16f5145",
+      "commander": "班叔",
+      "catalogNickname": "985第一环",
+      "visibleCardLevels": [
+        132,
+        29,
+        25,
+        14,
+        10,
+        8,
+        6
+      ]
+    },
+    {
+      "rank": 3,
+      "build": "UNKNOWN",
+      "nickname": "EG小宇13",
+      "playerId": "8fa7baf3549db74c5aa7e0c51645fda0283955d4270c3dc56cd3fd273a9cf32c",
+      "commander": "白歌",
+      "catalogNickname": "EG小宇13",
+      "visibleCardLevels": [
+        517,
+        233,
+        232,
+        232,
+        231,
+        231,
+        193
+      ]
+    },
+    {
+      "rank": 4,
+      "build": "UNKNOWN",
+      "nickname": "抖音妖柒",
+      "playerId": "8c8cc55db017606b794a0bf357f011d7a155b7b43642930d134618cd0efd8be5",
+      "commander": "马可",
+      "catalogNickname": "抖音妖柒",
+      "visibleCardLevels": [
+        100,
+        72,
+        67,
+        55,
+        24,
+        14
+      ]
+    },
+    {
+      "rank": 5,
+      "build": "UNKNOWN",
+      "nickname": "想玩猫条",
+      "playerId": "94c4c18ea4acc79a1565d155a2c9771c325ff10888a6f80f635efc0a2359c038",
+      "commander": null,
+      "catalogNickname": "想玩猫条",
+      "visibleCardLevels": [
+        281,
+        243,
+        232,
+        52,
+        26,
+        16,
+        4
+      ]
+    },
+    {
+      "rank": 6,
+      "build": "UNKNOWN",
+      "nickname": "孕一把充一百",
+      "playerId": "985b17255b452e295cf4e37bb637c48f7ec177484257389c88b4d7272bd1de24",
+      "commander": "孙小宾",
+      "catalogNickname": "世薄情",
+      "visibleCardLevels": [
+        161,
+        138,
+        113,
+        94,
+        62,
+        52,
+        1
+      ]
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-b4a97a14a76066b04a128a5a",
+  "dayCoverage": 2,
+  "winnerBuildReview": {
+    "note": "冠军席七张终局卡面与佩奇夺冠席一致，ACE 为同一张卡",
+    "basis": "冠军终局截图人工交叉识别",
+    "label": "河洛木兰",
+    "commander": "武凤",
+    "evidenceSha256": "b4a97a14a76066b04a128a5ac5e432e7d05aef7e41832f94df66670ca2095d84",
+    "commanderStatus": "USER_CONFIRMED",
+    "referenceMatchId": "ruanshi:2026-11-15:3"
+  },
+  "commanderReview": {
+    "note": "用户确认11月16日第2场刺痛棋手为武凤",
+    "basis": "USER_CONFIRMED",
+    "commander": "武凤"
+  }
+}

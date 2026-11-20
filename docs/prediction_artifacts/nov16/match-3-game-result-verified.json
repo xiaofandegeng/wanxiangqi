@@ -1,0 +1,223 @@
+{
+  "id": "ace-catalog-20261116-3-game-result",
+  "matchId": "ruanshi:2026-11-16:3",
+  "day": "2026-11-16",
+  "ordinal": 3,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "duration": "00:31:36",
+  "scheduledAt": "2026-11-16T10:00:00.000Z",
+  "playedAt": null,
+  "winner": "抖音一茗",
+  "evidenceId": "ace-result-6e3fc92d30c94992d71dac1a",
+  "evidenceSha256": "6e3fc92d30c94992d71dac1ae04f51223d50804d8c6815f1ad6e358436e13a34",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期和场次由用户提供，计划时间为北京时间18:00",
+  "seats": [
+    {
+      "rank": 1,
+      "build": "河洛海月",
+      "nickname": "抖音一茗",
+      "playerId": "64aa6e3e065b5329a9302e879c8e53231f553c3394edd7b83e72997f9007a95a",
+      "commander": "常小娥",
+      "finalCards": [
+        {
+          "name": "苏烈",
+          "level": 428,
+          "heroId": "hero-1941",
+          "position": 1,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/103021d19aa06dc7a04ef5cecea30ad25f4e72f50f2c41d3aab2976b3c70956b.png"
+        },
+        {
+          "name": "姜子牙",
+          "level": 370,
+          "heroId": "hero-1481",
+          "position": 2,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+        },
+        {
+          "name": "海月",
+          "level": 352,
+          "heroId": "hero-5211",
+          "position": 3,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+        },
+        {
+          "name": "李信",
+          "level": 261,
+          "heroId": "hero-5071",
+          "position": 4,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2024da73569a0dcb5982216cc267e6430ccbab1e441c448e87f68804f339d019.png"
+        },
+        {
+          "name": "太乙真人",
+          "level": 148,
+          "heroId": "hero-1861",
+          "position": 5,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+        },
+        {
+          "name": "钟馗",
+          "level": 1,
+          "heroId": "hero-1751",
+          "position": 6,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+        }
+      ],
+      "catalogNickname": "抖音一茗",
+      "visibleCardLevels": [
+        428,
+        370,
+        352,
+        261,
+        148,
+        1
+      ]
+    },
+    {
+      "rank": 2,
+      "build": "UNKNOWN",
+      "nickname": "小琳谷芷",
+      "playerId": "0395f7d3a69b27a7d41b5a40b73b59efaf1d0d9658af90b7ff838b442c407aac",
+      "commander": "嬴律",
+      "catalogNickname": "小琳谷芷",
+      "visibleCardLevels": [
+        391,
+        192,
+        35,
+        19,
+        13,
+        13,
+        10
+      ]
+    },
+    {
+      "rank": 3,
+      "build": "UNKNOWN",
+      "nickname": "小暖贴贴",
+      "playerId": "838c02c80c7ee4ab2490a7b2cd207c83a8e9f37eaecdba709c877fc287d927df",
+      "commander": "嬴律",
+      "catalogNickname": "小暖贴贴",
+      "visibleCardLevels": [
+        383,
+        268,
+        212,
+        212,
+        128,
+        46,
+        30
+      ]
+    },
+    {
+      "rank": 4,
+      "build": "UNKNOWN",
+      "nickname": "抖音所演ii",
+      "playerId": "e9b09fa8ba6c0b412d1bee957bccaf90bd08319e467b6ada06c87ae1bbde504e",
+      "commander": "安琪拉",
+      "catalogNickname": "抖音所演II",
+      "visibleCardLevels": [
+        621,
+        28,
+        16,
+        13,
+        4,
+        1,
+        1
+      ]
+    },
+    {
+      "rank": 5,
+      "build": "UNKNOWN",
+      "nickname": "好运且喜忠犬壹",
+      "playerId": "3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0",
+      "commander": null,
+      "catalogNickname": "好运且喜忠犬壹",
+      "visibleCardLevels": [
+        147,
+        140,
+        133,
+        132,
+        123,
+        78
+      ]
+    },
+    {
+      "rank": 6,
+      "build": "UNKNOWN",
+      "nickname": "鱼儿蟹蟹版",
+      "playerId": "48ae6dadcd883d90df1f1d04226d2b89584134917e8901b9591b9a23da027167",
+      "commander": "小妲己",
+      "catalogNickname": "鱼儿蟹蟹版",
+      "visibleCardLevels": [
+        84,
+        30,
+        24,
+        15,
+        12,
+        9
+      ]
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-6e3fc92d30c94992d71dac1a",
+  "dayCoverage": 3,
+  "winnerBuildReview": {
+    "basis": "用户原始结算图逐卡人工核对官方卡面；局部特征匹配仅作辅助",
+    "cards": [
+      {
+        "name": "苏烈",
+        "level": 428,
+        "heroId": "hero-1941",
+        "position": 1,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/103021d19aa06dc7a04ef5cecea30ad25f4e72f50f2c41d3aab2976b3c70956b.png"
+      },
+      {
+        "name": "姜子牙",
+        "level": 370,
+        "heroId": "hero-1481",
+        "position": 2,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+      },
+      {
+        "name": "海月",
+        "level": 352,
+        "heroId": "hero-5211",
+        "position": 3,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+      },
+      {
+        "name": "李信",
+        "level": 261,
+        "heroId": "hero-5071",
+        "position": 4,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2024da73569a0dcb5982216cc267e6430ccbab1e441c448e87f68804f339d019.png"
+      },
+      {
+        "name": "太乙真人",
+        "level": 148,
+        "heroId": "hero-1861",
+        "position": 5,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+      },
+      {
+        "name": "钟馗",
+        "level": 1,
+        "heroId": "hero-1751",
+        "position": 6,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+      }
+    ],
+    "label": "河洛海月",
+    "family": "河洛",
+    "commander": "常小娥",
+    "classification": "FINAL_BOARD_COMPOSITION",
+    "evidenceSha256": "6e3fc92d30c94992d71dac1ae04f51223d50804d8c6815f1ad6e358436e13a34",
+    "commanderStatus": "USER_CONFIRMED",
+    "mechanismCaveat": "主核标签按终局卡组命名。买卖循环、临场转型及登场/倒转机制未经录像验证，不由标签推定。"
+  },
+  "commanderReview": {
+    "note": "用户确认11月16日第3场一茗棋手为常小娥普通皮肤",
+    "basis": "USER_CONFIRMED",
+    "commander": "常小娥"
+  }
+}

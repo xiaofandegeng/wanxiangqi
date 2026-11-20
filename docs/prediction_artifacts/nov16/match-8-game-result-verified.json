@@ -1,0 +1,127 @@
+{
+  "id": "ace-catalog-20261116-8-game-result",
+  "matchId": "ruanshi:2026-11-16:8",
+  "day": "2026-11-16",
+  "ordinal": 8,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "日落海",
+  "duration": "00:28:42",
+  "scheduledAt": "2026-11-16T15:00:00.000Z",
+  "playedAt": null,
+  "winner": "B站万象棋小祥",
+  "evidenceId": "ace-result-939bbdb530631bdc07daba9d",
+  "evidenceSha256": "939bbdb530631bdc07daba9dbc62466f0d88363880dc316c5e3a66772d164600",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，计划时间为北京时间23:00",
+  "seats": [
+    {
+      "rank": 1,
+      "build": "逐鹿嬴政",
+      "nickname": "B站万象棋小祥",
+      "playerId": "60caad76d3b2b9de2b2fe1db30b5bacf8a81633b5c95874d02816428373e1521",
+      "commander": "嬴律",
+      "catalogNickname": "B站万象棋小祥",
+      "visibleCardLevels": [
+        516,
+        258,
+        184,
+        160,
+        136,
+        43,
+        20
+      ]
+    },
+    {
+      "rank": 2,
+      "build": "UNKNOWN",
+      "nickname": "太极剑1",
+      "playerId": "b4771d511cfd6e0db231d92cebf4420f7db819fb8af8cae74a236c1387c69688",
+      "commander": "嬴律",
+      "catalogNickname": "太极剑1",
+      "visibleCardLevels": [
+        353,
+        259,
+        201,
+        174,
+        134,
+        43,
+        41
+      ]
+    },
+    {
+      "rank": 3,
+      "build": "UNKNOWN",
+      "nickname": "神棋鱼人",
+      "playerId": "659d895d156c6e287df5deea9319ea99ee501516a5491139e11768441b0cade0",
+      "commander": null,
+      "catalogNickname": "神棋鱼人",
+      "visibleCardLevels": [
+        505,
+        311,
+        260,
+        252,
+        30,
+        14,
+        14
+      ]
+    },
+    {
+      "rank": 4,
+      "build": "UNKNOWN",
+      "nickname": "蒜香",
+      "playerId": "60edfaa60072105bc3663ae12cf98a48f06bf6969f0f2441b24616b18acefb2b",
+      "commander": "马可",
+      "catalogNickname": "蒜香",
+      "visibleCardLevels": [
+        485,
+        227,
+        187,
+        71,
+        47,
+        11
+      ]
+    },
+    {
+      "rank": 5,
+      "build": "UNKNOWN",
+      "nickname": "好运且乐善",
+      "playerId": "334ea4c46331ac436f898f111e5d909e76408d3b65969dc32cfc07b9f25db5cd",
+      "commander": null,
+      "catalogNickname": "好运且乐善",
+      "visibleCardLevels": [
+        132,
+        132,
+        130,
+        113,
+        54,
+        12
+      ]
+    },
+    {
+      "rank": 6,
+      "build": "UNKNOWN",
+      "nickname": "抖音搜流儿",
+      "playerId": "be9ff6dc007b0223e69b57aef19b3e141ff1aca68703d0a73c39afb1cbe33702",
+      "commander": null,
+      "catalogNickname": "抖音搜流儿",
+      "visibleCardLevels": [
+        142,
+        41,
+        29,
+        16,
+        14,
+        11,
+        6
+      ]
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-939bbdb530631bdc07daba9d",
+  "dayCoverage": 8,
+  "winnerBuildReview": {
+    "note": "与 11/14 第3场第2名已标注的逐鹿嬴政比对，核心卡面及六张终局卡一致",
+    "basis": "终局卡面与已标注场次交叉识别",
+    "label": "逐鹿嬴政",
+    "evidenceSha256": "939bbdb530631bdc07daba9dbc62466f0d88363880dc316c5e3a66772d164600"
+  }
+}

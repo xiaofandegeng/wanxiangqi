@@ -1,0 +1,232 @@
+{
+  "database": "wanxiangqi_prediction_dev",
+  "reviewed": [
+    {
+      "key": "ruanshi:2026-11-14:6",
+      "id": "ace-catalog-20261114-6-game-result",
+      "nickname": "I蟲、初心",
+      "label": "逐鹿嬴政",
+      "referenceMatchId": "ruanshi:2026-11-16:8",
+      "note": "冠军图的 ACE 与另四张终局卡面相同；对照 11/14 第3场第2名的原始标签及卡面",
+      "basis": "冠军终局截图人工交叉识别",
+      "evidenceSha256": "bdb2696c12b63d1f406c1be8613c59523c22835126e1906a0a00ef6fa895e31f"
+    },
+    {
+      "key": "ruanshi:2026-11-15:5",
+      "id": "ace-catalog-20261115-5-game-result",
+      "nickname": "抖音EGM小谷芷",
+      "label": "逐鹿嬴政",
+      "referenceMatchId": "ruanshi:2026-11-16:8",
+      "note": "冠军图的 ACE 与另四张终局卡面相同；对照 11/14 第3场第2名的原始标签及卡面",
+      "basis": "冠军终局截图人工交叉识别",
+      "evidenceSha256": "aa08926f0a1eaed2f2a6256cbbd88e678a9f48f070ead417ebdf9665eb60715e"
+    },
+    {
+      "key": "ruanshi:2026-11-16:2",
+      "id": "ace-catalog-20261116-2-game-result",
+      "nickname": "抖音刺痛",
+      "label": "河洛木兰",
+      "referenceMatchId": "ruanshi:2026-11-15:3",
+      "note": "冠军席七张终局卡面与佩奇夺冠席一致，ACE 为同一张卡",
+      "basis": "冠军终局截图人工交叉识别",
+      "evidenceSha256": "b4a97a14a76066b04a128a5ac5e432e7d05aef7e41832f94df66670ca2095d84"
+    }
+  ],
+  "champions": [
+    {
+      "day": "2026-11-14",
+      "ordinal": 1,
+      "nickname": "抖音EZ阿文",
+      "commander": "孙小宾",
+      "build": "三分倒转"
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 2,
+      "nickname": "B站QT小优律",
+      "commander": "嬴律",
+      "build": "河洛木兰"
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 3,
+      "nickname": "抖音搜天眷",
+      "commander": "镜",
+      "build": "三分登场"
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 4,
+      "nickname": "丰川祥子",
+      "commander": "马可",
+      "build": "传统养猪"
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 5,
+      "nickname": "太极剑1",
+      "commander": null,
+      "build": null
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 6,
+      "nickname": "I蟲、初心",
+      "commander": "嬴律",
+      "build": "逐鹿嬴政"
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 7,
+      "nickname": "抖音梦飞77",
+      "commander": "白歌",
+      "build": null
+    },
+    {
+      "day": "2026-11-14",
+      "ordinal": 8,
+      "nickname": "抖音EG航迹云",
+      "commander": "安琪拉",
+      "build": null
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 1,
+      "nickname": "抖音EG碎碎圆圆",
+      "commander": "玉环",
+      "build": null
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 2,
+      "nickname": "遗愿",
+      "commander": "镜",
+      "build": null
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 3,
+      "nickname": "娇弱的佩奇",
+      "commander": "庄小鱼",
+      "build": "河洛木兰"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 4,
+      "nickname": "B站万象棋小祥",
+      "commander": "嬴律",
+      "build": "逐鹿嬴政"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 5,
+      "nickname": "抖音EGM小谷芷",
+      "commander": "嬴律",
+      "build": "逐鹿嬴政"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 6,
+      "nickname": "抖音梦飞冻冻",
+      "commander": "玉环",
+      "build": null
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 7,
+      "nickname": "丰川祥子",
+      "commander": "马可",
+      "build": "传统养猪"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 8,
+      "nickname": "沐大胖朵",
+      "commander": "镜",
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 1,
+      "nickname": "沐小胖朵",
+      "commander": "嬴律",
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 2,
+      "nickname": "抖音刺痛",
+      "commander": null,
+      "build": "河洛木兰"
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 3,
+      "nickname": "抖音一茗",
+      "commander": null,
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 4,
+      "nickname": "喵喵且好运",
+      "commander": "白歌",
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 5,
+      "nickname": "DY棒教练",
+      "commander": null,
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 6,
+      "nickname": "糊涂蛋新一",
+      "commander": "庄小鱼",
+      "build": "河洛木兰"
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 7,
+      "nickname": "抖音群星YUN落",
+      "commander": "安琪拉",
+      "build": null
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 8,
+      "nickname": "B站万象棋小祥",
+      "commander": "嬴律",
+      "build": "逐鹿嬴政"
+    }
+  ],
+  "candidates": [
+    {
+      "day": "2026-11-14",
+      "ordinal": 8,
+      "build": "大河龙蛇",
+      "reason": "与 11/14 第2场第3名有多个相同核心卡位"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 1,
+      "build": "日落海倒转",
+      "reason": "与已标注的玉环日落海倒转终局有部分卡面重合"
+    },
+    {
+      "day": "2026-11-15",
+      "ordinal": 6,
+      "build": "日落海倒转",
+      "reason": "与 11/15 第1场冠军卡面存在四张重合，仍需区分具体变体"
+    },
+    {
+      "day": "2026-11-16",
+      "ordinal": 7,
+      "build": "大河龙蛇",
+      "reason": "与 11/14 第8场同类核心重合，仍需区分具体变体"
+    }
+  ],
+  "confirmedCount": 12
+}

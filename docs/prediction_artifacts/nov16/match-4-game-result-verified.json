@@ -1,0 +1,232 @@
+{
+  "id": "ace-catalog-20261116-4-game-result",
+  "matchId": "ruanshi:2026-11-16:4",
+  "day": "2026-11-16",
+  "ordinal": 4,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": null,
+  "banNote": "红色禁用图标，名称待核对",
+  "duration": "00:27:34",
+  "scheduledAt": "2026-11-16T11:00:00.000Z",
+  "playedAt": null,
+  "winner": "喵喵且好运",
+  "evidenceId": "ace-result-66902045e1e2066ad678f01f",
+  "evidenceSha256": "66902045e1e2066ad678f01fc7ac52aef9edc792c56dc32304115e4478011fe7",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，计划时间为北京时间19:00",
+  "seats": [
+    {
+      "rank": 1,
+      "build": "三分倒转",
+      "nickname": "喵喵且好运",
+      "playerId": "c20cff796cdf80c9a9693b0739399e67170849fb91895757e534c9f7b4e3ee66",
+      "commander": "白歌",
+      "finalCards": [
+        {
+          "name": "曹操",
+          "level": 777,
+          "heroId": "hero-1281",
+          "position": 1,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+        },
+        {
+          "name": "蔡文姬",
+          "level": 774,
+          "heroId": "hero-1841",
+          "position": 2,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+        },
+        {
+          "name": "吕布",
+          "level": 763,
+          "heroId": "hero-1231",
+          "position": 3,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+        },
+        {
+          "name": "小乔",
+          "level": 720,
+          "heroId": "hero-1061",
+          "position": 4,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d07ac335c4628ead1f58a1641fcb7400af8e2c2104ee720566416385caea563c.png"
+        },
+        {
+          "name": "貂蝉",
+          "level": 573,
+          "heroId": "hero-1411",
+          "position": 5,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+        },
+        {
+          "name": "甄姬",
+          "level": 566,
+          "heroId": "hero-1271",
+          "position": 6,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+        },
+        {
+          "name": "太乙真人",
+          "level": 6,
+          "heroId": "hero-1861",
+          "position": 7,
+          "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+        }
+      ],
+      "catalogNickname": "喵喵且好运",
+      "visibleCardLevels": [
+        777,
+        774,
+        763,
+        720,
+        573,
+        566,
+        6
+      ]
+    },
+    {
+      "rank": 2,
+      "build": "UNKNOWN",
+      "nickname": "抖音EGM皮皮鲨",
+      "playerId": "d5aec927bc6d8a9edb438de3d8a38a31cd45153ee7b26a3e1df47657fd371dde",
+      "commander": "马可",
+      "catalogNickname": "抖音EGM皮皮鲨",
+      "visibleCardLevels": [
+        458,
+        395,
+        100,
+        93,
+        49,
+        35
+      ]
+    },
+    {
+      "rank": 3,
+      "build": "UNKNOWN",
+      "nickname": "douyin小猪柒宝",
+      "playerId": "4619abd541bfe2008c6724b4b4d6c15cc538e4c2a729e69662e086f01e957018",
+      "commander": "镜",
+      "catalogNickname": "DOUYIN小猪柒宝",
+      "visibleCardLevels": [
+        356,
+        302,
+        232,
+        188,
+        100,
+        11,
+        2
+      ]
+    },
+    {
+      "rank": 4,
+      "build": "UNKNOWN",
+      "nickname": "抖音梦飞77",
+      "playerId": "44da92c84db0e59963df0e21365ddfc390202e3b64a4541e806a3d249a1bd3ab",
+      "commander": "镜",
+      "catalogNickname": "抖音梦飞77",
+      "visibleCardLevels": [
+        345,
+        157,
+        142,
+        4
+      ]
+    },
+    {
+      "rank": 5,
+      "build": "UNKNOWN",
+      "nickname": "抖音QT新一",
+      "playerId": "520471da02589fe87e0d4eaea719d542a5096101556969dfc133deffac7c8353",
+      "commander": "嬴律",
+      "catalogNickname": "抖音QT新一",
+      "visibleCardLevels": [
+        319,
+        55,
+        17,
+        9,
+        8,
+        3,
+        2
+      ]
+    },
+    {
+      "rank": 6,
+      "build": "UNKNOWN",
+      "nickname": "抖音湛蓝",
+      "playerId": "3f58690115d4d194a0234e9eef1c36f709a7f9af57a680607c3f8d71c4c0243a",
+      "commander": "马可",
+      "catalogNickname": "抖音湛蓝",
+      "visibleCardLevels": [
+        390,
+        101,
+        93,
+        52,
+        51,
+        1,
+        1
+      ]
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-66902045e1e2066ad678f01f",
+  "dayCoverage": 4,
+  "winnerBuildReview": {
+    "basis": "用户原始结算图逐卡人工核对官方卡面；局部特征匹配仅作辅助",
+    "cards": [
+      {
+        "name": "曹操",
+        "level": 777,
+        "heroId": "hero-1281",
+        "position": 1,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+      },
+      {
+        "name": "蔡文姬",
+        "level": 774,
+        "heroId": "hero-1841",
+        "position": 2,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+      },
+      {
+        "name": "吕布",
+        "level": 763,
+        "heroId": "hero-1231",
+        "position": 3,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+      },
+      {
+        "name": "小乔",
+        "level": 720,
+        "heroId": "hero-1061",
+        "position": 4,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d07ac335c4628ead1f58a1641fcb7400af8e2c2104ee720566416385caea563c.png"
+      },
+      {
+        "name": "貂蝉",
+        "level": 573,
+        "heroId": "hero-1411",
+        "position": 5,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+      },
+      {
+        "name": "甄姬",
+        "level": 566,
+        "heroId": "hero-1271",
+        "position": 6,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+      },
+      {
+        "name": "太乙真人",
+        "level": 6,
+        "heroId": "hero-1861",
+        "position": 7,
+        "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+      }
+    ],
+    "label": "三分倒转",
+    "family": "三分",
+    "commander": "白歌",
+    "classification": "FINAL_BOARD_COMPOSITION",
+    "evidenceSha256": "66902045e1e2066ad678f01fc7ac52aef9edc792c56dc32304115e4478011fe7",
+    "commanderStatus": "PORTRAIT_REVIEWED",
+    "mechanismCaveat": "主核标签按终局卡组命名。买卖循环、临场转型及登场/倒转机制未经录像验证，不由标签推定。"
+  }
+}

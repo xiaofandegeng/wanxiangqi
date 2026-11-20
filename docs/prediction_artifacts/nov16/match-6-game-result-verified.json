@@ -1,0 +1,128 @@
+{
+  "id": "ace-catalog-20261116-6-game-result",
+  "matchId": "ruanshi:2026-11-16:6",
+  "day": "2026-11-16",
+  "ordinal": 6,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "逐鹿",
+  "duration": "00:25:54",
+  "scheduledAt": "2026-11-16T13:00:00.000Z",
+  "playedAt": null,
+  "winner": "糊涂蛋新一",
+  "evidenceId": "ace-result-f8c519a2c1155d97a983a2f5",
+  "evidenceSha256": "f8c519a2c1155d97a983a2f5a0a87afb88b1c3001385101ee5b14b4c139d5c2b",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "用户提供日期和场次，计划时间为北京时间21:00",
+  "seats": [
+    {
+      "rank": 1,
+      "build": "河洛木兰",
+      "nickname": "糊涂蛋新一",
+      "playerId": "b904001a1b2ce1184901f57e57ae23c85d5b2653a753ab67cee5685c0bb12359",
+      "commander": "庄小鱼",
+      "catalogNickname": "糊涂蛋新一",
+      "visibleCardLevels": [
+        533,
+        243,
+        144,
+        100,
+        97,
+        97,
+        1
+      ]
+    },
+    {
+      "rank": 2,
+      "build": "UNKNOWN",
+      "nickname": "抖音梦飞1",
+      "playerId": "eb0d088368e5aaea57d3bec02ca090731b392f1bcb7141954b575b6298626795",
+      "commander": null,
+      "catalogNickname": "抖音梦飞1",
+      "visibleCardLevels": [
+        772,
+        600,
+        574,
+        9,
+        3,
+        1
+      ]
+    },
+    {
+      "rank": 3,
+      "build": "UNKNOWN",
+      "nickname": "抖音QT萌岑",
+      "playerId": "9330c5bb044dea5da9e112f1d20da8861713542fe9624efc67132cd0838f52b6",
+      "commander": "嬴律",
+      "catalogNickname": "抖音QT萌岑",
+      "visibleCardLevels": [
+        467,
+        405,
+        287,
+        264,
+        18,
+        10,
+        1
+      ]
+    },
+    {
+      "rank": 4,
+      "build": "UNKNOWN",
+      "nickname": "i蟲、初心",
+      "playerId": "8eaa459a637bf2e5140ef541e4174d2c545b28553bf4fbafe3b34f77b69db480",
+      "commander": null,
+      "catalogNickname": "I蟲、初心",
+      "visibleCardLevels": [
+        308,
+        88,
+        68,
+        61,
+        55,
+        53,
+        1
+      ]
+    },
+    {
+      "rank": 5,
+      "build": "UNKNOWN",
+      "nickname": "lero谷芷",
+      "playerId": "0be3e07d342859d31c9b7d62037ca9a9fa81c7fcbd87134b1b7110ea7453223c",
+      "commander": "马可",
+      "catalogNickname": "LERO谷芷",
+      "visibleCardLevels": [
+        340,
+        113,
+        88,
+        66,
+        59,
+        16,
+        14
+      ]
+    },
+    {
+      "rank": 6,
+      "build": "UNKNOWN",
+      "nickname": "抖音阿九嘉豪版",
+      "playerId": "d399e0c995b30e700218b8fb3be2458098d3c365a0c2810cf905dbe5f217fd08",
+      "commander": null,
+      "catalogNickname": "抖音阿九嘉豪版",
+      "visibleCardLevels": [
+        122,
+        121,
+        119,
+        113,
+        104,
+        68,
+        2
+      ]
+    }
+  ],
+  "sourceUrl": "urn:wxq:evidence:ace-result-f8c519a2c1155d97a983a2f5",
+  "dayCoverage": 6,
+  "winnerBuildReview": {
+    "note": "与 11/14 第4场第2名已标注的河洛木兰比对，核心卡面及六张终局卡一致",
+    "basis": "终局卡面与已标注场次交叉识别",
+    "label": "河洛木兰",
+    "evidenceSha256": "f8c519a2c1155d97a983a2f5a0a87afb88b1c3001385101ee5b14b4c139d5c2b"
+  }
+}

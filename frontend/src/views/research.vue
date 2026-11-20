@@ -109,7 +109,7 @@
             <div class="recent-matches-grid">
               <div v-for="m in recentCatalogMatches" :key="m.id" class="recent-match-card">
                 <div class="card-head">
-                  <span class="date-badge">{{ m.day }} 第 {{ m.ordinal }} 场</span>
+                  <span class="date-badge">{{ m.day }} 第 {{ m.ordinal }} 场<span v-if="m.scheduledTime"> · 计划 {{ m.scheduledTime }}</span></span>
                   <span v-if="m.ban" class="ban-badge">Ban: {{ m.ban }}</span>
                 </div>
                 <div class="winner-highlight-row">
@@ -210,7 +210,7 @@
             >
               <header>
                 <div class="match-title-row">
-                  <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场</h2>
+                  <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场<span v-if="m.scheduledTime"> · 计划 {{ m.scheduledTime }}</span></h2>
                   <span class="match-version-pill" :class="{ 'latest': getVersionByDate(m.day).isLatest }">
                     {{ getVersionByDate(m.day).version }}{{ getVersionByDate(m.day).isLatest ? ' (最新)' : '' }}
                   </span>
@@ -656,6 +656,7 @@ interface CatalogMatchSeat {
 interface CatalogMatch {
   id: string
   day: string
+  scheduledTime?: string | null
   ordinal: number
   sourceUrl?: string
   materialSha256?: string
