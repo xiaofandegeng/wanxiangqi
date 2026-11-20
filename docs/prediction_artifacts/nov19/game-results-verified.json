@@ -1,0 +1,3332 @@
+{
+  "day": "2026-11-19",
+  "database": "wanxiangqi_prediction_dev",
+  "coverage": {
+    "matches": 8,
+    "seats": 48,
+    "wins": 8,
+    "commanders": 48,
+    "cards": 304
+  },
+  "matches": [
+    {
+      "id": "ace-catalog-20261119-1-game-result",
+      "matchId": "ruanshi:2026-11-19:1",
+      "day": "2026-11-19",
+      "ordinal": 1,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "逐鹿",
+      "duration": "00:34:50",
+      "scheduledAt": "2026-11-19T08:00:00.000Z",
+      "playedAt": null,
+      "winner": "doki",
+      "evidenceId": "ace-result-e2cf8ac328554887211d38",
+      "evidenceSha256": "e2cf8ac328554887211d3817d646a26bf6ec3e63c958976330522e993c7c28fd",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。使用游戏当前显示的昵称。作者提及的别名或账号归属仅作来源线索。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 124.7,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709879786885172515",
+          "imageOrdinal": 1,
+          "sha256": "5aad24928b13e9b2a1f1aab30e499ac52bc5c24967154d51dd4f26bab45815d0"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "doki",
+          "catalogNickname": "doki",
+          "commander": "镜",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            455,
+            434,
+            354,
+            228,
+            187,
+            32,
+            31
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 455,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 434,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 354,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 228,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 187,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 32,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 31,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "9cf1f7e90a26fcfc75bbd940f41c720af0e340419f545cdbb307a08de620d77b"
+        },
+        {
+          "rank": 2,
+          "nickname": "幕后",
+          "catalogNickname": "幕后",
+          "commander": "嬴律",
+          "build": "大河猪离",
+          "visibleCardLevels": [
+            436,
+            344,
+            326,
+            207,
+            61,
+            35,
+            10
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1561",
+              "name": "张良",
+              "level": 436,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/50ae42f31f610c5b132e5da40d77bcdb2f4b0e4f7da691f99a144e6b7e2c69f2.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1991",
+              "name": "公孙离",
+              "level": 344,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fb2bf850335afe7b3fb2e787d9f5a9d63066ed8df0dfcb96525f1cefffa04d2d.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 326,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 207,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5061",
+              "name": "云中君",
+              "level": 61,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/baed85268e688539790ada518c43314545914f68a8b676fe388b2a74be5430d1.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 35,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 10,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "42f69b38172637a956f2de099e440bb465c5afb1b3de5d41e4657d3b975df309"
+        },
+        {
+          "rank": 3,
+          "nickname": "猪葛沐汐12单挑",
+          "catalogNickname": "猪葛沐汐12单挑",
+          "commander": "嬴律",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            440,
+            268,
+            145,
+            138,
+            130,
+            70,
+            31
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 440,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 268,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 145,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 138,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 130,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 70,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 31,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "e3053897d2725d630a92fadb4b884235c7c859a979bf086769bbdf9d08dd6261"
+        },
+        {
+          "rank": 4,
+          "nickname": "B站QT小优律",
+          "catalogNickname": "B站QT小优律",
+          "commander": "安琪拉",
+          "build": "自爆东皇",
+          "visibleCardLevels": [
+            615,
+            151,
+            136,
+            125,
+            119,
+            87,
+            83
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1871",
+              "name": "东皇太一",
+              "level": 615,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3adfbff152539e43217b755b4ad225a63c1f46e81d3b5ceec36dbd73f2670ae0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5171",
+              "name": "大司命",
+              "level": 151,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c2bd4a2d7ee8caf0f51ced5e31ca7a3d3dbd3b626d91f4f5633b08ec19900476.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 136,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 125,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5771",
+              "name": "少司缘",
+              "level": 119,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7d28bd4043b3a8b0e316ff917338ecb3a27d2da95496a72861c6d4c8b105c37d.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 87,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 83,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "1169d7ef81732208949c9050327518111442e21ac25e0009f0d379cba460f32b"
+        },
+        {
+          "rank": 5,
+          "nickname": "985第一环如昨",
+          "catalogNickname": "985第一环如昨",
+          "commander": "马可",
+          "build": "传统养猪",
+          "visibleCardLevels": [
+            267,
+            113,
+            86,
+            75,
+            63,
+            62
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 267,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 113,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 86,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 75,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 63,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 62,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "8efb22b7af32b79cbdb3fd6dabdad4a9ade7dc000d8bf386d8deacf5b8b7dd25"
+        },
+        {
+          "rank": 6,
+          "nickname": "AG浪屿",
+          "catalogNickname": "AG浪屿",
+          "commander": "孙小宾",
+          "build": "三分倒转",
+          "visibleCardLevels": [
+            167,
+            141,
+            86,
+            72,
+            52,
+            48,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1671",
+              "name": "孙悟空",
+              "level": 167,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3c3054e1a0e5bb52111df9e351f6daf54d45b5e4b7b5e0aaafebf7f44d6330eb.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1161",
+              "name": "阿轲",
+              "level": 141,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4eeedc9e2b9d1728c12dc7bc6af4e1a8de2a31d48db33c65a2fc64aa5630fe73.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 86,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 72,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 52,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1061",
+              "name": "小乔",
+              "level": 48,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d07ac335c4628ead1f58a1641fcb7400af8e2c2104ee720566416385caea563c.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "e583f50e6bfb191d117ed6c78e7657b5cf96baceaed7f796dacd41b09e57c776"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-2-game-result",
+      "matchId": "ruanshi:2026-11-19:2",
+      "day": "2026-11-19",
+      "ordinal": 2,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "河洛",
+      "duration": "00:29:06",
+      "scheduledAt": "2026-11-19T09:00:00.000Z",
+      "playedAt": null,
+      "winner": "新一且好运",
+      "evidenceId": "ace-result-103ae280377976a45ecad1",
+      "evidenceSha256": "103ae280377976a45ecad1cfe61231f481d0ba649cb4c0bc4c5644dda577698e",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 110.4,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709879786885172515",
+          "imageOrdinal": 2,
+          "sha256": "6927e718e9281d033287bd4e29a2382bbdab68360171478120a5e39f51361b28"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "新一且好运",
+          "catalogNickname": "新一且好运",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            890,
+            490,
+            473,
+            15,
+            4
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 890,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 490,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 473,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5141",
+              "name": "亚连",
+              "level": 15,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/17507db89d39e9f350259309daf1a50dd49ec45e57752d1ae9758438b1b5b1cc.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "725f1878b07d300171370d2db0f62fc3a157d25c6e154e193393bb99bdd36878"
+        },
+        {
+          "rank": 2,
+          "nickname": "抖音搜道无涯",
+          "catalogNickname": "抖音搜道无涯",
+          "commander": "嬴律",
+          "build": "逐鹿嬴政",
+          "visibleCardLevels": [
+            516,
+            74,
+            54,
+            49,
+            45,
+            4,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1101",
+              "name": "嬴政",
+              "level": 516,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa6d8b834296f845effc3833907a8a1bcde1f5abf816fadf37dcba87c15cb164.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5251",
+              "name": "鲁班大师",
+              "level": 74,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3d48c08f5eb1c68cf9421752174ddb35fedd0bad0f6357c04fb9a272e3e71312.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5231",
+              "name": "西施",
+              "level": 54,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2d8c7c2aca129daff59d0d839565b3deb8f2e73526de17d011eb0f6d1a05dab9.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 49,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1211",
+              "name": "芈月",
+              "level": 45,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6948c2e6e1a7c8766215d3c452e1e407022c72f5bf19651a5ebd6e91e22a31c2.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1201",
+              "name": "白起",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc784ff2c87ba58b6b7895e1f319e5ae63a73bf895bcbdfffbb390e2a41f87f9.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "05ed79d83d68d60ee1d47d6ff04611afcef5563f87a13611ee350833ee164816"
+        },
+        {
+          "rank": 3,
+          "nickname": "抖音EZ嘉誉",
+          "catalogNickname": "抖音EZ嘉誉",
+          "commander": "安琪拉",
+          "build": "坐火箭艾琳",
+          "visibleCardLevels": [
+            299,
+            16,
+            14,
+            14,
+            7,
+            5,
+            5
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-3551",
+              "name": "艾琳",
+              "level": 299,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/9fc3a6c43ec97d8573b4ac8573fee4905a1496c67baf700d3314f30e8527e7b1.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 16,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 14,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5061",
+              "name": "云中君",
+              "level": 14,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/baed85268e688539790ada518c43314545914f68a8b676fe388b2a74be5430d1.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 7,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-5271",
+              "name": "蒙恬",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1786e59815900d6b1c24211bcb5231b8d3dd77d8d576cd5e484c75cf6f853597.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "1a5dbebf489c13386955c2d5ceb71cf3ebd254a743faa84668cc9afc2195a38a"
+        },
+        {
+          "rank": 4,
+          "nickname": "抖音刺痛",
+          "catalogNickname": "抖音刺痛",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            389,
+            310,
+            309,
+            309,
+            309,
+            308,
+            8
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1901",
+              "name": "诸葛亮",
+              "level": 389,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/545a11ee6dfda6c108293598d0d3a090c0876bbb03321878c45c7018c845c32f.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1061",
+              "name": "小乔",
+              "level": 310,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d07ac335c4628ead1f58a1641fcb7400af8e2c2104ee720566416385caea563c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 309,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 309,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 309,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 308,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 8,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "c8c65cdf324a0555ace6ee2e3d5f4b9e4ee86f34ff67c2f3aecbfb1024b570f4"
+        },
+        {
+          "rank": 5,
+          "nickname": "老退勿念",
+          "catalogNickname": "老退勿念",
+          "commander": "马可",
+          "build": "镜猪",
+          "visibleCardLevels": [
+            376,
+            77,
+            43,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5631",
+              "name": "海诺",
+              "level": 376,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ff28bd38fa4889b7383fe109318d55971a59a14043549ca0621fc981eb106752.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 77,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 43,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "d8880da8af88f45b25afc139600002c9730c8072eca1877ca933cd84d472ac73"
+        },
+        {
+          "rank": 6,
+          "nickname": "i蟲、沐小朵",
+          "catalogNickname": "i蟲、沐小朵",
+          "commander": "马可",
+          "build": "传统养猪",
+          "visibleCardLevels": [
+            381,
+            142,
+            124,
+            65,
+            53,
+            5
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 381,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 142,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 124,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 65,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 53,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1681",
+              "name": "牛魔",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e13a8094fdadaa12ca69242b6ad7cb151b97c5499e8610c82f1941408861d0e.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "99b855735012d20faafa059fa2d0e6a611a7dbcbb88047f770ad693c2a8d044d"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-3-game-result",
+      "matchId": "ruanshi:2026-11-19:3",
+      "day": "2026-11-19",
+      "ordinal": 3,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "日落海",
+      "duration": "00:28:34",
+      "scheduledAt": "2026-11-19T10:00:00.000Z",
+      "playedAt": null,
+      "winner": "抖音群星yun落",
+      "evidenceId": "ace-result-54b3bfc9e52190c17045ed",
+      "evidenceSha256": "54b3bfc9e52190c17045edbdbf872c66a2b7fb1789cecb6659914ed34997c4a0",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 99.7,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709879786885172515",
+          "imageOrdinal": 3,
+          "sha256": "4f0bd0a906e01739a4320c557f26e08a7f0cf360ffbc4dfda4a41545cab35738"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "抖音群星yun落",
+          "catalogNickname": "抖音群星yun落",
+          "commander": "安琪拉",
+          "build": "自爆末世大司命",
+          "visibleCardLevels": [
+            603,
+            502,
+            246,
+            217,
+            207,
+            206,
+            166
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5171",
+              "name": "大司命",
+              "level": 603,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c2bd4a2d7ee8caf0f51ced5e31ca7a3d3dbd3b626d91f4f5633b08ec19900476.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1871",
+              "name": "东皇太一",
+              "level": 502,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3adfbff152539e43217b755b4ad225a63c1f46e81d3b5ceec36dbd73f2670ae0.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5771",
+              "name": "少司缘",
+              "level": 246,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7d28bd4043b3a8b0e316ff917338ecb3a27d2da95496a72861c6d4c8b105c37d.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 217,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 207,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 206,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 166,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "b37073beebfecf12dc23de5de4e7591e85fe298a1edcb4a17a6164ae73c56463"
+        },
+        {
+          "rank": 2,
+          "nickname": "遗愿",
+          "catalogNickname": "遗愿",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            999,
+            717,
+            686,
+            250,
+            5
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 999,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1901",
+              "name": "诸葛亮",
+              "level": 717,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/545a11ee6dfda6c108293598d0d3a090c0876bbb03321878c45c7018c845c32f.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 686,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 250,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "54cc1cf4de1ff4868552e1b4501b2215c491c8b262d99a654de552cf376ccb19"
+        },
+        {
+          "rank": 3,
+          "nickname": "运光永不六",
+          "catalogNickname": "运光永不六",
+          "commander": "嬴律",
+          "build": "逐鹿嬴政",
+          "visibleCardLevels": [
+            393,
+            206,
+            122,
+            110,
+            101,
+            40,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1101",
+              "name": "嬴政",
+              "level": 393,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa6d8b834296f845effc3833907a8a1bcde1f5abf816fadf37dcba87c15cb164.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1131",
+              "name": "庄周",
+              "level": 206,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/507c2e56921ec80e4b4a0378deeba343154d043a1993c34eb89493a80e2c17a7.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1211",
+              "name": "芈月",
+              "level": 122,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6948c2e6e1a7c8766215d3c452e1e407022c72f5bf19651a5ebd6e91e22a31c2.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1201",
+              "name": "白起",
+              "level": 110,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc784ff2c87ba58b6b7895e1f319e5ae63a73bf895bcbdfffbb390e2a41f87f9.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5231",
+              "name": "西施",
+              "level": 101,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2d8c7c2aca129daff59d0d839565b3deb8f2e73526de17d011eb0f6d1a05dab9.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 40,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "2a79eceab8a406247af335b2882404f289e88cc343e9033f729823391bc67564"
+        },
+        {
+          "rank": 4,
+          "nickname": "抖音EZ小超",
+          "catalogNickname": "抖音EZ小超",
+          "commander": "镜",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            362,
+            346,
+            221,
+            194,
+            70,
+            10,
+            4
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 362,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 346,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 221,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 194,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 70,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 10,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "1c371b00b1eddd8c7f7031c1cec426aba2d98c4d0cf13c277526cdf43d480b42"
+        },
+        {
+          "rank": 5,
+          "nickname": "EGM抖音画笔",
+          "catalogNickname": "EGM抖音画笔",
+          "commander": "安琪拉",
+          "build": "自爆海月",
+          "visibleCardLevels": [
+            105,
+            33,
+            31,
+            24,
+            21,
+            11,
+            4
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 105,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1481",
+              "name": "姜子牙",
+              "level": 33,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 31,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1761",
+              "name": "杨玉环",
+              "level": 24,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7083ee31158950678acd6f1e35f7a2321b7e9552aa1b917ae4cd9f9f41fc871a.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5771",
+              "name": "少司缘",
+              "level": 21,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7d28bd4043b3a8b0e316ff917338ecb3a27d2da95496a72861c6d4c8b105c37d.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5171",
+              "name": "大司命",
+              "level": 11,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c2bd4a2d7ee8caf0f51ced5e31ca7a3d3dbd3b626d91f4f5633b08ec19900476.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "060fd9193a29208f668b991825cf5c2ea0fe621c17f2e6e6c199179a9058d137"
+        },
+        {
+          "rank": 6,
+          "nickname": "抖音EG清辞",
+          "catalogNickname": "抖音EG清辞",
+          "commander": "白歌",
+          "build": "逐鹿嬴政",
+          "visibleCardLevels": [
+            332,
+            57,
+            26,
+            26,
+            19,
+            17,
+            13
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1101",
+              "name": "嬴政",
+              "level": 332,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa6d8b834296f845effc3833907a8a1bcde1f5abf816fadf37dcba87c15cb164.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1131",
+              "name": "庄周",
+              "level": 57,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/507c2e56921ec80e4b4a0378deeba343154d043a1993c34eb89493a80e2c17a7.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5241",
+              "name": "蒙犽",
+              "level": 26,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b0bb4cb7377a5f0f7bf9042a013335cfc3765a8e78f00470afd54a9634b3898.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1211",
+              "name": "芈月",
+              "level": 26,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6948c2e6e1a7c8766215d3c452e1e407022c72f5bf19651a5ebd6e91e22a31c2.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1121",
+              "name": "鲁班七号",
+              "level": 19,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d13ca04e253f37468e44cc53c1bb26c93aecdd766d431b2b24d6802efc5aa0f5.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5231",
+              "name": "西施",
+              "level": 17,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2d8c7c2aca129daff59d0d839565b3deb8f2e73526de17d011eb0f6d1a05dab9.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1201",
+              "name": "白起",
+              "level": 13,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc784ff2c87ba58b6b7895e1f319e5ae63a73bf895bcbdfffbb390e2a41f87f9.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "9e2aa008707c0676f745187c27d9da7f554622ef3e8d600da55cf9aeefe638d9"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-4-game-result",
+      "matchId": "ruanshi:2026-11-19:4",
+      "day": "2026-11-19",
+      "ordinal": 4,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "逐鹿",
+      "duration": "00:33:08",
+      "scheduledAt": "2026-11-19T11:00:00.000Z",
+      "playedAt": null,
+      "winner": "EZ拉丁鱼7D版",
+      "evidenceId": "ace-result-b874577b368cd039c6b14b",
+      "evidenceSha256": "b874577b368cd039c6b14b717b45ef5c31ef446caddfb4c4db034f7252dac4a6",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 86.7,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709879786885172515",
+          "imageOrdinal": 4,
+          "sha256": "6738eb88a400a50c30c9237cc58da2308e4da3d69213ff8041c5b5b1b6896d98"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "EZ拉丁鱼7D版",
+          "catalogNickname": "EZ拉丁鱼7D版",
+          "commander": "孙小宾",
+          "build": "三分倒转",
+          "visibleCardLevels": [
+            863,
+            676,
+            600,
+            599,
+            508,
+            484,
+            10
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 863,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 676,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1671",
+              "name": "孙悟空",
+              "level": 600,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3c3054e1a0e5bb52111df9e351f6daf54d45b5e4b7b5e0aaafebf7f44d6330eb.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 599,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 508,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5021",
+              "name": "裴擒虎",
+              "level": 484,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa2d61f499d89001f7e27762d555894f7aafcea0a09cc68a4ceb823291a0ea5a.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 10,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "b3b6f54120ed40d5c9dcf6756d466d6db4a8f203d29deb14b641b9b0382b7c7a"
+        },
+        {
+          "rank": 2,
+          "nickname": "世薄情好运版",
+          "catalogNickname": "世薄情好运版",
+          "commander": "嬴律",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            540,
+            166,
+            62,
+            58,
+            46,
+            45,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 540,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 166,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 62,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 58,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 46,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 45,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "053138de911a109aa86c09174201654eaa62ffadefe365322725a84f5ea5d92c"
+        },
+        {
+          "rank": 3,
+          "nickname": "小暖贴贴",
+          "catalogNickname": "小暖贴贴",
+          "commander": "嬴律",
+          "build": "大河猪离",
+          "visibleCardLevels": [
+            370,
+            331,
+            226,
+            215,
+            124,
+            50,
+            5
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 370,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1991",
+              "name": "公孙离",
+              "level": 331,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fb2bf850335afe7b3fb2e787d9f5a9d63066ed8df0dfcb96525f1cefffa04d2d.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1561",
+              "name": "张良",
+              "level": 226,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/50ae42f31f610c5b132e5da40d77bcdb2f4b0e4f7da691f99a144e6b7e2c69f2.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 215,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 124,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 50,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "fb22422f34cdb6906c2c6c9b41afb27ce2e6e0b4b7ca9aa99d3fd28cac90bd2a"
+        },
+        {
+          "rank": 4,
+          "nickname": "B站万象棋小祥",
+          "catalogNickname": "B站万象棋小祥",
+          "commander": "阿离",
+          "build": "伞干将",
+          "visibleCardLevels": [
+            238,
+            38,
+            31,
+            27,
+            24,
+            24,
+            24
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-3121",
+              "name": "沈梦溪",
+              "level": 238,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6ad3672c08bb504022af4eb54f16455254ae0b5d1a9bdb7ba8588829a3b339c2.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 38,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 31,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1731",
+              "name": "李元芳",
+              "level": 27,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a427e7998097e4598c6e673295c85ef9b7b9eadeb202eb03f2de3f8ac0bfa059.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 24,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5061",
+              "name": "云中君",
+              "level": 24,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/baed85268e688539790ada518c43314545914f68a8b676fe388b2a74be5430d1.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 24,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "54d47ed1752ea34f4c5dd1c0b66e77fe63860582ec9c9cb8b8f055318613e57f"
+        },
+        {
+          "rank": 5,
+          "nickname": "白白白白白3",
+          "catalogNickname": "白白白白白3",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            413,
+            146,
+            84,
+            84,
+            81,
+            59
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 413,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 146,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 84,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 84,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 81,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 59,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "db61a1fb202805a32efe8f6f2c177085d39b2ef0a78da9d5f2b286b94ad666d2"
+        },
+        {
+          "rank": 6,
+          "nickname": "丰川祥子",
+          "catalogNickname": "丰川祥子",
+          "commander": "马可",
+          "build": "传统养猪",
+          "visibleCardLevels": [
+            155,
+            80,
+            65,
+            60,
+            29
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 155,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 80,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 65,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 60,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 29,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "fefa84daffe463359c35592a388d3c8335e2232f699a3bc875655d2895d8dba8"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-5-game-result",
+      "matchId": "ruanshi:2026-11-19:5",
+      "day": "2026-11-19",
+      "ordinal": 5,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "三分",
+      "duration": "00:23:41",
+      "scheduledAt": "2026-11-19T12:00:00.000Z",
+      "playedAt": null,
+      "winner": "井上坚二的主人",
+      "evidenceId": "ace-result-46567c4081d83ab8462c78",
+      "evidenceSha256": "46567c4081d83ab8462c78594a2a20bdeeed4646257b13fa01dd350a7d77ca24",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。使用游戏当前显示的昵称。作者提及的别名或账号归属仅作来源线索。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 74.9,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709915226820332840",
+          "imageOrdinal": 1,
+          "sha256": "b8c1d4a7acf6a7fb9ff06c42616958fd8d9567b15301f7ca93bc0e0e40bfb279"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "井上坚二的主人",
+          "catalogNickname": "井上坚二的主人",
+          "commander": "武凤",
+          "build": "逐鹿帝临",
+          "visibleCardLevels": [
+            808,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 808,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5231",
+              "name": "西施",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2d8c7c2aca129daff59d0d839565b3deb8f2e73526de17d011eb0f6d1a05dab9.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1101",
+              "name": "嬴政",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa6d8b834296f845effc3833907a8a1bcde1f5abf816fadf37dcba87c15cb164.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1201",
+              "name": "白起",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc784ff2c87ba58b6b7895e1f319e5ae63a73bf895bcbdfffbb390e2a41f87f9.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1211",
+              "name": "芈月",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6948c2e6e1a7c8766215d3c452e1e407022c72f5bf19651a5ebd6e91e22a31c2.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1131",
+              "name": "庄周",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/507c2e56921ec80e4b4a0378deeba343154d043a1993c34eb89493a80e2c17a7.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "90d97f9db76877b681912c2387e2c66bf8e985e9a799008a65cf9e1a5fe12779"
+        },
+        {
+          "rank": 2,
+          "nickname": "抖音EZ、色彩",
+          "catalogNickname": "抖音EZ、色彩",
+          "commander": "香香",
+          "build": "大河开团射",
+          "visibleCardLevels": [
+            150,
+            97,
+            58,
+            55,
+            53,
+            40,
+            29
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1991",
+              "name": "公孙离",
+              "level": 150,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fb2bf850335afe7b3fb2e787d9f5a9d63066ed8df0dfcb96525f1cefffa04d2d.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 97,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1891",
+              "name": "鬼谷子",
+              "level": 58,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/32bdc0abdca908ce9b472818cb2b3ce014d5330ba52ac18257da174cc8152c5f.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5771",
+              "name": "少司缘",
+              "level": 55,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7d28bd4043b3a8b0e316ff917338ecb3a27d2da95496a72861c6d4c8b105c37d.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1561",
+              "name": "张良",
+              "level": 53,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/50ae42f31f610c5b132e5da40d77bcdb2f4b0e4f7da691f99a144e6b7e2c69f2.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1741",
+              "name": "虞姬",
+              "level": 40,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/b7c6cbe94ce5efa235524ccd559c5e163b4f7a8e0ebca1752051590333045806.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-5061",
+              "name": "云中君",
+              "level": 29,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/baed85268e688539790ada518c43314545914f68a8b676fe388b2a74be5430d1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "8f70e26cb56b13c40e5f92173a6d5c559b4ba1cafbc281ba9f206c8600f99df0"
+        },
+        {
+          "rank": 3,
+          "nickname": "子牙bb别走",
+          "catalogNickname": "子牙bb别走",
+          "commander": "小妲己",
+          "build": "日落海倒转",
+          "visibleCardLevels": [
+            630,
+            481,
+            356,
+            344,
+            247,
+            114,
+            43
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 630,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1661",
+              "name": "亚瑟",
+              "level": 481,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5631",
+              "name": "海诺",
+              "level": 356,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ff28bd38fa4889b7383fe109318d55971a59a14043549ca0621fc981eb106752.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5451",
+              "name": "莱西奥",
+              "level": 344,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e91f0afb351f2f5936418f6026e1a42c0225af8f680ceb4152ff28e4a2fa3be.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1481",
+              "name": "姜子牙",
+              "level": 247,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 114,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 43,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "fe88bfb83a912369f33b7e64842617d0fc8c58f566617c63b42b43821fa8f9c4"
+        },
+        {
+          "rank": 4,
+          "nickname": "北念且好运",
+          "catalogNickname": "北念且好运",
+          "commander": "明先生",
+          "build": "大河山鬼",
+          "visibleCardLevels": [
+            180,
+            116,
+            42,
+            39,
+            27,
+            1,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5171",
+              "name": "大司命",
+              "level": 180,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c2bd4a2d7ee8caf0f51ced5e31ca7a3d3dbd3b626d91f4f5633b08ec19900476.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5041",
+              "name": "米莱狄",
+              "level": 116,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ec44d4959e81ff5b1438986b4ba00850668c660abd5495cf1289f09ec993e3b5.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5271",
+              "name": "蒙恬",
+              "level": 42,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1786e59815900d6b1c24211bcb5231b8d3dd77d8d576cd5e484c75cf6f853597.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5251",
+              "name": "鲁班大师",
+              "level": 39,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3d48c08f5eb1c68cf9421752174ddb35fedd0bad0f6357c04fb9a272e3e71312.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 27,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1391",
+              "name": "老夫子",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d6838038077fdc4759af8366d9740c323c5e91dacd45901ef6afdf15788cc9be.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "adf9ea8606be08202a0427f74ff10da9786f15c7199b90f4dd1a7c9d377025cc"
+        },
+        {
+          "rank": 5,
+          "nickname": "抖音EZ小九",
+          "catalogNickname": "抖音EZ小九",
+          "commander": "庄小鱼",
+          "build": "无阵营",
+          "visibleCardLevels": [
+            188,
+            187,
+            178,
+            164,
+            163,
+            122,
+            65
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1671",
+              "name": "孙悟空",
+              "level": 188,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3c3054e1a0e5bb52111df9e351f6daf54d45b5e4b7b5e0aaafebf7f44d6330eb.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1991",
+              "name": "公孙离",
+              "level": 187,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fb2bf850335afe7b3fb2e787d9f5a9d63066ed8df0dfcb96525f1cefffa04d2d.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 178,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1481",
+              "name": "姜子牙",
+              "level": 164,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1761",
+              "name": "杨玉环",
+              "level": 163,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7083ee31158950678acd6f1e35f7a2321b7e9552aa1b917ae4cd9f9f41fc871a.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 122,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1681",
+              "name": "牛魔",
+              "level": 65,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e13a8094fdadaa12ca69242b6ad7cb151b97c5499e8610c82f1941408861d0e.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "bd95b534fb17d4f270b9471b71edbfc56a31f678eb62cf6176f599379435026a"
+        },
+        {
+          "rank": 6,
+          "nickname": "bili星光柯基",
+          "catalogNickname": "bili星光柯基",
+          "commander": "小妲己",
+          "build": "日落海倒转",
+          "visibleCardLevels": [],
+          "finalCards": [],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "recognitionNote": "该席在视频结算画面可见，阵容卡牌区域为空。阵容标签来自当日逐场战报。",
+          "playerId": "a18ed15b8e7db11b0dc5728096b0c2e996c0c7ccd594eba5b3a79bde3321978b"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-6-game-result",
+      "matchId": "ruanshi:2026-11-19:6",
+      "day": "2026-11-19",
+      "ordinal": 6,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "大河",
+      "duration": "00:26:10",
+      "scheduledAt": "2026-11-19T13:00:00.000Z",
+      "playedAt": null,
+      "winner": "抖音EZ阿文",
+      "evidenceId": "ace-result-ce69708e99a90556268f61",
+      "evidenceSha256": "ce69708e99a90556268f6117d0290759b74828c06c374c22e858fec5c2b86343",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 63.5,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709915226820332840",
+          "imageOrdinal": 2,
+          "sha256": "85dc6bdb965e84b61b0ed6a394bb889afcbf2b792f277362033a41fa6fdeb645"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "抖音EZ阿文",
+          "catalogNickname": "抖音EZ阿文",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "visibleCardLevels": [
+            655,
+            654,
+            561,
+            178,
+            164,
+            12,
+            11
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1831",
+              "name": "雅典娜",
+              "level": 655,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f2e92396c04711d4bb6046d0d56828950a85241bb6a3c9fa8b8fe2d4ed315b14.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-3551",
+              "name": "艾琳",
+              "level": 654,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/9fc3a6c43ec97d8573b4ac8573fee4905a1496c67baf700d3314f30e8527e7b1.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 561,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 178,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1901",
+              "name": "诸葛亮",
+              "level": 164,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/545a11ee6dfda6c108293598d0d3a090c0876bbb03321878c45c7018c845c32f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 12,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 11,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "a25b7313dcf545f086daa1386685a0a38e6bfef73c9826538bc548b5fba4e05e"
+        },
+        {
+          "rank": 2,
+          "nickname": "好运且喜忠犬壹",
+          "catalogNickname": "好运且喜忠犬壹",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            435,
+            367,
+            340,
+            338,
+            314,
+            281,
+            2
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 435,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1901",
+              "name": "诸葛亮",
+              "level": 367,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/545a11ee6dfda6c108293598d0d3a090c0876bbb03321878c45c7018c845c32f.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 340,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 338,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 314,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 281,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 2,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "3ff47c3f43d0fbb30bf9d40a1dfe3d52212d218635ccd93910bfc1b15ab1fdb0"
+        },
+        {
+          "rank": 3,
+          "nickname": "过把感情瘾",
+          "catalogNickname": "过把感情瘾",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            429,
+            152,
+            90,
+            75,
+            68,
+            61
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 429,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 152,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 90,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 75,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 68,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 61,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "6507048ac84875aa7fb841d2e4c6a655b9a57c3c0581bb8637d8009e3bed2e25"
+        },
+        {
+          "rank": 4,
+          "nickname": "抖音一茗",
+          "catalogNickname": "抖音一茗",
+          "commander": "常小娥",
+          "build": "牺牲李信",
+          "visibleCardLevels": [
+            319,
+            277,
+            149,
+            11,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 319,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5071",
+              "name": "李信",
+              "level": 277,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2024da73569a0dcb5982216cc267e6430ccbab1e441c448e87f68804f339d019.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 149,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1931",
+              "name": "铠",
+              "level": 11,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d6c0732b6d141d454e8806f0e86341397e62754e971a767d00be7c8acc58a1b4.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "7e90e069bfb1aecd0a3475b7e00a4ceb00631b11cf1f2298e0a2bfd759068dd4"
+        },
+        {
+          "rank": 5,
+          "nickname": "抖音搜天眷",
+          "catalogNickname": "抖音搜天眷",
+          "commander": "镜",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            315,
+            268,
+            14
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 315,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 268,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 14,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "688df8bd7a7d0d93727ee8a5464e1337e6e96e28d37ea67319ff2a9e7373489d"
+        },
+        {
+          "rank": 6,
+          "nickname": "B站万象棋小祥",
+          "catalogNickname": "B站万象棋小祥",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "visibleCardLevels": [
+            252,
+            179,
+            177,
+            172,
+            118,
+            102,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 252,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5451",
+              "name": "莱西奥",
+              "level": 179,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e91f0afb351f2f5936418f6026e1a42c0225af8f680ceb4152ff28e4a2fa3be.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1661",
+              "name": "亚瑟",
+              "level": 177,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 172,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 118,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1481",
+              "name": "姜子牙",
+              "level": 102,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "54d47ed1752ea34f4c5dd1c0b66e77fe63860582ec9c9cb8b8f055318613e57f"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-7-game-result",
+      "matchId": "ruanshi:2026-11-19:7",
+      "day": "2026-11-19",
+      "ordinal": 7,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "大河",
+      "duration": "00:28:58",
+      "scheduledAt": "2026-11-19T14:00:00.000Z",
+      "playedAt": null,
+      "winner": "童话电竞",
+      "evidenceId": "ace-result-1ba4098d15af29b427e270",
+      "evidenceSha256": "1ba4098d15af29b427e270095c0603cbc7685c247b822035cfdb8076dd4836bc",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。使用游戏当前显示的昵称。作者提及的别名或账号归属仅作来源线索。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 51.3,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709915226820332840",
+          "imageOrdinal": 3,
+          "sha256": "4e67d1cc91737b6057b5b11b0420891b070c5ffc30a3bdb089af6a92a4b4fc24"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "童话电竞",
+          "catalogNickname": "童话电竞",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            631,
+            477,
+            388,
+            316,
+            5,
+            4,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 631,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 477,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 388,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5021",
+              "name": "裴擒虎",
+              "level": 316,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/aa2d61f499d89001f7e27762d555894f7aafcea0a09cc68a4ceb823291a0ea5a.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 5,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5241",
+              "name": "蒙犽",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b0bb4cb7377a5f0f7bf9042a013335cfc3765a8e78f00470afd54a9634b3898.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "1aeca4899f4ef643093bb5285780c35f889158692d2b4fded207980e4a324f41"
+        },
+        {
+          "rank": 2,
+          "nickname": "愿你安然入梦",
+          "catalogNickname": "愿你安然入梦",
+          "commander": "武凤",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            363,
+            308,
+            137,
+            132,
+            121,
+            42,
+            16
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 363,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 308,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 137,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 132,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 121,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 42,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 16,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "f2d9e4989d9f8202f46178550d1595ae9fac0f7e04962f94a4b169db5f66c11c"
+        },
+        {
+          "rank": 3,
+          "nickname": "抖音妖柒",
+          "catalogNickname": "抖音妖柒",
+          "commander": "马可",
+          "build": "镜猪",
+          "visibleCardLevels": [
+            401,
+            153,
+            69,
+            16,
+            1,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5311",
+              "name": "镜",
+              "level": 401,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/bcc3bda5a85766f311fd30e49ee53515fb51368b16b9cefb96ff5765bd36e27b.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 153,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 69,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1211",
+              "name": "芈月",
+              "level": 16,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/6948c2e6e1a7c8766215d3c452e1e407022c72f5bf19651a5ebd6e91e22a31c2.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "5bd7e74d73f0ea168b5f67a997e951801ee69c138745dc23e2132d33fdb90626"
+        },
+        {
+          "rank": 4,
+          "nickname": "EGM丨无量大蒜",
+          "catalogNickname": "EGM丨无量大蒜",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "visibleCardLevels": [
+            470,
+            349,
+            342,
+            329,
+            324,
+            297,
+            30
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 470,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5451",
+              "name": "莱西奥",
+              "level": 349,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e91f0afb351f2f5936418f6026e1a42c0225af8f680ceb4152ff28e4a2fa3be.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1661",
+              "name": "亚瑟",
+              "level": 342,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1481",
+              "name": "姜子牙",
+              "level": 329,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/c9384b4ab62704fb9ec40390d8391e9b7590c04e6f4b0354a228c59eab8b1e8b.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 324,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-5631",
+              "name": "海诺",
+              "level": 297,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ff28bd38fa4889b7383fe109318d55971a59a14043549ca0621fc981eb106752.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 30,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "94619bde957d4652cfce0bfbdd7ae8909ff1d37982e5fbddd36a2ae422f0f969"
+        },
+        {
+          "rank": 5,
+          "nickname": "舞麟迷弟",
+          "catalogNickname": "舞麟迷弟",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            154,
+            100,
+            70,
+            70,
+            69,
+            24,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 154,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1061",
+              "name": "小乔",
+              "level": 100,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d07ac335c4628ead1f58a1641fcb7400af8e2c2104ee720566416385caea563c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 70,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1841",
+              "name": "蔡文姬",
+              "level": 70,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4b5d1392e1d44dde507946393731cbc68a21a105ceba60f27beb3a7751c54f5e.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 69,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 24,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1111",
+              "name": "孙尚香",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4247eca93d2ce827d1d6a10c81fd34207ca6a63a7efbce1103897012a4bc9e3c.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "d8710d863ce22287a774350ee30e600d5489bb69eb8bad0ed8eccbc1f5933884"
+        },
+        {
+          "rank": 6,
+          "nickname": "好没意思的猫",
+          "catalogNickname": "好没意思的猫",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "visibleCardLevels": [
+            38,
+            30,
+            30,
+            25,
+            10
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1661",
+              "name": "亚瑟",
+              "level": 38,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/db003fffd9ac7067e8db45c4d10c7dc26567b0f48822d4813922f86f932d0b7d.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5631",
+              "name": "海诺",
+              "level": 30,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ff28bd38fa4889b7383fe109318d55971a59a14043549ca0621fc981eb106752.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5451",
+              "name": "莱西奥",
+              "level": 30,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7e91f0afb351f2f5936418f6026e1a42c0225af8f680ceb4152ff28e4a2fa3be.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 25,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5371",
+              "name": "司空震",
+              "level": 10,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a1c573c749dee8abf2a34c0c09ac8bd777c7c293838c1ce1fdc82d48a6d9c7be.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "457f0c35adc80b13a4002d894c8adeb21d7653341e0533a956f60d36f7cd1b26"
+        }
+      ]
+    },
+    {
+      "id": "ace-catalog-20261119-8-game-result",
+      "matchId": "ruanshi:2026-11-19:8",
+      "day": "2026-11-19",
+      "ordinal": 8,
+      "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+      "mode": "WANXIANG",
+      "ban": "逐鹿",
+      "duration": "00:30:10",
+      "scheduledAt": "2026-11-19T15:00:00.000Z",
+      "playedAt": null,
+      "winner": "抖音梦飞77",
+      "evidenceId": "ace-result-9706c9e0fcb8de2ef24439",
+      "evidenceSha256": "9706c9e0fcb8de2ef244396550571c5f229bbed6efdf010613ac985b4de8ea8b",
+      "sourceUrl": "https://www.douyin.com/video/7710180186037756011",
+      "usageScope": "INTERNAL_ONLY",
+      "dateBasis": "视频标题和赛间列表日期。计划场次按北京时间16:00至23:00。",
+      "recognitionNote": "名次、游戏昵称与英雄等级按结算画面转写。阵容标签对照逐场战报。使用游戏当前显示的昵称。作者提及的别名或账号归属仅作来源线索。",
+      "source": {
+        "author": "种田（王者万象棋）",
+        "url": "https://www.douyin.com/video/7710180186037756011",
+        "videoSeconds": 37,
+        "materialType": "SETTLEMENT_VIDEO_FRAME",
+        "corroboration": {
+          "author": "抖音软柿【万象棋】",
+          "url": "https://www.douyin.com/note/7709915226820332840",
+          "imageOrdinal": 4,
+          "sha256": "49419f3d02873c71297841b486cce3802b168d2053ceb8c57ca624707f18697a"
+        }
+      },
+      "seats": [
+        {
+          "rank": 1,
+          "nickname": "抖音梦飞77",
+          "catalogNickname": "抖音梦飞77",
+          "commander": "镜",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            434,
+            395,
+            372,
+            274,
+            272,
+            10,
+            1
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 434,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1901",
+              "name": "诸葛亮",
+              "level": 395,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/545a11ee6dfda6c108293598d0d3a090c0876bbb03321878c45c7018c845c32f.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 372,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 274,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 272,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 10,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 1,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "a005123260d572715e76882d13d2a1f81543ec67fdaa95700ddc190bb2244e97"
+        },
+        {
+          "rank": 2,
+          "nickname": "抖音梦飞",
+          "catalogNickname": "抖音梦飞",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "visibleCardLevels": [
+            363,
+            170,
+            98,
+            86,
+            78,
+            52
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 363,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 170,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 98,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5131",
+              "name": "上官婉儿",
+              "level": 86,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/dc2c6e78d7e3072a190fdd34e0d54a7f06471fe298913348d7e5be7064a84ad8.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1361",
+              "name": "武则天",
+              "level": 78,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ebb72366bef180d3ceb74e57e6fb81647afe41f00a171468af945af3c8a378a6.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 52,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "c50bd6734f25a36b41496227d360d4b1f1a6e204e9d12e2881e7789def278277"
+        },
+        {
+          "rank": 3,
+          "nickname": "抖音梦飞冻冻",
+          "catalogNickname": "抖音梦飞冻冻",
+          "commander": "白歌",
+          "build": "三分登场",
+          "visibleCardLevels": [
+            499,
+            448,
+            347,
+            345,
+            9,
+            7,
+            6
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1231",
+              "name": "吕布",
+              "level": 499,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/19a4c709ad781946d00aa38f9770d4a8853919fe5558b84b80caa29decc036a0.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1411",
+              "name": "貂蝉",
+              "level": 448,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/1d7ef84a87af36485399fa8d07423bc0c7cced605bc5f97b333e093ca9a73ea6.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1281",
+              "name": "曹操",
+              "level": 347,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/4d7481b3018b7c213a557987238905fce25e399d2033cee6bbd2db9b001f9392.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1271",
+              "name": "甄姬",
+              "level": 345,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/29a6307acad4d2593970605542ac5680461292436333f7cd54cf97614de76b26.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 9,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1241",
+              "name": "周瑜",
+              "level": 7,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3ff6bf8dad5b0803c044a710578da8823a300fa0e0f202bd4e0deefae4199a26.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 6,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "773a7092eea9cedc4719d9a1ebe7ca9a475c01616ea32afada4d66924ba69e30"
+        },
+        {
+          "rank": 4,
+          "nickname": "枕沧海",
+          "catalogNickname": "枕沧海",
+          "commander": "阿离",
+          "build": "牺牲李信",
+          "visibleCardLevels": [
+            199,
+            141,
+            109,
+            66,
+            51,
+            29,
+            8
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5071",
+              "name": "李信",
+              "level": 199,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/2024da73569a0dcb5982216cc267e6430ccbab1e441c448e87f68804f339d019.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1931",
+              "name": "铠",
+              "level": 141,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d6c0732b6d141d454e8806f0e86341397e62754e971a767d00be7c8acc58a1b4.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1541",
+              "name": "花木兰",
+              "level": 109,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/095affb294f71086f819c41d78519637a1a7ffa014b24347b8d9bebb64d410db.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 66,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 51,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1751",
+              "name": "钟馗",
+              "level": 29,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/e4f55deae352e80d1e337190f16879c4951e94127e1ffdcede6026c486e85d19.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 8,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "4cf49d84b49ea6d5fa2adb07b59f09025b247481ffab2c15103bc8a42414f8cc"
+        },
+        {
+          "rank": 5,
+          "nickname": "DY棒教练",
+          "catalogNickname": "DY棒教练",
+          "commander": "马可",
+          "build": "传统养猪",
+          "visibleCardLevels": [
+            221,
+            99,
+            83,
+            80,
+            45
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-5111",
+              "name": "猪八戒",
+              "level": 221,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/930708500c7a8726e1f6d0500c3f6f94acc154add14a7b4594331f4fa3818873.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-5011",
+              "name": "明世隐",
+              "level": 99,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/ab8bbb427a83fe032979c124286847989e4866ffdf54eabb438abc17040833d2.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-1141",
+              "name": "刘禅",
+              "level": 83,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/fe5144aaac580bdf7a1afce2d69656a91411477b5e5b9f802f6ba98eb5d51ec9.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-5051",
+              "name": "瑶",
+              "level": 80,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/d72b3093fa254ca194e9bd995a4ff29814bebdfea1555184262b0d5de9d467b7.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-5641",
+              "name": "姬小满",
+              "level": 45,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/3e6d91d89dcc4a5aafa9da2bc64ab7ba6b86a1309d9a95db05e7a0215086fb8e.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "6edef32beaa5083535740683c77ebb5f7363dc7ed82be73ff7870ca324d50b9f"
+        },
+        {
+          "rank": 6,
+          "nickname": "皂刀客",
+          "catalogNickname": "皂刀客",
+          "commander": "嬴律",
+          "build": "多彩古币",
+          "visibleCardLevels": [
+            50,
+            36,
+            27,
+            12,
+            4,
+            4,
+            3
+          ],
+          "finalCards": [
+            {
+              "position": 1,
+              "heroId": "hero-1761",
+              "name": "杨玉环",
+              "level": 50,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7083ee31158950678acd6f1e35f7a2321b7e9552aa1b917ae4cd9f9f41fc871a.png"
+            },
+            {
+              "position": 2,
+              "heroId": "hero-1441",
+              "name": "程咬金",
+              "level": 36,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/f3a7db5e4dd19d0893ca23f518b12cdba3e40d9ce284aa707630990af032fc4c.png"
+            },
+            {
+              "position": 3,
+              "heroId": "hero-5211",
+              "name": "海月",
+              "level": 27,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7047c9bbbb9bf6e25317f871f8bb82fcc6e45285244391fa6db8dd7a107278a8.png"
+            },
+            {
+              "position": 4,
+              "heroId": "hero-1861",
+              "name": "太乙真人",
+              "level": 12,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/a8309ec364ad4681309376847d33785771924c0792079daf279ac5ece4279fe1.png"
+            },
+            {
+              "position": 5,
+              "heroId": "hero-1461",
+              "name": "露娜",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/999051775d6decc1f99b9823895013aee3f6fbf21d9757dc5d3bcb0486af786f.png"
+            },
+            {
+              "position": 6,
+              "heroId": "hero-1311",
+              "name": "李白",
+              "level": 4,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/7b645dc0e9f36492d51645eb66f10d489dcaa5c53a4f08860bd363806dec61af.png"
+            },
+            {
+              "position": 7,
+              "heroId": "hero-5091",
+              "name": "盾山",
+              "level": 3,
+              "officialCardUrl": "https://staticimage-prod.osgame.qq.com/CardCapture/publish/release/Texture/731f5a630c17f7a2507d4b1d416cca634f0a88ba1288cc4e7e71dd363d158506.png"
+            }
+          ],
+          "classification": "FINAL_BOARD_COMPOSITION",
+          "playerId": "f7d5d2f41156997022415493070006e891b28f469acc7fb2a557e08f99add128"
+        }
+      ]
+    }
+  ]
+}
