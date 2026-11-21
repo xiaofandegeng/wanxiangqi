@@ -3,7 +3,16 @@ import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {buildTalentStatistics} from '../src/prediction/talent-statistics.mjs'
 import {assessRoster} from '../src/prediction/screenshot-analysis.mjs'
+import {TALENT_RULES} from '../../shared/talent-impact.mjs'
 
+const evidence=JSON.parse(readFileSync(new URL('../data/talent-settlement-observations.json',import.meta.url)))
+function databaseEvidenceAt(cutoff){
+ return [evidence,...evidence.additions].filter(batch=>Date.parse(batch.reviewedAt)<=Date.parse(cutoff))
+  .flatMap(batch=>batch.matches.map(match=>({
+   ...match,version:match.matchId.includes('2026-11-18')?'v1.10.1':'v1.11.1',
+   seats:match.seats.map(icons=>icons.map(([,name])=>name))
+  })))
+}
 const cutoff = '2026-11-20T15:00:00.000Z'
 const version = 'v1.11.1'
 const matches = ['18', '19'].flatMap(day => {
@@ -15,8 +24,9 @@ const matches = ['18', '19'].flatMap(day => {
 })
 
 test('天赋样本按证据指纹、入库可见时间与版本计数', () => {
- assert.deepEqual(buildTalentStatistics(matches, '2026-11-20T14:29:00Z'), {})
- const statistics = buildTalentStatistics(matches, cutoff)
+ assert.deepEqual(buildTalentStatistics(matches, databaseEvidenceAt('2026-11-20T14:29:00Z')), {})
+ assert.deepEqual(buildTalentStatistics(matches, []), {})
+ const statistics = buildTalentStatistics(matches, databaseEvidenceAt(cutoff))
  const find = (version,build,talent) => statistics[version].find(row=>row.build===build && row.talent===talent)
  const synergy = find(version, '三分登场', '点兵点将')
  assert.deepEqual([synergy.wins,synergy.appearances,synergy.distinctMatches,synergy.buildWins,synergy.buildAppearances], [3,4,3,4,11])
@@ -27,15 +37,17 @@ test('天赋样本按证据指纹、入库可见时间与版本计数', () => {
   assert.equal(dilin.logWeight,0)
  }
  const mismatched = matches.map(match=>({...match,materialSha256:'MISMATCHED'}))
- assert.deepEqual(buildTalentStatistics(mismatched,cutoff)[version],[])
+ assert.deepEqual(buildTalentStatistics(mismatched,databaseEvidenceAt(cutoff)),{})
 })
 
 test('赛中对已取得天赋与已知阵容应用同版本修正，赛前和结算图受阶段约束', () => {
- const catalog={matches,players:[],sources:[],counts:{},talentStatistics:buildTalentStatistics(matches,cutoff)}
+ const players=Array.from({length:6},(_,i)=>({id:`person-${i}`,nickname:`TEST-${i}`,history:[]}))
+ const training={...matches[0],matchType:'full_transcribed',seats:matches[0].seats.map((seat,i)=>({...seat,playerId:players[i].id}))}
+ const catalog={matches:[training],players,sources:[],counts:{},talentStatistics:buildTalentStatistics(matches,databaseEvidenceAt(cutoff))}
  const draft={featureCutoff:cutoff,ocr:{phaseHint:'UNKNOWN'}}
  const input={phase:'IN_PROGRESS',mode:'WANXIANG',version,identityConfirmed:true,operator:'TEST',
   experimentalProbability:true,players:Array.from({length:6},(_,i)=>({
-   nickname:`TEST-${i}`, visiblePlan:'三分登场', selectedTalents:i===0?['点兵点将','点兵点将']:[]
+   nickname:`TEST-${i}`, profileId:players[i].id, visiblePlan:'三分登场', selectedTalents:i===0?['点兵点将','点兵点将']:[]
   }))}
  const {model,aceContext}=assessRoster(catalog,input,draft)
  assert.equal(aceContext.supportStage,'CLOSED')
@@ -44,6 +56,27 @@ test('赛中对已取得天赋与已知阵容应用同版本修正，赛前和�
  assert.ok(Math.abs(model.players.reduce((sum,seat)=>sum+seat.probability,0)-1)<1e-12)
  assert.equal(assessRoster(catalog,{...input,version:'v1.10.1'},draft).model.talentAdjustment.players[0].logWeight,0)
  assert.equal(assessRoster(catalog,{...input,mode:'DIAMOND'},draft).model.talentAdjustment.players[0].logWeight,0)
+ assert.equal(assessRoster(catalog,{...input,aceContext:{bannedFaction:'三分'}},draft).model.talentAdjustment.players[0].logWeight,0)
  assert.throws(()=>assessRoster(catalog,{...input,phase:'PREMATCH'},draft),/赛中推演/)
  assert.throws(()=>assessRoster(catalog,input,{...draft,ocr:{phaseHint:'POSTMATCH_INDICATORS'}}),/赛后核对/)
+})
+
+test('续录的天赋保留原预测截止时间，新增场次按原图指纹入样', () => {
+ const old=buildTalentStatistics(matches,databaseEvidenceAt('2026-11-20T14:40:00Z'))
+ const expanded=buildTalentStatistics(matches,databaseEvidenceAt(cutoff))
+ assert.deepEqual(Object.values(expanded).map(rows=>rows.length),[82,77])
+ assert.ok(Object.values(expanded).flat().every(row=>Object.hasOwn(TALENT_RULES,row.talent)))
+ assert.equal(old[version].some(row=>row.build==='三分登场' && row.talent==='危险数字'),false)
+ const added=expanded[version].find(row=>row.build==='三分登场' && row.talent==='危险数字')
+ assert.deepEqual([added.appearances,added.wins,added.distinctMatches,added.logWeight],[2,1,2,0])
+ const newBatch=evidence.additions.find(batch=>batch.matches.some(match=>match.matchId==='ruanshi:2026-11-20:1'))
+ const record=newBatch.matches[0]
+ const newMatch={id:record.matchId,day:'2026-11-20',materialSha256:record.materialSha256,
+  seats:Array.from({length:6},(_,i)=>({slot:i+1,build:i===0?'日落海艾琳':'TEST',winner:i===0}))}
+ const afterReview=new Date(Date.parse(newBatch.reviewedAt)+1000).toISOString()
+ const hasNewMatch=(match,at)=>buildTalentStatistics([...matches,match],databaseEvidenceAt(at))[version]
+  .some(row=>row.build==='日落海艾琳' && row.talent==='末世')
+ assert.equal(hasNewMatch(newMatch,cutoff),false)
+ assert.equal(hasNewMatch(newMatch,afterReview),true)
+ assert.equal(hasNewMatch({...newMatch,materialSha256:'MISMATCHED'},afterReview),false)
 })

@@ -49,7 +49,9 @@ export interface Stats {
 
 export async function researchApi<T>(action: string, body?: unknown): Promise<T> {
   const token = getAdminToken()
-  if (!token && !(localResearch && body === undefined && /^(catalog|matches|stats|observations)$/.test(action))) {
+  const localRead = body === undefined && /^(catalog|matches|stats|observations)$/.test(action)
+  const localForecast = body !== undefined && action === 'forecast'
+  if (!token && !(localResearch && (localRead || localForecast))) {
     throw new Error('请先配置管理凭证')
   }
 

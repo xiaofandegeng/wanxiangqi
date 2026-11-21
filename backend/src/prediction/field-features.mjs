@@ -71,6 +71,7 @@ export function fieldFeatures(history, target, choices, historicalChoice, config
   const recentStrength=winRate(history.map(row=>({...row,weight:row.weight**2})),BASE,8)
   const commander=normalizeLabel(choices.get(seat).commander)
   const ownCommander=history.filter(row=>commander&&row.commander===commander)
+  const personalBuildHistory=commander?ownCommander:history
   const commanderRows=past.filter(row=>commander&&row.commander===commander)
   const commanderStrength=winRate(commanderRows,BASE,12)
   const opponentIds=new Set(target.seats.filter((_,i)=>i!==index).map(other=>other.id))
@@ -113,7 +114,7 @@ export function fieldFeatures(history, target, choices, historicalChoice, config
   for(const [build,usage] of distributions[index]){
    const buildRows=byBuild.get(build)??[]
    const buildRate=winRate(buildRows,BASE,8)
-   const personalRate=winRate(history.filter(row=>row.build===build),baseline,8)
+   const personalRate=winRate(personalBuildHistory.filter(row=>row.build===build),baseline,8)
    const collision=1-distributions.reduce((none,other,i)=>i===index?none:none*(1-(other.get(build)??0)),1)
    const competitionRows=buildRows.filter(row=>row.competitionKnown)
    const shared=winRate(competitionRows.filter(row=>row.contested),buildRate,10)

@@ -56,7 +56,7 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  assert.equal(referenceAnalysis.players[0].claims.at(-1).id,'reference-only')
  assert.deepEqual(referenceAnalysis.model.players,experimental.json.data.model.players)
  assert.deepEqual(referenceAnalysis.model.buildProjections,experimental.json.data.model.buildProjections)
- assert.equal(experimental.json.data.model.modelVersion,'source-roster-dynamic-v11')
+ assert.equal(experimental.json.data.model.modelVersion,'source-roster-dynamic-v13')
  assert.deepEqual(experimental.json.data.players.map(p=>p.probability),experimental.json.data.model.players.map(p=>p.probability))
  const persisted=(await pool.query('SELECT result FROM prediction_screenshot_analyses WHERE id=$1',[experimental.json.data.id])).rows[0].result
  assert.deepEqual(persisted.model,experimental.json.data.model)

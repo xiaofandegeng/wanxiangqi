@@ -32,7 +32,9 @@ export default defineConfig(({ command, mode }) => {
           proxy.on('proxyReq', (outgoing, req) => {
             if (req.socket.localAddress !== '127.0.0.1' || req.socket.remoteAddress !== '127.0.0.1') return
             const pathname = (req.url ?? '').split('?')[0]
-            if (req.method === 'GET' && /^\/api\/v1\/admin\/prediction\/(catalog|matches|stats|observations)$/.test(pathname)) {
+            const read = req.method === 'GET' && /^\/api\/v1\/admin\/prediction\/(catalog|matches|stats|observations)$/.test(pathname)
+            const forecast = req.method === 'POST' && pathname === '/api/v1/admin/prediction/forecast'
+            if (read || forecast) {
               outgoing.setHeader('Authorization', `Bearer ${token}`)
             }
           })

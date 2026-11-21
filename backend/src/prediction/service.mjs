@@ -1,4 +1,4 @@
-import { ScreenshotService } from './screenshot-analysis.mjs'
+import { ScreenshotService, forecastRoster } from './screenshot-analysis.mjs'
 import { CatalogService } from './catalog.mjs'
 import { ObservationService } from './observations.mjs'
 import {randomUUID} from 'node:crypto'
@@ -39,6 +39,11 @@ export class PredictionService {
  async list(){return (await this.pool.query('SELECT * FROM prediction_matches ORDER BY played_at DESC, id')).rows.map(wire)}
  async eligible(){return (await this.pool.query(`SELECT m.* FROM prediction_matches m JOIN evidences e ON e.id=m.evidence_id JOIN evidence_blobs b ON b.sha256=e.sha256 WHERE m.status='VERIFIED' AND e.status='VERIFIED' AND octet_length(b.content)=b.size_bytes AND b.size_bytes>0 ORDER BY m.played_at`)).rows.map(wire)}
  async stats(){return computeStats(await this.eligible())}
+ async forecast(input){
+  const {time}=(await this.pool.query('SELECT clock_timestamp() AS time')).rows[0]
+  const cutoff=time.toISOString()
+  return forecastRoster(await this.catalog.list({cutoff}),input,cutoff)
+ }
  async predict(input){const r=estimate(await this.eligible(),input);if(r.status==='RESEARCH_BASELINE'){r.id=randomUUID();await this.pool.query('INSERT INTO prediction_runs(id,payload) VALUES($1,$2)',[r.id,JSON.stringify(r)])}return r}
  async runs(){return (await this.pool.query('SELECT id,created_at,payload FROM prediction_runs ORDER BY created_at DESC LIMIT 50')).rows.map(r=>({...r.payload,createdAt:r.created_at.toISOString()}))}
 }

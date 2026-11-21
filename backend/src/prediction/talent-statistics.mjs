@@ -1,14 +1,4 @@
-import {readFileSync} from 'node:fs'
 import {normalizeLabel} from './build-stats.mjs'
-
-const evidence = JSON.parse(readFileSync(new URL('../../data/talent-settlement-observations.json', import.meta.url), 'utf8'))
-const TALENT_RULE_VERSIONS = ['v1.10.1', 'v1.11.1']
-
-function rulesForDay(day) {
-  if (day >= '2026-11-19') return 'v1.11.1'
-  if (day >= '2026-11-12') return 'v1.10.1'
-  return null
-}
 
 function versionStatistics(matches, observations) {
   const builds = new Map()
@@ -24,7 +14,7 @@ function versionStatistics(matches, observations) {
       builds.set(build, tally)
       tally.appearances++
       tally.wins += Number(seat.winner)
-      for (const talent of new Set((record.seats[seat.slot - 1] ?? []).map(([, name]) => name))) {
+      for (const talent of record.seats[seat.slot - 1]) {
         const pair = tally.pairs.get(talent) ?? {appearances: 0, wins: 0, matches: new Set()}
         tally.pairs.set(talent, pair)
         pair.appearances++
@@ -45,20 +35,23 @@ function versionStatistics(matches, observations) {
   }))
 }
 
-export function buildTalentStatistics(matches, cutoff) {
-  if (Date.parse(cutoff) < Date.parse(evidence.reviewedAt)) return {}
-  const day = new Date(Date.parse(cutoff) + 8 * 3600000).toISOString().slice(0, 10)
-  const observations = new Map(evidence.matches.map(match => [match.matchId, match]))
-  for (const batch of evidence.additions ?? []) {
-    if (Date.parse(batch.reviewedAt) > Date.parse(cutoff)) continue
-    for (const match of batch.matches) {
-      const prior = observations.get(match.matchId)
-      if (!prior || prior.materialSha256 !== match.materialSha256) continue
-      const seats = prior.seats.map((icons, seat) => [...icons, ...match.seats[seat]])
-      observations.set(match.matchId, {...prior, seats})
+export function buildTalentStatistics(matches, evidenceRows) {
+  const byMatch = new Map(matches.map(match => [match.id, match]))
+  const versions = new Map()
+  for (const row of evidenceRows) {
+    if (byMatch.get(row.matchId)?.materialSha256 !== row.materialSha256) continue
+    if (!Array.isArray(row.seats) || row.seats.length !== 6 ||
+      !row.seats.every(names => Array.isArray(names) && names.every(name => typeof name === 'string' && name.trim()))) continue
+    const observations = versions.get(row.version) ?? new Map()
+    versions.set(row.version, observations)
+    const record = observations.get(row.matchId) ?? {
+      materialSha256: row.materialSha256,
+      seats: Array.from({length: 6}, () => new Set())
     }
+    observations.set(row.matchId, record)
+    row.seats.forEach((names, index) => names.forEach(name => record.seats[index].add(name)))
   }
-  return Object.fromEntries(TALENT_RULE_VERSIONS.map(version => [
-    version, versionStatistics(matches.filter(match => match.day < day && rulesForDay(match.day) === version), observations)
+  return Object.fromEntries([...versions].map(([version, observations]) => [
+    version, versionStatistics(matches, observations)
   ]))
 }

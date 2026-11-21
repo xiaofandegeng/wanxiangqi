@@ -7,7 +7,7 @@
           <span class="badge-tag">{{ isEditing ? '✏️ 修改对局战绩' : '➕ 录入新对局战绩' }}</span>
           <h3 class="header-title">{{ isEditing ? `校准战绩：${formData.day} 第 ${formData.ordinal} 场` : '手动录入一场王牌对决实战对局' }}</h3>
           <p class="header-desc">
-            {{ isEditing ? '录入错误或选手姓名、阵容、胜者有误时，可直接在此更正。保存后将即时刷新战绩库并重新推演克制数据。' : '录入 6 席对局实况，完善历史实战样本池，录入后自动计入选手登顶榜与战力模型。' }}
+            补录和修改保存在当前浏览器。数据库预测使用后端已入库的逐局记录。
           </p>
         </div>
         <button type="button" class="btn-close" aria-label="关闭" @click="handleClose">✕</button>
@@ -16,6 +16,8 @@
       <!-- 模态框主体内容 -->
       <div class="modal-body">
         <form @submit.prevent="handleSubmit">
+          <datalist id="match-commander-options"><option v-for="name in candidateCommanders ?? []" :key="name" :value="name" /></datalist>
+          <datalist id="match-build-options"><option v-for="name in candidateBuilds ?? []" :key="name" :value="name" /></datalist>
           <!-- 1. 基础元信息区 (日期、场次序号、Ban位) -->
           <div class="form-section-meta">
             <div class="meta-field">
@@ -114,6 +116,7 @@
                       placeholder="选手名字 / 战队马甲"
                       required
                       @focus="activeSuggestSlot = idx"
+                      @input="seat.playerId = undefined; seat.commander = ''"
                       @blur="handleInputBlur"
                     />
                     <!-- 选手联想下拉建议框 -->
@@ -136,16 +139,14 @@
 
                 <div class="seat-field">
                   <label :for="`player-cmd-${idx}`" class="field-sub-label">♟️ 出战棋手</label>
-                  <select
+                  <input
                     :id="`player-cmd-${idx}`"
                     v-model="seat.commander"
-                    class="form-select cmd-select"
+                    class="form-input"
+                    list="match-commander-options"
+                    maxlength="80"
+                    placeholder="未知留空"
                   >
-                    <option value="">智能匹配 / 招牌</option>
-                    <option v-for="cmd in OFFICIAL_COMMANDERS" :key="cmd.name" :value="cmd.name">
-                      {{ cmd.name }} ({{ cmd.tier }})
-                    </option>
-                  </select>
                 </div>
 
                 <div class="seat-field">
@@ -155,22 +156,10 @@
                     v-model="seat.build"
                     type="text"
                     class="form-input"
-                    placeholder="例如 三分倒转、逐鹿蒙恬"
+                    list="match-build-options"
+                    placeholder="填写已核实阵容"
                     required
                   />
-                  <!-- 常用流派快捷选择条 -->
-                  <div class="quick-builds-row">
-                    <button
-                      v-for="b in QUICK_BUILDS.slice(0, 4)"
-                      :key="b"
-                      type="button"
-                      class="quick-build-btn"
-                      :class="{ selected: seat.build === b }"
-                      @click="seat.build = b"
-                    >
-                      {{ b }}
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -201,12 +190,13 @@ import {
   type StoredSeat,
   saveStoredMatch
 } from '../utils/match-storage'
-import { OFFICIAL_COMMANDERS, findPlayerMasterProfile } from '../utils/player-matchup'
 
 const props = defineProps<{
   modelValue: boolean
   match: StoredMatch | null
   candidatePlayers?: string[]
+  candidateCommanders?: string[]
+  candidateBuilds?: string[]
 }>()
 
 const emit = defineEmits<{
@@ -214,20 +204,6 @@ const emit = defineEmits<{
   (e: 'save', savedMatch: StoredMatch): void
   (e: 'close'): void
 }>()
-
-const QUICK_BUILDS = [
-  '三分倒转',
-  '日落海倒转',
-  '逐鹿蒙恬',
-  '雷霆战机',
-  '传统养猪',
-  '大河龙蛇',
-  '伞半月',
-  '河洛木兰',
-  '三分登场',
-  '稷下坦射',
-  '镜猪转吕布'
-]
 
 const isEditing = computed(() => Boolean(props.match?.id))
 const activeSuggestSlot = ref<number | null>(null)
@@ -255,7 +231,7 @@ const formData = ref<EditFormState>({
   seats: Array.from({ length: 6 }, (_, i) => ({
     slot: i + 1,
     nickname: '',
-    build: '三分倒转',
+    build: '',
     winner: i === 0
   }))
 })
@@ -282,13 +258,16 @@ watch(
         materialSha256: props.match.materialSha256,
         matchType: props.match.matchType,
         seats: Array.from({ length: 6 }, (_, i) => {
-          const s = rawSeats[i]
+          const s = rawSeats.find(seat => seat.slot === i + 1)
           const isWinner = s?.winner ?? (i + 1 === wSlot)
+          const commander = props.match?.isCustom || props.match?.isModified
+            ? (s?.commanderConfirmed ? s.commander : '')
+            : (s && 'reviewedCommander' in s ? s.reviewedCommander : s?.commander)
           return {
             slot: i + 1,
             nickname: s?.nickname || '',
-            commander: s?.commander || '',
-            build: s?.build || '三分倒转',
+            commander: commander || '',
+            build: s?.build || '',
             winner: isWinner,
             playerId: s?.playerId
           }
@@ -309,7 +288,7 @@ watch(
           slot: i + 1,
           nickname: '',
           commander: '',
-          build: QUICK_BUILDS[i % QUICK_BUILDS.length] || '三分倒转',
+          build: '',
           winner: i === 0
         }))
       }
@@ -338,7 +317,12 @@ function handleInputBlur() {
 }
 
 function selectSuggestPlayer(seatIdx: number, nickname: string) {
-  formData.value.seats[seatIdx].nickname = nickname
+  const seat = formData.value.seats[seatIdx]
+  if (seat.nickname !== nickname) {
+    seat.playerId = undefined
+    seat.commander = ''
+    seat.nickname = nickname
+  }
   activeSuggestSlot.value = null
 }
 
@@ -393,16 +377,13 @@ function handleSubmit() {
     winnerSlot: winner.slot,
     winnerNickname: winner.nickname.trim(),
     seats: formData.value.seats.map(s => {
-      let cmd = (s.commander || '').trim()
-      if (!cmd) {
-        const masterDef = findPlayerMasterProfile(s.nickname)
-        cmd = masterDef?.signatureCommander || '小妲己'
-      }
+      const cmd = s.commander?.trim() || ''
       return {
         slot: s.slot,
         playerId: s.playerId,
         nickname: s.nickname.trim(),
         commander: cmd,
+        commanderConfirmed: Boolean(cmd),
         avatar: `/avatars/default.svg`,
         build: s.build.trim(),
         winner: Boolean(s.winner)

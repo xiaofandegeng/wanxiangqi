@@ -11,6 +11,7 @@ import {
   importPatchesJson,
   type StoredMatch
 } from '../src/utils/match-storage'
+import { buildPlayerMatchupProfiles } from '../src/utils/player-matchup'
 
 describe('王牌对决战绩本地存储与修改覆盖机制 (MatchStorage)', () => {
   const mockRawMatches: StoredMatch[] = [
@@ -96,6 +97,28 @@ describe('王牌对决战绩本地存储与修改覆盖机制 (MatchStorage)', (
     expect(target?.winnerNickname).toBe('小谷芷')
     expect(target?.winnerBuild).toBe('雷霆战机')
     expect(target?.seats[5].nickname).toBe('抖音风喵喵')
+  })
+
+  it('旧补录只继承来源核对过的棋手，新补录可明确确认棋手', () => {
+    const original = {
+      ...mockRawMatches[0],
+      seats: mockRawMatches[0].seats.map((seat, index) =>
+        index === 0 ? { ...seat, commander: '马可', reviewedCommander: '马可' } :
+        index === 1 ? { ...seat, commander: '白歌', reviewedCommander: null } : seat
+      )
+    }
+    saveStoredMatch({
+      ...original,
+      seats: original.seats.map((seat, index) =>
+        index === 2 ? { ...seat, commander: '嬴律', commanderConfirmed: true } :
+        index === 3 ? { ...seat, commander: '小妲己' } : seat
+      )
+    })
+    const profiles = buildPlayerMatchupProfiles(applyMatchPatches([original]), false)
+    expect(profiles.get('梦飞大大')?.commanderProfiles).toMatchObject([{ commander: '马可', matches: 1, wins: 1 }])
+    expect(profiles.get('小谷芷')?.commanderProfiles).toEqual([])
+    expect(profiles.get('世薄情')?.commanderProfiles).toMatchObject([{ commander: '嬴律', matches: 1, wins: 0 }])
+    expect(profiles.get('EZ拉丁鱼')?.commanderProfiles).toEqual([])
   })
 
   it('支持手动录入一场全新的实战对局，合并后自动按日期与场次降序排列', () => {

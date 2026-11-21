@@ -43,8 +43,8 @@ export function estimate(matches, input, cutoff=new Date().toISOString()) {
  const roster=input.players.map(key=>stats.players.find(p=>p.key===key))
  if(roster.some(p=>!p||p.matches<3)) return {status:'INSUFFICIENT_DATA',reason:'六名选手均需至少3场已核验且同模式同版本的历史记录；该门槛仅为研究基线条件。',calibrated:false,cutoff}
  if(new Set(roster.map(p=>JSON.stringify([p.platform,p.region]))).size!==1) throw fail('同场选手必须来自相同平台与区服','ROSTER_SCOPE_MISMATCH')
- // 平滑平均名次→softmax，仅为未校准研究基线；不作准确率承诺。
- const scores=roster.map(p=>Math.exp(-(p.rankSum+3.5*3)/(p.matches+3)))
+ // 已核验平均名次经 softmax 转成同场研究权重。
+ const scores=roster.map(p=>Math.exp(-p.avgRank))
  const sum=scores.reduce((a,b)=>a+b,0)
- return {status:'RESEARCH_BASELINE',modelVersion:'smoothed-average-rank-v1',calibrated:false,cutoff,notice:'未完成独立时间回测，不是经过校准的胜率。实际预测效果未知。',players:roster.map((p,i)=>({key:p.key,nickname:p.nickname,matches:p.matches,avgRank:p.avgRank,probability:scores[i]/sum}))}
+ return {status:'RESEARCH_BASELINE',modelVersion:'observed-average-rank-v2',calibrated:false,cutoff,notice:'根据核验平均名次计算的研究权重，尚未校准。',players:roster.map((p,i)=>({key:p.key,nickname:p.nickname,matches:p.matches,avgRank:p.avgRank,probability:scores[i]/sum}))}
 }

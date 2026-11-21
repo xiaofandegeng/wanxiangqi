@@ -1,0 +1,249 @@
+{
+  "id": "ace-catalog-20261120-1-game-result",
+  "matchId": "ruanshi:2026-11-20:1",
+  "day": "2026-11-20",
+  "ordinal": 1,
+  "status": "CATALOG_MATCH_RESULT_EVIDENCE",
+  "mode": "WANXIANG",
+  "ban": "河洛",
+  "duration": "00:28:41",
+  "scheduledAt": "2026-11-20T08:00:00.000Z",
+  "playedAt": null,
+  "winner": "抖音cc",
+  "winnerBuild": "日落海艾琳",
+  "evidenceId": "ace-result-e0307e2fb1c67351",
+  "evidenceSha256": "e0307e2fb1c6735172cdd7950f26dd2ecefa5541fc95a5a3379112fed78530d1",
+  "usageScope": "INTERNAL_ONLY",
+  "dateBasis": "日期及场次由用户确认为11月20日第一场",
+  "recognitionNote": "用户提供结算截图，马可日落海艾琳登顶夺冠",
+  "seats": [
+    {
+      "slot": 1,
+      "rank": 1,
+      "nickname": "抖音cc",
+      "commander": "马可",
+      "avatar": "/avatars/commanders/马可.png",
+      "build": "日落海艾琳",
+      "winner": true,
+      "heroes": [
+        {
+          "name": "艾琳",
+          "level": 734,
+          "stars": 3,
+          "ace": true
+        },
+        {
+          "name": "太乙真人",
+          "level": 20,
+          "stars": 3
+        }
+      ]
+    },
+    {
+      "slot": 2,
+      "rank": 2,
+      "nickname": "抖音所演ii",
+      "commander": "马可",
+      "avatar": "/avatars/commanders/马可.png",
+      "build": "三分射",
+      "winner": false,
+      "heroes": [
+        {
+          "name": "蒙犽",
+          "level": 756,
+          "stars": 3,
+          "ace": true
+        },
+        {
+          "name": "太乙真人",
+          "level": 401,
+          "stars": 3
+        },
+        {
+          "name": "周瑜",
+          "level": 272,
+          "stars": 2
+        },
+        {
+          "name": "孙尚香",
+          "level": 235,
+          "stars": 3
+        },
+        {
+          "name": "小乔",
+          "level": 229,
+          "stars": 3
+        },
+        {
+          "name": "孙策",
+          "level": 207,
+          "stars": 3
+        }
+      ]
+    },
+    {
+      "slot": 3,
+      "rank": 3,
+      "nickname": "ez姚半仙7D版",
+      "commander": "孙小宾",
+      "avatar": "/avatars/commanders/孙小宾.png",
+      "build": "三分登场",
+      "winner": false,
+      "heroes": [
+        {
+          "name": "曹操",
+          "level": 663,
+          "stars": 3
+        },
+        {
+          "name": "貂蝉",
+          "level": 650,
+          "stars": 3
+        },
+        {
+          "name": "孙尚香",
+          "level": 641,
+          "stars": 3
+        },
+        {
+          "name": "诸葛亮",
+          "level": 518,
+          "stars": 3
+        },
+        {
+          "name": "周瑜",
+          "level": 508,
+          "stars": 3
+        },
+        {
+          "name": "太乙真人",
+          "level": 8,
+          "stars": 1
+        }
+      ]
+    },
+    {
+      "slot": 4,
+      "rank": 4,
+      "nickname": "抖音搜天眷",
+      "commander": "镜",
+      "avatar": "/avatars/commanders/镜.png",
+      "build": "镜猪转李信",
+      "winner": false,
+      "heroes": [
+        {
+          "name": "李信",
+          "level": 999,
+          "stars": 3
+        },
+        {
+          "name": "镜",
+          "level": 999,
+          "stars": 3
+        },
+        {
+          "name": "吕布",
+          "level": 521,
+          "stars": 3
+        },
+        {
+          "name": "大乔",
+          "level": 2,
+          "stars": 1
+        }
+      ]
+    },
+    {
+      "slot": 5,
+      "rank": 5,
+      "nickname": "doki",
+      "commander": "嬴律",
+      "avatar": "/avatars/commanders/嬴律.png",
+      "build": "逐鹿嬴政",
+      "winner": false,
+      "heroes": [
+        {
+          "name": "嬴政",
+          "level": 382,
+          "stars": 2
+        },
+        {
+          "name": "西施",
+          "level": 130,
+          "stars": 3
+        },
+        {
+          "name": "蒙恬",
+          "level": 81,
+          "stars": 3
+        },
+        {
+          "name": "庄周",
+          "level": 77,
+          "stars": 3
+        },
+        {
+          "name": "白起",
+          "level": 76,
+          "stars": 3
+        },
+        {
+          "name": "阿轲",
+          "level": 64,
+          "stars": 3
+        },
+        {
+          "name": "小乔",
+          "level": 62,
+          "stars": 3
+        }
+      ]
+    },
+    {
+      "slot": 6,
+      "rank": 6,
+      "nickname": "好运且喜忠犬壹",
+      "commander": "嬴律",
+      "avatar": "/avatars/commanders/嬴律.png",
+      "build": "雷霆战机",
+      "winner": false,
+      "heroes": [
+        {
+          "name": "云中君",
+          "level": 110,
+          "stars": 3
+        },
+        {
+          "name": "哪吒",
+          "level": 101,
+          "stars": 2
+        },
+        {
+          "name": "墨子",
+          "level": 45,
+          "stars": 2
+        },
+        {
+          "name": "海月",
+          "level": 41,
+          "stars": 2
+        },
+        {
+          "name": "鲁班七号",
+          "level": 37,
+          "stars": 2
+        },
+        {
+          "name": "阿轲",
+          "level": 28,
+          "stars": 2
+        },
+        {
+          "name": "太乙真人",
+          "level": 14,
+          "stars": 2
+        }
+      ]
+    }
+  ]
+}

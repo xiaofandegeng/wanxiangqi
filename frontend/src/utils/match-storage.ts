@@ -9,6 +9,8 @@ export interface StoredSeat {
   build: string
   winner: boolean
   commander?: string
+  reviewedCommander?: string | null
+  commanderConfirmed?: boolean
   avatar?: string
 }
 
@@ -196,6 +198,14 @@ export function applyMatchPatches<T extends StoredMatch>(rawMatches: T[]): T[] {
         return {
           ...m,
           ...override,
+          seats: override.seats.map(seat => {
+            const source = m.seats.find(original => original.slot === seat.slot && original.nickname === seat.nickname)
+            const originalCommander = source && ('reviewedCommander' in source ? source.reviewedCommander : source.commander)
+            return {
+              ...seat,
+              commanderConfirmed: seat.commanderConfirmed ?? Boolean(seat.commander && seat.commander === originalCommander)
+            }
+          }),
           isModified: true
         } as T
       }

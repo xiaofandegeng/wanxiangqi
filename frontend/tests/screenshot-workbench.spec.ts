@@ -8,8 +8,46 @@ vi.mock('../src/api/index',()=>({uploadEvidence:upload}))
 let app:App
 const wait=()=>new Promise(r=>setTimeout(r,10))
 async function mount(){document.body.innerHTML='';const el=document.createElement('div');document.body.append(el);app=createApp(Workbench);app.mount(el);await wait();return el}
+function selectMode(el:ParentNode, selector:string){
+ const mode=[...el.querySelectorAll<HTMLSelectElement>(selector)].find(control=>control.querySelector('[value=WANXIANG]'))!
+ mode.value='WANXIANG'
+ mode.dispatchEvent(new Event('change'))
+}
 afterEach(()=>app?.unmount())
 describe('截图工作台',()=>{
+ it('极速推演提交六席和当场条件，并显示数据库返回的未知值',async()=>{
+  api.mockClear()
+  api.mockImplementation(async(action:string)=>{
+   if(action==='catalog') return {players:[],matches:[]}
+   if(action!=='forecast') throw new Error('unexpected action')
+   return {
+    status:'INSUFFICIENT_DATABASE_HISTORY',trainingMatches:7,modelVersion:'TEST-DB',notice:'入库记录不足',
+    players:Array.from({length:6},(_,i)=>({nickname:`选手${i+1}`,probability:null,historicalMatches:0,historicalWins:0})),
+    buildProjections:Array.from({length:6},()=>({candidates:[],commanderSamples:0,commanderWins:0,unknownShare:1}))
+   }
+  })
+  const el=await mount()
+  const roster=el.querySelector<HTMLInputElement>('.forecast-batch input')!
+  roster.value='选手1 选手2 选手3 选手4 选手5 选手6'
+  roster.dispatchEvent(new Event('input'))
+  el.querySelector<HTMLButtonElement>('.forecast-batch button')!.click()
+  await nextTick()
+  const commander=el.querySelector<HTMLInputElement>('input[list=forecast-commanders]')!
+  commander.value='已选棋手'
+  commander.dispatchEvent(new Event('input'))
+  selectMode(el,'.forecast-fields select')
+  await nextTick()
+  el.querySelector<HTMLButtonElement>('.forecast-submit')!.click()
+  await wait()
+  const payload=api.mock.calls.find(([action])=>action==='forecast')![1]
+  expect(payload.players).toHaveLength(6)
+  expect(payload.players[0]).toMatchObject({nickname:'选手1',profileId:null,commander:'已选棋手'})
+  expect(payload).not.toHaveProperty('history')
+  expect(el.querySelector('.forecast-result')?.textContent).toContain('7 场入库训练')
+  expect(el.querySelector('.forecast-result')?.textContent).toContain('阵容待确认')
+  expect(el.querySelector('.forecast-result')?.textContent).toContain('未计算')
+  expect(el.querySelector('.forecast-result')?.textContent).not.toContain('16.67%')
+ })
  it('未上传不生成预测，原图上传为内部范围；OCR后仍需六席人工确认',async()=>{
  api.mockImplementation(async(action:string)=>action==='catalog'?{players:[]}:{id:'TEST',featureCutoff:'2026-10-31T00:00:00Z',ocr:{phaseHint:'POSTMATCH_INDICATORS',rows:[{rawText:'TEST-A',candidates:[]}]}});upload.mockResolvedValue({evidenceId:'TEST-EV'})
  const el=await mount();expect(el.querySelector<HTMLButtonElement>('.primary')!.disabled).toBe(true)
@@ -25,6 +63,7 @@ it('提交棋手与禁用，不提交返奖报价',async()=>{
  api.mockImplementation(async(a:string)=>a==='catalog'?{players:[]}:a==='screenshots'?{id:'TEST',featureCutoff:'2026-10-31T00:00:00Z',ocr:{phaseHint:'UNKNOWN',rows:Array.from({length:6},(_,i)=>({rawText:'TEST'+i,candidates:[]}))}}:{status:'DATA_AUDIT_ONLY',notice:'TEST',featureCutoff:'2026-10-31T00:00:00Z',blockers:[],players:[]});upload.mockResolvedValue({evidenceId:'TEST-EV'})
  const el=await mount();const input=el.querySelector<HTMLInputElement>('input[type=file]')!;Object.defineProperty(input,'files',{value:[new File(['TEST'],'fixture.png')]});input.dispatchEvent(new Event('change'))
  const time=el.querySelector<HTMLInputElement>('input[type=datetime-local]')!;time.value='2026-10-31T12:00';time.dispatchEvent(new Event('input'));await nextTick();el.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await wait()
+ selectMode(el,'.shot-meta select')
  const stage=el.querySelectorAll<HTMLSelectElement>('.shot-meta select')[2]!;stage.value='OPEN';stage.dispatchEvent(new Event('change'))
  const version=el.querySelector<HTMLSelectElement>('.version-select')!;version.value='v1.8.1';version.dispatchEvent(new Event('change'))
  const commander=el.querySelector<HTMLInputElement>('.shot-seat-context input')!;commander.value='小妲己';commander.dispatchEvent(new Event('input'))
@@ -60,6 +99,7 @@ it('赛中允许确认已取得天赋，并把阵容和天赋提交给模型',as
  el.querySelector('.shot-upload')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
  await wait()
  expect(el.querySelector('.shot-review select[multiple]')).toBeNull()
+ selectMode(el,'.shot-meta select')
  const phase=[...el.querySelectorAll<HTMLSelectElement>('.shot-review select')].find(select=>select.querySelector('[value=IN_PROGRESS]'))!
  phase.value='IN_PROGRESS'
  phase.dispatchEvent(new Event('change'))

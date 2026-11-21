@@ -1,7 +1,6 @@
 import {buildStatistics} from './build-stats.mjs'
 import {createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
-import {buildHistoricalSnapshotMatches} from './historical-matches.mjs'
 import {buildTalentStatistics} from './talent-statistics.mjs'
 
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
@@ -42,7 +41,7 @@ export class CatalogService {
  const client=await this.pool.connect()
  try{
  await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
- const [players,plays,claims,sources,buildProfiles,links]=[
+ const [players,plays,claims,sources,buildProfiles,links,talents]=[
  await client.query('SELECT id,author,nickname,identity_status FROM prediction_catalog_players WHERE available_at<=$1 ORDER BY nickname',[cutoff]),
  await client.query(`SELECT p.*,m.day::text,m.ordinal,m.scheduled_at,to_char(m.scheduled_at AT TIME ZONE 'Asia/Shanghai', 'HH24:MI') AS scheduled_time,m.source_url,m.material_sha256,m.ban,m.winner_build,ce.commander AS reviewed_commander FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 LEFT JOIN prediction_catalog_commander_evidence ce ON ce.match_id=p.match_id AND ce.slot=p.slot AND ce.material_sha256=m.material_sha256 AND ce.available_at<=$1 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
  await client.query(`SELECT c.*,c.window_start::text AS start,c.window_end::text AS finish FROM prediction_catalog_claims c JOIN prediction_catalog_materials b ON b.sha256=c.material_sha256 WHERE octet_length(b.content)=b.size_bytes AND c.available_at<=$1 AND c.window_end<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY c.window_end DESC,c.id`,[cutoff]),
@@ -52,7 +51,9 @@ export class CatalogService {
    commanders,first_day::text AS "firstDay",last_day::text AS "lastDay",match_ids AS "matchIds"
   FROM prediction_player_build_profiles WHERE refreshed_at<=$1 AND last_day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date
   ORDER BY appearances DESC,wins DESC,build`,[cutoff]),
- await client.query('SELECT alias_id,canonical_id FROM prediction_catalog_player_links WHERE available_at<=$1',[cutoff])]
+ await client.query('SELECT alias_id,canonical_id FROM prediction_catalog_player_links WHERE available_at<=$1',[cutoff]),
+ await client.query(`SELECT match_id AS "matchId",material_sha256 AS "materialSha256",game_version AS version,seat_talents AS seats
+  FROM prediction_catalog_talent_evidence WHERE available_at<=$1 AND reviewed_at<=$1 ORDER BY reviewed_at,match_id`,[cutoff])]
  await client.query('COMMIT')
  const canonicalIds=new Map(links.rows.map(link=>[link.alias_id,link.canonical_id]))
  const canonicalPlayers=players.rows.filter(player=>!canonicalIds.has(player.id))
@@ -67,7 +68,7 @@ export class CatalogService {
   }
   const nick=playerMap.get(r.player_id)||'未知'
   if(r.winner){m.winnerSlot=r.slot;m.winnerNickname=nick}
-  const cmd = r.reviewed_commander || (r.day === '2026-11-06' && r.ordinal === 7 && r.slot === 6 && nick === '抖音猪葛龟龟' ? '乔汐' : '')
+  const cmd = r.reviewed_commander || ''
   const existingSeat = m.seats.find(s => s.slot === r.slot)
   if (existingSeat) {
    existingSeat.playerId = r.player_id
@@ -77,14 +78,11 @@ export class CatalogService {
   }
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
- const transcribedMatches=[...matchMap.values()]
- const transcribedKeys = new Set(transcribedMatches.map(m => `${m.day}:${m.ordinal}`))
- const snapshotMatches=buildHistoricalSnapshotMatches().filter(sm => !['2026-11-08','2026-11-09'].includes(sm.day) && !transcribedKeys.has(`${sm.day}:${sm.ordinal}`))
- const matches=[...transcribedMatches,...snapshotMatches].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
+ const matches=[...matchMap.values()].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
  const profiles=canonicalPlayers.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,buildProfile:buildProfiles.rows.filter(row=>row.player_id===p.id),builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,scheduledAt:h.scheduled_at?.toISOString()??null,scheduledTime:h.scheduled_time,slot:h.slot,build:h.build_label,reviewedCommander:h.reviewed_commander??null,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
  const allPlayerMap=new Map()
  for(const p of profiles){allPlayerMap.set(p.nickname,{...p,history:[...p.history],buildsMap:new Map(p.builds.map(b=>[b.label,{...b}])),commandersMap:new Map()})}
- for(const m of transcribedMatches){
+ for(const m of matches){
   for(const s of m.seats){
    if(!s.nickname||s.nickname.startsWith('席位'))continue
    let p=allPlayerMap.get(s.nickname)
@@ -136,16 +134,16 @@ export class CatalogService {
   counts:{
    players:profiles.length||allPlayers.length,
    totalPlayers:allPlayers.length,
-   matches:new Set(plays.rows.map(x=>x.match_id)).size||transcribedMatches.length,
+   matches:matches.length,
    totalMatches:matches.length,
    totalDays:new Set(matches.map(m=>m.day)).size,
-   plays:plays.rowCount||(6*transcribedMatches.length),
+   plays:plays.rowCount,
    claims:claims.rowCount,
    sources:sources.rowCount
   },
   matches,
-  buildStatistics:buildStatistics(transcribedMatches),
-  talentStatistics:buildTalentStatistics(transcribedMatches,cutoff),
+  buildStatistics:buildStatistics(matches),
+  talentStatistics:buildTalentStatistics(matches,talents.rows),
   players:profiles,
   allPlayers,
   sources:sources.rows,

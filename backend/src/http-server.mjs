@@ -147,6 +147,7 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
 
           if (action === 'matches') return sendJson(200, { code: 0, data: await p.import(body) })
           if (action === 'estimate') return sendJson(200, { code: 0, data: await p.predict(body) })
+          if (action === 'forecast') return sendJson(200, { code: 0, data: await p.forecast(body) })
 
           const quarantine = action.match(/^matches\/([^/]+)\/quarantine$/)
           if (quarantine) return sendJson(200, { code: 0, data: await p.quarantine(quarantine[1], body?.operator) })

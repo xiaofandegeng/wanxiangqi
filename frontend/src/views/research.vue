@@ -21,7 +21,7 @@
 
     <template v-else>
       <div class="research-toolbar">
-        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches || (catalog?.matches?.length || 235)} 场收录 · ${fullCatalogPlayers.length || 190} 位对决账号 (${aggregatedPlayers.length || 124} 位归并选手) · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
+        <span>{{ loaded ? `王牌对决对局 ${catalog?.counts?.totalMatches ?? catalog?.matches?.length ?? 0} 场收录 · ${fullCatalogPlayers.length} 位对决账号 (${aggregatedPlayers.length} 位归并选手) · 完整排名 ${matches.length} 场登记` : '正在读取数据库…' }}</span>
         <div>
           <button @click="load">刷新</button>
           <button v-if="hasToken" @click="disconnect">清除凭证</button>
@@ -35,24 +35,23 @@
         <template v-if="section==='overview'">
           <div class="research-metrics">
             <div class="metric-highlight">
-              <strong>{{ catalog?.counts?.totalMatches || (catalog?.matches?.length || 235) }}</strong>
+              <strong>{{ catalog?.counts?.totalMatches ?? catalog?.matches?.length ?? 0 }}</strong>
               <span>王牌对决战绩场次</span>
-              <small>{{ catalog?.counts?.matches || 73 }} 场转写 + 162 场胜者公报</small>
+              <small>{{ catalog?.counts?.matches ?? 0 }} 场数据库转写记录</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.totalDays || 30 }}</strong>
-              <span>全量覆盖比赛日</span>
-              <small>2026-10-11 ~ 11-09 连续追踪</small>
+              <strong>{{ catalog?.counts?.totalDays ?? 0 }}</strong>
+              <span>有入库记录的比赛日</span>
             </div>
             <div>
-              <strong>{{ aggregatedPlayers.length || 124 }}</strong>
+              <strong>{{ aggregatedPlayers.length }}</strong>
               <span>归并参赛选手档案</span>
-              <small>已归类 {{ fullCatalogPlayers.length || 190 }} 个对决账号</small>
+              <small>已归类 {{ fullCatalogPlayers.length }} 个对决账号</small>
             </div>
             <div>
-              <strong>{{ catalog?.counts?.sources || 48 }}</strong>
+              <strong>{{ catalog?.counts?.sources ?? 0 }}</strong>
               <span>作者战报原帖出处</span>
-              <small>全量胜者图谱与流派声明</small>
+              <small>已登记的来源与玩法声明</small>
             </div>
           </div>
 
@@ -74,9 +73,9 @@
             <div class="section-title-row">
               <div>
                 <h2>王牌对决登顶榜（夺冠最高选手 TOP 8）</h2>
-                <p>基于 29 日全量作者战报与实战对局的冠军统计，投对决看选手实力</p>
+                <p>根据已入库逐局赛果统计夺冠次数</p>
               </div>
-              <router-link to="/research/players" class="more-link">查看完整选手登顶榜单 ({{ aggregatedPlayers.length || 124 }} 位) →</router-link>
+              <router-link to="/research/players" class="more-link">查看完整选手登顶榜单 ({{ aggregatedPlayers.length }} 位) →</router-link>
             </div>
             <div class="top-winners-grid">
               <div v-for="(p, idx) in topWinners" :key="p.id" class="winner-card" :class="`rank-${idx + 1}`">
@@ -91,7 +90,7 @@
                     <span class="wins-badge">🏆 {{ p.observedWins }} 冠</span>
                     <span class="matches-count">{{ p.observedMatches }} 战 · 登顶率 {{ percent(p.observedWins / p.observedMatches) }}</span>
                   </div>
-                  <p class="winner-build-tag">常用：{{ p.commonBuilds.join('、') || (p.builds[0]?.label || '多流派') }}</p>
+                  <p class="winner-build-tag">常用：{{ p.commonBuilds.join('、') || (p.builds[0]?.label || '阵容待确认') }}</p>
                 </div>
               </div>
             </div>
@@ -102,9 +101,9 @@
             <div class="section-title-row">
               <div>
                 <h2>最新王牌对决战况速览</h2>
-                <p>已对照 60 张 WebP 原图核验六席位阵容与最终登顶归属</p>
+                <p>显示已入库的六席阵容和夺冠记录</p>
               </div>
-              <router-link to="/research/matches" class="more-link">浏览全量 232 场赛果 →</router-link>
+              <router-link to="/research/matches" class="more-link">浏览全部入库赛果 →</router-link>
             </div>
             <div class="recent-matches-grid">
               <div v-for="m in recentCatalogMatches" :key="m.id" class="recent-match-card">
@@ -138,7 +137,7 @@
           <section class="research-split">
             <div>
               <h2>先有赛果，再谈预测</h2>
-              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。王牌对决公开战报已完成 232 场真实对局收录，覆盖 29 个比赛日与 {{ fullCatalogPlayers.length || 190 }} 位实战选手。所有选手 100% 绑定专属头像，作为赛前推演的实战依据。</p>
+              <p>完整排名赛果 {{ matches.length }} 场登记 · {{ stats.eligibleMatches }} 场有效。来源数据库收录 {{ catalog?.counts?.matches ?? 0 }} 场，覆盖 {{ catalog?.counts?.totalDays ?? 0 }} 个比赛日。</p>
               <router-link class="research-link" to="/research/matches">查看场次与赛果明细 →</router-link>
             </div>
             <ol>
@@ -151,7 +150,7 @@
 
           <section class="research-note">
             <h2>来源核验进度</h2>
-            <p>已收录 10月11日~11月9日共 30 个比赛日、235 场王牌对决真实对局，原图与作者公报哈希一致。收录 {{ fullCatalogPlayers.length || 190 }} 个真实参赛账号并 100% 绑定专属游戏头像，可直接用于赛前支持分析。</p>
+            <p>数据库收录 {{ catalog?.counts?.matches ?? 0 }} 场逐局赛果及 {{ catalog?.counts?.players ?? 0 }} 个昵称档案。</p>
           </section>
         </template>
 
@@ -160,7 +159,7 @@
           <div class="view-header-bar">
             <div>
               <h2>王牌对决实战对局</h2>
-              <p class="muted">全量收录 30 个比赛日、235 场真实对局。支持按日期与流派快速筛选，支持自由修改与录入纠偏。</p>
+              <p class="muted">按日期和流派筛选入库赛果。浏览器本地修改用于战绩查看。</p>
             </div>
             <div class="matches-top-actions">
               <button type="button" class="btn-create-match" @click="openCreateModal">
@@ -211,15 +210,12 @@
               <header>
                 <div class="match-title-row">
                   <h2>王牌对决 · {{ m.day }} 第 {{ m.ordinal }} 场<span v-if="m.scheduledTime"> · 计划 {{ m.scheduledTime }}</span></h2>
-                  <span class="match-version-pill" :class="{ 'latest': getVersionByDate(m.day).isLatest }">
-                    {{ getVersionByDate(m.day).version }}{{ getVersionByDate(m.day).isLatest ? ' (最新)' : '' }}
-                  </span>
                   <span v-if="m.ban" class="ban-tag">Ban：{{ m.ban }}</span>
                   <span v-if="m.isModified" class="modified-tag" title="该对局已在本地进行校准更正">🔧 已校准</span>
                   <span v-else-if="m.isCustom" class="custom-tag" title="该对局为手动录入的新对局">⭐ 新录入</span>
                 </div>
                 <div class="match-header-actions">
-                  <span class="verified-tag">{{ m.matchType === 'winner_snapshot' ? '胜者公报 · 一图流已核验' : '已核验 · 6席位转写' }}</span>
+                  <span class="verified-tag">{{ m.isCustom || m.isModified ? '本地编辑' : '来源六席转写' }}</span>
                   <button type="button" class="btn-edit-match" title="修改本场选手、流派或胜者信息" @click="openEditModal(m)">
                     ✏️ 修改对局
                   </button>
@@ -538,39 +534,23 @@
                             </p>
                           </div>
 
-                          <!-- 最新游戏版本阵容适配度提示 -->
-                          <div class="version-fit-box" v-if="getPlayerMatchup(p.nickname)?.versionAdaptation">
-                            <div class="fit-header">
-                              <span class="fit-title">🎮 最新版本 ({{ CURRENT_LATEST_VERSION }}) 适配度：</span>
-                              <span class="fit-tag" :class="getPlayerMatchup(p.nickname)!.versionAdaptation!.fitLevel.toLowerCase()">
-                                {{ getPlayerMatchup(p.nickname)!.versionAdaptation!.fitLabel }}
-                                <small v-if="getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus !== 0">
-                                  ({{ getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus > 0 ? '+' : '' }}{{ (getPlayerMatchup(p.nickname)!.versionAdaptation!.bonus * 100).toFixed(0) }}%)
-                                </small>
-                              </span>
-                            </div>
-                            <p class="fit-desc">{{ getPlayerMatchup(p.nickname)!.versionAdaptation!.summary }}</p>
-                          </div>
+
                         </div>
 
-                        <!-- 3. 棋手与常用阵容实战统计 -->
+                        <!-- 3. 棋手与阵容统计 -->
                         <div class="expand-cmd-col">
                           <h4>♟️ 【{{ p.nickname }}】棋手使用与常用阵容实战统计</h4>
-                          <p class="muted">根据全量实战赛果，统计该选手选用各棋手的对决次数与常用流派：</p>
+                          <p class="muted">汇总各棋手的出场次数、夺冠次数和已记录阵容。</p>
 
                           <div v-if="getPlayerMatchup(p.nickname)?.commanderProfiles?.length" class="cmd-profiles-list">
                             <div v-for="c in getPlayerMatchup(p.nickname)!.commanderProfiles.slice(0, 5)" :key="c.commander" class="cmd-profile-card">
                               <div class="cmd-card-head">
                                 <span class="cmd-name">♟️ {{ c.commander }}</span>
-                                <span class="cmd-tier" :class="`tier-${c.tier.toLowerCase()}`">{{ c.tier }}</span>
-                                <span v-if="c.isSignature" class="cmd-sig-tag">招牌本命</span>
                                 <span v-if="c.matches > 0" class="cmd-win-rate">{{ (c.winRate * 100).toFixed(0) }}% 胜率</span>
-                                <span v-else class="cmd-win-rate text-muted">权威底蕴</span>
                               </div>
                               <div class="cmd-card-body">
                                 <div class="cmd-stat-line">
                                   <span v-if="c.matches > 0">实战 <strong>{{ c.matches }}</strong> 战 <strong>{{ c.wins }}</strong> 冠</span>
-                                  <span v-else class="text-muted">权威招牌 (实战待收录)</span>
                                   <span class="cmd-fav">偏好：<strong>{{ c.favoriteBuild }}</strong></span>
                                 </div>
                                 <div v-if="c.topBuilds?.length > 1" class="cmd-sub-builds">
@@ -608,6 +588,8 @@
         v-model="isEditModalOpen"
         :match="editingMatch"
         :candidate-players="candidatePlayers"
+        :candidate-commanders="catalogCommanders"
+        :candidate-builds="catalogBuilds"
         @save="handleMatchSaved"
       />
     </template>
@@ -630,7 +612,6 @@ import {
 import {
   buildPlayerMatchupProfiles,
   type PlayerMatchupProfile,
-  getVersionByDate,
   CURRENT_LATEST_VERSION
 } from '../utils/player-matchup'
 import {
@@ -732,6 +713,14 @@ function toggleExpandPlayer(id: string) {
 }
 
 // 缓存构建的全量选手同场交锋与Ban位依赖图谱
+const catalogCommanders = computed(() => [...new Set(
+  (catalog.value?.matches ?? []).flatMap(match => match.seats.map(seat => seat.commander).filter((name): name is string => Boolean(name)))
+)].sort())
+
+const catalogBuilds = computed(() => [...new Set(
+  (catalog.value?.matches ?? []).flatMap(match => match.seats.map(seat => seat.build).filter((name): name is string => Boolean(name && name !== 'UNKNOWN')))
+)].sort())
+
 const matchupProfilesMap = computed(() => {
   const matches = catalog.value?.matches || []
   return buildPlayerMatchupProfiles(matches, groupByPlayer.value)
@@ -751,7 +740,7 @@ function setSort(key: SortKey) {
   }
 }
 
-// 全量真实选手档案（基于全部 232 场对局真实胜者公报与转写记录，100% 统计所有夺冠）
+// 根据已载入赛果生成战绩视图
 const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
   if (catalog.value?.allPlayers?.length) {
     return catalog.value.allPlayers
@@ -784,7 +773,7 @@ const fullCatalogPlayers = computed<CatalogProfile[]>(() => {
     })
   }
 
-  // 2. 遍历全量 matches（含 62 场六席转写与 106 场胜者公报），保证夺冠战绩 100% 闭环统计
+  // 2. 按已载入的逐局赛果统计出场与夺冠
   for (const m of matchesList) {
     for (const s of (m.seats || [])) {
       if (!s.nickname || s.nickname.startsWith('席位')) continue
