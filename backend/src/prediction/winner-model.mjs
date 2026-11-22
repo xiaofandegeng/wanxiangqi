@@ -1,17 +1,17 @@
 import {projectBuilds} from './build-projection.mjs'
 import {createHash} from 'node:crypto'
 import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures,historicalChoice} from './context-model.mjs'
-import {applyTalentImpact,talentImpact} from '../../../shared/talent-impact.mjs'
-import {normalizeLabel} from './build-stats.mjs'
-export const MODEL_VERSION='source-roster-dynamic-v13'
+import {applyTalentImpact} from '../../../shared/talent-impact.mjs'
+import {projectTalents} from './talent-statistics.mjs'
+export const MODEL_VERSION='source-roster-dynamic-v14'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
  return (catalog.matches??[]).filter(match=>match.matchType==='full_transcribed'&&match.seats?.length===6&&
   new Set(match.seats.map(seat=>seat.slot)).size===6&&match.seats.every(seat=>seat.playerId)&&
   new Set(match.seats.map(seat=>seat.playerId)).size===6&&match.seats.filter(seat=>seat.winner).length===1)
-  .map(match=>({id:match.id,day:match.day,ban:match.ban??null,seats:match.seats.map(seat=>({
-   id:seat.playerId,winner:seat.winner,build:seat.build??null,reviewedCommander:seat.reviewedCommander??null
+  .map(match=>({id:match.id,day:match.day,ban:match.ban??null,materialSha256:match.materialSha256,seats:match.seats.map(seat=>({
+   id:seat.playerId,slot:seat.slot,winner:seat.winner,build:seat.build??null,reviewedCommander:seat.reviewedCommander??null
   }))})).sort((a,b)=>a.day.localeCompare(b.day)||a.id.localeCompare(b.id))
 }
 export function trainWinnerModel(games){
@@ -44,13 +44,13 @@ export function chronologicalDiagnostic(games, config=null){
  const model=average('model'),uniform=average('uniform')
  return {kind:'RETROSPECTIVE_DAY_SPLIT_NOT_AVAILABILITY_REPLAY',conclusion:!model?'NO_EVALUATION':model.logLoss<uniform.logLoss&&model.brier<uniform.brier?'LOWER_ERRORS_IN_THIS_SAMPLE':'NOT_BEATING_UNIFORM',evaluatedMatches:rows.length,strictHits:rows.filter(row=>row.strictHit).length,model,uniform,rows,notice:'按比赛日仅以前日赛果训练；材料为事后采集，不证明历史当时已可获得，也不是独立校准集。并列最高按1/并列人数计命中，避免作者把冠军排第一导致虚假准确率。'}
 }
-export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext,{diagnostics=true}={}){
+export function experimentalWinnerEstimate(catalog,roster,cutoff,{bannedFaction=null,commanders=[]}={}, {diagnostics=true}={}){
  const day=new Date(Date.parse(cutoff)+8*3600000).toISOString().slice(0,10)
  const games=catalogGames(catalog).filter(game=>game.day<day)
  const canonical=games.map(game=>({...game,seats:[...game.seats].sort((a,b)=>a.id.localeCompare(b.id))}))
  const ids=roster.map(player=>player.profileId||null)
- const target={day,ban:aceContext?.bannedFaction??null,seats:ids.map(id=>({id}))}
- const choices=aceContext?.players.map(player=>({commander:player.commander,plan:player.visiblePlan}))??[]
+ const target={day,ban:bannedFaction,seats:ids.map(id=>({id}))}
+ const choices=ids.map((_,index)=>({commander:commanders[index]}))
  const records=roster.map((player,index)=>{
   const history=ids[index]?games.flatMap(game=>game.seats.filter(seat=>seat.id===ids[index])):[]
   return {profileId:ids[index],nickname:player.nickname,historicalMatches:history.length,
@@ -60,14 +60,10 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext,{dia
  const model=ready?trainContextModel(games,day,FIELD_CONFIG):null
  const baseProbabilities=model?predictContext(model,games,target,choices):null
  const buildProjections=projectBuilds(games,target,choices,historicalChoice)
- const talentRows=aceContext?.ruleset==='WANXIANG'&&aceContext.phase==='IN_PROGRESS'
-  ?catalog.talentStatistics?.[aceContext.rules?.version]??[]:[]
- const impacts=roster.map((_,index)=>{
-  const player=aceContext?.players?.[index]
-  const plan=buildProjections[index].basis==='CONFIRMED_PLAN'?normalizeLabel(player?.visiblePlan):null
-  return talentImpact(talentRows,plan,player?.selectedTalents??[])
- })
- const probabilities=baseProbabilities?applyTalentImpact(baseProbabilities,impacts):null
+ const talentProjections=projectTalents(games,catalog.talentEvidence??[],target,commanders,buildProjections)
+ const probabilities=baseProbabilities
+  ?applyTalentImpact(baseProbabilities,talentProjections.players.map(player=>({logWeight:Math.log(player.expectedFactor)})))
+  :null
  const features=model?contextFeatures(games,target,FIELD_CONFIG,choices):[]
  return {
   status:ready?'EXPERIMENTAL_SOURCE_MODEL':'INSUFFICIENT_DATABASE_HISTORY',
@@ -80,10 +76,9 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext,{dia
   trainingMatchIds:games.map(game=>game.id),
   dataHash:createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),
   buildProjections,
-  ...(baseProbabilities&&aceContext?.phase==='IN_PROGRESS'?{talentAdjustment:{
-   method:'observed-lineup-talent-v1',
-   players:impacts.map((impact,index)=>({...impact,baseProbability:baseProbabilities[index]}))
-  }}:{}),
+  talentProjections:{...talentProjections,players:talentProjections.players.map((player,index)=>({
+   ...player,baseProbability:baseProbabilities?.[index]??null
+  }))},
   parameters:model?.parameters??{},
   iterations:model?.iterations??0,
   players:records.map((player,index)=>({...player,probability:probabilities?.[index]??null})),
@@ -99,7 +94,7 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,aceContext,{dia
   }),
   diagnostic:diagnostics&&ready?chronologicalDiagnostic(games,FIELD_CONFIG):null,
   notice:ready
-   ?'冠军概率由数据库逐局赛果计算。选定棋手后，阵容倾向依据同一选手使用该棋手的历史战绩。来源赛果的历史模式和版本尚不完整，冠军模型使用跨版本来源样本。'
-   :'六席需要各有可关联的入库战绩，当前仅返回有实战依据的阵容和样本。'
+   ?'赛前预测基于已入库的逐局赛果。阵容和天赋由个人同棋手历史推测。'
+   :'六席都需要有可关联的入库战绩才能计算夺冠概率。当前显示有实战依据的阵容和天赋。'
  }
 }

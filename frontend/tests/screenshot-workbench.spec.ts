@@ -8,11 +8,6 @@ vi.mock('../src/api/index',()=>({uploadEvidence:upload}))
 let app:App
 const wait=()=>new Promise(r=>setTimeout(r,10))
 async function mount(){document.body.innerHTML='';const el=document.createElement('div');document.body.append(el);app=createApp(Workbench);app.mount(el);await wait();return el}
-function selectMode(el:ParentNode, selector:string){
- const mode=[...el.querySelectorAll<HTMLSelectElement>(selector)].find(control=>control.querySelector('[value=WANXIANG]'))!
- mode.value='WANXIANG'
- mode.dispatchEvent(new Event('change'))
-}
 afterEach(()=>app?.unmount())
 describe('截图工作台',()=>{
  it('极速推演提交六席和当场条件，并显示数据库返回的未知值',async()=>{
@@ -23,7 +18,11 @@ describe('截图工作台',()=>{
    return {
     status:'INSUFFICIENT_DATABASE_HISTORY',trainingMatches:7,modelVersion:'TEST-DB',notice:'入库记录不足',
     players:Array.from({length:6},(_,i)=>({nickname:`选手${i+1}`,probability:null,historicalMatches:0,historicalWins:0})),
-    buildProjections:Array.from({length:6},()=>({candidates:[],commanderSamples:0,commanderWins:0,unknownShare:1}))
+    buildProjections:Array.from({length:6},()=>({candidates:[],commanderSamples:0,commanderWins:0,unknownShare:1})),
+    talentProjections:{version:'v1.11.1',players:Array.from({length:6},(_,i)=>({
+     buildSamples:i===0?3:0,talentSamples:i===0?1:0,
+     candidates:i===0?[{build:'三分登场',talent:'点兵点将',observations:1,buildSamples:3}]:[]
+    }))}
    }
   })
   const el=await mount()
@@ -32,19 +31,27 @@ describe('截图工作台',()=>{
   roster.dispatchEvent(new Event('input'))
   el.querySelector<HTMLButtonElement>('.forecast-batch button')!.click()
   await nextTick()
-  const commander=el.querySelector<HTMLInputElement>('input[list=forecast-commanders]')!
-  commander.value='已选棋手'
-  commander.dispatchEvent(new Event('input'))
-  selectMode(el,'.forecast-fields select')
+  const button=el.querySelector<HTMLButtonElement>('.forecast-submit')!
+  expect(button.disabled).toBe(true)
+  for(const commander of el.querySelectorAll<HTMLInputElement>('input[list=forecast-commanders]')){
+   commander.value='已选棋手'
+   commander.dispatchEvent(new Event('input'))
+  }
+  const ban=el.querySelector<HTMLInputElement>('input[list=forecast-bans]')!
+  ban.value='三分'
+  ban.dispatchEvent(new Event('input'))
   await nextTick()
-  el.querySelector<HTMLButtonElement>('.forecast-submit')!.click()
+  expect(button.disabled).toBe(false)
+  button.click()
   await wait()
   const payload=api.mock.calls.find(([action])=>action==='forecast')![1]
-  expect(payload.players).toHaveLength(6)
-  expect(payload.players[0]).toMatchObject({nickname:'选手1',profileId:null,commander:'已选棋手'})
-  expect(payload).not.toHaveProperty('history')
+  expect(payload).toEqual({bannedFaction:'三分',players:Array.from({length:6},(_,i)=>({
+   profileId:`选手${i+1}`,commander:'已选棋手'
+  }))})
   expect(el.querySelector('.forecast-result')?.textContent).toContain('7 场入库训练')
   expect(el.querySelector('.forecast-result')?.textContent).toContain('阵容待确认')
+  expect(el.querySelector('.forecast-result')?.textContent).toContain('点兵点将')
+  expect(el.querySelector('.forecast-result')?.textContent).toContain('天赋待确认')
   expect(el.querySelector('.forecast-result')?.textContent).toContain('未计算')
   expect(el.querySelector('.forecast-result')?.textContent).not.toContain('16.67%')
  })
@@ -59,65 +66,52 @@ describe('截图工作台',()=>{
  })
 })
 
-it('提交棋手与禁用，不提交返奖报价',async()=>{
- api.mockImplementation(async(a:string)=>a==='catalog'?{players:[]}:a==='screenshots'?{id:'TEST',featureCutoff:'2026-10-31T00:00:00Z',ocr:{phaseHint:'UNKNOWN',rows:Array.from({length:6},(_,i)=>({rawText:'TEST'+i,candidates:[]}))}}:{status:'DATA_AUDIT_ONLY',notice:'TEST',featureCutoff:'2026-10-31T00:00:00Z',blockers:[],players:[]});upload.mockResolvedValue({evidenceId:'TEST-EV'})
- const el=await mount();const input=el.querySelector<HTMLInputElement>('input[type=file]')!;Object.defineProperty(input,'files',{value:[new File(['TEST'],'fixture.png')]});input.dispatchEvent(new Event('change'))
- const time=el.querySelector<HTMLInputElement>('input[type=datetime-local]')!;time.value='2026-10-31T12:00';time.dispatchEvent(new Event('input'));await nextTick();el.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await wait()
- selectMode(el,'.shot-meta select')
- const stage=el.querySelectorAll<HTMLSelectElement>('.shot-meta select')[2]!;stage.value='OPEN';stage.dispatchEvent(new Event('change'))
- const version=el.querySelector<HTMLSelectElement>('.version-select')!;version.value='v1.8.1';version.dispatchEvent(new Event('change'))
- const commander=el.querySelector<HTMLInputElement>('.shot-seat-context input')!;commander.value='小妲己';commander.dispatchEvent(new Event('input'))
- const ban=el.querySelector<HTMLInputElement>('input[placeholder^="未显示"]')!;ban.value='日落海';ban.dispatchEvent(new Event('input'))
- for(const box of el.querySelectorAll<HTMLInputElement>('input[type=checkbox]')){box.checked=true;box.dispatchEvent(new Event('change'))}await nextTick()
- el.querySelector('.shot-review')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await wait()
- const payload=api.mock.calls.find((c:any[])=>c[0]==='screenshots/TEST/analyze')![1];expect(payload.experimentalProbability).toBe(true);expect(payload.aceContext.supportStage).toBe('OPEN');expect(payload.aceContext.bannedFaction).toBe('日落海');expect(payload.aceContext).not.toHaveProperty('grossReturnConfirmed');expect(payload.players[0].commander).toBe('小妲己');expect(payload.players[0]).not.toHaveProperty('returnMultiplier');expect(payload.players[1].commander).toBe('');expect(el.textContent).toContain('没有经过校准')
-})
-
-it('恢复后端实验概率快照，仅格式化展示，不由前端重新估算',async()=>{
- api.mockImplementation(async(a:string)=>a==='catalog'?{players:[]}:{status:'EXPERIMENTAL_PROBABILITIES',notice:'测试后端结果',featureCutoff:'2026-10-31T00:00:00Z',blockers:[],players:[],model:{modelVersion:'TEST-PROGRAM',trainingMatches:54,calibrated:false,dataHash:'TEST-HASH',notice:'TEST ONLY',players:Array.from({length:6},(_,i)=>({nickname:'TEST'+i,probability:1/6,coldStart:false})),diagnostic:{evaluatedMatches:0,model:null,uniform:null,notice:'测试诊断'}}})
- const el=await mount();const input=el.querySelector<HTMLInputElement>('.shot-restore input')!;input.value='TEST-ID';input.dispatchEvent(new Event('input'));await nextTick();el.querySelector('.shot-restore')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await wait()
- expect(api).toHaveBeenCalledWith('screenshot-analyses/TEST-ID');expect(el.querySelectorAll('.shot-model ol li')).toHaveLength(6);expect(el.querySelector('.shot-model')?.textContent).toContain('16.67%');expect(el.textContent).toContain('未校准实验概率')
-})
-
-it('赛中允许确认已取得天赋，并把阵容和天赋提交给模型',async()=>{
- const names=Array.from({length:6},(_,i)=>`TALENT-${i}`)
- api.mockImplementation(async(action:string)=>{
-  if(action==='catalog') return {players:[]}
-  if(action==='screenshots') return {id:'TALENT',featureCutoff:'2026-11-20T15:00:00Z',ocr:{
-   phaseHint:'UNKNOWN',rows:names.map(rawText=>({rawText,candidates:[]}))
-  }}
-  return {status:'DATA_AUDIT_ONLY',notice:'TEST',featureCutoff:'2026-11-20T15:00:00Z',blockers:[],players:[]}
- })
- upload.mockResolvedValue({evidenceId:'TEST-TALENT'})
+it('截图核对只提交名单与资料确认，保留独立的预测表单',async()=>{
+ api.mockClear()
+ api.mockImplementation(async(action:string)=>action==='catalog'?{players:[]}:
+  action==='screenshots'?{id:'TEST',featureCutoff:'2026-10-31T00:00:00Z',ocr:{
+   phaseHint:'POSTMATCH_INDICATORS',rows:Array.from({length:6},(_,i)=>({rawText:'TEST'+i,candidates:[]}))
+  }}:{status:'DATA_AUDIT_ONLY',notice:'资料核对完成',featureCutoff:'2026-10-31T00:00:00Z',blockers:[],players:[]})
+ upload.mockResolvedValue({evidenceId:'TEST-EV'})
  const el=await mount()
- const screenshot=el.querySelector<HTMLInputElement>('input[type=file]')!
- Object.defineProperty(screenshot,'files',{value:[new File(['TEST'],'fixture.png')]})
- screenshot.dispatchEvent(new Event('change'))
+ const forecastId=el.querySelector<HTMLInputElement>('input[list=forecast-players]')!
+ forecastId.value='PREMATCH-ID'
+ forecastId.dispatchEvent(new Event('input'))
+ const image=el.querySelector<HTMLInputElement>('input[type=file]')!
+ Object.defineProperty(image,'files',{value:[new File(['TEST'],'fixture.png')]})
+ image.dispatchEvent(new Event('change'))
  const time=el.querySelector<HTMLInputElement>('input[type=datetime-local]')!
- time.value='2026-11-20T20:00'
+ time.value='2026-10-31T12:00'
  time.dispatchEvent(new Event('input'))
+ const operator=el.querySelector<HTMLInputElement>('input[placeholder="操作人标识"]')!
+ operator.value='复核人'
+ operator.dispatchEvent(new Event('input'))
+ await nextTick()
  el.querySelector('.shot-upload')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
  await wait()
- expect(el.querySelector('.shot-review select[multiple]')).toBeNull()
- selectMode(el,'.shot-meta select')
- const phase=[...el.querySelectorAll<HTMLSelectElement>('.shot-review select')].find(select=>select.querySelector('[value=IN_PROGRESS]'))!
- phase.value='IN_PROGRESS'
- phase.dispatchEvent(new Event('change'))
- await nextTick()
- const first=el.querySelector('.shot-seat')!
- const plan=first.querySelector<HTMLInputElement>('input[placeholder^="未知留空"]')!
- plan.value='三分登场'
- plan.dispatchEvent(new Event('input'))
- const talent=first.querySelector<HTMLSelectElement>('select[multiple]')!
- talent.querySelector<HTMLOptionElement>('option[value="点兵点将"]')!.selected=true
- talent.dispatchEvent(new Event('change'))
+ expect(forecastId.value).toBe('PREMATCH-ID')
  const confirmed=el.querySelector<HTMLInputElement>('.shot-confirm input')!
  confirmed.checked=true
  confirmed.dispatchEvent(new Event('change'))
  el.querySelector('.shot-review')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
  await wait()
- const payload=api.mock.calls.find(([action])=>action==='screenshots/TALENT/analyze')![1]
- expect(payload.phase).toBe('IN_PROGRESS')
- expect(payload.players[0]).toMatchObject({visiblePlan:'三分登场',selectedTalents:['点兵点将']})
- expect(payload.players[1].selectedTalents).toEqual([])
+ expect(api.mock.calls.find(([action])=>action==='screenshots/TEST/analyze')?.[1]).toEqual({
+  identityConfirmed:true,operator:'复核人',
+  players:Array.from({length:6},(_,i)=>({nickname:'TEST'+i,profileId:null}))
+ })
+ expect(api.mock.calls.some(([action])=>action==='forecast')).toBe(false)
+ expect(el.querySelector('.shot-result')?.textContent).toContain('资料核对完成')
+})
+
+it('可恢复历史截图核对资料',async()=>{
+ api.mockImplementation(async(action:string)=>action==='catalog'?{players:[]}:
+  {status:'DATA_AUDIT_ONLY',notice:'已保存核对资料',featureCutoff:'2026-10-31T00:00:00Z',blockers:[],players:[]})
+ const el=await mount()
+ const input=el.querySelector<HTMLInputElement>('.shot-restore input')!
+ input.value='TEST-ID'
+ input.dispatchEvent(new Event('input'))
+ el.querySelector('.shot-restore')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
+ await wait()
+ expect(api).toHaveBeenCalledWith('screenshot-analyses/TEST-ID')
+ expect(el.querySelector('.shot-result')?.textContent).toContain('已保存核对资料')
 })

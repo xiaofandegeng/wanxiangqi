@@ -36,7 +36,7 @@ export async function importCatalog(pool,data,readMaterial){
 }
 export class CatalogService {
  constructor(pool){this.pool=pool}
- async list({cutoff=new Date().toISOString()}={}){
+ async list({cutoff=new Date().toISOString(),includeTalentEvidence=false}={}){
  if(!Number.isFinite(Date.parse(cutoff)))throw fail('截止时间无效','INVALID_CUTOFF')
  const client=await this.pool.connect()
  try{
@@ -144,6 +144,7 @@ export class CatalogService {
   matches,
   buildStatistics:buildStatistics(matches),
   talentStatistics:buildTalentStatistics(matches,talents.rows),
+  ...(includeTalentEvidence?{talentEvidence:talents.rows,playerAliases:links.rows}:{}),
   players:profiles,
   allPlayers,
   sources:sources.rows,

@@ -42,7 +42,7 @@ export class PredictionService {
  async forecast(input){
   const {time}=(await this.pool.query('SELECT clock_timestamp() AS time')).rows[0]
   const cutoff=time.toISOString()
-  return forecastRoster(await this.catalog.list({cutoff}),input,cutoff)
+  return forecastRoster(await this.catalog.list({cutoff,includeTalentEvidence:true}),input,cutoff)
  }
  async predict(input){const r=estimate(await this.eligible(),input);if(r.status==='RESEARCH_BASELINE'){r.id=randomUUID();await this.pool.query('INSERT INTO prediction_runs(id,payload) VALUES($1,$2)',[r.id,JSON.stringify(r)])}return r}
  async runs(){return (await this.pool.query('SELECT id,created_at,payload FROM prediction_runs ORDER BY created_at DESC LIMIT 50')).rows.map(r=>({...r.payload,createdAt:r.created_at.toISOString()}))}

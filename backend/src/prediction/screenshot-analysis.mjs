@@ -2,34 +2,41 @@ import {randomUUID,createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
 import {CatalogService} from './catalog.mjs'
 import {recognizeImage,suggestPlayers} from './ocr.mjs'
-import {buildAceContext} from './ace-context.mjs'
 import {experimentalWinnerEstimate} from './winner-model.mjs'
 const validText=s=>typeof s==='string'&&s.trim()&&s.length<=160
 const chinaDay=timestamp=>new Date(Date.parse(timestamp)+8*3600000).toISOString().slice(0,10)
 function sourceSample(history){const n=history.length,wins=history.filter(h=>h.rank===1).length;return {observations:n,wins,observedWinShare:n?wins/n:null}}
-function validateRoster(input){
- if(!input||!['PREMATCH','IN_PROGRESS'].includes(input.phase)||!Array.isArray(input.players)||input.players.length!==6)throw fail('必须填写本场阶段和完整六席','INVALID_ROSTER')
+function validateAuditRoster(input){
+ if(!Array.isArray(input.players)||input.players.length!==6)throw fail('必须填写完整六席','INVALID_ROSTER')
  const ids=input.players.map(x=>x?.profileId).filter(Boolean)
  if(new Set(ids).size!==ids.length||!input.players.every(x=>x&&validText(x.nickname)&&(x.profileId==null||typeof x.profileId==='string')))throw fail('六席昵称必填，档案不能重复选择','INVALID_ROSTER')
  if(new Set(input.players.map(x=>x.nickname.normalize('NFKC').replace(/\s/g,'').toLowerCase())).size!==6)throw fail('存在重复昵称，请复核OCR；同名席位尚无稳定账号依据时不能确认六人','AMBIGUOUS_ROSTER')
- if(!['WANXIANG','DIAMOND'].includes(input.mode)||!validText(input.version))throw fail('请填写当前模式和版本','INVALID_ROSTER')
 }
 export function forecastRoster(catalog,input,cutoff){
- validateRoster(input)
- const roster=input.players.map(({nickname,profileId})=>{
-  const matches=catalog.players.filter(profile=>profileId?profile.id===profileId:profile.nickname.trim()===nickname.trim())
-  if(profileId&&!matches.length)throw fail('选手档案已不可用，请重新选择','PROFILE_UNAVAILABLE')
-  return {nickname:nickname.trim(),profileId:matches.length===1?matches[0].id:null}
+ if(!input||Object.keys(input).length!==2||!Object.hasOwn(input,'bannedFaction')||
+  (input.bannedFaction!==null&&!validText(input.bannedFaction))||
+  !Array.isArray(input.players)||input.players.length!==6||
+  input.players.some(player=>!player||Object.keys(player).length!==2||!validText(player.profileId)||!validText(player.commander))) {
+  throw fail('赛前预测仅接收六位选手的档案 ID、棋手和本场禁用阵营','INVALID_FORECAST_INPUT')
+ }
+ const profiles=new Map(catalog.players.map(profile=>[profile.id,profile]))
+ const links=new Map((catalog.playerAliases??[]).map(row=>[row.alias_id,row.canonical_id]))
+ const roster=input.players.map(({profileId})=>{
+  const id=profileId.trim()
+  const profile=profiles.get(links.get(id)??id)
+  if(!profile)throw fail(`未找到选手档案 ID ${id}`,'PROFILE_UNAVAILABLE')
+  return {nickname:profile.nickname,profileId:profile.id}
  })
  const ids=roster.map(player=>player.profileId).filter(Boolean)
  if(new Set(ids).size!==ids.length)throw fail('同一档案只能填入一个席位','INVALID_ROSTER')
- return experimentalWinnerEstimate(catalog,roster,cutoff,buildAceContext(input,cutoff),{diagnostics:false})
+ return experimentalWinnerEstimate(catalog,roster,cutoff,{
+  bannedFaction:input.bannedFaction?.trim()??null,
+  commanders:input.players.map(player=>player.commander.trim())
+ },{diagnostics:false})
 }
 export function assessRoster(catalog,input,draft){
  if(!input||input.identityConfirmed!==true||!validText(input.operator))throw fail('必须核对六席并填写复核人','ROSTER_CONFIRMATION_REQUIRED')
- validateRoster(input)
- if(input.phase==='IN_PROGRESS'&&draft.ocr.phaseHint==='POSTMATCH_INDICATORS')throw fail('结算截图只可用于赛后核对','INVALID_SCREENSHOT_PHASE')
- const aceContext=buildAceContext(input,draft.featureCutoff)
+ validateAuditRoster(input)
  const day=chinaDay(draft.featureCutoff),start7=new Date(Date.parse(day+'T00:00:00Z')-7*86400000).toISOString().slice(0,10),start30=new Date(Date.parse(day+'T00:00:00Z')-30*86400000).toISOString().slice(0,10)
  const rows=input.players.map(x=>{
  const p=x.profileId?catalog.players.find(p=>p.id===x.profileId):null
@@ -42,14 +49,11 @@ export function assessRoster(catalog,input,draft){
  for(const h of history){const row=builds.get(h.build)||{label:h.build,observations:0,wins:0};row.observations++;if(h.rank===1)row.wins++;builds.set(h.build,row)}
  return {nickname:x.nickname,profileId:p?.id||null,profileNickname:p?.nickname||null,identityStatus:p?.identityStatus||'UNMATCHED',recent7:{observations:recent7Matches.length,wins:recent7Matches.filter(match=>match.winner).length,from:start7,toExclusive:day},recent7Matches,recent30:sourceSample(history.filter(h=>h.day>=start30)),sourceSample:sourceSample(history),buildRates:[...builds.values()].map(b=>({...b,observedWinShare:b.wins/b.observations,finalBuildWinRate:null,notice:'仅原图所列选择标签的样本登顶比例；缺所有非胜者最终阵容，不能称最终阵容胜率'})),claims:p?.claims||[],probability:null}
  })
- const blockers=['UNCALIBRATED_MODEL','UNCONFIRMED_HISTORICAL_IDENTITIES','UNKNOWN_HISTORICAL_MODE_VERSION','UNVERIFIED_SOURCE_RESULTS']
+ const blockers=['UNCONFIRMED_HISTORICAL_IDENTITIES','UNVERIFIED_SOURCE_RESULTS']
  if(rows.some(r=>!r.profileId))blockers.push('UNMATCHED_PLAYER')
  if(catalog.sources.some(s=>s.status!=='TRANSCRIBED'))blockers.push('INCOMPLETE_SOURCE_COVERAGE')
  if(draft.ocr.phaseHint==='POSTMATCH_INDICATORS')blockers.push('SCREENSHOT_HAS_POSTMATCH_INDICATORS')
- const model=input.experimentalProbability===true&&draft.ocr.phaseHint!=='POSTMATCH_INDICATORS'?experimentalWinnerEstimate(catalog,rows,draft.featureCutoff,aceContext):null
- if(model)rows.forEach((row,i)=>{row.probability=model.players[i].probability})
- const status=model?.status==='EXPERIMENTAL_SOURCE_MODEL'?'EXPERIMENTAL_PROBABILITIES':model?.status??'DATA_AUDIT_ONLY'
- return {model,aceContext,status,phase:input.phase,featureCutoff:draft.featureCutoff,calibrated:false,players:rows,blockers,coverage:{...catalog.counts,transcribedSources:catalog.sources.filter(s=>s.status==='TRANSCRIBED').length},allocation:{status:'ABSTAIN',unit:'VIRTUAL_GAME_POINTS_ONLY',reserveRatio:1,players:rows.map(p=>({nickname:p.nickname,ratio:0})),reason:'当前研究模型无已校准投比。'},notice:model?.notice??'当前显示截图截止时已收录的第三方逐局资料。'}
+ return {model:null,status:'DATA_AUDIT_ONLY',featureCutoff:draft.featureCutoff,calibrated:false,players:rows,blockers,coverage:{...catalog.counts,transcribedSources:catalog.sources.filter(s=>s.status==='TRANSCRIBED').length},allocation:{status:'ABSTAIN',unit:'VIRTUAL_GAME_POINTS_ONLY',reserveRatio:1,players:rows.map(p=>({nickname:p.nickname,ratio:0})),reason:'截图用于资料核对。'},notice:'截图用于核对和留存资料。已入库的逐局赛果可供后续赛前预测使用。'}
 }
 export class ScreenshotService {
  constructor(pool,recognizer=recognizeImage){this.pool=pool;this.catalog=new CatalogService(pool);this.recognizer=recognizer}

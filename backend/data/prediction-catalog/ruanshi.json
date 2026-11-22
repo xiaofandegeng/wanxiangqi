@@ -321,9 +321,52 @@
       "note": "仅第1–4场。第1场席3/5名单标签与复盘冲突，席6标逐鹿嬴政但禁逐鹿且复盘描述司空震，build=UNKNOWN；第3场席5名单大河猪离与复盘三分猪离冲突，build=UNKNOWN。第2场投注策略疑似复制，不采入。"
     },
     {
-      "url": "https://www.douyin.com/note/7710928501234567890",
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f8d528a993c4ea89/content",
       "title": "万象棋王牌对决2026-11-20 第一场",
-      "status": "TRANSCRIBED"
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原件存证。16:00 为北京时间计划开赛时间。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-410713f4a4f29606/content",
+      "title": "万象棋王牌对决 2026-11-20 第 2 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-05cffb332c7c633a/content",
+      "title": "万象棋王牌对决 2026-11-20 第 3 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f4b09d7ffb5d7697/content",
+      "title": "万象棋王牌对决 2026-11-20 第 4 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-d4a162388ad5f423/content",
+      "title": "万象棋王牌对决 2026-11-20 第 5 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-6ccb1a19b2c5f389/content",
+      "title": "万象棋王牌对决 2026-11-20 第 6 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-94f811d004405719/content",
+      "title": "万象棋王牌对决 2026-11-20 第 7 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
+    },
+    {
+      "url": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-00281a6b1199cbfa/content",
+      "title": "万象棋王牌对决 2026-11-20 第 8 场",
+      "status": "TRANSCRIBED",
+      "note": "用户提供的结算截图，内部原图存证。"
     }
   ],
   "materials": [
@@ -1077,11 +1120,60 @@
       "imageOrdinal": 2
     },
     {
-      "file": "docs/prediction_artifacts/nov20/1.jpg",
-      "key": "e0307e2fb1c6735172cdd7950f26dd2ecefa5541fc95a5a3379112fed78530d1",
-      "sha256": "e0307e2fb1c6735172cdd7950f26dd2ecefa5541fc95a5a3379112fed78530d1",
-      "sourceUrl": "https://www.douyin.com/note/7710928501234567890",
+      "file": "docs/prediction_artifacts/nov20/1-original.jpg",
+      "key": "f8d528a993c4ea893b39cc92e69308dd2a28c1ae9bb9de18e214141ab1225128",
+      "sha256": "f8d528a993c4ea893b39cc92e69308dd2a28c1ae9bb9de18e214141ab1225128",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f8d528a993c4ea89/content",
       "imageOrdinal": 1
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/2-original.jpg",
+      "key": "410713f4a4f296065e07f3b7107f90137779186b015ded1e59fb6cdd2cb61222",
+      "sha256": "410713f4a4f296065e07f3b7107f90137779186b015ded1e59fb6cdd2cb61222",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-410713f4a4f29606/content",
+      "imageOrdinal": 2
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/3-original.jpg",
+      "key": "05cffb332c7c633aa35511873a0d321755378c92b914cf2964c6a1e691d479f1",
+      "sha256": "05cffb332c7c633aa35511873a0d321755378c92b914cf2964c6a1e691d479f1",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-05cffb332c7c633a/content",
+      "imageOrdinal": 3
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/4-original.png",
+      "key": "f4b09d7ffb5d7697dc27a0e1bf9158256dfb2515b6988ba82a0a90561f5d1d06",
+      "sha256": "f4b09d7ffb5d7697dc27a0e1bf9158256dfb2515b6988ba82a0a90561f5d1d06",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f4b09d7ffb5d7697/content",
+      "imageOrdinal": 4
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/5-original.jpg",
+      "key": "d4a162388ad5f4233377a21298a6884776df9db3b79428afa0e4753f166a4806",
+      "sha256": "d4a162388ad5f4233377a21298a6884776df9db3b79428afa0e4753f166a4806",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-d4a162388ad5f423/content",
+      "imageOrdinal": 5
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/6-original.jpg",
+      "key": "6ccb1a19b2c5f38967a12a2f95a843020b0b4e33a7394b2e58b6b1a41ee45957",
+      "sha256": "6ccb1a19b2c5f38967a12a2f95a843020b0b4e33a7394b2e58b6b1a41ee45957",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-6ccb1a19b2c5f389/content",
+      "imageOrdinal": 6
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/7-original.jpg",
+      "key": "94f811d004405719341ccacb95a56b335ff73c2ad7f3d9ed14c67634fc31b157",
+      "sha256": "94f811d004405719341ccacb95a56b335ff73c2ad7f3d9ed14c67634fc31b157",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-94f811d004405719/content",
+      "imageOrdinal": 7
+    },
+    {
+      "file": "docs/prediction_artifacts/nov20/8-original.jpg",
+      "key": "00281a6b1199cbfa36128ac30517449ff011748650123fde5f109281e8efa27f",
+      "sha256": "00281a6b1199cbfa36128ac30517449ff011748650123fde5f109281e8efa27f",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-00281a6b1199cbfa/content",
+      "imageOrdinal": 8
     }
   ],
   "matches": [
@@ -6477,10 +6569,10 @@
     },
     {
       "key": "ruanshi:2026-11-20:1",
-      "sourceUrl": "https://www.douyin.com/note/7710928501234567890",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f8d528a993c4ea89/content",
       "day": "2026-11-20",
       "ordinal": 1,
-      "materialKey": "e0307e2fb1c6735172cdd7950f26dd2ecefa5541fc95a5a3379112fed78530d1",
+      "materialKey": "f8d528a993c4ea893b39cc92e69308dd2a28c1ae9bb9de18e214141ab1225128",
       "ban": "河洛",
       "duration": "00:28:41",
       "winnerSlot": 1,
@@ -6712,6 +6804,1623 @@
               "name": "太乙真人",
               "level": 14,
               "stars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:2",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-410713f4a4f29606/content",
+      "day": "2026-11-20",
+      "ordinal": 2,
+      "materialKey": "410713f4a4f296065e07f3b7107f90137779186b015ded1e59fb6cdd2cb61222",
+      "ban": "逐鹿",
+      "duration": "00:29:28",
+      "winnerSlot": 1,
+      "winnerBuild": "安琪拉露娜",
+      "winnerNickname": "抖音EZ呆头鹅",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "抖音EZ呆头鹅",
+          "commander": "安琪拉",
+          "build": "安琪拉露娜",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "露娜",
+              "level": 919
+            },
+            {
+              "name": "安琪拉",
+              "level": 348,
+              "ace": true
+            },
+            {
+              "name": "亚连",
+              "level": 80
+            },
+            {
+              "name": "瑶",
+              "level": 10
+            },
+            {
+              "name": "太乙真人",
+              "level": 7
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            },
+            {
+              "name": "多莉亚",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "抖音搜道无涯",
+          "commander": "班叔",
+          "build": "河洛李信",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "李信",
+              "level": 244
+            },
+            {
+              "name": "程咬金",
+              "level": 94
+            },
+            {
+              "name": "铠",
+              "level": 50
+            },
+            {
+              "name": "明世隐",
+              "level": 48
+            },
+            {
+              "name": "钟馗",
+              "level": 46
+            },
+            {
+              "name": "盾山",
+              "level": 41
+            },
+            {
+              "name": "太乙真人",
+              "level": 40
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "985第一环如昨",
+          "commander": "孙小宾",
+          "build": "三分倒转",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "露娜",
+              "level": 764
+            },
+            {
+              "name": "诸葛亮",
+              "level": 692
+            },
+            {
+              "name": "周瑜",
+              "level": 674
+            },
+            {
+              "name": "甄姬",
+              "level": 494
+            },
+            {
+              "name": "孙悟空",
+              "level": 478
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "幕后",
+          "commander": "嬴律",
+          "build": "大河猪离",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "公孙离",
+              "level": 264
+            },
+            {
+              "name": "猪八戒",
+              "level": 237
+            },
+            {
+              "name": "张良",
+              "level": 156
+            },
+            {
+              "name": "瑶",
+              "level": 156
+            },
+            {
+              "name": "云中君",
+              "level": 91
+            },
+            {
+              "name": "钟馗",
+              "level": 68
+            },
+            {
+              "name": "鬼谷子",
+              "level": 6
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "双鸽",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "花木兰",
+              "level": 179
+            },
+            {
+              "name": "沈梦溪",
+              "level": 141
+            },
+            {
+              "name": "李白",
+              "level": 73
+            },
+            {
+              "name": "上官婉儿",
+              "level": 63
+            },
+            {
+              "name": "武则天",
+              "level": 41
+            },
+            {
+              "name": "程咬金",
+              "level": 19
+            },
+            {
+              "name": "露娜",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "运光永不六",
+          "commander": "孙小宾",
+          "build": "三分倒转",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "阿轲",
+              "level": 95
+            },
+            {
+              "name": "孙悟空",
+              "level": 81
+            },
+            {
+              "name": "曹操",
+              "level": 33
+            },
+            {
+              "name": "姜子牙",
+              "level": 33
+            },
+            {
+              "name": "甄姬",
+              "level": 27
+            },
+            {
+              "name": "多莉亚",
+              "level": 14
+            },
+            {
+              "name": "周瑜",
+              "level": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:3",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-05cffb332c7c633a/content",
+      "day": "2026-11-20",
+      "ordinal": 3,
+      "materialKey": "05cffb332c7c633aa35511873a0d321755378c92b914cf2964c6a1e691d479f1",
+      "ban": "大河",
+      "duration": "00:26:09",
+      "winnerSlot": 1,
+      "winnerBuild": "日落海倒转",
+      "winnerNickname": "老退勿念",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "老退勿念",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "亚瑟",
+              "level": 523
+            },
+            {
+              "name": "姬小满",
+              "level": 506
+            },
+            {
+              "name": "司空震",
+              "level": 484,
+              "ace": true
+            },
+            {
+              "name": "姜子牙",
+              "level": 360
+            },
+            {
+              "name": "钟馗",
+              "level": 73
+            },
+            {
+              "name": "太乙真人",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "抖音EGM小谷芷",
+          "commander": "小妲己",
+          "build": "逐鹿蒙恬",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "蒙恬",
+              "level": 423
+            },
+            {
+              "name": "西施",
+              "level": 42
+            },
+            {
+              "name": "苍",
+              "level": 21
+            },
+            {
+              "name": "鲁班大师",
+              "level": 15
+            },
+            {
+              "name": "钟馗",
+              "level": 10
+            },
+            {
+              "name": "太乙真人",
+              "level": 4
+            },
+            {
+              "name": "蒙犽",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "气运之子兰兰",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "司空震",
+              "level": 624
+            },
+            {
+              "name": "莱西奥",
+              "level": 240
+            },
+            {
+              "name": "海诺",
+              "level": 237
+            },
+            {
+              "name": "姜子牙",
+              "level": 207
+            },
+            {
+              "name": "姬小满",
+              "level": 184
+            },
+            {
+              "name": "钟馗",
+              "level": 24
+            },
+            {
+              "name": "海月",
+              "level": 24
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "新一且好运",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "司空震",
+              "level": 434
+            },
+            {
+              "name": "花木兰",
+              "level": 406
+            },
+            {
+              "name": "程咬金",
+              "level": 170
+            },
+            {
+              "name": "李白",
+              "level": 138
+            },
+            {
+              "name": "上官婉儿",
+              "level": 85
+            },
+            {
+              "name": "武则天",
+              "level": 75
+            },
+            {
+              "name": "钟馗",
+              "level": 51
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "EZ灬欧洲鱼",
+          "commander": "马可",
+          "build": "三分混合阵容",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "海月",
+              "level": 164
+            },
+            {
+              "name": "曹操",
+              "level": 164
+            },
+            {
+              "name": "蔡文姬",
+              "level": 163
+            },
+            {
+              "name": "甄姬",
+              "level": 152
+            },
+            {
+              "name": "公孙离",
+              "level": 141
+            },
+            {
+              "name": "小乔",
+              "level": 133
+            },
+            {
+              "name": "太乙真人",
+              "level": 5
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "世薄情好运版",
+          "commander": "嬴律",
+          "build": "逐鹿帝临",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "武则天",
+              "level": 453
+            },
+            {
+              "name": "庄周",
+              "level": 1
+            },
+            {
+              "name": "嬴政",
+              "level": 1
+            },
+            {
+              "name": "西施",
+              "level": 1
+            },
+            {
+              "name": "白起",
+              "level": 1
+            },
+            {
+              "name": "芈月",
+              "level": 1
+            },
+            {
+              "name": "鲁班大师",
+              "level": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:4",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-f4b09d7ffb5d7697/content",
+      "day": "2026-11-20",
+      "ordinal": 4,
+      "materialKey": "f4b09d7ffb5d7697dc27a0e1bf9158256dfb2515b6988ba82a0a90561f5d1d06",
+      "ban": "三分",
+      "duration": "00:32:10",
+      "winnerSlot": 1,
+      "winnerBuild": "泳池派对",
+      "winnerNickname": "北念且好运",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "北念且好运",
+          "commander": "明先生",
+          "build": "泳池派对",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "米莱狄",
+              "level": 698,
+              "ace": true
+            },
+            {
+              "name": "钟馗",
+              "level": 304
+            },
+            {
+              "name": "朵莉亚",
+              "level": 225
+            },
+            {
+              "name": "雅典娜",
+              "level": 184
+            },
+            {
+              "name": "苍",
+              "level": 132
+            },
+            {
+              "name": "鲁班大师",
+              "level": 120
+            },
+            {
+              "name": "太乙真人",
+              "level": 5
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "EZ拉丁鱼",
+          "commander": "孙小宾",
+          "build": "逐鹿蒙犽",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "蒙犽",
+              "level": 304
+            },
+            {
+              "name": "西施",
+              "level": 39
+            },
+            {
+              "name": "白起",
+              "level": 30
+            },
+            {
+              "name": "鲁班大师",
+              "level": 24
+            },
+            {
+              "name": "太乙真人",
+              "level": 22
+            },
+            {
+              "name": "瑶",
+              "level": 16
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "蒜香",
+          "commander": "香香",
+          "build": "大河猪离",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "公孙离",
+              "level": 175
+            },
+            {
+              "name": "猪八戒",
+              "level": 144
+            },
+            {
+              "name": "虞姬",
+              "level": 81
+            },
+            {
+              "name": "张良",
+              "level": 79
+            },
+            {
+              "name": "瑶",
+              "level": 72
+            },
+            {
+              "name": "鬼谷子",
+              "level": 35
+            },
+            {
+              "name": "云中君",
+              "level": 33
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "遗愿",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "司空震",
+              "level": 293
+            },
+            {
+              "name": "花木兰",
+              "level": 225
+            },
+            {
+              "name": "程咬金",
+              "level": 157
+            },
+            {
+              "name": "太乙真人",
+              "level": 150
+            },
+            {
+              "name": "李白",
+              "level": 122
+            },
+            {
+              "name": "武则天",
+              "level": 63
+            },
+            {
+              "name": "上官婉儿",
+              "level": 54
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "武汉EG苏白",
+          "commander": "庄小鱼",
+          "build": "河洛木兰",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "花木兰",
+              "level": 283
+            },
+            {
+              "name": "程咬金",
+              "level": 63
+            },
+            {
+              "name": "李白",
+              "level": 44
+            },
+            {
+              "name": "上官婉儿",
+              "level": 39
+            },
+            {
+              "name": "钟馗",
+              "level": 39
+            },
+            {
+              "name": "武则天",
+              "level": 36
+            },
+            {
+              "name": "海月",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "B站QT孙悟方",
+          "commander": "玉环",
+          "build": "日落海倒转",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "司空震",
+              "level": 358
+            },
+            {
+              "name": "姬小满",
+              "level": 321
+            },
+            {
+              "name": "莱西奥",
+              "level": 319
+            },
+            {
+              "name": "亚瑟",
+              "level": 317
+            },
+            {
+              "name": "姜子牙",
+              "level": 153
+            },
+            {
+              "name": "太乙真人",
+              "level": 2
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:5",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-d4a162388ad5f423/content",
+      "day": "2026-11-20",
+      "ordinal": 5,
+      "materialKey": "d4a162388ad5f4233377a21298a6884776df9db3b79428afa0e4753f166a4806",
+      "ban": "逐鹿",
+      "duration": "00:30:54",
+      "winnerSlot": 1,
+      "winnerBuild": "河洛木兰",
+      "winnerNickname": "只会赌鲁班",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "只会赌鲁班",
+          "commander": "武凤",
+          "build": "河洛木兰",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "花木兰",
+              "level": 999,
+              "ace": true
+            },
+            {
+              "name": "程咬金",
+              "level": 383
+            },
+            {
+              "name": "李白",
+              "level": 312
+            },
+            {
+              "name": "上官婉儿",
+              "level": 187
+            },
+            {
+              "name": "武则天",
+              "level": 174
+            },
+            {
+              "name": "钟馗",
+              "level": 171
+            },
+            {
+              "name": "露娜",
+              "level": 25
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "抖音湛蓝丢兔版",
+          "commander": "白歌",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "诸葛亮",
+              "level": 871
+            },
+            {
+              "name": "貂蝉",
+              "level": 576
+            },
+            {
+              "name": "曹操",
+              "level": 562
+            },
+            {
+              "name": "甄姬",
+              "level": 548
+            },
+            {
+              "name": "吕布",
+              "level": 382
+            },
+            {
+              "name": "太乙真人",
+              "level": 3
+            },
+            {
+              "name": "瑶",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "douyin小猪染宝",
+          "commander": "阿离",
+          "build": "河洛李信",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "李信",
+              "level": 429
+            },
+            {
+              "name": "太乙真人",
+              "level": 50
+            },
+            {
+              "name": "露娜",
+              "level": 46
+            },
+            {
+              "name": "花木兰",
+              "level": 41
+            },
+            {
+              "name": "大司命",
+              "level": 23
+            },
+            {
+              "name": "鬼谷子",
+              "level": 5
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "抖音群星yun落",
+          "commander": "安琪拉",
+          "build": "单吕布",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "吕布",
+              "level": 171
+            },
+            {
+              "name": "瑶",
+              "level": 133
+            },
+            {
+              "name": "姜子牙",
+              "level": 40
+            },
+            {
+              "name": "明世隐",
+              "level": 16
+            },
+            {
+              "name": "钟馗",
+              "level": 10
+            },
+            {
+              "name": "太乙真人",
+              "level": 7
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "抖音EGM皮皮鲨",
+          "commander": "武凤",
+          "build": "河洛木兰",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "花木兰",
+              "level": 279
+            },
+            {
+              "name": "李白",
+              "level": 115
+            },
+            {
+              "name": "程咬金",
+              "level": 109
+            },
+            {
+              "name": "上官婉儿",
+              "level": 40
+            },
+            {
+              "name": "钟馗",
+              "level": 33
+            },
+            {
+              "name": "武则天",
+              "level": 13
+            },
+            {
+              "name": "太乙真人",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "抖音所演11",
+          "commander": "白歌",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "诸葛亮",
+              "level": 89
+            },
+            {
+              "name": "孙尚香",
+              "level": 77
+            },
+            {
+              "name": "曹操",
+              "level": 76
+            },
+            {
+              "name": "貂蝉",
+              "level": 60
+            },
+            {
+              "name": "蔡文姬",
+              "level": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:6",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-6ccb1a19b2c5f389/content",
+      "day": "2026-11-20",
+      "ordinal": 6,
+      "materialKey": "6ccb1a19b2c5f38967a12a2f95a843020b0b4e33a7394b2e58b6b1a41ee45957",
+      "ban": "日落海",
+      "duration": "00:30:01",
+      "winnerSlot": 1,
+      "winnerBuild": "大河猪离",
+      "winnerNickname": "好运小暖",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "好运小暖",
+          "commander": "嬴律",
+          "build": "大河猪离",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "猪八戒",
+              "level": 487
+            },
+            {
+              "name": "公孙离",
+              "level": 297,
+              "ace": true
+            },
+            {
+              "name": "张良",
+              "level": 250
+            },
+            {
+              "name": "瑶",
+              "level": 233
+            },
+            {
+              "name": "鬼谷子",
+              "level": 146
+            },
+            {
+              "name": "钟馗",
+              "level": 105
+            },
+            {
+              "name": "太乙真人",
+              "level": 59
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "祈愿冬落雪1",
+          "commander": "嬴律",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "嬴政",
+              "level": 272
+            },
+            {
+              "name": "庄周",
+              "level": 102
+            },
+            {
+              "name": "西施",
+              "level": 61
+            },
+            {
+              "name": "白起",
+              "level": 56
+            },
+            {
+              "name": "鲁班大师",
+              "level": 20
+            },
+            {
+              "name": "钟馗",
+              "level": 11
+            },
+            {
+              "name": "太乙真人",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "抖音EG清辞",
+          "commander": "武凤",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "诸葛亮",
+              "level": 260
+            },
+            {
+              "name": "吕布",
+              "level": 224
+            },
+            {
+              "name": "貂蝉",
+              "level": 202
+            },
+            {
+              "name": "曹操",
+              "level": 186
+            },
+            {
+              "name": "太乙真人",
+              "level": 184
+            },
+            {
+              "name": "甄姬",
+              "level": 181
+            },
+            {
+              "name": "钟馗",
+              "level": 7
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "是超飞超越梦飞",
+          "commander": "白歌",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "吕布",
+              "level": 421
+            },
+            {
+              "name": "貂蝉",
+              "level": 400
+            },
+            {
+              "name": "甄姬",
+              "level": 1
+            },
+            {
+              "name": "小乔",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "抖音梦飞1",
+          "commander": "白歌",
+          "build": "三分混合阵容",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "貂蝉",
+              "level": 216
+            },
+            {
+              "name": "阿轲",
+              "level": 185
+            },
+            {
+              "name": "诸葛亮",
+              "level": 143
+            },
+            {
+              "name": "曹操",
+              "level": 103
+            },
+            {
+              "name": "裴擒虎",
+              "level": 54
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "抖音EZ嘉誉",
+          "commander": "班叔",
+          "build": "河洛李信",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "李信",
+              "level": 154
+            },
+            {
+              "name": "花木兰",
+              "level": 50
+            },
+            {
+              "name": "铠",
+              "level": 11
+            },
+            {
+              "name": "盾山",
+              "level": 6
+            },
+            {
+              "name": "钟馗",
+              "level": 5
+            },
+            {
+              "name": "太乙真人",
+              "level": 2
+            },
+            {
+              "name": "明世隐",
+              "level": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:7",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-94f811d004405719/content",
+      "day": "2026-11-20",
+      "ordinal": 7,
+      "materialKey": "94f811d004405719341ccacb95a56b335ff73c2ad7f3d9ed14c67634fc31b157",
+      "ban": "日落海",
+      "duration": "00:27:54",
+      "winnerSlot": 1,
+      "winnerBuild": "逐鹿帝临",
+      "winnerNickname": "好没意思的猫",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "好没意思的猫",
+          "commander": "嬴律",
+          "build": "逐鹿帝临",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "嬴政",
+              "level": 781,
+              "ace": true
+            },
+            {
+              "name": "芈月",
+              "level": 1
+            },
+            {
+              "name": "西施",
+              "level": 1
+            },
+            {
+              "name": "白起",
+              "level": 1
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            },
+            {
+              "name": "武则天",
+              "level": 1
+            },
+            {
+              "name": "太乙真人",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "bili星光柯基",
+          "commander": "镜",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "吕布",
+              "level": 314
+            },
+            {
+              "name": "貂蝉",
+              "level": 140
+            },
+            {
+              "name": "曹操",
+              "level": 36
+            },
+            {
+              "name": "蔡文姬",
+              "level": 30
+            },
+            {
+              "name": "钟馗",
+              "level": 12
+            },
+            {
+              "name": "太乙真人",
+              "level": 12
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "抖音梦飞久迁",
+          "commander": "阿离",
+          "build": "大河刘邦",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "刘邦",
+              "level": 467
+            },
+            {
+              "name": "大司命",
+              "level": 19
+            },
+            {
+              "name": "扁鹊",
+              "level": 15
+            },
+            {
+              "name": "太乙真人",
+              "level": 10
+            },
+            {
+              "name": "少司缘",
+              "level": 9
+            },
+            {
+              "name": "鬼谷子",
+              "level": 9
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "抖音梦飞",
+          "commander": "白歌",
+          "build": "三分登场",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "诸葛亮",
+              "level": 893
+            },
+            {
+              "name": "小乔",
+              "level": 512
+            },
+            {
+              "name": "吕布",
+              "level": 404
+            },
+            {
+              "name": "甄姬",
+              "level": 378
+            },
+            {
+              "name": "貂蝉",
+              "level": 361
+            },
+            {
+              "name": "太乙真人",
+              "level": 27
+            },
+            {
+              "name": "钟馗",
+              "level": 6
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "反骨清辞版",
+          "commander": "常小娥",
+          "build": "牺牲李信",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "李信",
+              "level": 301
+            },
+            {
+              "name": "海月",
+              "level": 279
+            },
+            {
+              "name": "大司命",
+              "level": 131
+            },
+            {
+              "name": "瑶",
+              "level": 81
+            },
+            {
+              "name": "铠",
+              "level": 11
+            },
+            {
+              "name": "钟馗",
+              "level": 1
+            },
+            {
+              "name": "盾山",
+              "level": 1
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "EGM丨无量大蒜",
+          "commander": "小妲己",
+          "build": "逐鹿帝临",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "嬴政",
+              "level": 382
+            },
+            {
+              "name": "芈月",
+              "level": 1
+            },
+            {
+              "name": "西施",
+              "level": 1
+            },
+            {
+              "name": "白起",
+              "level": 1
+            },
+            {
+              "name": "武则天",
+              "level": 1
+            },
+            {
+              "name": "庄周",
+              "level": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ruanshi:2026-11-20:8",
+      "sourceUrl": "http://127.0.0.1:8082/api/v1/admin/evidences/ace-result-00281a6b1199cbfa/content",
+      "day": "2026-11-20",
+      "ordinal": 8,
+      "materialKey": "00281a6b1199cbfa36128ac30517449ff011748650123fde5f109281e8efa27f",
+      "ban": "大河",
+      "duration": "00:30:38",
+      "winnerSlot": 1,
+      "winnerBuild": "河洛李信",
+      "winnerNickname": "抖音EG福鱼",
+      "seats": [
+        {
+          "slot": 1,
+          "rank": 1,
+          "nickname": "抖音EG福鱼",
+          "commander": "班叔",
+          "build": "河洛李信",
+          "winner": true,
+          "heroes": [
+            {
+              "name": "李信",
+              "level": 370,
+              "ace": true
+            },
+            {
+              "name": "铠",
+              "level": 42
+            },
+            {
+              "name": "花木兰",
+              "level": 32
+            },
+            {
+              "name": "钟馗",
+              "level": 25
+            },
+            {
+              "name": "盾山",
+              "level": 10
+            },
+            {
+              "name": "太乙真人",
+              "level": 5
+            }
+          ]
+        },
+        {
+          "slot": 2,
+          "rank": 2,
+          "nickname": "左熠熠熠熠",
+          "commander": "嬴律",
+          "build": "逐鹿嬴政",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "嬴政",
+              "level": 396
+            },
+            {
+              "name": "白起",
+              "level": 80
+            },
+            {
+              "name": "西施",
+              "level": 47
+            },
+            {
+              "name": "庄周",
+              "level": 45
+            },
+            {
+              "name": "鲁班大师",
+              "level": 20
+            },
+            {
+              "name": "芈月",
+              "level": 9
+            },
+            {
+              "name": "太乙真人",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "slot": 3,
+          "rank": 3,
+          "nickname": "抖音清辞4连6",
+          "commander": "玉环",
+          "build": "日落海司空震",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "司空震",
+              "level": 512
+            },
+            {
+              "name": "姬小满",
+              "level": 475
+            },
+            {
+              "name": "艾琳",
+              "level": 400
+            },
+            {
+              "name": "雅典娜",
+              "level": 256
+            },
+            {
+              "name": "姜子牙",
+              "level": 37
+            },
+            {
+              "name": "钟馗",
+              "level": 24
+            },
+            {
+              "name": "太乙真人",
+              "level": 2
+            }
+          ]
+        },
+        {
+          "slot": 4,
+          "rank": 4,
+          "nickname": "十连666",
+          "commander": "小妲己",
+          "build": "日落海艾琳",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "海诺",
+              "level": 538
+            },
+            {
+              "name": "艾琳",
+              "level": 488
+            },
+            {
+              "name": "姜子牙",
+              "level": 80
+            },
+            {
+              "name": "钟馗",
+              "level": 53
+            },
+            {
+              "name": "太乙真人",
+              "level": 36
+            },
+            {
+              "name": "阿轲",
+              "level": 6
+            }
+          ]
+        },
+        {
+          "slot": 5,
+          "rank": 5,
+          "nickname": "丰川祥子",
+          "commander": "马可",
+          "build": "单吕布",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "吕布",
+              "level": 220
+            },
+            {
+              "name": "鲁班大师",
+              "level": 4
+            }
+          ]
+        },
+        {
+          "slot": 6,
+          "rank": 6,
+          "nickname": "DY棒教练",
+          "commander": "马可",
+          "build": "镜猪",
+          "winner": false,
+          "heroes": [
+            {
+              "name": "镜",
+              "level": 124
+            },
+            {
+              "name": "猪八戒",
+              "level": 65
+            },
+            {
+              "name": "芈月",
+              "level": 60
+            },
+            {
+              "name": "姬小满",
+              "level": 30
+            },
+            {
+              "name": "姜子牙",
+              "level": 25
+            },
+            {
+              "name": "太乙真人",
+              "level": 10
             }
           ]
         }

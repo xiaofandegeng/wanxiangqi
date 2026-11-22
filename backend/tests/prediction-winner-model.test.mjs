@@ -35,50 +35,53 @@ test('资料样本只接收完整六人唯一冠军，记录可复算的参数�
 
 })
 
-test('综合实验预测使用当场禁用、同场交手和已确认的玩法',()=>{
+test('赛前预测使用禁用、同场交手及同棋手历史阵容',()=>{
  const games=Array.from({length:6},(_,i)=>game('g'+i,'2026-01-0'+(i+1),'A'))
  const roster=games[0].seats.map(seat=>({profileId:seat.id,nickname:seat.id}))
  const catalog={matches:games.map(g=>asCatalogMatch({...g,ban:'河洛'},(seat,index)=>({
-  ...seat,build:index<2?'三分倒转':'逐鹿嬴政'
+  ...seat,reviewedCommander:'白歌',build:index<2?'三分倒转':'逐鹿嬴政'
  })))}
- const context={bannedFaction:'河洛',players:roster.map((_,index)=>({visiblePlan:index<2?'三分倒转':'逐鹿嬴政'}))}
+ const context={bannedFaction:'河洛',commanders:roster.map(()=> '白歌')}
  const result=experimentalWinnerEstimate(catalog,roster,'2026-01-07',context)
- assert.equal(result.modelVersion,'source-roster-dynamic-v13')
+ assert.equal(result.modelVersion,'source-roster-dynamic-v14')
  assert.equal(result.diagnostic.strictHits,5)
  for(const signal of ['ban','opponents','contention']) assert.ok(Math.abs(result.signals[0][signal])>1e-8,signal)
  assert.ok(result.players[0].probability>result.players[1].probability)
  const changed=experimentalWinnerEstimate(catalog,roster,'2026-01-07',{...context,bannedFaction:'日落海'})
  assert.equal(changed.signals[0].ban,0)
  assert.notEqual(changed.players[0].probability,result.players[0].probability)
- const noCollision={...context,players:context.players.map((seat,index)=>index===1?{visiblePlan:'日落海倒转'}:seat)}
+ const noCollision={...context,commanders:context.commanders.map((commander,index)=>index===1?'马可':commander)}
  const solo=experimentalWinnerEstimate(catalog,roster,'2026-01-07',noCollision)
  assert.equal(solo.signals[0].contention,0)
  assert.notEqual(solo.players[0].probability,result.players[0].probability)
 })
 
-test('极速入口仅关联数据库中唯一同名或指定档案，已选棋手只用核对证据',()=>{
- const names=['甲','乙','丙','丁','戊','己']
+test('赛前接口只接受六个档案 ID、棋手和禁用，按已核对棋手推测',()=>{
  const scoped=game('db-match','2026-01-01','A')
- const players=scoped.seats.map((seat,index)=>({id:seat.id,nickname:names[index]}))
- const catalog={players,matches:[asCatalogMatch(scoped,(seat,index)=>({
+ const players=scoped.seats.map(seat=>({id:seat.id,nickname:'同名选手'}))
+ const catalog={players,playerAliases:[{alias_id:'A-old',canonical_id:'A'}],matches:[asCatalogMatch(scoped,(seat,index)=>({
   ...seat,build:'日落海倒转',commander:'马可',reviewedCommander:index===0?'白歌':null
  }))]}
- const input={phase:'PREMATCH',mode:'WANXIANG',version:'UNKNOWN',
-  players:names.map(nickname=>({nickname,commander:'白哥'})),
-  history:[asCatalogMatch(game('client-made-up','2026-01-01','F'))]}
+ const input={bannedFaction:null,players:players.map((player,index)=>({
+  profileId:index===0?'A-old':player.id,commander:'白哥'
+ }))}
  const ready=forecastRoster(catalog,input,'2026-01-02')
  assert.deepEqual(ready.trainingMatchIds,['db-match'])
  assert.ok(ready.players[0].probability>ready.players[1].probability)
  assert.deepEqual(ready.buildProjections[0].candidates.map(candidate=>candidate.build),['日落海倒转'])
  assert.equal(ready.buildProjections[0].commanderWins,1)
  assert.deepEqual(ready.buildProjections[1].candidates,[])
- const ambiguous={...catalog,players:[...players,{id:'ambiguous',nickname:names[0]}]}
- const limited=forecastRoster(ambiguous,input,'2026-01-02')
+ for (const extra of [{phase:'IN_PROGRESS'},{history:catalog.matches},{selectedTalents:['帝临']}]) {
+  assert.throws(()=>forecastRoster(catalog,{...input,...extra},'2026-01-02'),/仅接收/)
+ }
+ const withPlan=structuredClone(input)
+ withPlan.players[0].visiblePlan='三分登场'
+ assert.throws(()=>forecastRoster(catalog,withPlan,'2026-01-02'),/仅接收/)
+ const duplicated=structuredClone(input)
+ duplicated.players[1].profileId='A'
+ assert.throws(()=>forecastRoster(catalog,duplicated,'2026-01-02'),/同一档案/)
+ const historyMissing={...catalog,matches:[]}
+ const limited=forecastRoster(historyMissing,input,'2026-01-02')
  assert.equal(limited.status,'INSUFFICIENT_DATABASE_HISTORY')
  assert.ok(limited.players.every(player=>player.probability===null))
- assert.equal(limited.players[0].profileId,null)
- const confirmed=forecastRoster(ambiguous,{...input,players:input.players.map((player,index)=>({
-  ...player,profileId:players[index].id
- }))},'2026-01-02')
- assert.deepEqual(confirmed.players,ready.players)
 })

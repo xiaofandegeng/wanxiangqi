@@ -2,7 +2,7 @@ import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {buildTalentStatistics} from '../src/prediction/talent-statistics.mjs'
-import {assessRoster} from '../src/prediction/screenshot-analysis.mjs'
+import {forecastRoster} from '../src/prediction/screenshot-analysis.mjs'
 import {TALENT_RULES} from '../../shared/talent-impact.mjs'
 
 const evidence=JSON.parse(readFileSync(new URL('../data/talent-settlement-observations.json',import.meta.url)))
@@ -40,25 +40,40 @@ test('天赋样本按证据指纹、入库可见时间与版本计数', () => {
  assert.deepEqual(buildTalentStatistics(mismatched,databaseEvidenceAt(cutoff)),{})
 })
 
-test('赛中对已取得天赋与已知阵容应用同版本修正，赛前和结算图受阶段约束', () => {
- const players=Array.from({length:6},(_,i)=>({id:`person-${i}`,nickname:`TEST-${i}`,history:[]}))
- const training={...matches[0],matchType:'full_transcribed',seats:matches[0].seats.map((seat,i)=>({...seat,playerId:players[i].id}))}
- const catalog={matches:[training],players,sources:[],counts:{},talentStatistics:buildTalentStatistics(matches,databaseEvidenceAt(cutoff))}
- const draft={featureCutoff:cutoff,ocr:{phaseHint:'UNKNOWN'}}
- const input={phase:'IN_PROGRESS',mode:'WANXIANG',version,identityConfirmed:true,operator:'TEST',
-  experimentalProbability:true,players:Array.from({length:6},(_,i)=>({
-   nickname:`TEST-${i}`, profileId:players[i].id, visiblePlan:'三分登场', selectedTalents:i===0?['点兵点将','点兵点将']:[]
-  }))}
- const {model,aceContext}=assessRoster(catalog,input,draft)
- assert.equal(aceContext.supportStage,'CLOSED')
- assert.deepEqual(aceContext.players[0].selectedTalents,['点兵点将'])
- assert.ok(model.players[0].probability > model.talentAdjustment.players[0].baseProbability)
- assert.ok(Math.abs(model.players.reduce((sum,seat)=>sum+seat.probability,0)-1)<1e-12)
- assert.equal(assessRoster(catalog,{...input,version:'v1.10.1'},draft).model.talentAdjustment.players[0].logWeight,0)
- assert.equal(assessRoster(catalog,{...input,mode:'DIAMOND'},draft).model.talentAdjustment.players[0].logWeight,0)
- assert.equal(assessRoster(catalog,{...input,aceContext:{bannedFaction:'三分'}},draft).model.talentAdjustment.players[0].logWeight,0)
- assert.throws(()=>assessRoster(catalog,{...input,phase:'PREMATCH'},draft),/赛中推演/)
- assert.throws(()=>assessRoster(catalog,input,{...draft,ocr:{phaseHint:'POSTMATCH_INDICATORS'}}),/赛后核对/)
+test('赛前只根据同选手棋手阵容和已核对的历史天赋估算，缺样本保留未知', () => {
+ const players=Array.from({length:6},(_,i)=>({id:`person-${i}`,nickname:`TEST-${i}`}))
+ const input={bannedFaction:null,players:players.map(({id},index)=>({profileId:id,commander:index===0?'白歌':'马可'}))}
+ const records=Array.from({length:5},(_,i)=>({
+  id:`history-${i}`,day:`2026-11-1${i}`,matchType:'full_transcribed',materialSha256:`source-${i}`,
+  seats:players.map((player,index)=>({
+   slot:index+1,playerId:player.id,build:'三分登场',winner:index===0,
+   reviewedCommander:index===0&&i!==4?'白歌':'马可'
+  }))
+ }))
+ const talentEvidence=records.map((record,index)=>({
+  matchId:record.id,materialSha256:index===3?'WRONG':record.materialSha256,version,
+  seats:[index===4?['帝临']:['点兵点将'],['镜像迷离'],[],[],[],[]]
+ }))
+ const catalog={matches:records,players,talentEvidence}
+ const forecast=forecastRoster(catalog,input,cutoff)
+ assert.equal(forecast.talentProjections.version,version)
+ const talent=forecast.talentProjections.players[0]
+ assert.equal(talent.buildSamples,4)
+ assert.equal(talent.talentSamples,3)
+ assert.deepEqual(talent.candidates,[{
+  build:'三分登场',talent:'点兵点将',observations:3,buildSamples:4,observedShare:.75
+ }])
+ assert.ok(forecast.players[0].probability>talent.baseProbability)
+ assert.deepEqual(forecast.talentProjections.players[2].candidates,[])
+ assert.ok(Math.abs(forecast.players.reduce((sum,seat)=>sum+seat.probability,0)-1)<1e-12)
+ const banned=forecastRoster(catalog,{...input,bannedFaction:'三分'},cutoff)
+ assert.deepEqual(banned.talentProjections.players[0].candidates,[])
+ const sameDay={...records[0],id:'same-day',day:'2026-11-20'}
+ const sameDayTalent={...talentEvidence[0],matchId:sameDay.id,version:'v9.0.0'}
+ assert.deepEqual(
+  forecastRoster({...catalog,matches:[...records,sameDay],talentEvidence:[...talentEvidence,sameDayTalent]},input,cutoff),
+  forecast
+ )
 })
 
 test('续录的天赋保留原预测截止时间，新增场次按原图指纹入样', () => {
