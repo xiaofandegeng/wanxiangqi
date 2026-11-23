@@ -3,6 +3,9 @@ import { CatalogService } from './catalog.mjs'
 import { ObservationService } from './observations.mjs'
 import {randomUUID} from 'node:crypto'
 import {normalizeMatch,payloadHash,computeStats,estimate,fail} from './domain.mjs'
+import {readRankFeedbackCutoff,summarizeRankFeedback} from './rank-feedback.mjs'
+import {generateRankReplays} from './rank-replay.mjs'
+import {lookupAccountIdentity,registerAccountIdentity} from './account-identity.mjs'
 const wire=r=>({id:r.id,sourceKey:r.source_key,mode:r.mode,playedAt:r.played_at.toISOString(),evidenceId:r.evidence_id,evidenceLocator:r.evidence_locator,version:r.version,platform:r.platform,region:r.region,seats:r.seats,status:r.status,createdAt:r.created_at.toISOString(),verifiedAt:r.verified_at?.toISOString()||null,verifiedBy:r.verified_by})
 export class PredictionService {
  constructor(pool){this.pool=pool;this.screenshots=new ScreenshotService(pool);this.catalog=new CatalogService(pool);this.observations=new ObservationService(pool,(c,id,v)=>this.evidence(c,id,v))}
@@ -40,9 +43,34 @@ export class PredictionService {
  async eligible(){return (await this.pool.query(`SELECT m.* FROM prediction_matches m JOIN evidences e ON e.id=m.evidence_id JOIN evidence_blobs b ON b.sha256=e.sha256 WHERE m.status='VERIFIED' AND e.status='VERIFIED' AND octet_length(b.content)=b.size_bytes AND b.size_bytes>0 ORDER BY m.played_at`)).rows.map(wire)}
  async stats(){return computeStats(await this.eligible())}
  async forecast(input){
-  const {time}=(await this.pool.query('SELECT clock_timestamp() AS time')).rows[0]
-  const cutoff=time.toISOString()
-  return forecastRoster(await this.catalog.list({cutoff,includeTalentEvidence:true}),input,cutoff)
+  const cutoff=await readRankFeedbackCutoff(this.pool)
+  const catalog=await this.catalog.list({cutoff,includeTalentEvidence:true,includeRankFeedback:true})
+  const result=forecastRoster(catalog,input,cutoff)
+  if(result.players.every(player=>Number.isFinite(player.probability))){
+   const players=result.players.map((player,index)=>({
+    id:player.profileId,commander:input.players[index].commander.trim(),probability:player.probability,
+   }))
+   const id=randomUUID()
+   await this.pool.query(`INSERT INTO prediction_prematch_forecasts(id,model_version,banned_faction,players)
+    VALUES($1,$2,$3,$4)`,[id,result.modelVersion,input.bannedFaction?.trim()??null,JSON.stringify(players)])
+   return {...result,forecastId:id}
+  }
+  return result
+ }
+ async rankFeedback(){
+  const cutoff=await readRankFeedbackCutoff(this.pool)
+  const {entries,...board}=summarizeRankFeedback(await this.catalog.list({cutoff,includeRankFeedback:true}),cutoff)
+  return board
+ }
+ async registerAccountIdentity(input){
+  const identity=await registerAccountIdentity(this.pool,input,(client,id,verified)=>this.evidence(client,id,verified))
+  if(identity.profileId!==identity.personProfileId) await generateRankReplays(this.pool)
+  return identity
+ }
+ async lookupAccountIdentity(input){return lookupAccountIdentity(this.pool,input)}
+ async generateRankFeedback(){
+  const generation=await generateRankReplays(this.pool)
+  return {generation,board:await this.rankFeedback()}
  }
  async predict(input){const r=estimate(await this.eligible(),input);if(r.status==='RESEARCH_BASELINE'){r.id=randomUUID();await this.pool.query('INSERT INTO prediction_runs(id,payload) VALUES($1,$2)',[r.id,JSON.stringify(r)])}return r}
  async runs(){return (await this.pool.query('SELECT id,created_at,payload FROM prediction_runs ORDER BY created_at DESC LIMIT 50')).rows.map(r=>({...r.payload,createdAt:r.created_at.toISOString()}))}

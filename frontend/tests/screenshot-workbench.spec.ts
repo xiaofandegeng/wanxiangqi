@@ -6,6 +6,37 @@ const {api,upload}=vi.hoisted(()=>({api:vi.fn(),upload:vi.fn()}))
 vi.mock('../src/api/prediction',()=>({researchApi:api}))
 vi.mock('../src/api/index',()=>({uploadEvidence:upload}))
 let app:App
+it('红黑榜能切换窗口，也能生成历史补算',async()=>{
+ const row={profileId:'P',nickname:'TEST 红榜选手',samples3:1,samples7:2,average3:3,average7:2,weightedGap:2.7,
+  accounts:[{key:'UID',account:{platform:'test',region:'test',uid:'001'},samples3:1,samples7:2,
+   profiles:[{profileId:'P',nickname:'TEST 旧昵称',samples3:1,samples7:1},
+    {profileId:'A',nickname:'TEST 新昵称',samples3:0,samples7:1}]}]}
+ const boardResult={windows:{recent3:{live:1,replayed:0,red:[row],black:[]},recent7:{live:1,replayed:1,red:[row],black:[]}}}
+ api.mockImplementation(async(action:string)=>action==='catalog'?{players:[]}:
+  action==='rank-feedback/generate'?{board:boardResult,generation:{generated:1,unchanged:1,live:1,withdrawn:0,skipped:[]}}:boardResult)
+ const el=await mount()
+ const board=el.querySelector<HTMLDetailsElement>('.rank-feedback')!
+ expect(api).not.toHaveBeenCalledWith('rank-feedback')
+ board.open=true
+ board.dispatchEvent(new Event('toggle'))
+ await wait()
+ expect(api).toHaveBeenCalledWith('rank-feedback')
+ expect(board.textContent).toContain('TEST 红榜选手')
+ expect(board.textContent).toContain('+2.00 名')
+ expect(board.textContent).toContain('1 个已核验账号 · 2 份档案')
+ expect(board.textContent).toContain('TEST 新昵称')
+ const select=board.querySelector('select')!
+ select.value='recent3'
+ select.dispatchEvent(new Event('change'))
+ await nextTick()
+ expect(board.textContent).toContain('+3.00 名')
+ expect(board.textContent).toContain('最近 3 天 70%')
+ board.querySelector('button')!.click()
+ await wait()
+ expect(api).toHaveBeenCalledWith('rank-feedback/generate',{})
+ expect(board.textContent).toContain('新增或更新 1 场')
+ expect(board.textContent).toContain('重算后无变化 1 场')
+})
 const wait=()=>new Promise(r=>setTimeout(r,10))
 async function mount(){document.body.innerHTML='';const el=document.createElement('div');document.body.append(el);app=createApp(Workbench);app.mount(el);await wait();return el}
 afterEach(()=>app?.unmount())
@@ -90,7 +121,7 @@ it('截图核对只提交名单与资料确认，保留独立的预测表单',as
  el.querySelector('.shot-upload')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))
  await wait()
  expect(forecastId.value).toBe('PREMATCH-ID')
- const confirmed=el.querySelector<HTMLInputElement>('.shot-confirm input')!
+ const confirmed=el.querySelector<HTMLInputElement>('.shot-review .shot-confirm input')!
  confirmed.checked=true
  confirmed.dispatchEvent(new Event('change'))
  el.querySelector('.shot-review')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))

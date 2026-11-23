@@ -36,14 +36,16 @@ export async function importCatalog(pool,data,readMaterial){
 }
 export class CatalogService {
  constructor(pool){this.pool=pool}
- async list({cutoff=new Date().toISOString(),includeTalentEvidence=false}={}){
+ async list({cutoff=new Date().toISOString(),includeTalentEvidence=false,includeRankFeedback=false,includeCurrentDayResults=false}={}){
  if(!Number.isFinite(Date.parse(cutoff)))throw fail('截止时间无效','INVALID_CUTOFF')
  const client=await this.pool.connect()
  try{
  await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
  const [players,plays,claims,sources,buildProfiles,links,talents]=[
  await client.query('SELECT id,author,nickname,identity_status FROM prediction_catalog_players WHERE available_at<=$1 ORDER BY nickname',[cutoff]),
- await client.query(`SELECT p.*,m.day::text,m.ordinal,m.scheduled_at,to_char(m.scheduled_at AT TIME ZONE 'Asia/Shanghai', 'HH24:MI') AS scheduled_time,m.source_url,m.material_sha256,m.ban,m.winner_build,ce.commander AS reviewed_commander FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 LEFT JOIN prediction_catalog_commander_evidence ce ON ce.match_id=p.match_id AND ce.slot=p.slot AND ce.material_sha256=m.material_sha256 AND ce.available_at<=$1 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff]),
+ await client.query(`SELECT p.*,m.day::text,m.ordinal,m.scheduled_at,to_char(m.scheduled_at AT TIME ZONE 'Asia/Shanghai', 'HH24:MI') AS scheduled_time,m.source_url,m.material_sha256,m.ban,m.winner_build,ce.commander AS reviewed_commander FROM prediction_catalog_plays p JOIN prediction_catalog_matches m ON m.id=p.match_id JOIN prediction_catalog_materials b ON b.sha256=m.material_sha256 LEFT JOIN prediction_catalog_commander_evidence ce ON ce.match_id=p.match_id AND ce.slot=p.slot AND ce.material_sha256=m.material_sha256 AND ce.available_at<=$1 WHERE m.status='TRANSCRIBED' AND octet_length(b.content)=b.size_bytes AND m.available_at<=$1
+  AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date+CASE WHEN $2::boolean THEN 1 ELSE 0 END
+  ORDER BY m.day DESC,m.ordinal,p.slot`,[cutoff,includeCurrentDayResults]),
  await client.query(`SELECT c.*,c.window_start::text AS start,c.window_end::text AS finish FROM prediction_catalog_claims c JOIN prediction_catalog_materials b ON b.sha256=c.material_sha256 WHERE octet_length(b.content)=b.size_bytes AND c.available_at<=$1 AND c.window_end<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date ORDER BY c.window_end DESC,c.id`,[cutoff]),
  await client.query(`SELECT s.*, (SELECT count(*)::int FROM prediction_catalog_matches m WHERE m.source_url=s.url AND status='TRANSCRIBED' AND m.available_at<=$1 AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date) AS matches FROM prediction_catalog_sources s WHERE s.created_at<=$1 ORDER BY url DESC`,[cutoff]),
  await client.query(`SELECT player_id,build,appearances,wins,observed_win_rate::float8 AS "winRate",
@@ -54,9 +56,31 @@ export class CatalogService {
  await client.query('SELECT alias_id,canonical_id FROM prediction_catalog_player_links WHERE available_at<=$1',[cutoff]),
  await client.query(`SELECT match_id AS "matchId",material_sha256 AS "materialSha256",game_version AS version,seat_talents AS seats
   FROM prediction_catalog_talent_evidence WHERE available_at<=$1 AND reviewed_at<=$1 ORDER BY reviewed_at,match_id`,[cutoff])]
+ const rankEvidence=includeRankFeedback?(await client.query(`
+  SELECT r.match_id AS "matchId",r.material_sha256 AS "materialSha256",r.ranks,r.available_at AS "availableAt"
+  FROM prediction_catalog_rank_evidence r JOIN prediction_catalog_matches m
+    ON m.id=r.match_id AND m.material_sha256=r.material_sha256
+  WHERE r.available_at<=$1 AND m.day>=($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date-7
+    AND m.day<($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date+CASE WHEN $2::boolean THEN 1 ELSE 0 END`,[cutoff,includeCurrentDayResults])).rows:[]
+ const prematchForecasts=includeRankFeedback&&rankEvidence.length?(await client.query(`
+  SELECT id,banned_faction AS "bannedFaction",players,recorded_at AS "recordedAt"
+  FROM prediction_prematch_forecasts
+  WHERE recorded_at>=(($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date-7)::timestamp AT TIME ZONE 'Asia/Shanghai'
+    AND recorded_at<CASE WHEN $2::boolean THEN $1::timestamptz
+      ELSE (($1::timestamptz AT TIME ZONE 'Asia/Shanghai')::date)::timestamp AT TIME ZONE 'Asia/Shanghai' END`,[cutoff,includeCurrentDayResults])).rows:[]
+ const rankReplays=includeRankFeedback&&rankEvidence.length?(await client.query(`
+  SELECT match_id AS "matchId",material_sha256 AS "materialSha256",banned_faction AS "bannedFaction",
+    players,generated_at AS "generatedAt"
+  FROM prediction_rank_replays WHERE match_id=ANY($2::text[]) AND generated_at<=$1
+    AND (invalidated_at IS NULL OR invalidated_at>$1)`,
+  [cutoff,rankEvidence.map(row=>row.matchId)])).rows:[]
+ const accountUids=includeRankFeedback?new Map((await client.query(`
+  SELECT profile_id,platform,region,uid FROM prediction_catalog_account_uids WHERE available_at<=$1`,[cutoff]))
+  .rows.map(({profile_id,...account})=>[profile_id,account])):null
  await client.query('COMMIT')
  const canonicalIds=new Map(links.rows.map(link=>[link.alias_id,link.canonical_id]))
  const canonicalPlayers=players.rows.filter(player=>!canonicalIds.has(player.id))
+ if(includeRankFeedback) for(const row of plays.rows) row.sourceProfileId=row.player_id
  for(const row of [...plays.rows,...claims.rows])row.player_id=canonicalIds.get(row.player_id)??row.player_id
  const playerMap=new Map(canonicalPlayers.map(p=>[p.id,p.nickname]))
  const matchMap=new Map()
@@ -74,7 +98,8 @@ export class CatalogService {
    existingSeat.playerId = r.player_id
    if (!existingSeat.nickname || existingSeat.nickname === '未知') existingSeat.nickname = nick
   } else {
-   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,reviewedCommander:r.reviewed_commander??null,avatar:cmd ? `/avatars/commanders/${cmd}.png` : null,build:r.build_label,winner:Boolean(r.winner)})
+   m.seats.push({slot:r.slot,playerId:r.player_id,nickname:nick,commander:cmd,reviewedCommander:r.reviewed_commander??null,avatar:cmd ? `/avatars/commanders/${cmd}.png` : null,build:r.build_label,winner:Boolean(r.winner),
+    ...(includeRankFeedback?{sourceProfileId:r.sourceProfileId}:{})})
   }
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
@@ -144,7 +169,10 @@ export class CatalogService {
   matches,
   buildStatistics:buildStatistics(matches),
   talentStatistics:buildTalentStatistics(matches,talents.rows),
-  ...(includeTalentEvidence?{talentEvidence:talents.rows,playerAliases:links.rows}:{}),
+  ...(includeTalentEvidence?{talentEvidence:talents.rows}:{}),
+  ...(includeTalentEvidence||includeRankFeedback?{playerAliases:links.rows}:{}),
+  ...(includeRankFeedback?{rankEvidence,prematchForecasts,rankReplays,
+   sourceProfiles:players.rows.map(({id,nickname,author})=>({id,nickname,author,account:accountUids.get(id)??null}))}:{}),
   players:profiles,
   allPlayers,
   sources:sources.rows,

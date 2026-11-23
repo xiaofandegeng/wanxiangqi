@@ -38,13 +38,61 @@
     </button>
     <p v-if="forecastError" role="alert">{{ forecastError }}</p>
 
+    <details class="rank-feedback" @toggle="onRankFeedbackToggle">
+      <summary>选手红黑榜</summary>
+      <div class="rank-feedback-controls">
+        <label>统计窗口
+          <select v-model="rankWindow"><option value="recent3">最近 3 天</option><option value="recent7">最近 7 天</option></select>
+        </label>
+        <button type="button" :disabled="rankFeedbackBusy" @click="loadRankFeedback(true)">重新生成红黑榜</button>
+      </div>
+      <p v-if="rankFeedbackBusy" role="status">正在读取已核对赛果…</p>
+      <p v-else-if="rankFeedbackError" role="status">{{ rankFeedbackError }}</p>
+      <template v-else-if="activeRankWindow">
+        <p v-if="rankFeedbackGeneration" role="status">{{ rankFeedbackGeneration }}</p>
+        <p>赛前快照 {{ activeRankWindow.live }} 场 · 历史补算 {{ activeRankWindow.replayed }} 场</p>
+        <p>本场预测修正 · 最近 3 天 70% · 最近 7 天 30%</p>
+        <p v-if="!activeRankWindow.live && !activeRankWindow.replayed">暂无可匹配的预测与完整名次。</p>
+        <div v-else class="forecast-table">
+          <table>
+            <thead><tr><th>榜单</th><th>选手</th><th>账号与来源</th><th>窗口内样本</th><th>平均名次偏差</th><th>加权名次偏差</th></tr></thead>
+            <tbody v-for="group in [{label:'红榜', rows:activeRankWindow.red}, {label:'黑榜', rows:activeRankWindow.black}]" :key="group.label">
+              <tr v-for="row in group.rows" :key="row.profileId">
+                <td>{{ group.label }}</td><th scope="row">{{ row.nickname }}</th>
+                <td>
+                  <details v-if="row.accounts?.length">
+                    <summary>{{ accountSummary(row.accounts) }}</summary>
+                    <ul class="rank-account-list">
+                      <li v-for="entry in row.accounts" :key="entry.key">
+                        <span v-if="entry.account">{{ entry.account.platform }} / {{ entry.account.region }} · UID {{ entry.account.uid }} · </span>
+                        <span>{{ rankWindow === 'recent3' ? entry.samples3 : entry.samples7 }} 场</span>
+                        <div v-for="profile in entry.profiles" :key="profile.profileId">
+                          {{ profile.nickname }}<span v-if="profile.sourceAuthor">（{{ profile.sourceAuthor }}）</span>
+                          · {{ rankWindow === 'recent3' ? profile.samples3 : profile.samples7 }} 场
+                        </div>
+                      </li>
+                    </ul>
+                  </details>
+                  <span v-else>暂无来源明细</span>
+                </td>
+                <td>{{ rankWindow === 'recent3' ? row.samples3 : row.samples7 }}</td>
+                <td>{{ signed(rankWindow === 'recent3' ? row.average3 ?? 0 : row.average7) }} 名</td>
+                <td>{{ signed(row.weightedGap) }} 名</td>
+              </tr>
+              <tr v-if="!group.rows.length"><td>{{ group.label }}</td><td colspan="5">暂无选手</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </details>
+
     <section v-if="forecast" class="shot-model forecast-result" aria-live="polite">
       <h3>{{ forecast.status === 'INSUFFICIENT_DATABASE_HISTORY' ? '样本不足 · 阵容推测' : '本场预测' }}</h3>
       <p>{{ forecast.notice }}</p>
       <p>{{ forecast.trainingMatches }} 场入库训练记录 · {{ forecast.modelVersion }} · 截止 {{ formatCutoff(forecast.cutoff) }}</p>
       <div class="forecast-table">
         <table>
-          <thead><tr><th>席位</th><th>选手</th><th>本场棋手</th><th>入库战绩</th><th>同棋手阵容战绩</th><th>阵容倾向</th><th>天赋推测</th><th>夺冠概率</th></tr></thead>
+          <thead><tr><th>席位</th><th>选手</th><th>本场棋手</th><th>入库战绩</th><th>同棋手阵容战绩</th><th>阵容倾向</th><th>天赋推测</th><th>夺冠概率</th><th v-if="forecast.rankFeedback?.settledMatches">近期偏差</th></tr></thead>
           <tbody>
             <tr v-for="(player, i) in forecast.players" :key="i">
               <td>{{ i + 1 }}</td>
@@ -55,6 +103,7 @@
               <td>{{ lineupLabel(forecast.buildProjections?.[i]) }}</td>
               <td>{{ talentLabel(forecast.talentProjections?.players[i]) }}</td>
               <td>{{ probabilityLabel(player.probability) }}</td>
+              <td v-if="forecast.rankFeedback?.settledMatches">{{ rankAdjustmentLabel(forecast.rankFeedback.players[i], player.probability) }}</td>
             </tr>
           </tbody>
         </table>
@@ -83,6 +132,22 @@
    <button class="primary" :disabled="busy||!file">{{ busy?'处理中…':'保存原图并识别' }}</button>
   </form>
   <form class="shot-restore" @submit.prevent="loadSaved"><label>已保存核对编号<input v-model="savedAnalysisId" maxlength="100" placeholder="填写编号，恢复当时的核对资料"></label><button :disabled="busy||!savedAnalysisId.trim()">载入资料</button></form>
+  <details class="account-identity">
+   <summary>核对选手账号 UID</summary>
+   <form class="shot-restore" @submit.prevent="saveAccountIdentity">
+    <label>来源档案 ID<input v-model.trim="identity.profileId" list="forecast-players" required maxlength="160"></label>
+    <label>游戏 UID<input v-model.trim="identity.uid" required maxlength="160"></label>
+    <label>平台<input v-model.trim="identity.platform" required maxlength="160"></label>
+    <label>区服<input v-model.trim="identity.region" required maxlength="160"></label>
+    <label>已核验证据编号<input v-model.trim="identity.evidenceId" required maxlength="160"></label>
+    <label>所属选手档案 ID（选填）<input v-model.trim="identity.personProfileId" list="forecast-players" maxlength="160"></label>
+    <label>核对说明<input v-model.trim="identity.reviewNote" required maxlength="500"></label>
+    <label class="shot-confirm"><input type="checkbox" v-model="identity.identityConfirmed">已核对游戏 UID 与账号归属</label>
+    <button type="button" :disabled="identityBusy || !identity.platform || !identity.region || !identity.uid" @click="findAccountIdentity">查询 UID</button>
+    <button type="submit" :disabled="identityBusy || !identity.identityConfirmed">登记账号</button>
+   </form>
+   <p v-if="identityStatus" role="status">{{ identityStatus }}</p>
+  </details>
   <p class="muted">原图仅存本机后端与数据库，默认内部使用。当前OCR使用macOS本地Vision；不支持的服务器会明确提示。识别结果必须人工确认。</p>
   <p v-if="error" role="alert">{{ error }}</p><p v-if="evidenceId" class="muted">已保存原件：{{ evidenceId }}；核对后的逐局数据可用于后续赛前预测。</p>
   <template v-if="draft">
@@ -128,7 +193,7 @@
 </section>
 </template>
 <script setup lang="ts">
-import {computed,onMounted,onUnmounted,ref,watch} from 'vue'
+import {computed,onMounted,onUnmounted,reactive,ref,watch} from 'vue'
 import {uploadEvidence} from '../api/index'
 import {researchApi} from '../api/prediction'
 
@@ -146,11 +211,39 @@ interface TalentProjection {
   talentSamples: number
   candidates: {build: string; talent: string; observations: number; buildSamples: number}[]
 }
+interface RankFeedbackEntry {
+  profileId: string
+  nickname: string
+  samples3: number
+  samples7: number
+  average3: number | null
+  average7: number
+  weightedGap: number
+  accounts?: RankFeedbackAccount[]
+  probabilityBefore?: number | null
+}
+interface RankFeedbackAccount {
+  key: string
+  account: {platform: string; region: string; uid: string} | null
+  samples3: number
+  samples7: number
+  profiles: {profileId: string; nickname: string; sourceAuthor: string | null; samples3: number; samples7: number}[]
+}
+interface RankFeedbackWindow {
+  live: number
+  replayed: number
+  red: RankFeedbackEntry[]
+  black: RankFeedbackEntry[]
+}
+interface RankFeedbackBoard {
+  windows: Record<'recent3' | 'recent7', RankFeedbackWindow>
+}
 interface WinnerModel {
   status: string
   cutoff: string
   buildProjections: BuildProjection[]
   talentProjections?: {version: string | null; players: TalentProjection[]}
+  rankFeedback?: {settledMatches: number; players: (RankFeedbackEntry | null)[]}
   modelVersion: string
   trainingMatches: number
   notice: string
@@ -160,6 +253,11 @@ interface Result {status:string;notice:string;featureCutoff:string;blockers:stri
 const capturedAt=ref('')
 const file=ref<File|null>(null),operator=ref(''),evidenceId=ref(''),busy=ref(false),error=ref(''),draft=ref<Draft|null>(null),result=ref<Result|null>(null),confirmed=ref(false)
 const savedAnalysisId=ref('')
+const identity = reactive({
+  profileId:'',uid:'',platform:'',region:'',evidenceId:'',personProfileId:'',reviewNote:'',identityConfirmed:false,
+})
+const identityBusy = ref(false)
+const identityStatus = ref('')
 const emptySeat = () => ({profileId: '', commander: ''})
 const emptyAuditSeat = () => ({profileId: '', nickname: ''})
 const bannedFaction = ref('')
@@ -247,7 +345,99 @@ const catalogOptions = ref<{bans: string[]; commanders: string[]}>({bans: [], co
 const forecast = ref<WinnerModel | null>(null)
 const forecastBusy = ref(false)
 const forecastError = ref('')
+const rankFeedback = ref<RankFeedbackBoard | null>(null)
+const rankWindow = ref<'recent3' | 'recent7'>('recent7')
+const activeRankWindow = computed(() => rankFeedback.value?.windows[rankWindow.value])
+const rankFeedbackBusy = ref(false)
+const rankFeedbackError = ref('')
+const rankFeedbackGeneration = ref('')
 let forecastRequest = 0
+
+function signed(value: number) {
+  return `${value > 0 ? '+' : ''}${value.toFixed(2)}`
+}
+
+function accountSummary(accounts: RankFeedbackAccount[]) {
+  const verified = accounts.filter(row => row.account).length
+  const profiles = accounts.reduce((sum,row) => sum + row.profiles.length,0)
+  return verified ? `${verified} 个已核验账号 · ${profiles} 份档案` : `${profiles} 份档案 · UID 待核对`
+}
+
+async function saveAccountIdentity() {
+  if (identityBusy.value || !identity.identityConfirmed) return
+  identityBusy.value = true
+  identityStatus.value = ''
+  try {
+    const saved = await researchApi<{personProfileId: string}>('account-identities',{...identity})
+    identityStatus.value = `已登记，所属选手档案 ${profileNames.value.get(saved.personProfileId) ?? saved.personProfileId}。`
+    identity.identityConfirmed = false
+    if (rankFeedback.value) await loadRankFeedback(false)
+  } catch (cause) {
+    identityStatus.value = cause instanceof Error ? cause.message : '账号登记失败'
+  } finally {
+    identityBusy.value = false
+  }
+}
+
+async function findAccountIdentity() {
+  if (identityBusy.value) return
+  identityBusy.value = true
+  identityStatus.value = ''
+  try {
+    const {platform,region,uid} = identity
+    const result = await researchApi<{profiles: {personNickname: string; personProfileId: string; nickname: string}[]}>(
+      'account-identities/lookup',{platform,region,uid})
+    const people = new Set(result.profiles.map(profile => profile.personProfileId))
+    const owner = result.profiles[0]
+    identityStatus.value = !owner ? '该 UID 暂无核验记录。'
+      : people.size > 1 ? '该 UID 的选手归属有冲突，请复核。'
+      : `所属选手 ${owner.personNickname} · 档案 ID ${owner.personProfileId} · 已登记昵称 ${[...new Set(result.profiles.map(profile=>profile.nickname))].join('、')}`
+  } catch (cause) {
+    identityStatus.value = cause instanceof Error ? cause.message : 'UID 查询失败'
+  } finally {
+    identityBusy.value = false
+  }
+}
+
+function rankAdjustmentLabel(row: RankFeedbackEntry | null | undefined, probability: number | null) {
+  if (!row) return '无已核对样本'
+  const sample = `${signed(row.weightedGap)} 名 · ${row.samples7} 场`
+  return probability == null || row.probabilityBefore == null
+    ? sample
+    : `${sample} · ${signed((probability - row.probabilityBefore) * 100)} 个百分点`
+}
+
+function onRankFeedbackToggle(event: Event) {
+  if ((event.currentTarget as HTMLDetailsElement).open) void loadRankFeedback(false)
+}
+
+async function loadRankFeedback(generate: boolean) {
+  if (rankFeedbackBusy.value) return
+  rankFeedbackBusy.value = true
+  rankFeedbackError.value = ''
+  rankFeedbackGeneration.value = ''
+  try {
+    if (generate) {
+      const result = await researchApi<{board: RankFeedbackBoard; generation: {
+        generated: number; unchanged: number; live: number; withdrawn: number; skipped: unknown[]
+      }}>(
+        'rank-feedback/generate', {})
+      rankFeedback.value = result.board
+      const {generated, unchanged, live, withdrawn, skipped} = result.generation
+      rankFeedbackGeneration.value = [
+        `新增或更新 ${generated} 场`, `重算后无变化 ${unchanged} 场`, `保留真实快照 ${live} 场`,
+        withdrawn ? `撤下过期补算 ${withdrawn} 场` : '',
+        skipped.length ? `${skipped.length} 场暂缺生成条件` : '',
+      ].filter(Boolean).join(' · ')
+    } else {
+      rankFeedback.value = await researchApi<RankFeedbackBoard>('rank-feedback')
+    }
+  } catch (cause) {
+    rankFeedbackError.value = cause instanceof Error ? cause.message : '红黑榜加载失败'
+  } finally {
+    rankFeedbackBusy.value = false
+  }
+}
 
 watch([players, bannedFaction], () => {
   forecastRequest++
@@ -690,6 +880,11 @@ onUnmounted(() => window.removeEventListener('paste', handleGlobalPaste))
   border-color: transparent;
 }
 .forecast-submit:disabled { opacity: 0.55; }
+.rank-feedback { margin-top: 16px; }
+.rank-feedback-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.rank-feedback-controls select { margin-left: 6px; }
+.rank-account-list { margin: 6px 0 0; padding-left: 16px; }
+.account-identity { margin: 12px 0; }
 .forecast-result { margin-top: 18px; }
 .forecast-table { overflow-x: auto; }
 .forecast-table table {

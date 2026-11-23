@@ -43,7 +43,7 @@ test('赛前预测使用禁用、同场交手及同棋手历史阵容',()=>{
  })))}
  const context={bannedFaction:'河洛',commanders:roster.map(()=> '白歌')}
  const result=experimentalWinnerEstimate(catalog,roster,'2026-01-07',context)
- assert.equal(result.modelVersion,'source-roster-dynamic-v14')
+ assert.equal(result.modelVersion,'source-roster-dynamic-v15')
  assert.equal(result.diagnostic.strictHits,5)
  for(const signal of ['ban','opponents','contention']) assert.ok(Math.abs(result.signals[0][signal])>1e-8,signal)
  assert.ok(result.players[0].probability>result.players[1].probability)

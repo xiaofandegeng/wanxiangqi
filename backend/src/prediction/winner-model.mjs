@@ -3,7 +3,8 @@ import {createHash} from 'node:crypto'
 import {FIELD_CONFIG,trainContextModel,predictContext,contextFeatures,historicalChoice} from './context-model.mjs'
 import {applyTalentImpact} from '../../../shared/talent-impact.mjs'
 import {projectTalents} from './talent-statistics.mjs'
-export const MODEL_VERSION='source-roster-dynamic-v14'
+import {summarizeRankFeedback} from './rank-feedback.mjs'
+export const MODEL_VERSION='source-roster-dynamic-v15'
 const CONFIG={lambda:2,iterations:400,tolerance:1e-8}
 const softmax=s=>{const max=Math.max(...s),e=s.map(x=>Math.exp(x-max)),sum=e.reduce((a,b)=>a+b,0);return e.map(x=>x/sum)}
 export function catalogGames(catalog){
@@ -61,9 +62,15 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,{bannedFaction=
  const baseProbabilities=model?predictContext(model,games,target,choices):null
  const buildProjections=projectBuilds(games,target,choices,historicalChoice)
  const talentProjections=projectTalents(games,catalog.talentEvidence??[],target,commanders,buildProjections)
- const probabilities=baseProbabilities
+ const talentAdjustedProbabilities=baseProbabilities
   ?applyTalentImpact(baseProbabilities,talentProjections.players.map(player=>({logWeight:Math.log(player.expectedFactor)})))
   :null
+ const feedback=summarizeRankFeedback(catalog,cutoff)
+ const feedbackByPlayer=new Map(feedback.entries.map(row=>[row.profileId,row]))
+ const rankAdjustments=ids.map(id=>feedbackByPlayer.get(id)??null)
+ const probabilities=talentAdjustedProbabilities&&rankAdjustments.some(row=>row?.logWeight)
+  ?softmax(talentAdjustedProbabilities.map((value,index)=>Math.log(value)+(rankAdjustments[index]?.logWeight??0)))
+  :talentAdjustedProbabilities
  const features=model?contextFeatures(games,target,FIELD_CONFIG,choices):[]
  return {
   status:ready?'EXPERIMENTAL_SOURCE_MODEL':'INSUFFICIENT_DATABASE_HISTORY',
@@ -79,6 +86,9 @@ export function experimentalWinnerEstimate(catalog,roster,cutoff,{bannedFaction=
   talentProjections:{...talentProjections,players:talentProjections.players.map((player,index)=>({
    ...player,baseProbability:baseProbabilities?.[index]??null
   }))},
+  rankFeedback:{settledMatches:feedback.settledMatches,players:rankAdjustments.map((row,index)=>row?{
+   ...row,probabilityBefore:talentAdjustedProbabilities?.[index]??null,
+  }:null)},
   parameters:model?.parameters??{},
   iterations:model?.iterations??0,
   players:records.map((player,index)=>({...player,probability:probabilities?.[index]??null})),

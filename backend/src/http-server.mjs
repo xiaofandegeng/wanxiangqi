@@ -125,6 +125,7 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
         if (req.method === 'GET' && draftGet) return sendJson(200, { code: 0, data: await p.screenshots.get(draftGet[1]) })
 
         if (req.method === 'GET' && action === 'catalog') return sendJson(200, { code: 0, data: await p.catalog.list() })
+        if (req.method === 'GET' && action === 'rank-feedback') return sendJson(200, { code: 0, data: await p.rankFeedback() })
         if (req.method === 'GET' && action === 'observations') return sendJson(200, { code: 0, data: await p.observations.list() })
         if (req.method === 'GET' && action === 'matches') return sendJson(200, { code: 0, data: await p.list() })
         if (req.method === 'GET' && action === 'stats') return sendJson(200, { code: 0, data: await p.stats() })
@@ -148,6 +149,9 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
           if (action === 'matches') return sendJson(200, { code: 0, data: await p.import(body) })
           if (action === 'estimate') return sendJson(200, { code: 0, data: await p.predict(body) })
           if (action === 'forecast') return sendJson(200, { code: 0, data: await p.forecast(body) })
+          if (action === 'rank-feedback/generate') return sendJson(200, { code: 0, data: await p.generateRankFeedback() })
+          if (action === 'account-identities') return sendJson(200, { code: 0, data: await p.registerAccountIdentity(body) })
+          if (action === 'account-identities/lookup') return sendJson(200, { code: 0, data: await p.lookupAccountIdentity(body) })
 
           const quarantine = action.match(/^matches\/([^/]+)\/quarantine$/)
           if (quarantine) return sendJson(200, { code: 0, data: await p.quarantine(quarantine[1], body?.operator) })
