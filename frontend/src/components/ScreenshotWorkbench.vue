@@ -10,7 +10,7 @@
 
   <section v-show="activeTab === 'instant'" class="instant-mode-panel">
     <div class="forecast-batch">
-      <label>批量选手 ID<input v-model="batchPasteText" placeholder="按换行、逗号或空格分隔六个档案 ID" @keydown.enter.prevent="applyBatchPaste"></label>
+      <label>批量选手<input v-model="batchPasteText" placeholder="按换行、逗号或空格分隔六位选手昵称" @keydown.enter.prevent="applyBatchPaste"></label>
       <button type="button" @click="applyBatchPaste">填入六席</button>
       <button type="button" @click="clearRoster">清空名单</button>
     </div>
@@ -22,17 +22,16 @@
       <option v-for="ban in catalogOptions.bans" :key="ban" :value="ban" />
     </datalist>
     <datalist id="forecast-commanders"><option v-for="commander in catalogOptions.commanders" :key="commander" :value="commander" /></datalist>
-    <datalist id="forecast-players"><option v-for="profile in profiles" :key="profile.id" :value="profile.id">{{ profile.nickname }}</option></datalist>
+    <datalist id="forecast-players"><option v-for="profile in profiles" :key="profile.id" :value="profile.nickname" /></datalist>
 
     <div class="forecast-roster">
       <fieldset v-for="(player, i) in players" :key="i" class="forecast-seat">
         <legend>第 {{ i + 1 }} 席</legend>
-        <label>选手档案 ID<input v-model="player.profileId" list="forecast-players" maxlength="160"></label>
-        <span v-if="profileNames.get(player.profileId.trim())">{{ profileNames.get(player.profileId.trim()) }}</span>
-        <label>本场棋手<input v-model="player.commander" list="forecast-commanders" maxlength="160"></label>
+        <label>选手昵称<input v-model="player.profileId" list="forecast-players" maxlength="160" placeholder="请选择或输入选手昵称"></label>
+        <label>本场棋手<input v-model="player.commander" list="forecast-commanders" maxlength="160" placeholder="请选择或输入棋手"></label>
       </fieldset>
     </div>
-    <p v-if="hasDuplicateIds" role="alert">同一档案只能填入一个席位。</p>
+    <p v-if="hasDuplicateIds" role="alert">同一选手只能填入一个席位。</p>
     <button type="button" class="forecast-submit" :disabled="forecastBusy || !canForecast" @click="runForecast">
       {{ forecastBusy ? '正在读取数据库并计算…' : '计算赛前预测' }}
     </button>
@@ -265,8 +264,12 @@ const profiles = ref<CatalogProfile[]>([])
 const players = ref(Array.from({length: 6}, emptySeat))
 const auditPlayers = ref(Array.from({length: 6}, emptyAuditSeat))
 const profileNames = computed(() => new Map(profiles.value.map(profile => [profile.id, profile.nickname])))
+const nickToId = computed(() => new Map(profiles.value.map(profile => [profile.nickname, profile.id])))
 const hasDuplicateIds = computed(() => {
-  const ids = players.value.map(player => player.profileId.trim()).filter(Boolean)
+  const ids = players.value.map(player => {
+    const val = player.profileId.trim()
+    return nickToId.value.get(val) ?? val
+  }).filter(Boolean)
   return new Set(ids).size !== ids.length
 })
 const canForecast = computed(() => Boolean(bannedFaction.value.trim()) && !hasDuplicateIds.value &&
@@ -491,7 +494,11 @@ async function runForecast() {
   try {
     const model = await researchApi<WinnerModel>('forecast', {
       bannedFaction: bannedFaction.value.trim() === '无禁用' ? null : bannedFaction.value.trim(),
-      players: players.value.map(player => ({profileId: player.profileId.trim(), commander: player.commander.trim()}))
+      players: players.value.map(player => {
+        const val = player.profileId.trim()
+        const resolvedId = nickToId.value.get(val) ?? val
+        return { profileId: resolvedId, commander: player.commander.trim() }
+      })
     })
     if (request === forecastRequest) forecast.value = model
   } catch (error) {
