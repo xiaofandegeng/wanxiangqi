@@ -10,11 +10,13 @@
         <p class="footer-note">来源样本与已核验赛果分别呈现 · 返奖率不是胜率 · 概率模型尚未校准</p>
       </div>
     </footer>
+    <MobileTabBar />
   </div>
 </template>
 
 <script setup lang="ts">
 import AppHeader from './components/AppHeader.vue'
+import MobileTabBar from './components/MobileTabBar.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -33,20 +35,24 @@ import AppHeader from './components/AppHeader.vue'
   max-width: 1240px;
   width: 100%;
   margin: 0 auto;
-  padding: 32px 20px;
+  padding: 28px 20px;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
-    padding: 20px 14px;
+  @media (max-width: $bp-md) {
+    padding: 16px 12px 24px;
   }
 }
 
 .app-footer {
   width: 100%;
-  padding: 28px 0;
+  padding: 24px 0;
   border-top: 1px solid $border-subtle;
   background: $bg-surface;
   text-align: center;
+
+  @media (max-width: $bp-md) {
+    padding: 20px 0 calc($mobile-tabbar-height + env(safe-area-inset-bottom) + 20px);
+  }
 }
 
 .footer-container {

@@ -267,6 +267,38 @@ onMounted(load)
   }
 }
 
+.catalog section[aria-label="阵容统计"] {
+  @include glass-panel;
+  padding: 20px 24px;
+  margin: 18px 0;
+
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: 6px;
+  }
+
+  > details {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: $bg-canvas;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-md;
+    border-top: 1px solid $border-subtle;
+    transition: $transition-fast;
+
+    &:hover {
+      border-color: $border-hover;
+    }
+
+    p {
+      margin: 8px 0 4px;
+      color: $text-secondary;
+    }
+  }
+}
+
 .coverage {
   @include glass-panel;
   padding: 20px 24px;
@@ -274,22 +306,58 @@ onMounted(load)
   border-top: 1px solid $border-color !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: $bp-md) {
+  .catalog {
+    margin: 12px 0;
+
+    header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+
+      h2 {
+        font-size: 18px;
+      }
+
+      button {
+        width: 100%;
+        min-height: 40px;
+      }
+    }
+
+    section[aria-label="阵容统计"] {
+      padding: 16px;
+    }
+  }
+
+  .notice {
+    padding: 12px 14px;
+    font-size: 12.5px;
+  }
+
   .profiles {
     grid-template-columns: 1fr;
+    gap: 14px;
+
+    article {
+      padding: 16px;
+    }
+
+    dl {
+      grid-template-columns: 100px 1fr;
+      padding: 10px 12px;
+    }
   }
 
-  .catalog header {
-    flex-direction: column;
-    align-items: flex-start;
+  .coverage {
+    padding: 16px;
   }
+}
 
-  .profiles article {
-    padding: 18px;
-  }
-
+@media (max-width: $bp-xs) {
   .profiles dl {
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 }
 </style>

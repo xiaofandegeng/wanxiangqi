@@ -99,6 +99,7 @@
 }
 
 .nav-item {
+  position: relative;
   display: inline-flex;
   align-items: center;
   padding: 8px 14px;
@@ -123,20 +124,39 @@
 
 @media (max-width: 980px) {
   .header-inner {
-    flex-wrap: wrap;
     padding: 10px 16px;
     gap: 12px;
-  }
-
-  .nav-links {
-    order: 3;
-    width: 100%;
-    padding: 4px 0;
   }
 
   .nav-item {
     padding: 6px 10px;
     font-size: 12.5px;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .header-inner {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+  }
+
+  .brand-sub {
+    font-size: 10.5px;
+  }
+
+  // 移动端主导航由底部 MobileTabBar 承接，保持顶栏清爽释放首屏高度
+  .nav-links {
+    display: none;
   }
 }
 </style>

@@ -154,3 +154,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+// 移动端横向顺滑滚动容器（隐藏滚动条）
+@mixin mobile-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 移动端表格包裹器（支持触控平滑横滑）
+@mixin table-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}

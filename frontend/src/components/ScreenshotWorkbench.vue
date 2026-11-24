@@ -850,29 +850,74 @@ onUnmounted(() => window.removeEventListener('paste', handleGlobalPaste))
 .forecast-fields,
 .forecast-roster {
   display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
+
 .forecast-batch {
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: end;
 }
-.forecast-fields { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
-.forecast-roster { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.forecast-fields {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.forecast-roster {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .forecast-seat {
   min-width: 0;
   display: grid;
   align-content: start;
   gap: 10px;
+  margin: 0 !important;
+  padding: 16px !important;
+  background: $bg-surface !important;
+  border: 1px solid $border-subtle !important;
+  border-radius: $radius-md !important;
+  box-shadow: $shadow-xs;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $border-hover !important;
+    box-shadow: $shadow-sm;
+  }
+
+  &:focus-within {
+    border-color: rgba($color-primary, 0.45) !important;
+    box-shadow: 0 2px 10px rgba(30, 70, 58, 0.08);
+  }
+
+  legend {
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: $color-primary !important;
+    background: $color-primary-light;
+    border-radius: $radius-full;
+  }
 }
+
 .forecast-batch label,
 .forecast-fields label,
 .forecast-seat label {
   display: grid;
-  gap: 5px;
+  gap: 6px;
   color: $text-secondary;
-  font-size: 13px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
+
 .forecast-batch input,
 .forecast-fields input,
 .forecast-fields select,
@@ -881,35 +926,208 @@ onUnmounted(() => window.removeEventListener('paste', handleGlobalPaste))
   width: 100%;
   box-sizing: border-box;
 }
+
 .forecast-submit {
-  background: $color-primary;
-  color: #fff;
-  border-color: transparent;
+  @include button-primary;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 42px;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  box-shadow: 0 2px 6px rgba(30, 70, 58, 0.22);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 70, 58, 0.28);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    box-shadow: none;
+  }
 }
-.forecast-submit:disabled { opacity: 0.55; }
-.rank-feedback { margin-top: 16px; }
-.rank-feedback-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-.rank-feedback-controls select { margin-left: 6px; }
-.rank-account-list { margin: 6px 0 0; padding-left: 16px; }
-.account-identity { margin: 12px 0; }
-.forecast-result { margin-top: 18px; }
-.forecast-table { overflow-x: auto; }
-.forecast-table table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 13px;
+
+.rank-feedback,
+.account-identity {
+  margin-top: 18px;
+  padding: 16px 20px;
+  background: $bg-canvas;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+
+  > summary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: $color-primary;
+    user-select: none;
+  }
 }
-.forecast-table th,
-.forecast-table td {
-  border-bottom: 1px solid $border-subtle;
-  padding: 8px 10px;
+
+.rank-feedback-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+
+  label {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  select {
+    width: auto;
+    min-width: 120px;
+  }
 }
-@media (max-width: 768px) {
-  .shot-workbench { padding: 16px; }
-  .shot-upload, .shot-meta, .shot-profiles, .shot-seat, .shot-seat-context { grid-template-columns: 1fr; }
-  .shot-restore { align-items: stretch; flex-direction: column; }
-  .forecast-batch { grid-template-columns: 1fr 1fr; }
-  .forecast-batch label { grid-column: 1 / -1; }
+
+.rank-account-list {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.forecast-result {
+  margin-top: 20px;
+}
+
+.forecast-table {
+  @include table-scroll-wrap;
+  margin-top: 12px;
+  background: $bg-surface;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid $border-subtle;
+    padding: 10px 12px;
+    white-space: nowrap;
+  }
+
+  thead th {
+    background: $bg-subtle;
+    color: $text-secondary;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  tbody tr:last-child td,
+  tbody tr:last-child th {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td,
+  tbody tr:hover th {
+    background: $bg-card-hover;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .shot-workbench {
+    padding: 16px;
+    margin: 12px 0;
+  }
+
+  .workbench-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+
+    h2 {
+      font-size: 18px;
+    }
+  }
+
+  .workbench-tabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    button {
+      padding: 9px 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+  }
+
+  .shot-upload,
+  .shot-meta,
+  .shot-profiles,
+  .shot-seat,
+  .shot-seat-context {
+    grid-template-columns: 1fr;
+  }
+
+  .shot-restore {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .forecast-batch {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    label {
+      grid-column: 1 / -1;
+    }
+
+    button {
+      min-height: 40px;
+    }
+  }
+
+  .forecast-submit {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .rank-feedback,
+  .account-identity {
+    padding: 14px;
+  }
+
+  .rank-feedback-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    label {
+      justify-content: space-between;
+    }
+
+    button {
+      width: 100%;
+      min-height: 40px;
+    }
+  }
+
+  .shot-model,
+  .talent-panel {
+    padding: 14px 16px;
+  }
+
+  .forecast-table {
+    table {
+      font-size: 12.5px;
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+    }
+  }
 }
 </style>

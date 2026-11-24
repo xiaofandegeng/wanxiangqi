@@ -834,5 +834,62 @@ function handleSubmit() {
     }
   }
 }
+
+@media (max-width: $bp-sm) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 92dvh;
+    border-radius: $radius-xl $radius-xl 0 0;
+    animation: modal-sheet-enter 0.24s $ease-bounce;
+  }
+
+  @keyframes modal-sheet-enter {
+    from {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    padding: 16px;
+
+    .header-title {
+      font-size: 15.5px;
+    }
+  }
+
+  .modal-body {
+    padding: 14px 16px calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .seats-editor-container .seats-editor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .modal-footer {
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 14px;
+
+    .btn-cancel,
+    .btn-submit {
+      flex: 1;
+      min-height: 44px;
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+  }
+}
 </style>
 

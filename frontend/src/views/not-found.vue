@@ -157,4 +157,27 @@ const retiredHit = computed(() => {
     }
   }
 }
+
+@media (max-width: $bp-sm) {
+  .not-found-view {
+    padding: 16px 0;
+  }
+
+  .nf-card {
+    padding: 24px 18px;
+  }
+
+  .nf-title {
+    font-size: 18px;
+  }
+
+  .nf-actions {
+    flex-direction: column;
+
+    .nf-btn {
+      width: 100%;
+      min-height: 42px;
+    }
+  }
+}
 </style>

@@ -85,3 +85,10 @@ $ease-bounce: cubic-bezier(0.22, 1, 0.36, 1);
 $transition-base: all 0.18s $ease-bounce;
 $transition-smooth: all 0.28s $ease-bounce;
 $transition-fast: all 0.12s ease;
+
+// ---------------- 响应式断点与移动端尺寸 (Breakpoints & Mobile) ----------------
+$bp-xs: 480px;
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$mobile-tabbar-height: 60px;

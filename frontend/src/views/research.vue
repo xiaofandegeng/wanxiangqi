@@ -1813,7 +1813,7 @@ button,
 }
 
 .research-table {
-  overflow-x: auto;
+  @include table-scroll-wrap;
   margin: 16px 0;
   border: 1px solid $border-subtle;
   border-radius: $radius-md;
@@ -2615,20 +2615,17 @@ button,
         background-color: #fef2f2;
       }
     }
-
-    span {
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: $radius-full;
-      background: $color-primary-light;
-      color: $color-primary;
-    }
   }
 
   h2 {
     font-size: 16px;
     margin: 0;
+
+    span {
+      font-size: 13px;
+      font-weight: 500;
+      color: $text-muted;
+    }
   }
 }
 
@@ -2673,41 +2670,225 @@ button,
   }
 }
 
-@media (max-width: 768px) {
-  .player-expand-detail-row .expand-panel-content {
-    grid-template-columns: 1fr;
+@media (max-width: $bp-md) {
+  .research-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+
+    h1 {
+      font-size: 21px;
+      margin: 4px 0 6px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .research-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: $bg-surface;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-md;
+    font-size: 12px;
+    line-height: 1.5;
+
+    > div {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+
+      button {
+        margin-left: 0;
+        flex: 1;
+      }
+    }
+  }
+
+  .research-auth,
+  .research-note,
+  .research-match,
+  .leaderboard-section,
+  .recent-matches-section {
+    padding: 16px;
+    margin: 14px 0;
+  }
+
+  .research-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 14px 0 20px;
+
+    div {
+      padding: 14px;
+      gap: 4px;
+    }
+
+    strong {
+      font-size: 26px;
+    }
+
+    span {
+      font-size: 12.5px;
+    }
+
+    small {
+      font-size: 11px;
+    }
+  }
+
+  .version-status-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+    margin: 14px 0 18px;
+
+    .banner-badge {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 12px;
+    }
+
+    .banner-action-btn {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+  }
+
+  .section-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .view-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    h2 {
+      font-size: 18px;
+    }
+  }
+
+  .matches-top-actions {
+    width: 100%;
+
+    .btn-create-match {
+      width: 100%;
+      justify-content: center;
+      padding: 10px 16px;
+    }
+  }
+
+  .group-mode-toggle {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .group-toggle-btn {
+      padding: 8px 8px;
+      font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .research-auth form,
+  .research-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .research-auth form button {
+    width: 100%;
+    padding: 10px 16px;
+  }
+
+  .player-filter-bar {
+    align-items: stretch;
+    gap: 10px;
+
+    input {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+
+  .sort-pills {
+    flex-wrap: nowrap;
+    @include mobile-scroll-x;
+    padding-bottom: 2px;
+  }
+
+  .patch-status-banner {
+    padding: 12px 14px;
+
+    .patch-actions {
+      width: 100%;
+
+      .btn-export-patch,
+      .btn-reset-all {
+        flex: 1;
+        padding: 8px 10px;
+      }
+    }
+  }
+
+  .research-table {
+    margin: 12px 0;
+
+    table {
+      font-size: 12.5px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+    }
+
+    .player-cell .player-inline-meta .accounts-chip-list .accounts-names {
+      max-width: 160px;
+    }
+  }
+
+  .match-footer-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .player-expand-detail-row {
+    td {
+      padding: 0 10px 14px;
+    }
+
+    .expand-panel-content {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 12px;
+    }
   }
 
   .expand-h2h-col .h2h-table-wrap {
     grid-template-columns: 1fr;
   }
 
-  .research-heading {
-    align-items: flex-start;
-    flex-direction: column;
-
-    h1 {
-      font-size: 22px;
-    }
-  }
-
-  .research-metrics {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
   .research-split {
     grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .research-auth form,
-  .research-filters {
-    flex-direction: column;
-  }
-
-  .research-toolbar {
-    flex-wrap: wrap;
+    gap: 18px;
+    padding: 12px 0;
   }
 }
 </style>
