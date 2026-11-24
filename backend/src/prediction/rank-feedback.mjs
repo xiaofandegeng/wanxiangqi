@@ -1,4 +1,5 @@
 import { normalizeLabel } from './build-stats.mjs'
+import { derivePersonUid } from '../../../shared/player-registry.mjs'
 
 const DAY_MS = 86400000
 const TEAM_SIZE = 6
@@ -142,7 +143,8 @@ export function summarizeRankFeedback(catalog, cutoff) {
       accounts.set(key,group)
     }
     return {
-      profileId, nickname, accounts:[...accounts.values()], samples3: recent.length, samples7: samples.length,
+      profileId, personUid: derivePersonUid(profileId), nickname, accounts:[...accounts.values()],
+      samples3: recent.length, samples7: samples.length,
       average3, average7, weightedGap, logWeight, matches: samples,
     }
   }).sort((a, b) => b.logWeight - a.logWeight || a.profileId.localeCompare(b.profileId))
@@ -150,7 +152,9 @@ export function summarizeRankFeedback(catalog, cutoff) {
     const ranked = [...rows].sort((a,b) => b[field] - a[field] || a.profileId.localeCompare(b.profileId))
     return {red:ranked.filter(row => row[field] > 0),black:ranked.filter(row => row[field] < 0).reverse()}
   }
+  const hasReplays = (catalog.rankReplays ?? []).some(replay => timestamp(replay.generatedAt) <= timestamp(cutoff))
   return {cutoff, weights:{recent3:SHORT_WEIGHT,recent7:LONG_WEIGHT}, settledMatches:comparisons.size,
+    generated: hasReplays || counts.recent7.replayed > 0,
     ...split(entries,'logWeight'), entries, windows:{
       recent3:{...counts.recent3,...split(entries.filter(row => row.samples3),'average3')},
       recent7:{...counts.recent7,...split(entries,'average7')},

@@ -5,7 +5,12 @@ import {randomUUID} from 'node:crypto'
 import {normalizeMatch,payloadHash,computeStats,estimate,fail} from './domain.mjs'
 import {readRankFeedbackCutoff,summarizeRankFeedback} from './rank-feedback.mjs'
 import {generateRankReplays} from './rank-replay.mjs'
-import {lookupAccountIdentity,registerAccountIdentity} from './account-identity.mjs'
+import {
+ lookupAccountIdentity,
+ registerAccountIdentity,
+ linkPlayerAlias,
+ syncVerifiedPlayerIdentities,
+} from './account-identity.mjs'
 const wire=r=>({id:r.id,sourceKey:r.source_key,mode:r.mode,playedAt:r.played_at.toISOString(),evidenceId:r.evidence_id,evidenceLocator:r.evidence_locator,version:r.version,platform:r.platform,region:r.region,seats:r.seats,status:r.status,createdAt:r.created_at.toISOString(),verifiedAt:r.verified_at?.toISOString()||null,verifiedBy:r.verified_by})
 export class PredictionService {
  constructor(pool){this.pool=pool;this.screenshots=new ScreenshotService(pool);this.catalog=new CatalogService(pool);this.observations=new ObservationService(pool,(c,id,v)=>this.evidence(c,id,v))}
@@ -68,7 +73,21 @@ export class PredictionService {
   return identity
  }
  async lookupAccountIdentity(input){return lookupAccountIdentity(this.pool,input)}
+ async linkPlayerAlias(input){
+  const result=await linkPlayerAlias(this.pool,input)
+  if(result.linked) await generateRankReplays(this.pool)
+  return result
+ }
+ async syncVerifiedIdentities(){
+  const result=await syncVerifiedPlayerIdentities(this.pool)
+  if(result.linkedAliases>0) await generateRankReplays(this.pool)
+  return result
+ }
  async generateRankFeedback(){
+  const existing=(await this.pool.query(
+   'SELECT 1 FROM prediction_rank_replays WHERE invalidated_at IS NULL LIMIT 1'
+  )).rows[0]
+  if(existing) throw fail('红黑榜已生成，不可重复生成','RANK_FEEDBACK_ALREADY_GENERATED',409)
   const generation=await generateRankReplays(this.pool)
   return {generation,board:await this.rankFeedback()}
  }

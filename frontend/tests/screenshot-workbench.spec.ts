@@ -6,14 +6,17 @@ const {api,upload}=vi.hoisted(()=>({api:vi.fn(),upload:vi.fn()}))
 vi.mock('../src/api/prediction',()=>({researchApi:api}))
 vi.mock('../src/api/index',()=>({uploadEvidence:upload}))
 let app:App
-it('红黑榜能切换窗口，也能生成历史补算',async()=>{
- const row={profileId:'P',nickname:'TEST 红榜选手',samples3:1,samples7:2,average3:3,average7:2,weightedGap:2.7,
+it('红黑榜双栏呈现、可切换窗口，且只能生成一次不可重复生成',async()=>{
+ const redRow={profileId:'P',nickname:'TEST 红榜选手',samples3:1,samples7:2,average3:3,average7:2,weightedGap:2.7,
   accounts:[{key:'UID',account:{platform:'test',region:'test',uid:'001'},samples3:1,samples7:2,
    profiles:[{profileId:'P',nickname:'TEST 旧昵称',samples3:1,samples7:1},
     {profileId:'A',nickname:'TEST 新昵称',samples3:0,samples7:1}]}]}
- const boardResult={windows:{recent3:{live:1,replayed:0,red:[row],black:[]},recent7:{live:1,replayed:1,red:[row],black:[]}}}
+ const blackRow={profileId:'B',nickname:'TEST 黑榜选手',samples3:1,samples7:1,average3:-2,average7:-2,weightedGap:-2}
+ const initialBoard={generated:false,windows:{recent3:{live:1,replayed:0,red:[redRow],black:[blackRow]},recent7:{live:1,replayed:0,red:[redRow],black:[blackRow]}}}
+ const generatedBoard={generated:true,windows:{recent3:{live:1,replayed:1,red:[redRow],black:[blackRow]},recent7:{live:1,replayed:1,red:[redRow],black:[blackRow]}}}
+ api.mockClear()
  api.mockImplementation(async(action:string)=>action==='catalog'?{players:[]}:
-  action==='rank-feedback/generate'?{board:boardResult,generation:{generated:1,unchanged:1,live:1,withdrawn:0,skipped:[]}}:boardResult)
+  action==='rank-feedback/generate'?{board:generatedBoard,generation:{generated:1,unchanged:1,live:1,withdrawn:0,skipped:[]}}:initialBoard)
  const el=await mount()
  const board=el.querySelector<HTMLDetailsElement>('.rank-feedback')!
  expect(api).not.toHaveBeenCalledWith('rank-feedback')
@@ -21,21 +24,31 @@ it('红黑榜能切换窗口，也能生成历史补算',async()=>{
  board.dispatchEvent(new Event('toggle'))
  await wait()
  expect(api).toHaveBeenCalledWith('rank-feedback')
- expect(board.textContent).toContain('TEST 红榜选手')
- expect(board.textContent).toContain('+2.00 名')
- expect(board.textContent).toContain('1 个已核验账号 · 2 份档案')
- expect(board.textContent).toContain('TEST 新昵称')
+ const redCol=board.querySelector('.rank-column.is-red')!
+ const blackCol=board.querySelector('.rank-column.is-black')!
+ expect(redCol.textContent).toContain('TEST 红榜选手')
+ expect(blackCol.textContent).toContain('TEST 黑榜选手')
+ expect(redCol.textContent).toContain('+2.00 名')
+ expect(redCol.textContent).toContain('1 个已核验账号 · 2 份档案')
+ expect(redCol.textContent).toContain('TEST 新昵称')
  const select=board.querySelector('select')!
  select.value='recent3'
  select.dispatchEvent(new Event('change'))
  await nextTick()
- expect(board.textContent).toContain('+3.00 名')
+ expect(redCol.textContent).toContain('+3.00 名')
  expect(board.textContent).toContain('最近 3 天 70%')
- board.querySelector('button')!.click()
+ const genBtn=board.querySelector<HTMLButtonElement>('.btn-rank-generate')!
+ expect(genBtn.disabled).toBe(false)
+ expect(genBtn.textContent).toContain('生成红黑榜')
+ genBtn.click()
  await wait()
  expect(api).toHaveBeenCalledWith('rank-feedback/generate',{})
  expect(board.textContent).toContain('新增或更新 1 场')
- expect(board.textContent).toContain('重算后无变化 1 场')
+ expect(genBtn.disabled).toBe(true)
+ expect(genBtn.textContent).toContain('红黑榜已生成')
+ genBtn.click()
+ await wait()
+ expect(api.mock.calls.filter(([action])=>action==='rank-feedback/generate')).toHaveLength(1)
 })
 const wait=()=>new Promise(r=>setTimeout(r,10))
 async function mount(){document.body.innerHTML='';const el=document.createElement('div');document.body.append(el);app=createApp(Workbench);app.mount(el);await wait();return el}
@@ -145,4 +158,55 @@ it('可恢复历史截图核对资料',async()=>{
  await wait()
  expect(api).toHaveBeenCalledWith('screenshot-analyses/TEST-ID')
  expect(el.querySelector('.shot-result')?.textContent).toContain('已保存核对资料')
+})
+
+it('支持一键同步改名库、手动归并改名昵称及同场冲突拦截提示',async()=>{
+ api.mockClear()
+ api.mockImplementation(async(action:string,body?:any)=>{
+  if(action==='catalog') return {
+   players:[{id:'p-qingci',personUid:'WXQP-B163DF6042',nickname:'抖音EG清辞',linkedNicknames:['EG清辞']}],
+   rawPlayers:[{id:'p-alias',nickname:'抖音清辞4连6',canonicalId:'p-qingci'}],
+   matches:[]
+  }
+  if(action==='player-links/sync-verified') return {linkedGroups:8,linkedAliases:15,registeredBadges:5,skippedConflicts:[]}
+  if(action==='player-links'){
+   if(body.aliasPlayer==='抖音梦飞冻冻') throw new Error('检测到同场对战冲突（2026-11-19 第 8 场），属于不同参赛账号，禁止合并')
+   return {linked:true,alreadyLinked:false,aliasNickname:body.aliasPlayer,canonicalNickname:body.canonicalPlayer,personUid:'WXQP-B163DF6042',badge:'开服奠基人 #0014'}
+  }
+  throw new Error('unexpected '+action)
+ })
+ const el=await mount()
+ const panel=el.querySelector<HTMLDetailsElement>('.identity-merge-panel')!
+ panel.open=true
+ const syncBtn=panel.querySelector<HTMLButtonElement>('.btn-sync-identities')!
+ syncBtn.click()
+ await wait()
+ expect(api).toHaveBeenCalledWith('player-links/sync-verified',{})
+ expect(panel.textContent).toContain('归并 8 组选手')
+
+ const inputs=panel.querySelectorAll<HTMLInputElement>('.quick-merge-form input')
+ const select=panel.querySelector<HTMLSelectElement>('.quick-merge-form select')!
+ inputs[0].value='抖音梦飞冻冻'
+ inputs[0].dispatchEvent(new Event('input'))
+ inputs[1].value='抖音梦飞'
+ inputs[1].dispatchEvent(new Event('input'))
+ await nextTick()
+ panel.querySelector<HTMLButtonElement>('.btn-quick-merge')!.click()
+ await wait()
+ expect(panel.querySelector('.merge-feedback.is-error')?.textContent).toContain('同场对战冲突')
+
+ inputs[0].value='抖音清辞4连6'
+ inputs[0].dispatchEvent(new Event('input'))
+ inputs[1].value='抖音EG清辞'
+ inputs[1].dispatchEvent(new Event('input'))
+ select.value='FOUNDER_BADGE'
+ select.dispatchEvent(new Event('change'))
+ await nextTick()
+ inputs[2].value='0014'
+ inputs[2].dispatchEvent(new Event('input'))
+ await nextTick()
+ panel.querySelector<HTMLButtonElement>('.btn-quick-merge')!.click()
+ await wait()
+ expect(panel.textContent).toContain('WXQP-B163DF6042')
+ expect(panel.textContent).toContain('开服奠基人 #0014')
 })

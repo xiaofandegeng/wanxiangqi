@@ -20,11 +20,20 @@ export function forecastRoster(catalog,input,cutoff){
   throw fail('赛前预测仅接收六位选手的档案 ID、棋手和本场禁用阵营','INVALID_FORECAST_INPUT')
  }
  const profiles=new Map(catalog.players.map(profile=>[profile.id,profile]))
- const nickMap=new Map(catalog.players.map(profile=>[profile.nickname,profile]))
+ const nickMap=new Map()
+ for(const profile of catalog.players){
+  nickMap.set(profile.nickname,profile)
+  if(profile.personUid) nickMap.set(profile.personUid.toUpperCase(),profile)
+  for(const aliasName of profile.linkedNicknames??[]) nickMap.set(aliasName,profile)
+ }
+ for(const raw of catalog.rawPlayers??[]){
+  const canonical=profiles.get(raw.canonicalId)
+  if(canonical) nickMap.set(raw.nickname,canonical)
+ }
  const links=new Map((catalog.playerAliases??[]).map(row=>[row.alias_id,row.canonical_id]))
  const roster=input.players.map(({profileId})=>{
   const id=profileId.trim()
-  const profile=profiles.get(links.get(id)??id) ?? nickMap.get(id)
+  const profile=profiles.get(links.get(id)??id) ?? nickMap.get(id) ?? nickMap.get(id.toUpperCase())
   if(!profile)throw fail(`未找到选手档案 ${id}`,'PROFILE_UNAVAILABLE')
   return {nickname:profile.nickname,profileId:profile.id}
  })

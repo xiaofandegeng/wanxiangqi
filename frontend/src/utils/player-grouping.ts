@@ -1,5 +1,6 @@
 // 王牌对决真实选手多账号归集与身份映射体系
 // 将同属于一个选手的多个游戏账号/战队马甲/小号归集到同一个主选手身份下
+import { VERIFIED_PLAYER_IDENTITY_GROUPS } from '../../../shared/player-registry.mjs'
 
 export interface MasterPlayerGroup {
   /** 选手主展示名 / 统一称谓 */
@@ -164,6 +165,31 @@ for (const g of MASTER_PLAYER_GROUPS) {
   ALIAS_TO_MASTER_MAP.set(g.masterName, g)
   for (const alias of g.aliases) {
     ALIAS_TO_MASTER_MAP.set(alias, g)
+  }
+}
+
+// 合并前后端共享的已核实改名名册（确保近期高频改名号在前端统计同步归集）
+for (const verified of VERIFIED_PLAYER_IDENTITY_GROUPS) {
+  const existingGroup =
+    ALIAS_TO_MASTER_MAP.get(verified.canonical) ||
+    verified.aliases.map(a => ALIAS_TO_MASTER_MAP.get(a)).find(Boolean)
+  if (existingGroup) {
+    for (const name of [verified.canonical, ...verified.aliases]) {
+      if (!existingGroup.aliases.includes(name)) {
+        existingGroup.aliases.push(name)
+      }
+      ALIAS_TO_MASTER_MAP.set(name, existingGroup)
+    }
+  } else {
+    const newGroup: MasterPlayerGroup = {
+      masterName: verified.canonical,
+      aliases: [verified.canonical, ...verified.aliases],
+      note: verified.note
+    }
+    ALIAS_TO_MASTER_MAP.set(newGroup.masterName, newGroup)
+    for (const alias of newGroup.aliases) {
+      ALIAS_TO_MASTER_MAP.set(alias, newGroup)
+    }
   }
 }
 

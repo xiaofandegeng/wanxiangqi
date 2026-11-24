@@ -27,10 +27,15 @@
       <img :src="getPlayerAvatar(p.nickname)" :alt="p.nickname" class="player-avatar" />
       <div class="profile-header-text">
        <h3>{{ p.nickname }}</h3>
-       <p class="muted">来源内昵称 · UID 未确认 · 样本夺冠 {{ p.observedWins }}/{{ p.observedMatches }}（{{ pct(p.observedMatches ? p.observedWins / p.observedMatches : null) }}）</p>
+       <p class="muted">
+        <template v-if="p.personUid">{{ p.badgeLabel ? `已核验 ${p.badgeLabel} · 唯一码 ${p.personUid}` : `唯一选手码 ${p.personUid}` }}</template>
+        <template v-else>来源内昵称 · UID 未确认</template>
+        · 样本夺冠 {{ p.observedWins }}/{{ p.observedMatches }}（{{ pct(p.observedMatches ? p.observedWins / p.observedMatches : null) }}）
+       </p>
+       <p v-if="p.linkedNicknames?.length" class="muted">已归并曾用名：{{ p.linkedNicknames.join('、') }}</p>
       </div>
      </div>
-     <dl><dt>样本内重复玩法</dt><dd>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : '样本不足或无明显重复' }}</dd><dt>档案 ID</dt><dd class="profile-id">{{ p.id }}</dd></dl>
+     <dl><dt>样本内重复玩法</dt><dd>{{ p.commonBuilds.length ? p.commonBuilds.join('、') : '样本不足或无明显重复' }}</dd><dt>档案 ID</dt><dd class="profile-id">{{ p.personUid || p.id }}</dd></dl>
      <p class="muted">重复玩法门槛：至少 3 次观察，某标签出现至少 2 次且占一半；仅描述此样本，不代表长期习惯或同版本强度。</p>
      <p class="muted">下列比例仅为来源所列选择标签的样本登顶次数／观察次数，不是本场预测概率或最终阵容胜率。</p>
      <div class="tags"><span v-for="b in p.builds" :key="b.label">{{ b.label }} × {{ b.observations }} · 登顶 {{ b.winsForSourceLabel }}/{{ b.observations }}（{{ pct(b.observations ? b.winsForSourceLabel / b.observations : null) }}）</span></div>
@@ -58,7 +63,7 @@ import {computed,onMounted,ref} from 'vue'
 import {researchApi} from '../api/prediction'
 import {getPlayerAvatar} from '../utils/player-avatar'
 interface Claim {id:string;kind:string;text:string;sourceUrl:string;windowStart:string;windowEnd:string;aggregate:null|{winsReported:number;top3Reported:number;appearancesReported:number;averageRankReported:number;averageCompatibleWithIntegerRanksAt2Decimals:boolean}}
-interface Profile {buildProfile?:{build:string;appearances:number;wins:number;winRate:number;common:boolean;repeatedTitleResults:boolean;commanders:{commander:string;appearances:number;wins:number}[]}[];id:string;nickname:string;observedMatches:number;observedWins:number;commonBuilds:string[];builds:{label:string;observations:number;winsForSourceLabel:number}[];claims:Claim[];history:{matchId:string;day:string;ordinal:number;build:string;rank:number|null;winnerBuild:string|null;sourceUrl:string}[]}
+interface Profile {personUid?:string;badgeLabel?:string|null;linkedNicknames?:string[];buildProfile?:{build:string;appearances:number;wins:number;winRate:number;common:boolean;repeatedTitleResults:boolean;commanders:{commander:string;appearances:number;wins:number}[]}[];id:string;nickname:string;observedMatches:number;observedWins:number;commonBuilds:string[];builds:{label:string;observations:number;winsForSourceLabel:number}[];claims:Claim[];history:{matchId:string;day:string;ordinal:number;build:string;rank:number|null;winnerBuild:string|null;sourceUrl:string}[]}
 interface BuildRate {appearances:number;wins:number;winRate:number|null}
 interface BuildStat extends BuildRate {label:string;champions:number;championShare:number|null;contested:BuildRate;solo:BuildRate;commanders:(BuildRate & {commander:string})[];commanderMatchups:(BuildRate & {commander:string;rival:string})[]}
 interface Catalog {buildStatistics?:{knownChampionBuilds:number;unknownChampionBuilds:number;builds:BuildStat[]};notice:string;counts:{matches:number;plays:number;players:number;claims:number};players:Profile[];sources:{url:string;title:string;status:string;matches:number;note:string|null}[]}
@@ -67,7 +72,7 @@ const buildQuery=ref('')
 const pct=(value:number|null)=>value===null?'—':`${(value*100).toFixed(1)}%`
 const filteredBuilds=computed(()=>catalog.value?.buildStatistics?.builds.filter(b=>b.label.includes(buildQuery.value.trim().replace('逐鹿赢政','逐鹿嬴政')))??[])
 const filtered=computed(()=>{
-  const list = catalog.value?.players.filter(p=>[p.nickname,p.id,...p.builds.map(b=>b.label),...p.claims.map(c=>c.text)].join(' ').toLowerCase().includes(query.value.trim().toLowerCase()))||[]
+  const list = catalog.value?.players.filter(p=>[p.nickname,p.personUid||'',...(p.linkedNicknames||[]),p.id,...p.builds.map(b=>b.label),...p.claims.map(c=>c.text)].join(' ').toLowerCase().includes(query.value.trim().toLowerCase()))||[]
   return list.slice().sort((a, b) => b.observedWins - a.observedWins || b.observedMatches - a.observedMatches)
 })
 async function load(){error.value='';catalog.value=null;try{catalog.value=await researchApi<Catalog>('catalog')}catch(e){error.value=e instanceof Error?e.message:'资料库加载失败'}}

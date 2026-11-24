@@ -104,7 +104,25 @@ test('同一选手多账号汇总，同一 UID 的旧昵称和新昵称贡献同
  }
  const row = summarizeRankFeedback(catalog,cutoff).red.find(entry=>entry.profileId===person.id)
  assert.equal(row.samples7,3)
+ assert.ok(row.personUid.startsWith('WXQP-'))
  assert.deepEqual(row.accounts.map(entry=>[entry.account.uid,entry.samples3,entry.samples7]),[['002',1,1],['001',1,2]])
  assert.deepEqual(row.accounts[1].profiles.map(profile=>profile.nickname),alternateProfiles)
  assert.equal(row.matches.find(m=>m.matchId===fixtures[0].match.id).accountNickname,alternateProfiles[0])
+
+ // 选手更换昵称后，赛前预测输入旧昵称或唯一码仍能自动识别并归口到同一主选手
+ const catalogWithLinks = {
+  ...catalog,
+  players: catalog.players.map(p => p.id === person.id ? {...p, personUid: row.personUid, linkedNicknames: ['改名后新马甲']} : p),
+  rawPlayers: [{id:'fixture-old-name', nickname:'旧曾用名A', canonicalId:person.id}],
+ }
+ const byAliasInput = {
+  bannedFaction:'大河',
+  players:players.map((p, idx) => ({profileId: idx === 5 ? '旧曾用名A' : p.id, commander:'玉环'})),
+ }
+ const byUidInput = {
+  bannedFaction:'大河',
+  players:players.map((p, idx) => ({profileId: idx === 5 ? row.personUid : p.id, commander:'玉环'})),
+ }
+ assert.deepEqual(forecastRoster(catalogWithLinks, byAliasInput, cutoff).players, forecastRoster(catalogWithLinks, input, cutoff).players)
+ assert.deepEqual(forecastRoster(catalogWithLinks, byUidInput, cutoff).players, forecastRoster(catalogWithLinks, input, cutoff).players)
 })

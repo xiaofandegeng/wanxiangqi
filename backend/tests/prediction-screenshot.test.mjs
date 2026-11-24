@@ -10,6 +10,7 @@ import {runMigrations} from '../src/migrate.mjs'
 import {isLocalPgAvailable,recreateNamedTestDb,connectNamedTestDb} from './helpers/pg-test.mjs'
 import {createApiServer} from '../src/http-server.mjs'
 import {PredictionService} from '../src/prediction/service.mjs'
+import {generateRankReplays} from '../src/prediction/rank-replay.mjs'
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..')
 const fixture={counts:{matches:2},sources:[{status:'DISCOVERED'}],players:[{id:'TEST-A',nickname:'TEST选手',identityStatus:'SOURCE_NICKNAME_ONLY',claims:[],history:[{day:'2026-10-28',rank:1,build:'A'},{day:'2026-10-27',rank:null,build:'A'}]}]}
 const request={phase:'PREMATCH',identityConfirmed:true,operator:'TEST',mode:'WANXIANG',version:'TEST-V',players:Array.from({length:6},(_,i)=>({nickname:'TEST'+i,profileId:i===0?'TEST-A':null}))}
@@ -99,19 +100,18 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  const backfilled=await post('rank-feedback/generate',{})
  assert.equal(backfilled.status,200)
  assert.equal(backfilled.json.data.generation.generated,1)
+ assert.equal(backfilled.json.data.board.generated,true)
  assert.equal(backfilled.json.data.board.windows.recent3.replayed,1)
- const unchanged=await post('rank-feedback/generate',{})
- assert.equal(unchanged.json.data.generation.generated,0)
- assert.equal(unchanged.json.data.generation.unchanged,1)
+ const duplicate=await post('rank-feedback/generate',{})
+ assert.equal(duplicate.status,409)
+ assert.equal(duplicate.json.code,'RANK_FEEDBACK_ALREADY_GENERATED')
  const replayQuery='SELECT training_hash,players,invalidated_at FROM prediction_rank_replays WHERE match_id=$1'
  const before=(await pool.query(replayQuery,[historical.id])).rows[0]
  const correctedWinner=historical.seats.find(seat=>!seat.winner)
  await pool.query("UPDATE prediction_catalog_plays SET winner=false WHERE match_id='TEST-PRIOR-RANK-HISTORY' AND winner")
  await pool.query("UPDATE prediction_catalog_plays SET winner=true WHERE match_id='TEST-PRIOR-RANK-HISTORY' AND slot=$1",[correctedWinner.slot])
- const regenerated=await post('rank-feedback/generate',{})
- assert.equal(regenerated.status,200)
- assert.equal(regenerated.json.data.generation.generated,1)
- assert.equal(regenerated.json.data.board.windows.recent3.replayed,1)
+ const regenerated=await generateRankReplays(pool)
+ assert.equal(regenerated.generated,1)
  const after=(await pool.query(replayQuery,[historical.id])).rows
  assert.equal(after.length,1)
  assert.notEqual(after[0].training_hash,before.training_hash)
@@ -126,10 +126,8 @@ test('截图PG全链路：原件、截止快照、OCR草稿/分析持久化、�
  const next=await p.screenshots.analyze(draft.id,input);assert.equal(next.players[0].sourceSample.observations,0)
  const stored=(await pool.query('SELECT result FROM prediction_screenshot_analyses ORDER BY created_at LIMIT 1')).rows[0].result;assert.equal(stored.players[0].sourceSample.observations,oldCount);assert.equal(stored.model,null)
  await pool.query('UPDATE prediction_catalog_matches SET available_at=now(),status=CASE WHEN id=$1 THEN status ELSE \'QUARANTINED\' END',[historical.id])
- const withdrawn=await post('rank-feedback/generate',{})
- assert.equal(withdrawn.status,200)
- assert.equal(withdrawn.json.data.generation.withdrawn,1)
- assert.equal(withdrawn.json.data.board.windows.recent3.replayed,0)
+ const withdrawn=await generateRankReplays(pool)
+ assert.equal(withdrawn.withdrawn,1)
  assert.ok((await pool.query(replayQuery,[historical.id])).rows[0].invalidated_at)
  const registration={profileId:historical.seats[0].playerId,platform:'FIXTURE',region:'TEST',uid:'001',
   evidenceId:'TEST-SCREENSHOT',reviewNote:'TEST 账号原件',identityConfirmed:true}

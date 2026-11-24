@@ -2,6 +2,8 @@ import {buildStatistics} from './build-stats.mjs'
 import {createHash} from 'node:crypto'
 import {fail} from './domain.mjs'
 import {buildTalentStatistics} from './talent-statistics.mjs'
+import {derivePersonUid} from '../../../shared/player-registry.mjs'
+import {formatAccountCredential} from './account-identity.mjs'
 
 export const catalogHash=x=>createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex')
 export const playerHandle=(author,nickname)=>catalogHash([author,nickname])
@@ -74,11 +76,20 @@ export class CatalogService {
   FROM prediction_rank_replays WHERE match_id=ANY($2::text[]) AND generated_at<=$1
     AND (invalidated_at IS NULL OR invalidated_at>$1)`,
   [cutoff,rankEvidence.map(row=>row.matchId)])).rows:[]
- const accountUids=includeRankFeedback?new Map((await client.query(`
-  SELECT profile_id,platform,region,uid FROM prediction_catalog_account_uids WHERE available_at<=$1`,[cutoff]))
-  .rows.map(({profile_id,...account})=>[profile_id,account])):null
+ const accountUids=new Map((await client.query(`
+  SELECT profile_id,platform,region,uid,credential_type AS "credentialType"
+  FROM prediction_catalog_account_uids WHERE available_at<=$1`,[cutoff]))
+  .rows.map(({profile_id,...account})=>[profile_id,account]))
  await client.query('COMMIT')
  const canonicalIds=new Map(links.rows.map(link=>[link.alias_id,link.canonical_id]))
+ const aliasNamesByCanonical=new Map()
+ const rawNameById=new Map(players.rows.map(p=>[p.id,p.nickname]))
+ for(const link of links.rows){
+  const list=aliasNamesByCanonical.get(link.canonical_id)??[]
+  const aliasName=rawNameById.get(link.alias_id)
+  if(aliasName&&!list.includes(aliasName))list.push(aliasName)
+  aliasNamesByCanonical.set(link.canonical_id,list)
+ }
  const canonicalPlayers=players.rows.filter(player=>!canonicalIds.has(player.id))
  if(includeRankFeedback) for(const row of plays.rows) row.sourceProfileId=row.player_id
  for(const row of [...plays.rows,...claims.rows])row.player_id=canonicalIds.get(row.player_id)??row.player_id
@@ -104,7 +115,7 @@ export class CatalogService {
  }
  for(const m of matchMap.values()){m.seats.sort((a,b)=>a.slot-b.slot);m.matchType='full_transcribed'}
  const matches=[...matchMap.values()].sort((a,b)=>b.day.localeCompare(a.day)||(b.ordinal-a.ordinal))
- const profiles=canonicalPlayers.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}return {id:p.id,nickname:p.nickname,author:p.author,identityStatus:p.identity_status,uid:null,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,buildProfile:buildProfiles.rows.filter(row=>row.player_id===p.id),builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,scheduledAt:h.scheduled_at?.toISOString()??null,scheduledTime:h.scheduled_time,slot:h.slot,build:h.build_label,reviewedCommander:h.reviewed_commander??null,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
+ const profiles=canonicalPlayers.map(p=>{const history=plays.rows.filter(x=>x.player_id===p.id),group=new Map();for(const h of history){const entry=group.get(h.build_label)||{label:h.build_label,observations:0,winsOnSelectedBuild:0,winsForSourceLabel:0};entry.observations++;if(h.winner)entry.winsForSourceLabel++;entry.observedWinShare=entry.winsForSourceLabel/entry.observations;if(h.winner&&h.build_label===h.winner_build)entry.winsOnSelectedBuild++;group.set(h.build_label,entry)}const personUid=derivePersonUid(p.id);const linkedNicknames=aliasNamesByCanonical.get(p.id)??[];const acct=accountUids.get(p.id)??null;const badgeLabel=formatAccountCredential(acct);return {id:p.id,personUid,nickname:p.nickname,author:p.author,identityStatus:acct||linkedNicknames.length?'VERIFIED_PERSON_UID':p.identity_status,uid:badgeLabel??personUid,badgeLabel,linkedNicknames,observedMatches:history.length,observedWins:history.filter(x=>x.winner).length,buildProfile:buildProfiles.rows.filter(row=>row.player_id===p.id),builds:[...group.values()].sort((a,b)=>b.observations-a.observations),commonBuilds:history.length>=3?[...group.values()].filter(x=>x.observations>=2&&x.observations/history.length>=.5).map(x=>x.label):[],expertBuilds:[],claims:claims.rows.filter(x=>x.player_id===p.id).map(x=>({id:x.id,kind:x.kind,text:x.text,sourceUrl:x.source_url,materialSha256:x.material_sha256,windowStart:x.start,windowEnd:x.finish,aggregate:x.aggregate})),history:history.map(h=>({matchId:h.match_id,day:h.day,ordinal:h.ordinal,scheduledAt:h.scheduled_at?.toISOString()??null,scheduledTime:h.scheduled_time,slot:h.slot,build:h.build_label,reviewedCommander:h.reviewed_commander??null,rank:h.winner?1:null,winnerBuild:h.winner?h.winner_build:null,sourceUrl:h.source_url,materialSha256:h.material_sha256}))}})
  const allPlayerMap=new Map()
  for(const p of profiles){allPlayerMap.set(p.nickname,{...p,history:[...p.history],buildsMap:new Map(p.builds.map(b=>[b.label,{...b}])),commandersMap:new Map()})}
  for(const m of matches){
@@ -170,7 +181,11 @@ export class CatalogService {
   buildStatistics:buildStatistics(matches),
   talentStatistics:buildTalentStatistics(matches,talents.rows),
   ...(includeTalentEvidence?{talentEvidence:talents.rows}:{}),
-  ...(includeTalentEvidence||includeRankFeedback?{playerAliases:links.rows}:{}),
+  playerAliases:links.rows,
+  rawPlayers:players.rows.map(({id,nickname,author})=>({
+   id,nickname,author,canonicalId:canonicalIds.get(id)??id,personUid:derivePersonUid(canonicalIds.get(id)??id),
+   account:accountUids.get(id)??null
+  })),
   ...(includeRankFeedback?{rankEvidence,prematchForecasts,rankReplays,
    sourceProfiles:players.rows.map(({id,nickname,author})=>({id,nickname,author,account:accountUids.get(id)??null}))}:{}),
   players:profiles,

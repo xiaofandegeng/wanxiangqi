@@ -152,6 +152,8 @@ export function createApiServer({ services = null, adminToken = null } = {}) {
           if (action === 'rank-feedback/generate') return sendJson(200, { code: 0, data: await p.generateRankFeedback() })
           if (action === 'account-identities') return sendJson(200, { code: 0, data: await p.registerAccountIdentity(body) })
           if (action === 'account-identities/lookup') return sendJson(200, { code: 0, data: await p.lookupAccountIdentity(body) })
+          if (action === 'player-links') return sendJson(200, { code: 0, data: await p.linkPlayerAlias(body) })
+          if (action === 'player-links/sync-verified') return sendJson(200, { code: 0, data: await p.syncVerifiedIdentities() })
 
           const quarantine = action.match(/^matches\/([^/]+)\/quarantine$/)
           if (quarantine) return sendJson(200, { code: 0, data: await p.quarantine(quarantine[1], body?.operator) })
